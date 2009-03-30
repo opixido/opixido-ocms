@@ -8,9 +8,9 @@ La documentation de l'oCms
 
 = Details =
 
-- Installation
-- Création de l'arborescence
-- Création d'un template/thème
-- Création des types de paragraphes
-- Création d'un nouveau gabarit de page
-- Création d'un plugin complet
+* Installation
+* Création de l'arborescence
+* Création d'un template/thème
+* Création des types de paragraphes
+* Création d'un nouveau gabarit de page
+* Création d'un plugin complet
