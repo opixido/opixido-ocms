@@ -1,0 +1,13 @@
+RewriteEngine  on
+
+RewriteRule   ^uk/(.*)$  index.php  [L]
+RewriteRule   ^en/(.*)$  index.php  [L]
+RewriteRule   ^us/(.*)$  index.php  [L]
+RewriteRule   ^fr/(.*)$  index.php  [L]
+RewriteRule   ^de/(.*)$  index.php  [L]
+RewriteRule   ^es/(.*)$  index.php  [L]
+RewriteRule   ^it/(.*)$  index.php  [L]
+RewriteRule   ^nl/(.*)$  index.php  [L]
+RewriteRule   ^pt/(.*)$  index.php  [L]
+RewriteRule   ^ru/(.*)$  index.php  [L]
+
