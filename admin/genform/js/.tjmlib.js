@@ -1,0 +1,351 @@
+// overly simplistic test for IE
+isIE = (document.all ? true : false);
+// both IE5 and NS6 are DOM-compliant
+isDOM = (document.getElementById ? true : false);
+
+// get the true offset of anything on NS4, IE4/5 & NS6, even if it's in a table!
+function getAbsX(elt) { return (elt.x) ? elt.x : getAbsPos(elt,"Left"); }
+function getAbsY(elt) { return (elt.y) ? elt.y : getAbsPos(elt,"Top"); }
+function getAbsPos(elt,which) {
+ iPos = 0;
+ while (elt != null) {
+  iPos += elt["offset" + which];
+  elt = elt.offsetParent;
+ }
+ return iPos;
+}
+frameWidth = 800;
+frameHeight = 600;
+
+function CheckSize() {
+    if (self.innerWidth)
+    {
+        frameWidth = self.innerWidth;
+        frameHeight = self.innerHeight;
+    }
+    else if (document.documentElement && document.documentElement.clientWidth)
+    {
+        frameWidth = document.documentElement.clientWidth;
+        frameHeight = document.documentElement.clientHeight;
+    }
+    else if (document.body)
+    {
+        frameWidth = document.body.clientWidth;
+        frameHeight = document.body.clientHeight;
+    }
+
+
+}
+
+function getDivStyle(divname) {
+ var style;
+ if (isDOM) { style = document.getElementById(divname).style; }
+ else { style = isIE ? document.all[divname].style
+                     : document.layers[divname]; } // NS4
+ return style;
+}
+
+function hideElement(divname) {
+ getDivStyle(divname).display = 'none';
+}
+
+
+function hideOnglet(i) {
+    hideElement("genform_btn_page_"+i);
+}
+
+// annoying detail: IE and NS6 store elt.top and elt.left as strings.
+function moveBy(elt,deltaX,deltaY) {
+ elt.left = parseInt(elt.left) + deltaX;
+ elt.top = parseInt(elt.top) + deltaY;
+}
+
+function toggleVisible(divname) {
+ divstyle = getDivStyle(divname);
+ if (divstyle.visibility == 'visible' || divstyle.visibility == 'show') {
+   divstyle.visibility = 'hidden';
+ } else {
+   fixPosition(divname);
+   divstyle.visibility = 'visible';
+ }
+}
+
+function setPosition(elt,positionername,isPlacedUnder) {
+ var positioner;
+ if (isIE) {
+  positioner = document.all[positionername];
+ } else {
+  if (isDOM) {
+    positioner = document.getElementById(positionername);
+  } else {
+    // not IE, not DOM (probably NS4)
+    // if the positioner is inside a netscape4 layer this will *not* find it.
+    // I should write a finder function which will recurse through all layers
+    // until it finds the named image...
+    positioner = document.images[positionername];
+  }
+ }
+ elt.left = getAbsX(positioner);
+ elt.top = getAbsY(positioner)//+ (isPlacedUnder ? positioner.height : 0);
+ elt.zIndex = 1546;
+}
+
+
+
+function genform_activatePage(page) {
+	alert(genform_totalPages);
+    for(p=0;p<genform_totalPages;p++) {
+    	if(gid("genform_div_page_"+p)) {
+	       	gid("genform_div_page_"+p).className = "btnOngletOff";
+       	}
+       	if(gid("genform_page_"+(p+1))) {
+       		gid("genform_page_"+(p+1)).style.display = "none";
+       	}
+
+    }
+     gid("genform_div_page_"+page).className = "btnOngletOn";
+    gid("genform_page_"+(page+1)).style.display = "block";
+    gid("genform_curPage").value = page;
+    //eval("editor"+EditorsByPage[page+1]+".generate.initIframe")()
+
+}
+
+
+oldBtnNom = "";
+function genformPreviewFk(curtable,nom,champs) {
+    ifra = document.getElementById("genform_preview_"+nom);
+    btn = document.getElementById("genform_preview_"+nom+"_btn");
+    valeur = document.getElementById('genform_'+nom).options[document.getElementById('genform_'+nom).selectedIndex].value;
+    if((ifra.style.display == "none" || valeur != oldValIframe ) && valeur != "") {
+
+        ifra.src= "index.php?popup=1&preview=1&curTable="+curtable+"&curId="+valeur+"&champs="+champs;
+        ifra.style.display = "block";
+
+        if(btn.value != "X")
+        oldBtnNom = btn.value;
+        btn.value = "X";
+
+        oldValIframe = valeur;
+
+    } else {
+        ifra.style.display = "none";
+        btn.value = oldBtnNom;
+    }
+
+}
+
+
+function tooltip(){}
+
+// setup properties of tooltip object
+tooltip.id="tooltip";
+tooltip.offsetx = 10;
+tooltip.offsety = 10;
+tooltip.x = 0;
+tooltip.y = 0;
+tooltip.snow = 0;
+tooltip.tooltipElement=null;
+tooltip.title_saved='';
+tooltip.saveonmouseover=null;
+tooltip.ie4 = (document.all)? true:false;       // check if ie4
+tooltip.ie5 = false;
+tooltip.maxwidth = 200;
+
+if(tooltip.ie4) tooltip.ie5 = (navigator.userAgent.indexOf('MSIE 5')>0 || navigator.userAgent.indexOf('MSIE 6')>0);
+tooltip.dom2 = ((document.getElementById) && !(tooltip.ie4||tooltip.ie5))? true:false; // check the W3C DOM level2 compliance. ie4, ie5, ns4 are not dom level2 compliance !! grrrr >:-(
+
+
+/**
+* Open ToolTip. The title attribute of the htmlelement is the text of the tooltip
+* Call this method on the mouseover event on your htmlelement
+* ex :  <div id="myHtmlElement" onmouseover="tooltip.show(this)"...></div>
+*/
+tooltip.show = function (htmlelement,attribut) {
+
+
+   if ( this.ie4 || this.dom2 ) {
+      // we save text of title attribute to avoid the showing of tooltip generated by browser
+      text=htmlelement.getAttribute(attribut);
+      this.title_saved=text;
+      htmlelement.setAttribute(attribut,"");
+   }
+    if(this.dom2){
+        this.tooltipElement = document.getElementById(this.id);
+      this.saveonmouseover=document.onmousemove;
+        document.onmousemove = this.mouseMove;
+    }else if ( this.ie4 ) {
+      this.tooltipElement = document.all[this.id].style;
+      this.saveonmouseover=document.onmousemove;
+      document.onmousemove = this.mouseMove;
+    }
+
+   if ( this.ie4 || this.dom2 ) {
+      if(this.ie4) document.all[this.id].innerHTML = text;
+      else if(this.dom2) document.getElementById(this.id).innerHTML=text;
+
+      this.moveTo(this.x + this.offsetx , this.y + this.offsety);
+
+      if(this.ie4) this.tooltipElement.visibility = "visible";
+      else if(this.dom2) this.tooltipElement.style.visibility ="visible";
+   }
+
+   return false;
+}
+
+/**
+* hide tooltip
+* call this method on the mouseout event of the html element
+* ex : <div id="myHtmlElement" ... onmouseout="tooltip.hide(this)"></div>
+*/
+tooltip.hide = function (htmlelement,attribut) {
+    if ( this.ie4 || this.dom2 ) {
+      htmlelement.setAttribute(attribut,this.title_saved);
+      this.title_saved="";
+
+        if(this.ie4) this.tooltipElement.visibility = "hidden";
+      else if(this.dom2) this.tooltipElement.style.visibility = "hidden";
+
+      document.onmousemove=this.saveonmouseover;
+    }
+}
+
+
+
+// Moves the tooltip element
+tooltip.mouseMove = function (e) {
+   // we don't use "this", but tooltip because this method is assign to an event of document
+   // and so is dreferenced
+
+   if(tooltip.ie4 || tooltip.dom2){
+
+      if(tooltip.dom2){
+         tooltip.x = e.pageX;
+         tooltip.y = e.pageY;
+      }else{
+         if(tooltip.ie4) { tooltip.x = event.x; tooltip.y = event.y; }
+         if(tooltip.ie5) { tooltip.x = event.x + document.body.scrollLeft;
+               tooltip.y = event.y + document.body.scrollTop; }
+      }
+      tooltip.moveTo( tooltip.x +tooltip.offsetx , tooltip.y + tooltip.offsety);
+   }
+}
+
+// Move the tooltip element
+tooltip.moveTo = function (xL,yL) {
+    if(this.dom2){
+        this.tooltipElement.style.left = xL +"px";
+      this.tooltipElement.style.top = yL +"px";
+
+      CheckSize();
+      //alert(divWidth+xL+" - "+frameWidth);
+        if(divHeight+yL > frameHeight) {
+            this.tooltipElement.style.top = frameHeight - divHeight+"px";
+        }
+
+        if(divWidth+xL > frameWidth) {
+            this.tooltipElement.style.left = frameWidth - divWidth+"px";
+        }
+
+    }else if(this.ie4){
+      this.tooltipElement.left = xL;
+      this.tooltipElement.top = yL;
+   }
+}
+
+divHeight = 60;
+divWidth = 150;
+
+window.onload = function() {
+    inputs = document.getElementsByTagName("a");
+
+    for(p in inputs) {
+
+        if(inputs[p].title && !inputs[p].onmouseover) {
+            inputs[p].onmouseover = function() {tooltip.show(this,"title");}
+            inputs[p].onmouseout = function() {tooltip.hide(this,"title");}
+        }
+
+    }
+
+
+    inputs = document.getElementsByTagName("input");
+
+    for(p in inputs) {
+
+        if(inputs[p].title) {
+            inputs[p].onmouseover = function() {tooltip.show(this,"title");}
+            inputs[p].onmouseout = function() {tooltip.hide(this,"title");}
+        }
+
+    }
+     inputs = document.getElementsByTagName("img");
+
+    for(p in inputs) {
+            if(inputs[p].alt) {
+            inputs[p].onmouseover = function() {tooltip.show(this,"alt");}
+            inputs[p].onmouseout = function() {tooltip.hide(this,"alt");}
+        }
+
+        }
+}
+
+
+
+function validInsideSubmit(obj) {
+
+	inputs = obj.getElementsByTagName("input");
+
+	for(inpu in inputs) {
+		inpu = inputs[inpu];
+		if(inpu.type == "image" || inpu.type == "submit") {
+			if(inpu.onclick) {
+				inpu.onclick();
+			} else {
+				t=obj;
+				while(1) {
+					t = t.parentNode;
+					if(t.nodeName.toLowerCase() == "form") {
+						t.submit();
+						break;
+					}
+				}
+			}
+			break;
+		}
+	}
+}
+
+
+function gid (eleme) {
+    return document.getElementById(eleme);
+}
+
+
+oldid ="";
+oldobj = "";
+function swapactions(id,obj) {
+	/*if(oldid != "") {
+		gid(oldid).style.visibility = "hidden";
+		oldobj.parentNode.style.background = 'none';
+	}
+	//obj.parentNode.style.background = '#cccccc';
+
+	gid(id).style.visibility = "visible";
+
+	oldobj = obj;
+	oldid = id;*/
+}
+
+
+
+function showHideActions() {
+	var act	= gid('gen_actions');
+	if(act.style.display == "block") {
+		act.style.display = 'none';
+	} else {
+		act.style.display = 'block';
+	}
+}
+
+
+

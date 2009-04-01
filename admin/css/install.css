@@ -1,0 +1,31 @@
+ #install {
+	margin:50px;padding:10px;border:1px solid #ff9600;background:#eee;width:400px
+ }
+ 
+ .error {
+ margin:50px;padding;10px;border:10px solid #cc0000;background:white;padding:10px;text-align:center;font-weight:bold;
+ }
+ 
+ .info {
+ margin:50px;padding;10px;border:10px solid #00cc00;background:white;padding:10px;text-align:center;font-weight:bold;
+ }
+ 
+ .start {
+ margin:50px;background:#555;text-align:center;font-weight:bold;
+
+ color:white;
+ }
+ 
+ .start * { 
+  color:white;
+ }
+ 
+  .start b { 
+	display:block;
+  }
+ 
+  .start br {
+	font-size:1px;
+	line-height:1px;
+	float:left;
+  }
