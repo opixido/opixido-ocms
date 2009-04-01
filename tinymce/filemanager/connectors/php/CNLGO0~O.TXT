@@ -1,0 +1,365 @@
+
+08/07/2008 11:50:42
+<span style='color:red;font-weight;bold;font-size:13px'><br />
+<b>Warning</b>:  Wrong parameter count for fwrite() in <b>/home/zouzou/sgf/admin/tinymce/filemanager/connectors/php/connector.php</b> on line <b>43</b><br />
+</span><span style='color:red;font-weight;bold;font-size:13px'><br />
+<b>Warning</b>:  Wrong parameter count for fwrite() in <b>/home/zouzou/sgf/admin/tinymce/filemanager/connectors/php/connector.php</b> on line <b>43</b><br />
+</span><span style='color:red;font-weight;bold;font-size:13px'><br />
+<b>Warning</b>:  Wrong parameter count for fwrite() in <b>/home/zouzou/sgf/admin/tinymce/filemanager/connectors/php/connector.php</b> on line <b>43</b><br />
+</span><span style='color:red;font-weight;bold;font-size:13px'><br />
+<b>Warning</b>:  Wrong parameter count for fwrite() in <b>/home/zouzou/sgf/admin/tinymce/filemanager/connectors/php/connector.php</b> on line <b>43</b><br />
+</span><span style='color:red;font-weight;bold;font-size:13px'><br />
+<b>Warning</b>:  Wrong parameter count for fwrite() in <b>/home/zouzou/sgf/admin/tinymce/filemanager/connectors/php/connector.php</b> on line <b>43</b><br />
+</span><span style='color:red;font-weight;bold;font-size:13px'><br />
+<b>Warning</b>:  Wrong parameter count for fwrite() in <b>/home/zouzou/sgf/admin/tinymce/filemanager/connectors/php/connector.php</b> on line <b>43</b><br />
+</span><?xml version="1.0" encoding="utf-8" ?>
+<Connector command="GetFolders" resourceType="Image">
+	<CurrentFolder path="/" url="/UserFiles/Image/" />
+	<Folders>
+		<span style='color:red;font-weight;bold;font-size:13px'><br />
+<b>Warning</b>:  Wrong parameter count for fwrite() in <b>/home/zouzou/sgf/admin/tinymce/filemanager/connectors/php/connector.php</b> on line <b>43</b><br />
+</span>	</Folders>
+</Connector>
+		
+-------------------------------------------------------
+
+
+
+08/07/2008 11:50:42
+PHP ERROR::: 
+						Error Number: 2
+						Error Message: opendir(/home/zouzou/sgf/images//UserFiles/Image/) [<a href='http://www.php.net/manual/function.opendir.php'>function.opendir.php</a>]: failed to open dir: No such file or directory
+						Error File: /home/zouzou/sgf/admin/tinymce/filemanager/connectors/php/Commands/GetFolders.php
+						Error Line: 40
+		Error Context: Array
+(
+)
+
+
+-------------------------------------------------------
+
+
+                    [AllowImageEditing] => 1
+                        )
+
+                    [Image] => Array
+                        (
+                            [AllowedExtensions] => Array
+                                (
+                                    [0] => jpg
+                                    [1] => gif
+                                    [2] => jpeg
+                                    [3] => png
+                                    [4] => tiff
+                                    [5] => tif
+                                )
+
+                            [AllowedMIME] => Array
+                                (
+                                )
+
+                            [MaxSize] => 1024
+                            [DiskQuota] => -1
+                            [HideFolders] => Array
+                                (
+                                    [0] => ^\.
+                                )
+
+                            [HideFiles] => Array
+                                (
+                                    [0] => ^\.
+                                )
+
+                            [AllowImageEditing] => 1
+                        )
+
+                    [Flash] => Array
+                        (
+                            [AllowedExtensions] => Array
+                                (
+                                    [0] => swf
+                                    [1] => fla
+                                )
+
+                            [AllowedMIME] => Array
+                                (
+                                )
+
+                            [MaxSize] => 1024
+                            [DiskQuota] => -1
+                            [HideFolders] => Array
+                                (
+                                    [0] => ^\.
+                                )
+
+                            [HideFiles] => Array
+                                (
+                                    [0] => ^\.
+                                )
+
+                            [AllowImageEditing] => 
+                        )
+
+                    [Media] => Array
+                        (
+                            [AllowedExtensions] => Array
+                                (
+                                    [0] => swf
+                                    [1] => fla
+                                    [2] => jpg
+                                    [3] => gif
+                                    [4] => jpeg
+                                    [5] => png
+                                    [6] => avi
+                                    [7] => mpg
+                                    [8] => mpeg
+                                )
+
+                            [AllowedMIME] => Array
+                                (
+                                )
+
+                            [MaxSize] => 5120
+                            [DiskQuota] => -1
+                            [HideFolders] => Array
+                                (
+                                    [0] => ^\.
+                                )
+
+                            [HideFiles] => Array
+                                (
+                                    [0] => ^\.
+                                )
+
+                            [AllowImageEditing] => 
+                        )
+
+                )
+
+            [DiskQuota] => Array
+                (
+                    [Global] => -1
+                )
+
+            [MaxDirNameLength] => 25
+            [DirNameAllowedChars] => Array
+                (
+                    [0] => 0
+                    [1] => 1
+                    [2] => 2
+                    [3] => 3
+                    [4] => 4
+                    [5] => 5
+                    [6] => 6
+                    [7] => 7
+                    [8] => 8
+                    [9] => 9
+                    [10] => a
+                    [11] => b
+                    [12] => c
+                    [13] => d
+                    [14] => e
+                    [15] => f
+                    [16] => g
+                    [17] => h
+                    [18] => i
+                    [19] => j
+                    [20] => k
+                    [21] => l
+                    [22] => m
+                    [23] => n
+                    [24] => o
+                    [25] => p
+                    [26] => q
+                    [27] => r
+                    [28] => s
+                    [29] => t
+                    [30] => u
+                    [31] => v
+                    [32] => w
+                    [33] => x
+                    [34] => y
+                    [35] => z
+                    [36] => A
+                    [37] => B
+                    [38] => C
+                    [39] => D
+                    [40] => E
+                    [41] => F
+                    [42] => G
+                    [43] => H
+                    [44] => I
+                    [45] => J
+                    [46] => K
+                    [47] => L
+                    [48] => M
+                    [49] => N
+                    [50] => O
+                    [51] => P
+                    [52] => Q
+                    [53] => R
+                    [54] => S
+                    [55] => T
+                    [56] => U
+                    [57] => V
+                    [58] => W
+                    [59] => X
+                    [60] => Y
+                    [61] => Z
+                    [62] =>  
+                    [63] => -
+                    [64] => _
+                    [65] => .
+                )
+
+            [FileNameAllowedChars] => Array
+                (
+                    [0] => 0
+                    [1] => 1
+                    [2] => 2
+                    [3] => 3
+                    [4] => 4
+                    [5] => 5
+                    [6] => 6
+                    [7] => 7
+                    [8] => 8
+                    [9] => 9
+                    [10] => a
+                    [11] => b
+                    [12] => c
+                    [13] => d
+                    [14] => e
+                    [15] => f
+                    [16] => g
+                    [17] => h
+                    [18] => i
+                    [19] => j
+                    [20] => k
+                    [21] => l
+                    [22] => m
+                    [23] => n
+                    [24] => o
+                    [25] => p
+                    [26] => q
+                    [27] => r
+                    [28] => s
+                    [29] => t
+                    [30] => u
+                    [31] => v
+                    [32] => w
+                    [33] => x
+                    [34] => y
+                    [35] => z
+                    [36] => A
+                    [37] => B
+                    [38] => C
+                    [39] => D
+                    [40] => E
+                    [41] => F
+                    [42] => G
+                    [43] => H
+                    [44] => I
+                    [45] => J
+                    [46] => K
+                    [47] => L
+                    [48] => M
+                    [49] => N
+                    [50] => O
+                    [51] => P
+                    [52] => Q
+                    [53] => R
+                    [54] => S
+                    [55] => T
+                    [56] => U
+                    [57] => V
+                    [58] => W
+                    [59] => X
+                    [60] => Y
+                    [61] => Z
+                    [62] =>  
+                    [63] => -
+                    [64] => _
+                    [65] => .
+                    [66] => )
+                    [67] => (
+                    [68] => [
+                    [69] => ]
+                    [70] => ~
+                )
+
+            [Debug] => 1
+            [DebugOutput] => C:\Programmi\EasyPHP1-8\www\debug.txt
+            [Debug_Errors] => 1
+            [Debug_Trace] => 1
+            [Debug_Output] => 1
+            [Debug_GET] => 
+            [Debug_POST] => 
+            [Debug_SERVER] => 
+            [Debug_SESSIONS] => 
+            [ResourceTypes] => Array
+                (
+                    [0] => File
+                    [1] => Image
+                    [2] => Flash
+                    [3] => Media
+                )
+
+            [Commands] => Array
+                (
+                    [0] => CreateFolder
+                    [1] => GetFolders
+                    [2] => GetFoldersAndFiles
+                    [3] => FileUpload
+                    [4] => Thumbnail
+                    [5] => DeleteFile
+                    [6] => DeleteFolder
+                    [7] => RenameFile
+                    [8] => RenameFolder
+                )
+
+        )
+
+    [contents] => <span style='color:red;font-weight;bold;font-size:13px'><br />
+<b>Warning</b>:  Wrong parameter count for fwrite() in <b>/home/zouzou/sgf/admin/tinymce/filemanager/connectors/php/connector.php</b> on line <b>43</b><br />
+</span><span style='color:red;font-weight;bold;font-size:13px'><br />
+<b>Warning</b>:  Wrong parameter count for fwrite() in <b>/home/zouzou/sgf/admin/tinymce/filemanager/connectors/php/connector.php</b> on line <b>43</b><br />
+</span><span style='color:red;font-weight;bold;font-size:13px'><br />
+<b>Warning</b>:  Wrong parameter count for fwrite() in <b>/home/zouzou/sgf/admin/tinymce/filemanager/connectors/php/connector.php</b> on line <b>43</b><br />
+</span><span style='color:red;font-weight;bold;font-size:13px'><br />
+<b>Warning</b>:  Wrong parameter count for fwrite() in <b>/home/zouzou/sgf/admin/tinymce/filemanager/connectors/php/connector.php</b> on line <b>43</b><br />
+</span><span style='color:red;font-weight;bold;font-size:13px'><br />
+<b>Warning</b>:  Wrong parameter count for fwrite() in <b>/home/zouzou/sgf/admin/tinymce/filemanager/connectors/php/connector.php</b> on line <b>43</b><br />
+</span><span style='color:red;font-weight;bold;font-size:13px'><br />
+<b>Warning</b>:  Wrong parameter count for fwrite() in <b>/home/zouzou/sgf/admin/tinymce/filemanager/connectors/php/connector.php</b> on line <b>43</b><br />
+</span><?xml version="1.0" encoding="utf-8" ?>
+<Connector command="GetFolders" resourceType="Image">
+	<CurrentFolder path="/" url="/UserFiles/Image/" />
+	<Folders>
+		<span style='color:red;font-weight;bold;font-size:13px'><br />
+<b>Warning</b>:  Wrong parameter count for fwrite() in <b>/home/zouzou/sgf/admin/tinymce/filemanager/connectors/php/connector.php</b> on line <b>43</b><br />
+</span>	</Folders>
+</Connector>
+		
+    [oldData] => 
+08/07/2008 11:50:42
+PHP ERROR::: 
+						Error Number: 2
+						Error Message: opendir(/home/zouzou/sgf/images//UserFiles/Image/) [<a href='http://www.php.net/manual/function.opendir.php'>function.opendir.php</a>]: failed to open dir: No such file or directory
+						Error File: /home/zouzou/sgf/admin/tinymce/filemanager/connectors/php/Commands/GetFolders.php
+						Error Line: 40
+		Error Context: Array
+(
+)
+
+
+-------------------------------------------------------
+
+
+
+    [fh] => Resource id #19
+)
+
+
+-------------------------------------------------------
+
+
