@@ -1,0 +1,149 @@
+.titreListe {
+	background:url(../img/fond.bloc2.gif) #ddd;
+	border:0;
+	border-right:1px solid gray;
+	border-bottom:1px solid gray;
+	padding:5px;
+}
+
+li.mselected {
+	background:url(../img/fond.bloc2.gif) #bbbbbb;
+
+	padding-top:2px;
+
+	border-right:1px solid gray;
+	border-bottom:1px solid gray;
+	border-top:0;
+	border-left:0;
+
+}
+.mselected ul {
+	background:#eee;
+
+	border-left:1px solid #555;
+
+}
+
+.mselected ul ul{
+	border:0;
+}
+
+
+a.mselected {
+	color:white !important;
+
+}
+#menug li span:hover {
+background:none !important;
+}
+#menug li a:hover {
+	text-decoration:underline;
+
+}
+
+
+#menug img {
+	padding:2px;
+	padding-left:5px;
+	vertical-align:middle;
+}
+
+
+/*
+img {
+	behavior:	url("/pngbehavior.htc");
+
+}
+
+input {
+	behavior:	url("/pngbehavior.htc");
+
+}
+
+*/
+/*
+textarea {
+	background:url(../img/fond.textarea.gif) no-repeat !important;
+	border:0 !important;
+	padding:7px;
+}
+*/
+
+.inputFocus {
+	/*background:url(../img/fond.textarea.gif) no-repeat !important;
+	border:0 !important;
+	padding:7px;*/
+	background:white !important;
+	border-top:1px solid gray;
+	border-left:1px solid gray;
+	border-right:1px solid #ccc;
+	border-bottom:1px solid #ccc;
+
+}
+
+
+.extrait {
+	background:#ccc;
+	padding:10px;
+	margin:10px;
+	color:#444;
+	line-height:10px;
+	font-size:11px;
+ font-style: oblique;
+}
+/*
+.inputNormal {
+
+	background:url(../img/fond.bloc2.gif) #fafafa no-repeat !important;
+
+	border-right:1px solid gray !important;
+	border-bottom:1px solid gray !important;
+}*/
+
+
+
+.genFrontAdmin {
+	cursor:pointer;
+}
+
+#admin_over , #admin_over_info {
+	cursor:pointer;
+	padding-left:10px;
+}
+
+#table_log_action {
+	/*-border:1px solid;*/
+
+
+}
+
+#table_log_action caption {
+font-weight:bold;
+
+}
+
+#table_log_action {
+	width:600px;
+	border:1px solid #aaa;
+	background:#f8f8f8;
+}
+
+#table_log_action td {
+	padding:7px;
+}
+
+#table_log_action tr:hover {
+	background:#eaeaea;
+}
+
+/*
+#table_log_action tr {
+	background:#eee;
+	padding:2px;
+	margin:1px;
+}
+
+#table_log_action tr:hover {
+	background:white;
+}*/
+
