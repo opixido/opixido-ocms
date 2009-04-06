@@ -1,9 +1,30 @@
 <?php
-
+#
+# This file is part of oCMS.
+#
+# oCMS is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# oCMS is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with oCMS. If not, see <http://www.gnu.org/licenses/>.
+#
+# @author Celio Conort / Opixido 
+# @copyright opixido 2009
+# @link http://code.google.com/p/opixido-ocms/
+# @package ocms
+#
 
 ob_start();
 
 define('IN_ADMIN',true);
+
 error_reporting(E_ALL & ~E_NOTICE);
 
 require_once('../include/include.php');
@@ -38,17 +59,6 @@ $gs_obj->needAuth();
 loadParams();
 
 
-
-/*
-if(isset($_REQUEST['reindex']) ) {
-	$t = getmicrotime();
-	$is = new indexSearch($_REQUEST['table']);
-	$txt = $is->getTextToIndex($_REQUEST['id']);
-	$is->indexText($txt,$_REQUEST['id']);
-	//print('Indexed in '.(getmicrotime()-$t).' s');
-	die();
-}
-else */
 if(isset($_REQUEST['reindex']) ) {
 	
 die();
@@ -78,21 +88,12 @@ if(isset($_REQUEST['popup'])){
 }
 
 
-//debug($gs_obj->myroles);
 $genMessages->gen();
 
 
-
-/*
-if(function_exists('replacePngTags')) {
-	echo replacePngTags(ob_get_clean());
-}
-*/
 if(strstr($_SERVER['REMOTE_ADDR'],'192.168.1.') || strstr($_SERVER['REMOTE_ADDR'],'82.67.200.175') || $_REQUEST['debug']) {
 
 	print($profileSTR);
 
 }
-//debug(getmicrotime() - $startTime);
-//print(getmicrotime() - $t);
-?>
+

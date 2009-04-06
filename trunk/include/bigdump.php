@@ -164,4 +164,3 @@ $gzipmode = false;
   }
 
 // Print statistics
-?>
