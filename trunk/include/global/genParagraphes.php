@@ -1,7 +1,31 @@
 <?php
+#
+# This file is part of oCMS.
+#
+# oCMS is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# oCMS is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with oCMS. If not, see <http://www.gnu.org/licenses/>.
+#
+# @author Celio Conort / Opixido 
+# @copyright opixido 2009
+# @link http://code.google.com/p/opixido-ocms/
+# @package ocms
+#
 
 
-
+/**
+ * Generates the Paragraphes of the page
+ *
+ */
 class genParagraphes {
 	
 	
@@ -11,11 +35,8 @@ class genParagraphes {
 	
 	function __construct($site,$paragraphes) {
 		$this->site = $site;
-		$this->rubrique = $this->site->g_rubrique;
-		
-		$this->paragraphes = $paragraphes;
-		
-		
+		$this->rubrique = $this->site->g_rubrique;		
+		$this->paragraphes = $paragraphes;		
 	}
 	
 
@@ -29,9 +50,7 @@ class genParagraphes {
 			$curpara++;
 			
 			$html = '';
-
-
-
+			
 			/**
 			 *  Creation du template 
 			 **/
@@ -90,25 +109,6 @@ class genParagraphes {
 			if(akev($_REQUEST,'pdf')) {
 				$tpl->setVar('img', $img->getWebUrl());
 			}
-			/**
-			 *  Si c'est un paragraphe tableau  
-			 * 
-			if( $para['para_type_use_table'] == 1  && strlen(trim(GetLgValue('paragraphe_contenu_csv',$para,false))))
-			{
-				$params = $_GET;
-				$params['export'] = 1;
-				$params['para'] = $para['paragraphe_id'];
-				$tpl->setVar('dwl_csv',
-							 '<a class="exporter_tableau"
-							 	 href="'.$GLOBALS['site']->g_url->getUrlWithParams($params).'" 
-							 	 onclick="return doblank(this)">'
-							 	.t('exporter_tableau').'
-							 	</a>');
-			}
-			
-			*/
-
-
 
 			$tpl->setVar('lien_swf', GetLgValue('paragraphe_params', $para,false));
 
@@ -119,14 +119,9 @@ class genParagraphes {
 			
 			$html .= '<div id="para_nb_'.$curpara.'" class="paragraphe_simple">';
 
-			//$html .= $gfa->startField('all', $actions);
-
 			$html .= $tpl->gen();
 
-			//$html .= $gfa->endField();
-
-			$html .= '</div>';
-			
+			$html .= '</div>';			
 
 			
 			$this->paragraphes[$nbparaK]['html'] = $html;
@@ -160,5 +155,5 @@ class genParagraphes {
 	}
 	
 }			
-				
-?>
+	
+

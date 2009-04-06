@@ -1,4 +1,5 @@
 <?php
+
 # ***** BEGIN LICENSE BLOCK *****
 # Copyright (c) 2004 Olivier Meunier. All rights reserved.
 #

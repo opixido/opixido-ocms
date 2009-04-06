@@ -1,37 +1,68 @@
 <?php
+#
+# This file is part of oCMS.
+#
+# oCMS is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# oCMS is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with oCMS. If not, see <http://www.gnu.org/licenses/>.
+#
+# @author Celio Conort / Opixido 
+# @copyright opixido 2009
+# @link http://code.google.com/p/opixido-ocms/
+# @package ocms
+#
 
-/* CLASSE DE GENERATION DE MENU */
+
 class genMenu{
 
 	/* Proprietes de la classe genMenu */
 	private $site;			//Objet de type site
 	private $tabHeader;		//Tableau contenant les url's du menu topright
-	public $tabPrincipal;		//Celui contenant les url's du menu principal
+	public $tabPrincipal;	//Celui contenant les url's du menu principal
 	private $tabFooter;		//Celui contenant les url's du menu du footer
 	public $separator;
 	public $visible = true;
 	public $tpl_name = 'menu.item';
 	public $tpl_folder = '';
 
-	/* Contructeur de la classe genMenu */
+	/**
+	 * Menu creation
+	 *
+	 * @param gensite $site
+	 * @param string $nom_menu string ID/name of the menu
+	 * @param int $id_menu numerical ID of the menu
+	 * @param array $row_menu s_rubrique row of the menu
+	 * @return genMenu
+	 */
 	function genMenu($site,$nom_menu='',$id_menu=0,$row_menu=array()){
 		global $headRootId;
 		global $rootId;
 		global $footRootId;
 		global $_Gconfig;
 
-		//trigger_error('MENU ');
-		
-		
-
 		$this->site = $site;
 
+		/**
+		 * Concats menus
+		 */
 		if(ake($_Gconfig['menus'],$nom_menu)) {
 			$this->conf = $_Gconfig['menus'][$nom_menu];
 		} else {
 			$this->conf = $_Gconfig['menus']['__default__'];
 		}
 		
+		/**
+		 * If no $row, selecting it in database
+		 */
 		if(!count($row_menu)) {
 			if($id_menu && !$nom_menu) {
 					$row_menu = GetRowFromId('s_rubrique',(int)$id_menu);
@@ -44,6 +75,10 @@ class genMenu{
 		$this->id_menu = $row_menu['rubrique_id'];
 		$this->nom_menu = $row_menu['rubrique_url_'.LG_DEF];
 
+		
+		/**
+		 * Cache for menu
+		 */
 		$this->cache2 = new GenCache('arbo'.$this->site->g_url->topRubId.'-'.$this->site->getCurId().'_'.$this->nom_menu,GetParam('date_update_arbo'));
 		if(!$this->cache2->cacheExists()) {
 			$this->genTab();
@@ -51,30 +86,41 @@ class genMenu{
 	}
 
 
-	/* Méthode qui renvoie la variable tabPrincipal */
+	/**
+	 * Returns full HTML menu
+	 *
+	 * @return string
+	 */
 	function getTab(){
 		if(!$this->cache2->cacheExists())
 			$this->cache2->saveCache($this->gen($this->tabPrincipal, 2));
-
-
+			
 		return $this->cache2->getCache();
 
 	}
 
 
-	/* Méthode qui génère le menu principal */
+	/**
+	 * Generates HTML Menu
+	 *
+	 */
 	function genTab(){
 		global $rootId;
 
 		if(!count($this->tabPrincipal))
 			$this->tabPrincipal = $this->site->g_url->recursRub($this->id_menu,1,$this->conf['max_levels']);
-
-
 	}
 
 
 
-	/* Méthode qui génère un menu avec un un id racine et un tableau d'Url's pass� en param. */
+	/**
+	 * Loops the items of the menu
+	 * 
+	 *
+	 * @param array $tab
+	 * @param int $rootId
+	 * @return unknown
+	 */
 	function gen($tab, $rootId=''){
 
 		if(!$this->visible) {
@@ -165,14 +211,20 @@ class genMenu{
 		return $html;
 	}
 
-	/* Méthode qui permet d'ajouter un tableau d'Url's une nouvelle url et don titre */
+	/**
+	 * Adds an element to the menu
+	 *
+	 * @param unknown_type $tab
+	 * @param unknown_type $titre
+	 * @param unknown_type $url
+	 * @param unknown_type $style
+	 */
 	function addMenu($tab, $titre, $url,$style=''){
 		/*
 			Ajoute manuellement un element au menu $tab
 			@tab Menu auquel ajouter (tabFooter,tabHeader,tabPrincipal)
 		*/
 
-		//debug_print_backtrace();
 		$t = &$this->$tab;
 		$t[$url]['titre'] = $titre;
 		$t[$url]['url'] = $url;
@@ -181,14 +233,18 @@ class genMenu{
 	}
 
 	
-	
+	/**
+	 * Changes configuration options of the menu
+	 *
+	 * @param string $conf name of option
+	 * @param unknown_type $nb
+	 * @return unknown
+	 */
 	function addConf($conf,$nb=0) {
 	
 		$val = $this->conf[$conf];
-		if($nb) {
-	
-			$val = $this->conf[$conf][$nb-1];
-	
+		if($nb) {	
+			$val = $this->conf[$conf][$nb-1];	
 		}
 	
 		if($this->conf[$conf]) {
@@ -201,7 +257,15 @@ class genMenu{
 	
 	
 	
-	
+	/**
+	 * Generates images for the menu
+	 *
+	 * @param unknown_type $val
+	 * @param unknown_type $nom_menu
+	 * @param unknown_type $nb
+	 * @param unknown_type $selected
+	 * @return unknown
+	 */
 	function genImageMenu($val,$nom_menu,$nb=0, $selected) {
 	
 	
@@ -260,6 +324,3 @@ class genMenu{
 
 }
 
-
-
-?>
