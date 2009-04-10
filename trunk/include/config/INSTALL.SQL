@@ -17,6 +17,8 @@ CREATE TABLE IF NOT EXISTS  `s_admin` (
   UNIQUE KEY `admin_login` (`admin_login`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8  ;
 
+ ALTER TABLE `s_admin` ADD INDEX ( `admin_login` )  ;
+
 -- --------------------------------------------------------
 
 -- 
@@ -99,9 +101,11 @@ CREATE TABLE IF NOT EXISTS  `s_lock` (
   `lock_table` varchar(64) NOT NULL default '',
   `lock_id` int(10) unsigned NOT NULL default '0',
   `lock_time` bigint(12) unsigned NOT NULL default '0',
-  PRIMARY KEY  (`lock_table`,`lock_id`),
-  KEY `fk_admin_id` (`fk_admin_id`,`lock_time`)
+  PRIMARY KEY  (`lock_table`,`lock_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ ALTER TABLE `s_lock` ADD INDEX ( `fk_admin_id` )  ;
+  ALTER TABLE `s_lock` ADD INDEX ( `lock_time` )  ;
 
 -- --------------------------------------------------------
 
@@ -116,9 +120,12 @@ CREATE TABLE IF NOT EXISTS  `s_log_action` (
   `log_action_fk_id` varchar(255) NOT NULL default '0',
   `log_action_action` varchar(128) NOT NULL default '',
   `log_action_time` datetime NOT NULL default '0000-00-00 00:00:00',
-  PRIMARY KEY  (`log_action_id`),
-  KEY `fk_admin_id` (`fk_admin_id`,`log_action_table`)
+  PRIMARY KEY  (`log_action_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8  ;
+ ALTER TABLE `s_log_action` ADD INDEX ( `fk_admin_id` )  ;
+  ALTER TABLE `s_log_action` ADD INDEX ( `log_action_table` )  ;
+   ALTER TABLE `s_log_action` ADD INDEX ( `log_action_fk_id` )  ;
+    ALTER TABLE `s_log_action` ADD INDEX ( `log_action_time` )  ;
 
 -- --------------------------------------------------------
 
@@ -196,7 +203,8 @@ CREATE TABLE IF NOT EXISTS  `s_plugin` (
   KEY `plugin_actif` (`plugin_actif`),
   KEY `plugin_ordre` (`plugin_ordre`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8  ;
-
+ ALTER TABLE `s_plugin` ADD INDEX ( `plugin_installe` )  ;
+ 
 -- --------------------------------------------------------
 
 -- 
@@ -311,7 +319,10 @@ CREATE TABLE `s_gabarit` (
   PRIMARY KEY  (`gabarit_id`),
   KEY `fk_default_rubrique_id` (`fk_default_rubrique_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
+ ALTER TABLE `s_gabarit` ADD INDEX ( `gabarit_classe` )  ;
+  ALTER TABLE `s_gabarit` ADD INDEX ( `gabarit_classe_param` )  ;
+  
+  
 -- --------------------------------------------------------
 
 -- 
