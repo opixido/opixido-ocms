@@ -19,8 +19,8 @@ define('MULTIVERSION_FIELDNAME','ocms_version_name');
 define('MULTIVERSION_STATE','ocms_etat');
 define('ONLINE_FIELD','en_ligne');
 
-define('crypto_cipher','serpent');
-define('crypto_mode','ecb');
+define('crypto_cipher','rijndael-256');
+define('crypto_mode','cbc');
 
 
 /**
