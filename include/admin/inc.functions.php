@@ -675,6 +675,12 @@ function backupDb() {
 	//require_once(getcwd()."/class_mysqldump.php");
 	
 	$dump = new MySQLDump();
+	$dump->omitDataTables[] = 's_log_action';
+	$dump->omitDataTables[] = 'os_obj';
+	$dump->omitDataTables[] = 'os_recherches';
+	$dump->omitDataTables[] = 'os_rel';
+	
+	$dump->omitDataTables[] = 'os_word';
 	$dbdata =  $dump->dumpDatabase($_bdd_bdd,$nodata,$nostruct);
 	mysql_close($link);
 	if($gzip == false){
@@ -705,6 +711,7 @@ session_cache_expire(720);   #720 min expire
 class MySQLDump {
 
 
+	public $omitDataTables = array();
 
     /**
      * Dump data and structure from MySQL database
@@ -720,6 +727,8 @@ class MySQLDump {
         // Connect to database
         $db = @mysql_select_db($database);
 
+        @ini_set('memory_limit','128M');
+        
         if (!empty($db)) {
 
             // Get all table names from database
@@ -736,7 +745,7 @@ class MySQLDump {
             $dump = '';
             
             $dump .= "-- \n";
-            $dump .= '-- MySQL DATABASE DUMPER. Copyright Sergey Shilko &reg;\n\n 2007'."\n";
+         //   $dump .= '-- MySQL DATABASE DUMPER. Copyright Sergey Shilko &reg;\n\n 2007'."\n";
             $dump .= "-- \n\n";
             
             for ($y = 0; $y < count($arr_tables); $y++){
@@ -844,7 +853,7 @@ class MySQLDump {
                
        
                 // Dump data
-                if( $nodata == false) {
+                if( $nodata == false && !in_array($table,$this->omitDataTables)) {
 
                 $structure .= " \n\n";
                 
@@ -908,14 +917,16 @@ class MySQLDump {
 
 
 
-    function sendAttachFile($data, $contenttype = 'text/html',$filename = 'mysqldump.sql'){
-	    $path = getcwd();
-	    $handle = fopen($path.'/'.date('mdY')."$filename", 'w');
-	    fwrite($handle,$data);
-	    fclose($handle);
-	
+    function sendAttachFile($data, $contenttype = 'text/html',$filename = 'mysqldump.sql',$write=false){
+	    if($write) {
+	    	$path = getcwd();
+		    $handle = fopen($path.'/'.date('mdY')."$filename", 'w');
+		    fwrite($handle,$data);
+		    fclose($handle);
+	    }
 	    header("Content-type: $contenttype");
 	    header("Content-Disposition: attachment; filename=".date('mdY').$filename);
+	    header('Content-length:'.mb_strlen($data));
 	    echo ($data);
     }
 
