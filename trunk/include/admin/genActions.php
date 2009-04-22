@@ -1096,6 +1096,8 @@ class genActionValidateVersion {
 	//}	
 	
 }
+
+
 class genActionValidate {
 
 	public $action;
@@ -1145,41 +1147,17 @@ class genActionValidate {
 		if(!$this->checkCondition()) {
 			return 'error';
 		}
-
 		
 		
-	
+		$dupli = new objDuplication('s_rubrique',$this->id,$this->row);
+		
+		$dupli->noCopyField = $this->noCopyField;
+		
+		$dupli->duplicateTo($this->row['fk_rubrique_version_id']);
+		
 
 		/* BORDEL DE DUPLICATION */
 		$sql = 'UPDATE s_rubrique SET ';
-
-		while(list($k,$v) = each($this->row)) {
-			if(!in_array($k,$this->noCopyField) && !is_int($k)) {
-				$sql .= ' '.$k.' = '.getNullValue(($v),$k,$this->table).' ,';
-				
-				if ( arrayInWord( $uploadFields, $k ) ) {
-
-					$oldfile = new genFile($this->table,$k,$this->id,$v);
-					$oldfiles[] = array('path'=>$oldfile->getSystemPath(),'valeur'=>$v,'champ'=>$k);
-			    }
-			}
-		}
-		
-		if(count($oldfiles)) {
-			foreach($oldfiles as $oldfile) {
-				$newfile =  new genFile($this->table,$oldfile['champ'],$this->row['fk_rubrique_version_id'],$oldfile['valeur']);
-				if(file_exists($oldfile['path'])) {
-					//debug($oldfile);
-
-					$newfile->uploadFile($oldfile['path']);
-				}
-
-			}
-		}		
-		
-		unset($oldfiles);
-
-
 
 		$sql .= ' rubrique_etat = "en_ligne" , rubrique_date_publi = NOW() ';
 
@@ -1193,167 +1171,13 @@ class genActionValidate {
 		$sql = 'UPDATE s_param SET param_valeur = UNIX_TIMESTAMP() WHERE param_id = "date_update_arbo" ';
 		DoSql($sql);
 		
-
-		foreach($_Gconfig['duplicateWithRubrique'] as $v ) {
-				$tabF = getTabField($v);
-				if($tabF['fk_rubrique_id']) {
-				//	debug($v);
-					$this->deleteAndDupli($v);
-				} else {
-					global $relinv;
-					foreach($relinv['s_rubrique'] as $fake=>$vvv) {
-						if($vvv[0] == $v) {
-							
-							$this->deleteAndDupli($v,$vvv[1]);
-						}
-					}
-				}
-		}
-
-		
-		
-		$this->deleteAndDupli('s_traduction', 'fk_id','fk_table = "s_rubrique" AND');
-
-		//indexForSearch($this->row['fk_rubrique_version_id'],$this->row,array(),$this->table);
-		
 		$genMessages->add(t('rubrique_valider_ok'),'info');
-
-		
-
-	}
-
-	function deleteAndDupli($table,$fkchamp = 'fk_rubrique_id',$fk_cond = '',$idfrom=0,$idto=0) {
-
-	
-		global $tablerel,$uploadFields,$relinv;
-
-		$idfrom = $idfrom ? $idfrom : $this->row['fk_rubrique_version_id'];
-		$idto = $idto ? $idto : $this->row['rubrique_id'];
-			
 		
 		
-		$pk = GetPrimaryKey($table);
-
-		if($table == 's_traduction') {
-			
-			$sql = 'DELETE  FROM '.$table.' WHERE '.$fk_cond.' '.$fkchamp.' = "'.mes($idfrom,'int').'" ';
-			$res = DoSql($sql);
-			
-			
-		} else {
-			
-			if(ake($table,$tablerel)) {
-				
-				DoSql('DELETE FROM '.$table.' WHERE '.$fk_cond.' '.$fkchamp.' = "'.mes($idfrom,'int').'" ');
-				
-				
-			} else {
-				
-				$sql = 'SELECT * FROM '.$table.' WHERE '.$fk_cond.' '.$fkchamp.' = "'.mes($idfrom,'int').'" ';
-				$res = GetAll($sql);
-				
-				foreach($res as $row) {	
-					$gr = new genRecord($table,$row[$pk]);
-					$gr->deleteRow($row[$pk]);
-				}
-				
-			}
-		}
-		
-		
-		$sql = 'SELECT * FROM '.$table.' WHERE  '.$fk_cond.' '.$fkchamp.' = "'.mes($idto,'int').'" ';
-		$res = GetAll($sql);
-		
-		
-		foreach($res as $row) {
-			$oldfiles = array();
-			$id = $row[$pk];
-			$sql = 'INSERT INTO '.$table.' ( ';
-			$values =  ' ( ';
-			//debug($tablerel[$table]);
-
-			if(!is_array($tablerel[$table])) {
-				if($pk) {
-					$sql .= $pk.' , ';
-					
-					$values .= ' "" , ';
-				}
-			}
-			$sql .= '  '.$fkchamp.' ';
-			
-			$values .= '  "'.mes($idfrom,'int').'" ';
-			while(list($k,$v) = each($row)) {
-				if(!in_array($k,$this->noCopyField) && !is_int($k) && $k != $pk && $k != $fkchamp) {
-					
-					$sql .= ' , '.$k.' ';
-					
-					$values .= ' , '.getNullValue((($v)),$k,$table).' ';
-					
-					
-
-					 if ( arrayInWord( $uploadFields, $k ) ) {
-
-						$oldfile = new genFile($table,$k,$id,$v);
-						$oldfiles[] = array('path'=>$oldfile->getSystemPath(),'valeur'=>$v,'champ'=>$k);
-						
-						if(isDefaultLgField($k)) {
-						 	
-						 	$bch = fieldWithoutLg($k);
-						 	//debug($k.$bch);
-						 	$lgs = getLanguages($table,$id,$bch);
-						 	foreach($lgs as $lg) {
-						 		$va = getTradValue($table,$id,$bch,$lg);
-						 		$oldfile = new genFile($table,$bch.'_'.$lg,$id,$va);
-								$oldfiles[] = array('path'=>$oldfile->getSystemPath(),'valeur'=>$va,'champ'=>$bch.'_'.$lg);
-						 	}
-						 }
-
-					 }
-					 
-					 
-				}
-			}
-
-			$values .= ' ) ';
-
-			$sql .= ' ) VALUES '.$values;
-			$res = DoSql($sql);
-
-			$curNewId = InsertId();
-			
-			if(count($relinv[$table])) {
-				
-				foreach($relinv[$table] as $k => $v) {
-					//debug($table.' '.$k);
-					$this->deleteAndDupli($v[0],$v[1], '  ',$curNewId,$id);
-					
-				}
-			}
-			
-			if($table != 's_traduction') {
-				
-				$this->deleteAndDupli('s_traduction', 'fk_id','fk_table = "'.$table.'" AND',$curNewId,$id);
-				
-			}
-
-			if(count($oldfiles)) {
-				//debug($oldfiles);
-				foreach($oldfiles as $oldfile) {
-					
-					if(strlen($oldfile['path']) && file_exists($oldfile['path']) && $oldfile['valeur']) {
-							$newfile =  new genFile($table,$oldfile['champ'],$curNewId,$oldfile['valeur']);
-							$newfile->uploadFile($oldfile['path']);
-					}
-
-				}
-			}
-		}
-
-
-
 	}
 
 }
+
 
 
 class genActionVoir_modifs {
