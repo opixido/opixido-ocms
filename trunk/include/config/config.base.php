@@ -148,7 +148,7 @@ $relinv['s_plugin']['fk_admin_trad_id'] = array('s_admin_trad','fk_plugin_id');
  */
 
 $tablerel = array();
-$tablerel['r_admin_rubrique'] = array('fk_rubrique_id'=>'s_rubrique','fk_admin_id'=>'s_admin');
+
 $tablerel['s_admin_role'] = array('fk_role_id'=>'s_role','fk_admin_id'=>'s_admin');
 
 
