@@ -971,12 +971,12 @@ class genSearchV2 {
        
 
         $sql = "SELECT *
-        			 FROM ".$this->table;
+        			 FROM ".$this->table.' AS T ';
         
-        if(in_array($table,$_Gconfig['multiVersionTable'])) {
+        if(in_array($this->table,$_Gconfig['multiVersionTable'])) {
         	$sql .= ' WHERE 1 ';
         } else {
-        	$sql .= ' WHERE 1 '.GetOnlyEditableVersion($table,"T").' ';
+        	$sql .= ' WHERE 1 '.GetOnlyEditableVersion($this->table,"T").' ';        	
         }
         
         $sql .= $GLOBALS['gs_obj']->sqlCanRow($this->table).' AND ( ';
