@@ -63,28 +63,25 @@ if(rubriqueIsAPage($form) || true ) {
 			$sf = new simpleForm();
 			
 			$defVals = SplitParams($form->tab_default_field['rubrique_gabarit_param'],";","=");
-			/*foreach($defVals as $k=>$v) {
-				$defV[$k] = trim($v);
-			}
-			*/
+
 			$defV = $defVals;
-			//debug($defVals);
+
 			
 			foreach($r as $nom=>$type) {
-				//debug($type);
-				//if($type == 'texte') {
-				//	$form->addBuffer('<input type="text" />');
-				//}
+
 				echo $sf->getLabel(array('label'=>t($nom)));
 				
 				if(is_array($type)) {
 					$vals = $type[1];
 					$type = $type[0];
 				}
-				
+				if($type == 'selectm') {
+					echo $sf->getSelect(array('id'=>$nom,'value'=>$vals,'selected'=>$defV[$nom]),true);
+					
+				} else
 				if($type == 'select') {
 					echo $sf->getSelect(array('id'=>$nom,'value'=>$vals,'selected'=>$defV[$nom]));
-					//debug($defVals[$nom]);
+					
 				} else {
 					echo $sf->getInputText(array('id'=>$nom,"value"=>$defV[$nom]));
 				}
@@ -105,7 +102,20 @@ if(rubriqueIsAPage($form) || true ) {
 					texte = '';
 					
 					for ( p in window.FieldsToTech) {
-						texte += window.FieldsToTech[p]+"="+gid(window.FieldsToTech[p]).value+";";
+						ob = gid(window.FieldsToTech[p]);
+						val = ob.value;
+						if(ob.multiple) {
+							val = ""
+							for (var i = 0; i < ob.options.length; i++)  {
+								if (ob.options[ i ].selected && ob.options[ i ].value) {
+									val += (ob.options[ i ].value) +",";
+								}
+								
+							}
+							val = val.substring(0,val.length-1);
+						}
+
+						texte += window.FieldsToTech[p]+"="+val+";";
 					}
 					
 					gid("genform_rubrique_gabarit_param").value = texte;
