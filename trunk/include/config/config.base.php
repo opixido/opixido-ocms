@@ -124,7 +124,7 @@ $relations['s_gabarit']['fk_default_rubrique_id'] = 's_rubrique';
  */
 $relinv = array();
 $relinv['s_rubrique']['fk_paragraphe_id'] = array('s_paragraphe','fk_rubrique_id');
-$relinv['s_rubrique']['fk_rubrique_id'] = array('s_rubrique','fk_rubrique_id');
+
 $relinv['s_role']['fk_role_table_id'] = array('s_role_table','fk_role_id');
 
 $relinv['s_plugin']['fk_trad_id'] = array('s_trad','fk_plugin_id');
