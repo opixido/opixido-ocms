@@ -442,39 +442,86 @@ class genSecurity {
     	
     }
     
+    
+    /**
+     * We have access to all relinv linked to an allowed table
+     *
+     * @param string $table
+     */
     function recurvRelInv($table) {
     	
     	global $relinv;
     	
     	reset($relinv);
-    	
+    	/**
+    	 * No relinv ... nothing to do
+    	 */
     	if(!ake($relinv,$table)) {
     		return;
     	}
     	
+    	
     	foreach($relinv[$table] as $fkChamp=>$tableau) {
-    		    		/*$this->myroles[$tableau[0]] =  $this->myroles[$table];    	
-    		
-    		$this->myroles[$tableau[0]] ['add']	= true;
-    		$this->myroles[$tableau[0]] ['edit']	= true;
-    		$this->myroles[$tableau[0]] ['del']	= true;
-    		
-    		if($tableau[0] != $table) {
-    			$this->myroles[$tableau[0]] ['champs'] = 'all';
-    		}*/
+
+    		/**
+    		 * if relinv is not linking to self table
+    		 */
 			if($tableau[0] != $table ) {
-					if(!$this->myroles[$tableau[0]]) {
-    		    $this->myroles[$tableau[0]] = array(
+				
+				/**
+				 * Can do anything
+				 */
+				if(!$this->myroles[$tableau[0]]) {						
+    		    	$this->myroles[$tableau[0]] = array(
 	    			'view'=>true,
 	    			'add'=>true,
 	    			'edit'=>true,
 	    			'del'=>true,
 	    			'champs'=>'all',
 	    			'condition'=>array('arbo','proprio'),
-	    			'actions'=>array()
+	    			'actions'=>array(),
+	    			'rows'=>array()
     		
-    			);	
+    				);	
+				} 
+				
+				/**
+				 * If parent tables has limited access
+				 */
+				if($this->myroles[$table]['rows']) {
+					/**
+					 * Foreign key
+					 */
+					$a = ($relinv[$table][$fkChamp]);
+					
+					/**
+					 * Selecting allowed parents to get allowed children 
+					 */
+					$sql = 'SELECT '.getPrimaryKey($a[0]).' , '.getPrimaryKey($a[0]).' 
+								FROM '.$a[0].' AS REL, '.$table.' AS T 
+								WHERE REL.'.$a[1].' = T.'.getPrimaryKey($table).'
+								AND '.getPrimaryKey($table).' IN ('.implode($this->myroles[$table]['rows']) .') ';
+					
+					$res = $co->GetAssoc($sql);
+					
+					/**
+					 * Avoid array_merge warning on non-array argument
+					 */
+					if(!($this->myroles[$tableau[0]]['rows'])) {
+						$this->myroles[$tableau[0]]['rows'] = array();
 					}
+					
+					/**
+					 * Adding allowed rows of relinv
+					 */
+					$this->myroles[$tableau[0]]['rows'] = @array_merge(array_keys($res),$this->myroles[$tableau[0]]['rows']);
+				}
+				/**
+				 * If access to all parents, then access all children ...
+				 */
+				else if($this->myroles[$table]['type'] == 'all') {
+					$this->myroles[$tableau[0]]['type']  = 'all';
+				}
 				
 			} else {
     		    $this->myroles[$tableau[0]] = $this->myroles[$table];
@@ -490,15 +537,15 @@ class genSecurity {
     }
 
 
+    /**
+     * Clearing authentification informations
+     *
+     * @return bool
+     */
     function clearAuth() {
-        /*
-            On vide toutes les infos
-        */
 
-		$gl = new GenLocks();
-		//debug($gl->unsetAllLocks());
-
-        $_SESSION['gs_adminuser'] = $_SESSION['gs_adminpassword'] = $this->adminpassword = $this->adminuser = false;
+    	$gl = new GenLocks();
+	    $_SESSION['gs_adminuser'] = $_SESSION['gs_adminpassword'] = $this->adminpassword = $this->adminuser = false;
         session_destroy();
 
         if(!@array_key_exists('gs_adminpassword',$_SESSION)) {
@@ -510,31 +557,58 @@ class genSecurity {
     }
 
 
+    /**
+     * Logging action
+     *
+     * @param string $action
+     * @param string $table
+     * @param array $row
+     * @param mixed $id
+     * @param string $champ
+     * @param mixed $valeur
+     */
     function logAction($action,$table,$row = array(),$id=0,$champ="",$valeur) {
-        /*
-            Log des actions
-            eventuellement �stocker dans la base
-        */
-        
+
         $this->doneActions[] = array($action,$table,$row,$id,$champ,$valeur);
     }
 
 
+    /**
+     * Returns allowed actions for table/$id
+     *
+     * @param string $table
+     * @param mixed $id
+     * @param array $tab_default_field
+     * @return array Actions
+     */
     function getActions($table,$id=0,$tab_default_field=array()) {
 
     	global $_Gconfig;
-		//$actions = $this->myroles[$table]['actions'];
+    	
+    	/**
+    	 * Default defined actions
+    	 */
 		$actions = $_Gconfig['rowActions'][$table];
 	
+		/**
+		 * Compatibility with old syntax
+		 */
 		if(is_array($actions)) {
 			$actions =  array_keys($actions);
 		} else {
 			$actions =  array();
 		}
 		
+		/**
+		 * Adding default "view" action
+		 */
 		if($this->can('view',$table,$id)) {
 			array_unshift($actions, 'view');
 		} 
+		
+		/**
+		 * Adding default "edit" action
+		 */
 		if($this->can('edit',$table,$id)){
 			array_unshift($actions, 'edit');
 		}
@@ -639,15 +713,15 @@ class genSecurity {
 
     }
 
+    /**
+     * Trigger use error 
+     * Unauthorized action
+     * 
+     */
     function showError()  {
-        //debug($this->doneActions);
-        //debug(debug_backtrace());
-        //debug($this->allowedRubs);
+       
         $i = array_pop($this->doneActions);
-        /*p('<pre>');
-        debug_print_backtrace();
-        p('</pre>');*/
-        //debug();
+       
         debug_print_backtrace();
         trigger_error('
         <h4><a href="javascript:history.go(-1);">&laquo; retour</a></h4>
@@ -660,9 +734,7 @@ class genSecurity {
     }
 
 
-    function can($action,$table="",$row = array(),$id="0",$champ="",$valeur = 0) {
-
-    	
+    function can($action,$table="",$row = array(),$id="0",$champ="",$valeur = 0) {   	
     	
     	
 		$tmpcans = $action.'-'.$table.'-'.$id.'-'.$champ.'-'.$valeur;
@@ -768,13 +840,7 @@ class genSecurity {
             Verifie dans l'ordre si on peut modifier la table, puis la ligne en question
         */
 
-        /*
-        if(!$this->canTable($action,$table)) {
-
-            return false;
-        }
-        */
-		
+	
         if(!is_array($row) || !count($row)) {
             $row = $this->idToRow($table,$id);
         }
@@ -849,18 +915,18 @@ class genSecurity {
         reset($relinv);
         $monrelinv = &$relinv;
 
-	if(!strlen($champ)) {
-	        foreach($monrelinv as $mTable => $mChamp) {
-           		 foreach($mChamp as $mChamp => $mArray) {
-           		 	if($mArray[0] == $table) {
-           		 		$champ = $mArray[1];
-           		 		$valeur = $_POST['genform_'.$champ];
-           		 	}
-           		 }
-           	}
-	}
+		if(!strlen($champ)) {
+		        foreach($monrelinv as $mTable => $mChamp) {
+	           		 foreach($mChamp as $mChamp => $mArray) {
+	           		 	if($mArray[0] == $table) {
+	           		 		$champ = $mArray[1];
+	           		 		$valeur = $_POST['genform_'.$champ];
+	           		 	}
+	           		 }
+	           	}
+		}
 
-	reset($monrelinv);
+		reset($monrelinv);
 
 
         foreach($monrelinv as $mTable => $mChamp) {
@@ -989,26 +1055,30 @@ class genSecurity {
     }
 
 
+    /**
+     * Alias de getRowFromId
+     *
+     * @param unknown_type $table
+     * @param unknown_type $id
+     * @return unknown
+     */
     function idToRow($table,$id) {
-
-        /*
-            Si on a un id et une table , on retourne la ligne
-            Au passage on cache le tmeps du script
-        */
 
         return getRowFromId($table,$id);
 
 
     }
 
+    
+    /**
+     * Show login-form
+     *
+     */
     function showForm() {
 
 
     	global $gb_obj;
-
     	    	
-
-    	
 		$gb_obj->includeFile('inc.header.php','admin_html');
 		$row = GetAll('SELECT admin_id FROM s_admin LIMIT 0,1');
 		
@@ -1028,28 +1098,40 @@ class genSecurity {
     }
     
     
+    /**
+     * Injects SQL in a query to return only allowed rows of a table
+     *
+     * @param string $table
+     * @param string $alias
+     * @return string
+     */
     function sqlCanRow($table,$alias='') {
     	$a = '';
     	if($alias) {
     		$a = $alias.'.';
     	}
-    	
-    	
-    	
+    	   	
     	if($this->superAdmin)
     		return '';
     		
     	if($this->myroles[$table]['view']) {
-    	
-    		if(is_array($this->myroles[$table]['rows'])) {
-    			return  ' AND '.$a.getPrimaryKey($table).' IN ('.implode($this->myroles[$table]['rows'],',').') ';
+    		if(is_array($this->myroles[$table]['rows']) ) {
+    			
+    			$v = implode($this->myroles[$table]['rows'],'","');
+				//debug($this->myroles[$table]);
+    			if($v) {
+    				$a =  ' AND '.$a.getPrimaryKey($table).' IN ("'.$v.'") ';
+    				
+    				return $a;
+    			} else {
+    				return ' AND 0 = 1 ';
+    			}
     		}
     		else if($this->myroles[$table]['type'] == 'all') {
     			return ' ';
     		} else {
-    			
     			return ' AND 0 = 1 ';
-    		}
+    		}   		
     			
     	}   	
     	
@@ -1060,6 +1142,5 @@ class genSecurity {
 
 }
 }
-
 
 
