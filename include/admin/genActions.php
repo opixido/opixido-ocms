@@ -133,6 +133,11 @@ class baseAction {
 }
 
 
+class ocms_action extends baseAction {
+	
+	
+}
+
 
 class genActionEdit {
 
