@@ -55,18 +55,26 @@ class ocms_loginFront {
 		
 		$this->sentParams = $params;
 
+		/**
+		 * Domain for cookies
+		 */
+		$domain = explode('.',$_SERVER['HTTP_HOST']);
+		$dl = count($domain);
+		$this->domain = $domain[$dl-2].'.'.$domain[$dl-1];
+			
+		
+		/**
+		 * Logout Delete all cookies
+		 */
+		 
 		if(akev($_GET,'laLogout')) {			
-			//session_destroy();
-			$_SESSION['ocms_login'] = array();
-			header('location:'.getUrlWithParams().'');
+			$this->doLogout();
 		}
 		
 		if(akev($_GET,'signup')) {			
 			$_SESSION['ocms_login'] = array();		
 		}
-
-			
-		
+	
 		$this->site = &$site;
 		$this->rubrique = $rub = $this->site->g_rubrique;
 			
@@ -97,7 +105,11 @@ class ocms_loginFront {
 			if($_POST['login'] && $_POST['password']) {
 				$log = $this->isPasswordOk($_POST['login'],$_POST['password']);
 			} 
-			
+			else if($_COOKIE['ocms_login_remember'] && $_COOKIE['ocms_login_key']) {
+				$dec = explode('--#--',decodePasswordLA($_COOKIE['ocms_login_key']));				
+				$_POST['password'] = decodePasswordLA($dec[0]);
+				$log = $this->isPasswordOk(($dec[1]),$_POST['password']);
+			}
 			
 		}
 		
@@ -130,6 +142,20 @@ class ocms_loginFront {
 
 		
 		
+	}
+	
+	function doLogout() {
+	
+		//session_destroy();
+		$_SESSION['ocms_login'] = array();
+		
+		setcookie('ocms_login_remember','',time()-3600*24,'/',$this->domain);
+		setcookie('ocms_login_key','',time()-3600*24,'/',$this->domain);
+		$_COOKIE['ocms_login_remember'] = '';
+		$_COOKIE['ocms_login_key'] ='';
+		
+		header('location:'.getUrlWithParams().'');
+	
 	}
 	
 	
@@ -437,36 +463,12 @@ class ocms_loginFront {
 					
 					return $fa->getScreen();
 					
+				} 
+				else  {
+					$html .= $this->getScreen();
 				}
-
-				$f = new simpleForm('','post','login_form');
-				//$f->add('html','');
-				$f->add('text','',t('la_login'),'login','la_login',true);
-				$f->add('password','',t('la_password'),'password','la_password',true);
-				$f->add('submit',t('la_submit'));
-
-				/*
 				
-					$f->add('html','<a href="'.getUrlWithParams(array('²'=>1)).'">'.t('la_signup').'</a>');
-				}
-				*/
-				$html .= '<div id="signup_bloc">'.t('la_login_'.$this->createType).'<br/><br />'.$f->gen();
-				
-				if($this->canCreate) {				
-					
-					$html .= '	<div class=" clearer"></div>
-								<a href="'.getUrlWithParams(array('oubli'=>1)).'" class="oubli">'.t('la_oubli_mdp').'</a>
-								<div class="sep"></div>
-								<div id="signup_div">
-								<p>'.t('la_signup_'.$this->createType).'</p>
-								
-								<a class="submit" href="'.getUrlWithParams(array('signup'=>1)).'" >'.t('la_signup').'</a>
-								</div>
-								</div>
-								';
-				} else {
-					$html .= '</div>';
-				}
+
 			}
 			
 		} else if( akev($_REQUEST,'laEdit') ) {
@@ -482,6 +484,42 @@ class ocms_loginFront {
 
 	}
 
+	function getScreen() {
+	
+	
+		$f = new simpleForm('','post','login_form');
+		//$f->add('html','');
+		$f->add('text','',t('la_login'),'login','la_login',true);
+		$f->add('password','',t('la_password'),'password','la_password',true);
+		$f->add('checkbox','1',t('la_remember'),'la_remember','la_remember');
+		$f->add('submit',t('la_submit'));
+
+		/*
+		
+			$f->add('html','<a href="'.getUrlWithParams(array('²'=>1)).'">'.t('la_signup').'</a>');
+		}
+		*/
+		$html .= '<div id="signup_bloc">'.t('la_login_'.$this->createType).'<br/><br />'.$f->gen();
+		
+		if($this->canCreate) {				
+			
+			$html .= '	<div class=" clearer"></div>
+						<a href="'.getUrlWithParams(array('oubli'=>1)).'" class="oubli">'.t('la_oubli_mdp').'</a>
+						<div class="sep"></div>
+						<div id="signup_div">
+						<p>'.t('la_signup_'.$this->createType).'</p>
+						
+						<a class="submit" href="'.getUrlWithParams(array('signup'=>1)).'" >'.t('la_signup').'</a>
+						</div>
+						</div>
+						';
+		} else {
+			$html .= '</div>';
+		}
+		
+		return $html;
+				
+	}
 
 	/**
 	 * Verifie dans la base de donnée si le login et le mot de passe sont corrects
@@ -552,6 +590,11 @@ class ocms_loginFront {
 			
 			if($_POST['password'] ) {
 			
+				if($_POST['la_remember']) {
+					setcookie('ocms_login_default_email',$email,time()+3600*24*30,'/',$this->domain);
+					setcookie('ocms_login_remember','1',time()+3600*24*30,'/',$this->domain);	
+					setcookie('ocms_login_key',encodePasswordLA(encodePasswordLA($_POST['password']).'--#--'.$email),time()+3600*24*30,'/',$this->domain);
+				}
 				/**
 				 * Updating Last connection time
 				 */
@@ -1022,14 +1065,7 @@ class laSimpleSignUp {
 	
 	function sendMailConf() {
 		
-		includeMail();		
-		
-		$m = new PHPMailer();
-		$m->IsSMTP();
-		
-		//$m->Host = '127.0.0.1';
-		$m->CharSet = 'UTF-8';
-		$m->From = 'no-reply@hercules.com';
+		$m = includeMail();
 		
 		$m->AddAddress($_POST['utilisateur_email']);
 		$m->Subject = t('la_email_conf_subject');
