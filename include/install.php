@@ -262,6 +262,8 @@ class genInstall {
 		$this->infoVersion('TRUETYPE','Le support TRUETYPE n\'est pas activ&eacute; cela emp&eacute;chera la cr&eacute;ation automatique de textes en image',
 						function_exists('imagettftext'));	
 						
+		$this->errorVersion('MYSQL','La librairie MySQL est n&eacute;cessaire pour la Base de donnée',(function_exists('mysql_query') || function_exists('mysqli_query')));	
+
 		$this->errorVersion('MBSTRING','La librairie MBSTRING est n&eacute;cessaire pour la gestion de l\'UTF-8',version_compare(phpversion('mbstring'),'1'));	
 
 		$this->errorVersion('MCRYPT','La librairie MCRYPT 2.4+ est n&eacute;cessaire pour la gestion de l\'UTF-8',version_compare(phpversion('mcrypt'),'2.4'));	
@@ -271,6 +273,12 @@ class genInstall {
 		$this->errorVersion('SESSION','Le support des sessions n\'est pas activ&eacute;',function_exists('session_start'));	
 		
 		$this->errorVersion('short_open_tag','Les short_open_tagne sont pas activ&eacute;s',ini_get('short_open_tag'));	
+		
+		$this->errorVersion('CONFIGW','Impossible d\'ecrire dans le dossier config',is_writable($GLOBALS['gb_obj']->include_path.'/config'));	
+		
+		$this->errorVersion('CACHE','Impossible d\'ecrire dans le dossier cache',is_writable($GLOBALS['gb_obj']->include_path.'/cache'));
+			
+		$this->errorVersion('FICHIERS','Impossible d\'ecrire dans le dossier d\'upload "fichiers"',is_writable($GLOBALS['gb_obj']->include_path.'/../fichiers'));	
 		
 		echo '</table>';
 		
