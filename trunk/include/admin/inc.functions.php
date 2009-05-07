@@ -626,13 +626,14 @@ function backupDbOld () {
 	die();
 	//echo '</pre>';
 }
-	global $_Gconfig;
+global $_Gconfig;
 $_Gconfig['globalActions'][] = 'backupDb';
 
 
 function backupDbOld2() {
 	
 	global $_bdd_user,$_bdd_host,$_bdd_pwd, $_bdd_bdd;
+	@include(INCLUDE_PATH.'/config/config.server.php');
     //MySQL connection parameters
     $dbhost = $_bdd_host;
     $dbuser = $_bdd_user;
