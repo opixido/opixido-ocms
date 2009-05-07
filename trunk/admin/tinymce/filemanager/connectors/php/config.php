@@ -36,6 +36,7 @@ $s = substr($s,0,strpos($s,'/admin/'));
 /* The physical path to the document root, Set manually if not using apache	*/
 /*------------------------------------------------------------------------------*/
 $fckphp_config['basedir']=$_SERVER['DOCUMENT_ROOT'].''.$s.'/rtefiles';
+$fckphp_config['basedir'] = str_replace('//','/',$fckphp_config['basedir']);
 //echo '-'.$fckphp_config['basedir'].'-';
 //$fckphp_config['basedir'] = 'D:\Work\FCKEditor\www\FCKeditor.V2\editor\filemanager\browser\mcpuk' ;
 /*==============================================================================*/
@@ -44,7 +45,8 @@ $fckphp_config['basedir']=$_SERVER['DOCUMENT_ROOT'].''.$s.'/rtefiles';
 /*------------------------------------------------------------------------------*/
 /* Prefix added to image path before sending back to editor			*/
 /*------------------------------------------------------------------------------*/
-$fckphp_config['urlprefix']=$fckphp_config['prot'].$_SERVER['SERVER_NAME'].'/'.$s.'/rtefiles';
+$fckphp_config['urlprefix']=$fckphp_config['prot'].str_replace('//','/',$_SERVER['SERVER_NAME'].'/'.$s.'/rtefiles');
+
 /*==============================================================================*/
 
 
