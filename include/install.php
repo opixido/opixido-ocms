@@ -278,7 +278,7 @@ class genInstall {
 		
 		$this->errorVersion('CACHE','Impossible d\'ecrire dans le dossier cache',is_writable($GLOBALS['gb_obj']->include_path.'/cache'));
 			
-		$this->errorVersion('FICHIERS','Impossible d\'ecrire dans le dossier d\'upload "fichiers"',is_writable($GLOBALS['gb_obj']->include_path.'/../fichiers'));	
+		$this->errorVersion('FICHIERS','Impossible d\'ecrire dans le dossier d\'upload "fichiers"',is_writable($GLOBALS['gb_obj']->include_path.'/../fichier'));	
 		
 		echo '</table>';
 		
