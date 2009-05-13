@@ -543,7 +543,7 @@ class objDuplication {
 			 * et que la clef n'est pas numérique (duplicat ADODB)
 			 */
 			if(
-				!@in_array($k,$this->noCopyField) 
+				!@in_array($k,$this->noCopyField) && !@in_array($this->table.'.'.$k,$this->noCopyField) 
 			 	 && !is_int($k) 
 			  ) 
 				{
@@ -606,8 +606,11 @@ class objDuplication {
 		 */
 		if(is_array($relinv[$this->table])) {
 			foreach($relinv[$this->table] as $k=> $v) {
-				//debug($v[0].' - '.$v[1]);
-				$this->deleteAndDupli($v[0], $v[1],$this->id,$newId);
+					
+				if(!@in_array($v[1],$this->noCopyField) && !@in_array($this->table.'.'. $v[1],$this->noCopyField)){
+					
+					$this->deleteAndDupli($v[0], $v[1],$this->id,$newId);
+				}
 			}
 		}
 		

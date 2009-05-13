@@ -30,7 +30,7 @@ $_Gconfig['field_date_maj'] = 'ocms_date_modif';
 $_Gconfig['field_date_crea'] = 'ocms_date_crea';
 
 
-$_Gconfig['noCopyField'] = array(VERSION_FIELD,ONLINE_FIELD,MULTIVERSION_FIELD,MULTIVERSION_FIELDNAME,MULTIVERSION_STATE,$_Gconfig['field_date_maj'],$_Gconfig['field_date_crea']);
+$_Gconfig['noCopyField'] = array(VERSION_FIELD,ONLINE_FIELD,MULTIVERSION_FIELD,MULTIVERSION_FIELDNAME,MULTIVERSION_STATE,$_Gconfig['field_date_maj'],$_Gconfig['field_date_crea'],'s_rubrique.fk_rubrique_id');
 
 /* Vrai debut de configuration */
 
@@ -124,7 +124,7 @@ $relations['s_gabarit']['fk_default_rubrique_id'] = 's_rubrique';
  */
 $relinv = array();
 $relinv['s_rubrique']['fk_paragraphe_id'] = array('s_paragraphe','fk_rubrique_id');
-
+$relinv['s_rubrique']['fk_rubrique_id'] = array('s_rubrique','fk_rubrique_id');
 $relinv['s_role']['fk_role_table_id'] = array('s_role_table','fk_role_id');
 
 $relinv['s_plugin']['fk_trad_id'] = array('s_trad','fk_plugin_id');
