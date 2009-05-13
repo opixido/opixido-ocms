@@ -1,1 +1,0 @@
-DELETE FROM s_gabarit WHERE gabarit_plugin = "ocms_sitemap";
