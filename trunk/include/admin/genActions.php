@@ -598,16 +598,14 @@ class objDuplication {
 		 */
 		$this->deleteAndDupli('s_traduction', 'fk_id',$this->id,$newId,'fk_table = "'.$this->table.'" AND ');
 		
-		
-		
-		
+
 		/**
 		 * On duplique les tables liées (relations inverses) 1<=n
 		 */
 		if(is_array($relinv[$this->table])) {
 			foreach($relinv[$this->table] as $k=> $v) {
 					
-				if(!@in_array($v[1],$this->noCopyField) && !@in_array($this->table.'.'. $v[1],$this->noCopyField)){
+				if(!@in_array($k,$this->noCopyField) && !@in_array($this->table.'.'. $k,$this->noCopyField)){
 					
 					$this->deleteAndDupli($v[0], $v[1],$this->id,$newId);
 				}
