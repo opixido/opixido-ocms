@@ -14,7 +14,7 @@ CREATE TABLE `plug_contact_field` (
   `fk_rubrique_id` int(10) unsigned NOT NULL,
   `contact_field_ordre` smallint(5) unsigned NOT NULL,
   `contact_field_nom_[LG]` varchar(255) NOT NULL,
-  `contact_field_type` enum('text','select','radio','textarea','email','submit','hidden','selectm','html','file') NOT NULL,
+  `contact_field_type` enum('text','select','radio','textarea','email','submit','hidden','selectm','html','file','captcha_question') NOT NULL,
   `contact_field_needed` tinyint(1) NOT NULL,
   `contact_field_default_value` varchar(255) NOT NULL,
   `contact_field_values_[LG]` varchar(255) NOT NULL,

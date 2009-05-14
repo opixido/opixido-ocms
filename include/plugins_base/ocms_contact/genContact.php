@@ -378,7 +378,9 @@ class genContact {
 				if($_FILES[$champ['contact_field_name']]) {
 					$m->AddAttachment($_FILES[$champ['contact_field_name']]['tmp_name'],$champ['contact_field_name'].'_'.$_FILES[$champ['contact_field_name']]['name']);
 				}
-			} else {
+			} else if($champ['contact_field_type'] == 'captcha_question') {
+				// nothing to do
+			}else {
 				$content .= "\n".getLgValue('contact_field_nom',$champ).' :'."\t\t".$_REQUEST[$champ['contact_field_name']];			
 			}
 		} 
