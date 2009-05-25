@@ -357,6 +357,24 @@ class genFile {
 	
 	
 	/**
+	 * Retourne le TAG <IMG  /> complet avec l'URL obtenue via getCropUrl();
+	 *
+	 * @param string $alt
+	 * @param string $tag
+	 * @return string HTML
+	 */
+	function getExactImgtag($w=0,$h=0,$alt='',$tag='') {
+		
+		$url = $this->getThumbUrlExact($w,$h);
+		
+		if(strlen($url)) {
+			return '<img src="'.$url.'" alt="'.$alt.'" '.$tag.' />';
+		} else {
+			return '';
+		}
+		
+	}		
+	/**
 	 * Retourne le TAG <IMG  /> complet avec l'URL obtenue via getWebUrl();
 	 *
 	 * @param string $alt
@@ -411,6 +429,8 @@ class genFile {
 		}
 		
 	}	
+	
+	
 	
 
 	/**
