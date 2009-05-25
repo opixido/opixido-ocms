@@ -325,7 +325,6 @@ function s_rubrique_beforeDelete($id,$row=array()) {
 	$gr = new GenRecord('s_rubrique',$row['fk_rubrique_version_id']);
 	$gr->DeleteRow($row['fk_rubrique_version_id']);
 
-
 }
 
 

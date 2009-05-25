@@ -403,6 +403,19 @@ class genTemplate {
 	
 	
 	/**
+	 * Defines a list of trads to insert in the template
+	 *
+	 */
+	public function setTrads() {
+		$numargs = func_num_args();
+		$arg_list = func_get_args();
+		for ($i = 0; $i < $numargs; $i++) {
+		   $this->set($arg_list[$i],t($arg_list[$i]));
+		}
+		
+	}
+	
+	/**
 	 * Définit et charge un nouveau bloc
 	 * dans le template
 	 *

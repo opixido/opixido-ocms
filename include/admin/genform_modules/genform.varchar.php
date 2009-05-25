@@ -7,6 +7,31 @@ if ( !$this->editMode ) {
 	 * 
 	 */
 	 
+	if ( arrayInWord( $_Gconfig['colorFields'], $name ) ) {
+		
+		$this->genHelpImage('help_texte',$name);
+    	
+		$fl = $this->tab_field[$name]->max_length;
+	
+    	
+    	
+    	if($this->tab_default_field[$name])
+    		$style = 'style="background-color:#'.$this->tab_default_field[$name].'"';
+    	
+    	$this->addBuffer('<span class="colorField" id="colorField_'.$name.'" '.$style.'>
+    						&nbsp;   &nbsp;   						
+    					 </span> ');
+    	
+    	$this->addBuffer(' &nbsp;<input size="6" onchange="gid(\'colorField_'.$name.'\').style.backgroundColor=\'#\'+this.value;" id="genform_'.$name.'" ' . $jsColor . ' '.$attributs.'  name="genform_' . $name . '" maxlength="'.$fl.'" class="genform_varchar" value="' . ( $this->tab_default_field[$name] ) . '" />');
+		//$this->addBuffer($this->genInsertButtons('genform_'.$name.''));
+    
+    	$this->addBuffer(' <a class="btn_spectre" href="#" onclick="popup(\'./colorPicker/colorSelector.html?id='.$name.'\',360,240);return false;">
+    					 	<img src="./colorPicker/spectre.jpg" alt="" style="vertical-align:middle"  />
+    					 </a>');
+    	
+		
+	}
+	else
 	if ( arrayInWord( $_Gconfig['urlFields'], $name ) ) {
 		
 	
