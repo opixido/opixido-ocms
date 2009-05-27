@@ -433,7 +433,7 @@ REPLACE INTO `s_admin_trad` VALUES ('s_admin_p_0', 'Informations', '','');
 REPLACE INTO `s_admin_trad` VALUES ('s_admin_p_1', 'Rubriques autorisées', '','');
 REPLACE INTO `s_admin_trad` VALUES ('table_log_action', 'Dernières opérations effectuées', '','');
 REPLACE INTO `s_admin_trad` VALUES ('modification', 'Modifier', '','');
-REPLACE INTO `s_admin_trad` VALUES ('empty_field', 'Champ non remplit', '','');
+REPLACE INTO `s_admin_trad` VALUES ('empty_field', 'Champ non rempli', '','');
 REPLACE INTO `s_admin_trad` VALUES ('ajout_sub_rub', 'Nouveau', '','');
 REPLACE INTO `s_admin_trad` VALUES ('invisible_rub', ' <span style="color:red">[Masquée]</span>', '','');
 REPLACE INTO `s_admin_trad` VALUES ('version_masquee', ' Cette rubrique est actuellement masquée', '','');
