@@ -959,6 +959,7 @@ class genUrl{
 					 */
 					if($GLOBALS['tabUrl'][$key]['type'] != 'siteroot') {
 						$url = path_concat($GLOBALS['tabUrl'][$key]['url' .$reallg] ,$url);
+						
 					} else {
 						$this->curLinkRoot = $GLOBALS['tabUrl'][$key];
 						
@@ -993,8 +994,11 @@ class genUrl{
 				if($subtab['type'] != 'menuroot') {
 					$url = path_concat($url,$subtab['url'.$reallg]);
 				}
-				$subs =  $this->recursRub($subId,1,1);
-				
+				if($subtab['type'] == 'folder') {
+					$subs =  $this->recursRub($subId,1,1);
+				} else {
+					break;
+				}
 			}
 			if($subId != $rubId) {
 				return $this->buildUrl($subId,$lg);
