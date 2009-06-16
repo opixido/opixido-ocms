@@ -392,6 +392,18 @@ class genAdmin {
 
     function checkActions()
     {
+    	
+    	if(ake('genform_relinvaction',$_REQUEST)) {
+    		
+    		foreach($_REQUEST['genform_relinvaction'] as $action=>$v) {
+    			foreach($v as $table=>$value) {
+    				  $this->action = new GenAction($action , $table ,$value );
+	          		  $this->action->DoIt();
+    			}
+    		}
+    		
+    	}
+    	
         if (ake('genform_action', $_REQUEST)) 		{
         	
         	

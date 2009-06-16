@@ -72,6 +72,19 @@ if(count($res) <= 4000 ) {
  			$this->addBuffer('</th>');
  			$this->addBuffer('<th width="20">&nbsp;</th>');
 
+ 			/**
+ 			 * Case TH vide pour chaque action supplémentaire
+ 			 */
+	 			foreach ($_Gconfig['rowActions'][$fk_table] as $actionName => $v){
+	 			
+	 				$ga = new GenAction($actionName,$fk_table,$row[$clef],$row);
+							
+					if ($this->gs->can($actionName,$fk_table,$row,$row[$clef]) && $ga->checkCondition()) {
+					//	debug($actionName);
+	 					$this->addBuffer('<th width="20">&nbsp;</th>');
+					}
+	 			}
+ 			
                 /* Collones pour les boutons up down */
                 if(array_key_exists($fk_table,$orderFields)) {
                     $this->addBuffer('<th width="20" >&nbsp;</th><th width="20" >&nbsp;</th>');
@@ -154,6 +167,49 @@ if(count($res) <= 4000 ) {
 					}
 
 					$this->addBuffer('</td>');
+					
+					/**
+					 * Actions supplémentaires
+					 */
+					
+					foreach ($_Gconfig['rowActions'][$fk_table] as $actionName => $v){
+						
+						$ga = new GenAction($actionName,$fk_table,$row[$clef],$row);
+						
+						if ($this->gs->can($actionName,$fk_table,$row,$row[$clef]) && $ga->checkCondition()) {
+							
+							$this->addBuffer( '<td>');
+							$this->addBuffer( '
+							<input
+
+							type="image"
+							src="'.t('src_'.$actionName).'"
+							class="inputimage"
+							name="genform_relinvaction['.$actionName.'][' .$fk_table. ']"
+							title="' . $this->trad( $actionName ) . '"
+							value="'.$ml.'"
+							
+							
+							 />
+
+						' );
+							// pour le faire en ajax
+							// onclick="ajaxAction(\''.$actionName.'\',\''.$fk_table.'\',\''.$ml.'\',\'\');return false;"
+							
+							/*
+							onclick="document.getElementById(\'genform_'.$actionName.'fk__'.$fk_table.'_value_'.$ml.'\').checked=\'checked\'
+							<input '.$ch.'
+							style="display:none;"
+							name="genform_'.$actionName.'fk__' . $fk_table . '_value"
+							type="radio"
+							id="genform_'.$actionName.'fk__' . $fk_table . '_value_'.$ml.'"
+							value="' . $row[$clef] . '" />
+							*/
+							$this->addBuffer('</td>');
+						}
+						
+					}
+					
 
                                   /*************
                                     On ajoute les boutons pour la gestion de l'ordre ?
