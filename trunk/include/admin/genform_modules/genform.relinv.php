@@ -174,45 +174,46 @@ if(count($res) <= 4000 ) {
 					/**
 					 * Actions supplémentaires
 					 */
+					if (array_key_exists($fk_table, $_Gconfig['rowActions'])) {
 					
-					foreach ($_Gconfig['rowActions'][$fk_table] as $actionName => $v){
+						foreach ($_Gconfig['rowActions'][$fk_table] as $actionName => $v){
 						
-						$ga = new GenAction($actionName,$fk_table,$row[$clef],$row);
-						
-						if ($this->gs->can($actionName,$fk_table,$row,$row[$clef]) && $ga->checkCondition()) {
+							$ga = new GenAction($actionName,$fk_table,$row[$clef],$row);
 							
-							$this->addBuffer( '<td>');
-							$this->addBuffer( '
-							<input
-
-							type="image"
-							src="'.t('src_'.$actionName).'"
-							class="inputimage"
-							name="genform_relinvaction['.$actionName.'][' .$fk_table. ']"
-							title="' . $this->trad( $actionName ) . '"
-							value="'.$ml.'"
+							if ($this->gs->can($actionName,$fk_table,$row,$row[$clef]) && $ga->checkCondition()) {
+								
+								$this->addBuffer( '<td>');
+								$this->addBuffer( '
+								<input
+	
+								type="image"
+								src="'.t('src_'.$actionName).'"
+								class="inputimage"
+								name="genform_relinvaction['.$actionName.'][' .$fk_table. ']"
+								title="' . $this->trad( $actionName ) . '"
+								value="'.$ml.'"
+								
+								
+								 />
+	
+							' );
+								// pour le faire en ajax
+								// onclick="ajaxAction(\''.$actionName.'\',\''.$fk_table.'\',\''.$ml.'\',\'\');return false;"
+								
+								/*
+								onclick="document.getElementById(\'genform_'.$actionName.'fk__'.$fk_table.'_value_'.$ml.'\').checked=\'checked\'
+								<input '.$ch.'
+								style="display:none;"
+								name="genform_'.$actionName.'fk__' . $fk_table . '_value"
+								type="radio"
+								id="genform_'.$actionName.'fk__' . $fk_table . '_value_'.$ml.'"
+								value="' . $row[$clef] . '" />
+								*/
+								$this->addBuffer('</td>');
+							}
 							
-							
-							 />
-
-						' );
-							// pour le faire en ajax
-							// onclick="ajaxAction(\''.$actionName.'\',\''.$fk_table.'\',\''.$ml.'\',\'\');return false;"
-							
-							/*
-							onclick="document.getElementById(\'genform_'.$actionName.'fk__'.$fk_table.'_value_'.$ml.'\').checked=\'checked\'
-							<input '.$ch.'
-							style="display:none;"
-							name="genform_'.$actionName.'fk__' . $fk_table . '_value"
-							type="radio"
-							id="genform_'.$actionName.'fk__' . $fk_table . '_value_'.$ml.'"
-							value="' . $row[$clef] . '" />
-							*/
-							$this->addBuffer('</td>');
 						}
-						
 					}
-					
 
                                   /*************
                                     On ajoute les boutons pour la gestion de l'ordre ?
