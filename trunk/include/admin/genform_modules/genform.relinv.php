@@ -75,6 +75,8 @@ if(count($res) <= 4000 ) {
  			/**
  			 * Case TH vide pour chaque action supplémentaire
  			 */
+ 			if (array_key_exists($fk_table, $_Gconfig['rowActions'])) {
+ 				
 	 			foreach ($_Gconfig['rowActions'][$fk_table] as $actionName => $v){
 	 			
 	 				$ga = new GenAction($actionName,$fk_table,$row[$clef],$row);
@@ -84,6 +86,7 @@ if(count($res) <= 4000 ) {
 	 					$this->addBuffer('<th width="20">&nbsp;</th>');
 					}
 	 			}
+ 			}
  			
                 /* Collones pour les boutons up down */
                 if(array_key_exists($fk_table,$orderFields)) {
