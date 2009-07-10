@@ -15,7 +15,31 @@
 <script type="text/javascript" src="js/script.js"></script>
 <script type="text/javascript" src="js/xhr.js"></script>
 <script type="text/javascript" src="js/tooltip.js"></script>
+<script type="text/javascript" src="js/ajaxForm.js"></script>
+
+<!--JQUERY-->
+		<link type="text/css" href="jq/css/cupertino/jquery-ui-1.7.1.custom.css" rel="stylesheet" />	
+		<script type="text/javascript" src="jq/js/jquery-1.3.2.min.js"></script>
+		<script type="text/javascript" src="jq/js/jquery-ui-1.7.1.custom.min.js"></script>
+		<script type="text/javascript" src="jq/js/jquery.textarearesizer.compressed.js"></script>
+		<script type="text/javascript" src="jq/js/jquery.tablednd_0_5.js"></script>
+<!--/JQUERY-->
+
+<style type="text/css"/>
+<?php
+//global $_Gconfig;
+// foreach($_Gconfig['LANGUAGES'] as $lg) {
+//
+// 	echo '.lg_'.$lg.' textarea {background-image:url(img/flags/'.$lg.'.gif);background-repeat:no-repeat;background-position:top right	}
+// 	';
+// 
+// }
+?>
+</style>
 <script type="text/javascript">
+if (/Mozilla\/5\.0/.test(navigator.userAgent))
+   document.write('<script type="text/javascript" src="mozInnerHTML.js"></sc' + 'ript>');
+
 function winopen(url,w,h) {
         window.open(url,'popup'+Math.random(100),'width='+w+",height="+h+",scrollbars=no,status=no,location=no");
         return false;
@@ -31,28 +55,15 @@ function winopen(url,w,h) {
         $tab = 'var lgs = ['.implode(', ',$lgs).'];';
         
         echo $tab;
-        
-        /*
-window.onunload  = function(){
-	if(window.event) {
-	if((window.event.clientX<0)||(window.event.clientY<0))
-		alert('Closed.');//closeSession()
-	} else if(self.screenTop>9000) {
-		alert('Closed.');
-	}
-}
 
-function closeSession() {
-	winopen('index.php?logout=1',100,100);
-}*/
-        
-        
         ?>
 
 </script>
 	
 
     <?php
+    
+    
     
     if(strstr($_SERVER["HTTP_USER_AGENT"],'MSIE')) {
     	p('<link rel="StyleSheet" href="css/ie.css" />');
@@ -79,6 +90,7 @@ function closeSession() {
 	<?php
 	
 	if(!$_GET['simple'] ) {
+		
 	?>
 	    <div id="bandeau">
 	
