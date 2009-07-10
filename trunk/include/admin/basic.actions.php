@@ -348,24 +348,33 @@ function emptyCache() {
 
 
 	p('<a href="?globalAction=emptyCache&amp;deleteThumbs=1">&raquo; <u>'.ta('cache_delete_thumbs_too').'</u></a><br/>');
-	if ($handle = opendir($cachepath)) {
-		$nbok = 0;
-		$nbfiles = 0;
-	   /* This is the correct way to loop over the directory. */
-	   while (false !== ($file = readdir($handle))) {
 
-	   	if($file != '.' && $file != '..' && ( !is_dir($cachepath.$file) || $_GET['deleteThumbs']) ) { // 
-	   		$nbfiles++;
-	    	$nbok += rm($cachepath.$file);
-	   	}
-	   }
-	   closedir($handle);
-	   p($nbok.' '.t('files_on').' '.$nbfiles.' '.t('have_been_removed'));
-	}
+	emptyDir($cachepath,$_REQUEST['deleteThumbs']);
+	emptyDir($gb_obj->include_path.'/../imgc/');
+	emptyDir($gb_obj->include_path.'/cache_agr/');
 
 
 }
 
+function emptyDir($cachepath,$dirsToo=false) {
+		if(!is_dir($cachepath)) {
+			return;
+		}
+		if ($handle = opendir($cachepath)) {
+			$nbok = 0;
+			$nbfiles = 0;
+		   /* This is the correct way to loop over the directory. */
+		   while (false !== ($file = readdir($handle))) {
+	
+		   	if($file != '.' && $file != '..' && ( !is_dir($cachepath.$file) || $dirsToo) ) { // 
+		   		$nbfiles++;
+		    	$nbok += rm($cachepath.$file);
+	   	}
+	   }
+	   closedir($handle);
+	   p('<br/>'.$cachepath.' : '.$nbok.' '.t('files_on').' '.$nbfiles.' '.t('have_been_removed'));
+	}
+}
 function rm($fileglob)
 {
     if (is_string($fileglob)) {
@@ -402,4 +411,6 @@ function rm($fileglob)
 }
 
 
-?>
+function saveTemoinChange() {
+	@file_put_contents(INCLUDE_PATH.'/temoinchange',date('c'));
+}
