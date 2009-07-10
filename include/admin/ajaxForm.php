@@ -73,7 +73,7 @@ class ajaxForm {
 			$htmlLgs='';
 			$nbLgs = count($_Gconfig['LANGUAGES']);
 			foreach($_Gconfig['LANGUAGES'] as $v) {
-				$htmlLgs .= '<option value="'.$v.'" style="background-image:url(img/flags/'.$v.'.gif)">'.$v.'</option>';
+				$htmlLgs .= '<option value="'.$v.'" style="background:url(img/flags/'.$v.'.gif) 2px 2px no-repeat;padding-left:20px">'.$v.'</option>';
 				$this->genOneField($champ.'_'.$v,true);				
 				$html .= '<span class="lg_'.$v.'">'.$this->getBuffer(true).'</span>';
 			}				
@@ -143,6 +143,15 @@ class ajaxForm {
 			$GLOBALS['gb_obj']->includeFile('ajax.bool.php','admin/af_modules');
 			
 			$f = new ajaxBool($this,$champ);
+			
+			$this->addBuffer($f->gen());
+			
+		}
+		else if( $this->tab_field[$champ]->type == 'datetime' ) {
+			
+			$GLOBALS['gb_obj']->includeFile('ajax.datetime.php','admin/af_modules');
+			
+			$f = new ajaxDateTime($this,$champ);
 			
 			$this->addBuffer($f->gen());
 			

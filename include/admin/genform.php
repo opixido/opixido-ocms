@@ -91,7 +91,7 @@ class GenForm {
         $this->useImageEditor = $_Gconfig['useImageEditor'];
 
         $this->useThumbs = $_Gconfig['useThumbs'];
-        $this->thumbWidth = 620;
+        $this->thumbWidth = 570;
         $this->thumbHeight = 200;
         $this->pathAdminToSite = "../";
         $this->larg = "510";
@@ -511,17 +511,23 @@ class GenForm {
 		//$this->addBuffer('</div>');	
 			
 			reset($lgs);
+			$lgdef= $lgs[0];
 
 			foreach ($lgs as $lg) {	
-				$this->addBuffer( '<div class="genform_champ" style="display:none;" id="lgfield_'.$name.'_'.$lg.'">' );	
+				$this->addBuffer( '<div class="genform_champ lg_'.$lg.'" id="lgfield_'.$name.'_'.$lg.'">' );	
 				$this->genFields($tab_name.'_'.$lg, $fk_table = "", $traduction = "" ,$attributs = "",$preValues=array());
 				$this->addBuffer( '</div>' );
+				if($lg != $lgdef) {
+					$toHide .= '$("#lgfield_'.$name.'_'.$lg.'").hide();';
+				}
+				
 				$_SESSION['curFields'][] = $tab_name.'_'.$lg;
 			}		
 			
 			$lg = $_SESSION['onlyLg'] && $_SESSION['onlyLg'] != 'ALL' ?  $_SESSION['onlyLg'] : $_Gconfig['LANGUAGES'][0];
 			$this->addBuffer('
-			<script type="text/javascript">			
+			<script type="text/javascript">		
+				'.$toHide.'	
 				lgfieldcur["'.$name.'"] = "";
 				showLgField("'.$name.'","'.$lg.'");
 			</script>	
@@ -569,7 +575,7 @@ class GenForm {
 	function printLabel( $tab_name, $fk_table = "", $traduction = "" ,$attributs = "",$preValues=array()) {
 		
 		
-		global $rteFields, $uploadRep, $neededFields, $neededSymbol, $fieldError, $uploadFields, $mailFields, $restrictedMode, $tabForms, $relations, $arbos, $tablerel,$relinv,$previewField ,$orderFields,$specialUpload,$editMode,$functionField,$_Gconfig;
+		global $_Gconfig, $rteFields, $uploadRep, $neededFields, $neededSymbol, $fieldError, $uploadFields, $mailFields, $restrictedMode, $tabForms, $relations, $arbos, $tablerel,$relinv,$previewField ,$orderFields,$specialUpload,$editMode,$functionField,$_Gconfig;
 
 
 		$action = !$editMode ? 'edit' : 'view';
@@ -584,15 +590,38 @@ class GenForm {
 
         	/* Image correspondante */
 
+        	$bas = getBaseLgField($name);
             if(tradExists('field_img_'.$name)) {
                 if(tradExists('field_help_'.$name))
                 	$alt = t('field_help_'.$name);
                 else
-                	$alt = t($name);
-            	$this->addBuffer('<img style="vertical-align:middle" src="'.t('field_img_'.$name).'" alt="'.$alt.'" />&nbsp;');
-
+                	$alt = "";
+                	
+                $img = t('field_img_'.$name);
             }
+            else if($img = choose($_Gconfig['field'][$bas]['picto'] , $_Gconfig['field'][$this->table.'.'.$bas]['picto'])) {
+            	$alt = "";
+            	
+            }
+            else {
+            	
+            }
+                       
+            if($img) {
+            	$this->addBuffer('<img style="vertical-align:middle" src="'.$img.'" alt="'.$alt.'" />&nbsp;');
+            }
+            
+            if($_SESSION['editTrads']) {
+            	if(!$img) {
+            		$this->addBuffer('<img style="vertical-align:middle" src="pictos/media-playback-stop.png" alt="'.$alt.'" />&nbsp;');
+            	}
+            	$h = '';
+            	
 
+            	
+               	$this->addBuffer('<input type="text" name="ET_field_img_'.$bas.'" style="display:none" onclick="window.fieldToUpdate=this;$(\'#divImgPicto\').css(\'top\',mouseY+\'px\').css(\'left\',mouseX+\'px\').slideToggle()" onchange=""  value="'.$img.'"/>');
+            }
+            
             if ( $traduction != "" )
                $T = ( $this->trad( $traduction ) );
             else if ( $fk_table )
@@ -656,6 +685,8 @@ class GenForm {
         // $new_key = substr($name, 3, strlen($name));
 
 		$this->addBuffer('<div id="genform_div_'.$tab_name.'">');
+		
+
 
         if ( $this->editMode && !$this->onlyData )
             $this->addBuffer( '<table class="table_resume"  summary="Details of : '.t($tab_name).'" style="margin-left:1px;"><tr><td class="table_resume_label">' ); //<label class="genform_txtres"><span >
@@ -979,10 +1010,34 @@ class GenForm {
 
 		if ( !$this->editMode ) {
 		p( '' );
+		/*
 		p( '<script language="JavaScript1.2" src="genform/js/calendar.js"></script>' );
 		p( '<script language="JavaScript1.2" src="genform/js/initcal.js"></script>' );
-
-
+*/
+		if($_SESSION['editTrads'] && !$GLOBALS['divImgPictoPrinted']) {
+    		$imgs = getAllPictos('16x16');
+        	foreach($imgs as $v) {
+        		$h .= '<img rel="'.$v.'" src="'.str_replace('16x16','32x32',$v).'"/> ';         
+           	}
+           	
+           	echo '<div id="divImgPicto" style="display:none;border:1px solid;background:#eee;padding:5px;width:600px;height:250px;overflow:auto;position:absolute;z-index:10000;" >'.$h.'</div>
+           	
+           	<script type="text/javascript">
+           	$("#divImgPicto img").click(function() {
+           		window.fieldToUpdate.value = $(this).attr("rel");
+           		$("#divImgPicto").slideUp();
+           		
+           		$(window.fieldToUpdate).prev("img").attr("src",$(this).attr("rel"));
+           		XHR_editTrad(window.fieldToUpdate);
+           		
+           	});
+           	</script>
+          ';
+           	
+           	$GLOBALS['divImgPictoPrinted'] = true;
+    	}
+    	
+    	
 			if ( is_array( $fieldError ) ) {
 				reset( $fieldError );
 				p( "<div class='genform_error'><h3>" . t( 'mal_remplit' ) . "</h3>" );
@@ -1152,11 +1207,29 @@ class GenForm {
 			} else {
 				$cl = 'btnOngletOff';
 			}
+			$imgu= '';
+			if(tradExists('imgonglet_'.$_REQUEST['curTable'].'_p_'.$k)) {
+				$imgu = t('imgonglet_'.$_REQUEST['curTable'].'_p_'.$k);
+				
+			}
+			if(!$imgu) {
+				$imgu = ADMIN_PICTOS_FOLDER.ADMIN_PICTOS_ARBO_SIZE.'/actions/media-playback-stop.png';
+			}
+			
+			if($_SESSION['editTrads']) {
+				$oc= 'onclick=""';
+				$bef = '<input type="text" name="ET_imgonglet_'.$_REQUEST['curTable'].'_p_'.$k.'" style="width:10px;" onclick="window.fieldToUpdate=this;$(\'#divImgPicto\').css(\'top\',mouseY+\'px\').css(\'left\',mouseX+\'px\').slideToggle()" onchange=""  value="'.$imgu.'" />';
+			}
+            $img = ('<img '.$oc.' style="vertical-align:middle" src="'.$imgu.'" alt="'.$alt.'" />&nbsp;'.$bef);
+            
 			p('<div class="'.$cl.'"  id="genform_div_page_'.$i.'">');
 				//$this->genButton ( "prevPage",  t($_REQUEST['curTable']."_p_".$i) ,$prev." onclick='genform_activatePage(".$i.")'");
-				p('<a href="#" id="aongl'.$i.'"  onclick="genform_activatePage('.$i.');this.blur();" >'.$this->tradOnglet($_REQUEST['curTable'],$k)."</a>");
+				p('<a href="#genform_page_'.($i+1).'" id="aongl'.$i.'"  onclick="genform_activatePage('.$i.');this.blur();" >');
+				p($img);
+				p($this->tradOnglet($_REQUEST['curTable'],$k)."</a>");
 				p(getEditTrad($_REQUEST['curTable'].'_p_'.$k));
-			p('</div>
+				
+				p('</div>
 			</div>');
 			
 			//p('</td>');
@@ -1317,7 +1390,7 @@ class GenForm {
 			$gurl->getRubId();
 			
 		}
-		
+
 		/**
 		 * Gestion des LOCKS
 		 * Personne d'autre ne modifie cet élément ?
