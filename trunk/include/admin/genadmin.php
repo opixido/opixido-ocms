@@ -310,14 +310,14 @@ class genAdmin {
 
 
       function GetTools() {
+      	
 		if($this->table != 's_rubrique') {
 		global $_Gconfig;
 		p('<div id="tools" >');
+		
 		if($this->gs->can('add',$this->table)) {
 			p('<a class="abutton" href="?curTable='.$this->table.'&amp;curId=new"> <img src="'.ADMIN_PICTOS_FOLDER.''.ADMIN_PICTOS_ARBO_SIZE.'/actions/document-new.png" alt="-"  /> '.t('ajouter_elem').'</a>');
-		}
-		
-		
+		}	
 		
 		if(ake($_Gconfig['tableActions'],$this->table)) {
 			
@@ -827,43 +827,36 @@ class genAdmin {
 
 
      function getArboActions() {
-	p('<div id="arbo_actions">');
+		p('<div id="arbo_actions">');
 
 
 		if($this->id) {
-			$ht = '&nbsp;&nbsp;&nbsp;<a href="index.php?haut_1=1&amp;curTable='.$this->table.'&amp;curId='.$this->id.'&amp;rubId='.$this->real_rub_id.'&amp;fkrubId='.$this->real_fk_rub.'" title="Monter d\'un niveau"><img src="'.ADMIN_PICTOS_FOLDER.''.ADMIN_PICTOS_ARBO_SIZE.'/actions/go-up.png" alt="" /> '.t('monter').' </a>';
+			$ht = '&nbsp;&nbsp;&nbsp;<a id="goHautLink" href="index.php?haut_1=1&amp;curTable='.$this->table.'&amp;curId='.$this->id.'&amp;rubId='.$this->real_rub_id.'&amp;resume=1&amp;fkrubId='.$this->real_fk_rub.'" title="Monter d\'un niveau"><img src="'.ADMIN_PICTOS_FOLDER.''.ADMIN_PICTOS_ARBO_SIZE.'/actions/go-up.png" alt="" /> '.t('monter').' </a>';
 
-			$bs = '&nbsp;&nbsp;&nbsp;<a href="index.php?bas_1=1&amp;curTable='.$this->table.'&amp;curId='.$this->id.'&amp;rubId='.$this->real_rub_id.'&amp;fkrubId='.$this->real_fk_rub.'" title="Descendre d\'un niveau"><img src="'.ADMIN_PICTOS_FOLDER.''.ADMIN_PICTOS_ARBO_SIZE.'/actions/go-down.png" alt="" /> '.t('descendre').'</a>';
+			$bs = '&nbsp;&nbsp;&nbsp;<a id="goBasLink"  href="index.php?bas_1=1&amp;curTable='.$this->table.'&amp;curId='.$this->id.'&amp;rubId='.$this->real_rub_id.'&amp;resume=1&amp;fkrubId='.$this->real_fk_rub.'" title="Descendre d\'un niveau"><img src="'.ADMIN_PICTOS_FOLDER.''.ADMIN_PICTOS_ARBO_SIZE.'/actions/go-down.png" alt="" /> '.t('descendre').'</a>';
 
-		$ajout ='';
-
-		if($aff['rubrique_ordre'] == 1){
-			//$ht ='&nbsp;&nbsp;&nbsp;<img src="'.ADMIN_PICTOS_FOLDER.''.ADMIN_PICTOS_ARBO_SIZE.'/up_off.png" />';
-		}
-
-		if($aff['rubrique_ordre'] == $maxxi){
-			//$bs = '&nbsp;&nbsp;&nbsp;<img src="'.ADMIN_PICTOS_FOLDER.''.ADMIN_PICTOS_ARBO_SIZE.'/down_off.png" />';
-		}
-
-		// On autorise jusqu'a X niveau d'arborescence
-
-
-		$sql = '
-		SELECT * FROM s_rubrique AS R1, s_rubrique AS R2, s_rubrique AS R3 ,  s_rubrique AS R4 ,s_rubrique AS R5,s_rubrique AS R6
-		WHERE R6.rubrique_id = "'.$this->real_rub_id.'"
-		AND R6.fk_rubrique_id = R5.rubrique_id
-		AND R5.fk_rubrique_id = R4.rubrique_id
-		AND R4.fk_rubrique_id = R3.rubrique_id
-		AND R3.fk_rubrique_id = R2.rubrique_id
-		AND R2.fk_rubrique_id = R1.rubrique_id
-		AND R1.fk_rubrique_id IS NULL';
-		//$res = GetAll($sql);
-
-
-		//if(!count($res) || true) {
-		if(true) {
-			$ajout =' &nbsp; <a href="index.php?curTable=s_rubrique&amp;curId=new&amp;genform__add_sub_table=s_rubrique&amp;genform__add_sub_id='.$this->real_rub_id.'&amp;genform_default__rubrique_ordre='.((count($this->arboRubs[$this->real_rub_id])/2)+1).'" title="Ajouter une sous rubrique "><img src="'.ADMIN_PICTOS_FOLDER.''.ADMIN_PICTOS_ARBO_SIZE.'/actions/document-new.png" alt="" /> '.t('ajout_sub_rub').'</a>';
-		}
+			$ajout ='';
+	
+	
+			// On autorise jusqu'a X niveau d'arborescence
+	
+	
+			$sql = '
+			SELECT * FROM s_rubrique AS R1, s_rubrique AS R2, s_rubrique AS R3 ,  s_rubrique AS R4 ,s_rubrique AS R5,s_rubrique AS R6
+			WHERE R6.rubrique_id = "'.$this->real_rub_id.'"
+			AND R6.fk_rubrique_id = R5.rubrique_id
+			AND R5.fk_rubrique_id = R4.rubrique_id
+			AND R4.fk_rubrique_id = R3.rubrique_id
+			AND R3.fk_rubrique_id = R2.rubrique_id
+			AND R2.fk_rubrique_id = R1.rubrique_id
+			AND R1.fk_rubrique_id IS NULL';
+			//$res = GetAll($sql);
+	
+	
+			//if(!count($res) || true) {
+			if(true) {
+				$ajout =' &nbsp; <a id="addSubLink" href="index.php?curTable=s_rubrique&amp;curId=new&amp;genform__add_sub_table=s_rubrique&amp;genform__add_sub_id='.$this->real_rub_id.'&amp;genform_default__rubrique_ordre='.((count($this->arboRubs[$this->real_rub_id])/2)+1).'" title="Ajouter une sous rubrique "><img src="'.ADMIN_PICTOS_FOLDER.''.ADMIN_PICTOS_ARBO_SIZE.'/actions/document-new.png" alt="" /> '.t('ajout_sub_rub').'</a>';
+			}
 		}
 		else {
 			$ht = t('select_rub_below');
@@ -871,7 +864,7 @@ class genAdmin {
 		
 		/* construction simplifiée de l'aroborescence  */
 		if($_REQUEST['curId'] AND $_REQUEST['curId'] != 'new')
-        $arbo = '&nbsp;&nbsp;&nbsp;<a href="index.php?arbo=1&amp;rubId='.$this->id.'&amp;fkrubId='.$this->real_fk_rub.'" title="'.t('arborescence').'"><img src="'.ADMIN_PICTOS_FOLDER.''.ADMIN_PICTOS_ARBO_SIZE.'/actions/arbo.png" alt="" /></a>';
+       	 $arbo = '&nbsp;&nbsp;&nbsp;<a href="index.php?arbo=1&amp;rubId='.$this->id.'&amp;fkrubId='.$this->real_fk_rub.'" title="'.t('arborescence').'"><img src="'.ADMIN_PICTOS_FOLDER.''.ADMIN_PICTOS_ARBO_SIZE.'/actions/arbo.png" alt="" /></a>';
 		else $arbo ='';
 		
 		p($ht.$bs.$ajout.$arbo.'</div><br/>');
@@ -941,7 +934,7 @@ class genAdmin {
        
 
        foreach($query as $aff ) {
-
+			$fakeRubs = false;
 		    $real_rub = $aff['fk_rubrique_version_id'];
 		    $version_rub = $aff['rubrique_id'];
 
@@ -950,7 +943,7 @@ class genAdmin {
 		     */
 			if ( $this->gs->can('edit','s_rubrique',$aff)  ) {
 	
-				p('<ul>');
+				p('<ul id="arbo_'.$id.'">');
 	
 				/**
 				 * Titre par défaut si vide
@@ -1048,12 +1041,18 @@ class genAdmin {
 //	            		debug('PICTO');
 	            		$picto = call_user_method('ocms_getPicto',$aff['gabarit_classe'],$aff);	            		
 	            	}
+	            	
+	            	if(method_exists($aff['gabarit_classe'],'ocms_getSubRubs')) {
+	            		
+	            		$subRubs = call_user_method('ocms_getSubRubs',$aff['gabarit_classe'],$aff);
+	            		$this->arboRubs[$real_rub] = $subRubs;	    
+	            		$fakeRubs = true;
+	            		
+	            	}
 	            }
 	  
-				/**
-				 * Si on a des sous-rubriques on affiche le plus/moins
-				 * Sinon ... non
-				 */
+		
+        		
 				if(count($this->arboRubs[$real_rub]) > 0) {
 					p('<a class="plusmoins '.$classColor.'" 
 							'.$xhr.' href="'.$url.'" 
@@ -1064,8 +1063,6 @@ class genAdmin {
 							>
 							<img src="./img/pixel.gif" width="16" height="16" alt="" /><img src="'.$picto.'" alt="" /></a>');
 				}
-		
-		
 				/**
 				 * Sommes nous en fin de rubrique ?
 				 */
@@ -1073,6 +1070,30 @@ class genAdmin {
 				$max = GetSingle($m);
 				$maxxi = $max["maxi"];
 		
+				
+				/**
+				 * Si on a des sous-rubriques on affiche le plus/moins
+				 * Sinon ... non
+				 */
+           		if($this->insideRealRubId == $aff['fk_rubrique_version_id'] ||
+	            		 ( $aff['fk_rubrique_version_id'] == $_SESSION['XHRlastCurId'] && !$_REQUEST['curId']) ) {
+	        
+	            
+					if($aff['rubrique_ordre'] == 1){
+						p('<script type="text/javascript">$("#goHautLink").attr("href","").addClass("disabled");</script>');
+					}
+	
+					if($aff['rubrique_ordre'] == $maxxi){
+						p('<script type="text/javascript">$("#goBasLink").attr("href","").addClass("disabled");</script>');
+					}
+					
+					if($fakeRubs) {
+						p('<script type="text/javascript">$("#addSubLink").attr("href","").addClass("disabled");</script>');
+					}
+					
+        		}				
+				
+
 				/**
 				 * Lien texte
 				 */
@@ -1095,18 +1116,24 @@ class genAdmin {
 				p('</span>');
 				
 				p('<br/>');
-	
-	
+		
+		
 				if($_SESSION['visibleRubs'][$real_rub]) {		
 					/**
 					 * On parcourt en dessous
 					 */
-					$this->recurserub($real_rub,$nivv+1,$dolink);
-		
+					if($fakeRubs) {
+						p('<ul class="fakeSubs">');
+						foreach($subRubs as $v) {
+							p('<li ><a onclick="return doblank(this)" href="'.getUrlFromId($real_rub,LG,array($v['PARAM']=>$v['VALUE'])).'"  >'.$v['NAME'].'</a></li>');	
+						}
+						p('</ul>');
+					} else {
+						$this->recurserub($real_rub,$nivv+1,$dolink);
+					}
 				}
-				$nextlink = 0;
-		
-		
+				
+				$nextlink = 0;	
 		
 		 		p('</ul>');
 			
@@ -1119,7 +1146,7 @@ class genAdmin {
 				$this->recurserub($real_rub,$nivv+1,$dolink);
 			}
 
-		$souldBeOrder++;
+			$souldBeOrder++;
 
 
         }
@@ -1170,9 +1197,16 @@ class genAdmin {
 
          p('<div id="titre">');
          
+         $urlOnline = getObjUrl();
+         global $tabForms;
+         if($urlOnline) {
+         	p('<a style="float:right" href="'.$urlOnline.'" target="_blank"><img src="'.ADMIN_PICTOS_FOLDER.ADMIN_PICTOS_FORM_SIZE.'/actions/document-properties.png" alt='.alt(t('voir_enligne')).' /></a>');
+         }
          $table = strlen($_SESSION['levels'][0]['curTable']) ? $_SESSION['levels'][0]['curTable'] : $_REQUEST['curTable'];
          if($table) {
-         	p('<a href="?curTable='.$table.'&amp" ><img class="inputimage" src="'.t('src_desktop').'" alt="Retour" /></a> ');
+         	$src = $tabForms[$table]['picto'] ? str_replace(ADMIN_PICTOS_BIG_SIZE,ADMIN_PICTOS_FORM_SIZE,$tabForms[$table]['picto']) : t('src_desktop');
+         	p('<a class="titreListe" title='.alt(t('retour').' '.t($table)).' href="?curTable='.$table.'&amp" ><img class="inputimage" src="'.$src.'"  alt="" /> ');
+         	p(' &nbsp;'.t($this->table).'</a>');
          }
          if($this->id  || $this->id == 'new') {
 
@@ -1208,7 +1242,7 @@ class genAdmin {
 
         } else  if($this->table) {
 
-                p('<span class="titreListe">'.t($this->table).'</span>');
+                
         }
 
 
