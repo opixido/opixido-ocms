@@ -1,6 +1,7 @@
 <?php
 
 function o_createPlugin() {
+	global $_Gconfig;
 	echo '<style type="text/css">
 				#createtable {
 					border:1px solid;
@@ -78,7 +79,8 @@ function o_createPlugin() {
 			echo '<td> <input type="checkbox" name="tabFormsTitle[]" value="'.$k.'" /></td>';
 			
 			if($v->type == 'varchar') {
-				echo '<td> <input type="checkbox" name="uploadFields[]" value="'.$k.'" /></td>';
+				echo '<td> <input type="checkbox" name="uploadFields[]" value="'.$k.'" /><br/>
+						w : <input type="text" size="1" name="maxW['.$k.']" /> h : <input type="text" size="1" name="maxH['.$k.']" /></td>';
 			} else {
 				echo '<td>&nbsp;</td>';
 			}
@@ -168,30 +170,19 @@ function o_createPlugin() {
 		echo '</select></p>';
 		
 		
-		echo '<p>Picto : <input type="text" name="picto_tosave" id="picto_tosave" value="" /></p>';
+		echo '<p>Picto : <input type="text" name="picto_tosave" id="picto_tosave" value="" style="width:400px"/></p>';
 		
 		echo '<div class="listimg" style="overflow:auto;height:200px;width:600px;border:1px solid;">';
-		$pictosDir = array('pictos_stock/tango/32x32/actions/',
-							'pictos_stock/tango/32x32/apps/',
-							'pictos_stock/tango/32x32/categories/',
-							'pictos_stock/tango/32x32/devices/',
-							'pictos_stock/tango/32x32/emblems/',
-							'pictos_stock/tango/32x32/emotes/',
-							'pictos_stock/tango/32x32/mimetypes/',
-							'pictos_stock/tango/32x32/places/',
-							'pictos_stock/tango/32x32/status/'
-							
-							);
-		foreach($pictosDir as $v) {
-			$res = dir($v);
-			//echo '<p>'.$v.'</p>';
-			while (false !== ($entry = $res->read())) {
-				//debug($entry);
-				if(is_file($v.$entry) && substr($entry,-3) == 'png') {
-				echo '<img onclick="gid(\'picto_tosave\').value=this.title"  src="'.$v.$entry.'" title="'.$v.$entry.'" />';
-				}
-			}
+
+		
+		
+		$imgs = getAllPictos(ADMIN_PICTOS_BIG_SIZE);
+		foreach($imgs as $v) {
+			
+			$tosave = str_replace(str_replace(ADMIN_URL,'',ADMIN_PICTOS_FOLDER),'[ADMIN_PICTOS_FOLDER]',$v);
+			echo '<img onclick="gid(\'picto_tosave\').value=this.title"  src="'.$v.'" title="'.$tosave.'" />';
 		}
+		
 		echo '</div>';
 		
 		echo '<p>Effectuer réellement les modifs (ne pas juste afficher) : <input type="checkbox" name="DOITFORREAL" value="1" /></p>';
@@ -234,8 +225,8 @@ function o_createPlugin() {
 				$tabForms[$table]['pages'][$v] = '../plugins/'.$nom.'/forms/form.'.$v.'.php';
 			}
 			if(isLgField($k)) {
-				if(isBaseLgField($k,$table)) {
-					$formS[$v] .= '$form->genlg("'.$k.'");'."\n" ;
+				if(getLgFromField($k) == $_Gconfig['LANGUAGES'][0]) {
+					$formS[$v] .= '$form->genlg("'.getBaseLgField($k).'");'."\n" ;
 				}
 			} else {
 				$formS[$v] .= '$form->gen("'.getBaseLgField($k).'");'."\n" ;	
@@ -254,6 +245,9 @@ function o_createPlugin() {
 		if($_POST['uploadFields']) {
 			foreach($_POST['uploadFields'] as $v) {
 				$f .= '$uploadFields[] = "'.getBaseLgField($v).'";'."\n";
+				if($_POST['maxW'][($v)] && $_POST['maxH'][($v)]) {
+					$f .= '$_Gconfig["imageAutoResize"]["'.getBaseLgField($v).'"] = array("'.$_POST['maxW'][($v)].'","'.$_POST['maxH'][($v)].'");'."\n";
+				}
 			}
 			
 			$f .= "\n";

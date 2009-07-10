@@ -474,16 +474,30 @@ foreach($tablerel as $k=>$v) {
 }
 
 
-
+/**
+ * Returns the tablerel association
+ * in an array :
+ *  ['champ'] = fk to other table
+ *  ['table'] = name of other table
+ *  ['mychamp'] = fk to my table
+ * 
+ * @param unknown_type $tablerela
+ * @param unknown_type $curtable
+ */
 function tablerelGetOtherTable($tablerela, $curtable) {
 	
 	global $tablerel;
-	
+	$ar = array();
 	foreach($tablerel[$tablerela] as $k => $v) {
 		if($v != $curtable) {
-			return array('champ'=>$k,'table'=>$v);
+			$ar['champ'] = $k;
+			$ar['table']=$v;
+		}
+		else {
+			$ar['mychamp'] = $k;
 		}
 	}
+	return $ar;
 }
 
 /**
@@ -521,6 +535,21 @@ function getGabaritVisibility($gabid) {
 		return $gab->genvisibility();
 }
 
+function getGabaritSubRubs($rub,$gabid) {
+	
+		$rgab = getGabarit($gabid);
+		
+		$folder = $rgab['gabarit_plugin'] ? path_concat(PLUGINS_FOLDER,$rgab['gabarit_plugin']) : 'bdd';
+		$GLOBALS['gb_obj']->includeFile($rgab['gabarit_classe'].'.php',$folder);
+		$gabNom = $rgab['gabarit_classe'];
+		if(method_exists($gabNom,'ocms_getSubRubs')) {
+			$r = call_user_method('ocms_getSubRubs',$gabNom,$rub);
+			
+		}
+		return $r;
+}
+
+
 function getEnumValues($table,$champ) {
 	$sql = 'SHOW COLUMNS FROM '.$table.' LIKE "'.$champ.'"';
 	$row = GetSingle($sql);
@@ -546,4 +575,3 @@ function getSetValues($table,$champ) {
 }
 
 
-?>

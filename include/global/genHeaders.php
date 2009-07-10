@@ -101,9 +101,9 @@ class genHeaders {
 	function addCss($name) {
 		
 		if(strpos($name,'/') !== false) {
-			$this->addHtmlHeaders('<style type="text/css"> @import "'.$name.'"; </style>');			
+			$this->addHtmlHeaders('<style type="text/css" media="screen"> @import "'.$name.'"; </style>');			
 		} else {
-			$this->addHtmlHeaders('<style type="text/css"> @import "'.BU.'/css/'.$name.'"; </style>');
+			$this->addHtmlHeaders('<style type="text/css" media="screen"> @import "'.BU.'/css/'.$name.'"; </style>');
 		}
 	}
 

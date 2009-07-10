@@ -5,7 +5,7 @@
 
 	<table id="table_cp" width="99%">
 		<tr>
-			<td style="vertical-align:top">
+			<td style="vertical-align:top;" width="77%">
 			
 			
 				<div id="picto_grid">
@@ -15,7 +15,7 @@
 				</div>
 			
 			</td>
-			<td style="vertical-align:top">
+			<td style="vertical-align:top;" width="33%">
 			
 			
 			<div id="user_info">

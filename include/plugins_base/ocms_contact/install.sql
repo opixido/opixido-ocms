@@ -4,8 +4,10 @@ CREATE TABLE `plug_contact` (
   `contact_titre_[LG]` varchar(255) NOT NULL default '',
   `contact_email` varchar(255) NOT NULL default '',
   `fk_rubrique_id` int(11) NOT NULL default '0',
+  `contact_ordre` int(11) NOT NULL default '0',
   PRIMARY KEY  (`contact_id`),
-  KEY `fk_rubrique_id` (`fk_rubrique_id`)
+  KEY `fk_rubrique_id` (`fk_rubrique_id`),
+  KEY `contact_ordre` (`contact_ordre`)  
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 
@@ -14,7 +16,7 @@ CREATE TABLE `plug_contact_field` (
   `fk_rubrique_id` int(10) unsigned NOT NULL,
   `contact_field_ordre` smallint(5) unsigned NOT NULL,
   `contact_field_nom_[LG]` varchar(255) NOT NULL,
-  `contact_field_type` enum('text','select','radio','textarea','email','submit','hidden','selectm','html','file','captcha_question') NOT NULL,
+  `contact_field_type` enum('text','select','radio','textarea','email','submit','hidden','selectm','html','file') NOT NULL,
   `contact_field_needed` tinyint(1) NOT NULL,
   `contact_field_default_value` varchar(255) NOT NULL,
   `contact_field_values_[LG]` varchar(255) NOT NULL,

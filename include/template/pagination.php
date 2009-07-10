@@ -4,7 +4,7 @@
 	
 	<div class="pagi_liste">
 		<NUM>
-		<a class="@@class@@" href="@@url@@">@@num@@</a>
+		<a class="@@class@@" href="@@url@@">&nbsp;@@num@@&nbsp;</a> &nbsp; 
 		</NUM>
 	</div>
 	

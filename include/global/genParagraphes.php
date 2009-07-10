@@ -32,6 +32,7 @@ class genParagraphes {
 	var $paragraphes;
 	var $site;
 	var $rubrique;
+	var $id = 'paragraphes';
 	
 	function __construct($site,$paragraphes) {
 		$this->site = $site;
@@ -100,7 +101,7 @@ class genParagraphes {
 			
 			$tpl->setVar('file1_url',$fichier->getWebUrl());
 			$tpl->setVar('file1_size',$fichier->getNiceSize());
-			$tpl->setVar('file1_type',$fichier->getExtension());
+			$tpl->setVar('file1_type',mb_strtoupper($fichier->getExtension()));
 			$tpl->setVar('file1_name',$fichier->getRealName());
 			$tpl->setVar('file1_legend',getLgValue('paragraphe_file_1_legend',$para));
 			$tpl->setVar('link1',getLgValue('paragraphe_link_1',$para));
@@ -151,7 +152,7 @@ class genParagraphes {
 				
 			
 		}
-		return '<div id="paragraphes">'.$html.'</div>';
+		return '<div id="'.$this->id.'" class="paragraphe">'.$html.'</div>';
 	}
 	
 }			

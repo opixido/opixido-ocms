@@ -44,13 +44,94 @@ class genContact {
 		/**
 		 * New Form
 		 */
-		$this->form = new simpleForm('./','post','contact_form');
+		$this->form = new simpleForm('./','post','contact_form');		
 
-				
+		/**
+		 * On selectionne les champs supplémentaires à afficher
+		 */
+		$sql = 'SELECT * FROM plug_contact_field 
+					WHERE fk_rubrique_id = '.$this->site->getCurId().'
+						ORDER BY contact_field_ordre ASC';
+		
+		$this->champs = GetAll($sql);
+		
+		$this->addFields($this->champs, 'top');
+		
+		/**
+		 * Liste de destinataires possibles
+		 */
+		$this->addContactList();
+		
+		$this->addFields($this->champs, 'middle');
+		
+		/**
+		 * Champ email obligatoire
+		 */
+		$this->form->add('email',$_REQUEST['c_email'],t('c_email'),'c_email',false,true);
+
+		
+		
+		/**
+		 * Champ de commentaire, obligatoire
+		 */
+		$this->form->add('textarea',$_REQUEST['c_comment'],t('c_comment'),'c_comment',false,true);
+
+		
+		/**
+		 * Si on utilise le captcha on le rajoute ...
+		 */
+		if(isTrue(getParam('formulaireContact_useCaptcha')) && pluginExists('captcha')) {
+
+			$this->form->add('captcha','',t('c_captcha'));
+								
+		}
+		
+		$this->addFields($this->champs, 'bottom');
+		
+		/**
+		 * Si on utilise le captcha on le rajoute ...
+		 */
+		if(isTrue(getParam('formulaireContact_useCaptchaQuestion'))) {
+
+			$this->form->add('captcha_question','',t('c_captcha_question'),'','',true);
+					
+		}		
+		
+		/**
+		 * Boutons Submit 
+		 */
+		//$this->form->add('submit',t('c_submit'),'','contact_submit','contact_submit');
+		$this->form->add('submit',t('c_submit'),'','contact_submit','contact_submit');
+			
+
+	
+
+		/**
+		 * Si le formulaire a été soumis sans erreurs
+		 * Il est valide et on n'affiche plus les paragraphes
+		 */
+		if($this->form->isSubmited() && $this->form->isValid() &&  $_POST['c_email'] != t('c_mail') ){
+			$this->isValid = true;
+			$this->site->g_rubrique->showParagraphes = false;
+		} else {
+
+		}
+		
+		
+	}
+	
+	
+/*	function gen() {
+	
+		
+	}*/
+
+	function addContactList(){
+		
 		/**
 		 * Par défaut on cherche dans les contacts
 		 */
-		$sql = 'SELECT * FROM plug_contact WHERE fk_rubrique_id = "'.(int)$this->site->getCurId().'"  ORDER BY contact_titre_'.LG.', contact_titre_'.LG_DEF;		
+		$sql = 'SELECT * FROM plug_contact WHERE fk_rubrique_id = "'.(int)$this->site->getCurId().'"  ORDER BY contact_ordre , contact_titre_'.LG.', contact_titre_'.LG_DEF;		
 		$res = GetAll($sql);
 		
 		
@@ -78,136 +159,79 @@ class genContact {
 			$this->form->add('hidden',$tabC[1]['value'],'','c_qui');
 		}
 				
-
-		/**
-		 * On selectionne les champs supplémentaires à afficher
-		 */
-		$sql = 'SELECT * FROM plug_contact_field 
-					WHERE fk_rubrique_id = '.$this->site->getCurId().' 
-						ORDER BY contact_field_ordre ASC';
 		
-		$this->champs = GetAll($sql);
+	}
+
+	
+	function addFields($arrayOfFields, $position){
 		
 		/**
 		 * Et on les affiche
 		 */
-		foreach($this->champs as $row) {
+		foreach($arrayOfFields as $row) {
 			
-			$var = getLgValue('contact_field_values',$row);
 			
-			/*
-			if(strpos($var,";") === false)
-				$field_value = $var;
-			else
-				$field_value = explode(";",$var);
-			*/
+			$displayed =   ($row['contact_field_top'] && $position == 'top')
+						|| ($row['contact_field_bottom'] && $position == 'bottom')
+						|| (!$row['contact_field_top'] && !$row['contact_field_bottom'] && $position == 'middle');
 			
-			if($row['contact_field_type'] == 'select' || $row['contact_field_type'] == 'selectm')  {
-				if(strpos(';',$var)){
-					$field_value = explode(";",$var);
-				}else {
-					$field_value = explode(",",$var);
-				}
+			if ($displayed) {
+			
+				$var = getLgValue('contact_field_values',$row);
 				
-				$var = array();
-				foreach($field_value as $v) {
-					$v = explode('=',$v);
-					
-					if(count($v)>1) {
-						
-						$var[] = array('label'=>$v[1],'value'=>$v[0]);
-					} else {
-						$var[] = array('label'=>$v[0],'value'=>$v[0]);
+				/*
+				if(strpos($var,";") === false)
+					$field_value = $var;
+				else
+					$field_value = explode(";",$var);
+				*/
+				
+				if($row['contact_field_type'] == 'select' || $row['contact_field_type'] == 'selectm')  {
+					if(strpos(';',$var)){
+						$field_value = explode(";",$var);
+					}else {
+						$field_value = explode(",",$var);
 					}
 					
-				}
-				$this->form->add(
-						$row['contact_field_type'],
-						$var,
-						getLgValue('contact_field_nom',$row),
-						$row['contact_field_name'],
-						$row['contact_field_name'],
-						$row['contact_field_needed'],
-						array($_REQUEST[$row['contact_field_name']])
-						);
-			} else {
-
-				$this->form->add(
-						$row['contact_field_type'],
-						'',
-						getLgValue('contact_field_nom',$row),
-						$row['contact_field_name'],
-						$row['contact_field_name'],
-						$row['contact_field_needed']
-						);
+					$var = array();
+					foreach($field_value as $v) {
+						$v = explode('=',$v);
 						
+						if(count($v)>1) {
+							
+							$var[] = array('label'=>$v[1],'value'=>$v[0]);
+						} else {
+							$var[] = array('label'=>$v[0],'value'=>$v[0]);
+						}
+						
+					}
+					$this->form->add(
+							$row['contact_field_type'],
+							$var,
+							getLgValue('contact_field_nom',$row),
+							$row['contact_field_name'],
+							$row['contact_field_name'],
+							$row['contact_field_needed'],
+							array($_REQUEST[$row['contact_field_name']])
+							);
+				} else {
+	
+					$this->form->add(
+							$row['contact_field_type'],
+							getLgValue('contact_field_values',$row),
+							getLgValue('contact_field_nom',$row),
+							$row['contact_field_name'],
+							$row['contact_field_name'],
+							$row['contact_field_needed']
+							);
+							
+				}
 			}
-			
 		}
 
-		reset($this->champs);
-		
-		
-		/**
-		 * Champ email obligatoire
-		 */
-		$this->form->add('email',$_REQUEST['c_email'],t('c_email'),'c_email',false,true);
-
-		
-		
-		/**
-		 * Champ de commentaire, obligatoire
-		 */
-		$this->form->add('textarea',$_REQUEST['c_comment'],t('c_comment'),'c_comment',false,true);
-
-		
-		/**
-		 * Si on utilise le captcha on le rajoute ...
-		 */
-		if(isTrue(getParam('formulaireContact_useCaptcha')) && pluginExists('captcha')) {
-
-			$this->form->add('captcha','',t('c_captcha'));
-								
-		}
-		
-		/**
-		 * Si on utilise le captcha on le rajoute ...
-		 */
-		if(isTrue(getParam('formulaireContact_useCaptchaQuestion'))) {
-
-			$this->form->add('captcha_question','',t('c_captcha_question'),'','',true);
-					
-		}		
-		
-		/**
-		 * Boutons Submit 
-		 */
-		$this->form->add('submit',t('c_submit'),'','contact_submit','contact_submit');
-			
-
-	
-
-		/**
-		 * Si le formulaire a été soumis sans erreurs
-		 * Il est valide et on n'affiche plus les paragraphes
-		 */
-		if($this->form->isSubmited() && $this->form->isValid() &&  $_POST['c_email'] != t('c_mail') ){
-			$this->isValid = true;
-			$this->site->g_rubrique->showParagraphes = false;
-		} else {
-
-		}
-		
-		
 	}
-	
-	
-/*	function gen() {
-	
-		
-	}*/
 
-	
+
 	/**
 	 * On génère tout juste avant les paragraphes de la rubrique
 	 * 
