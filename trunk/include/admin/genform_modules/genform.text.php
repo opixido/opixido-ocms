@@ -89,15 +89,29 @@ if ( @in_array( $name, $rteFields ) || in_array(getBaseLgField($name),$rteFields
 			/**
 			 * Champ de code
 			 */
+			if(!$GLOBALS['codeFieldPrinted']) {
+				$this->addBuffer('<script language="javascript" type="text/javascript" src="edit_area/edit_area_full.js"></script>');
+			}
+			$this->addBuffer( '<textarea wrap="virtual"  class="genform_codefieldv2"  '.$attributs.' id="genform_'.$name.'" name="genform_' . $name . '">' . str_replace('&amp;','&amp;amp;',$this->tab_default_field[$name]) . '</textarea>' );
+			$this->addBuffer( '
+			<script type="text/javascript">
+						editAreaLoader.init({
+							id : "genform_'.$name.'"		// textarea id
+							,syntax: "php"			// syntax to be uses for highgliting
+							,start_highlight: true		// to display with highlight mode on start-up
+							,min_height :400
+							,min_width :580
+						});
+			</script>
+			' );
 			
-			$this->addBuffer( '<textarea wrap="virtual"  class="genform_codefield"  '.$attributs.' id="genform_'.$name.'" name="genform_' . $name . '">' . str_replace('&amp;','&amp;amp;',$this->tab_default_field[$name]) . '</textarea>' );
 		} else {
 			
 			/**
 			 * Textarea normal
 			 */
 						
-			$this->addBuffer( '<textarea ' . $jsColor . ' rows="5"'.$attributs.' id="genform_'.$name.'" name="genform_' . $name . '">' . $this->tab_default_field[$name] . '</textarea>' );
+			$this->addBuffer( '<textarea ' . $jsColor . ' class="resizable" rows="5"'.$attributs.' id="genform_'.$name.'" name="genform_' . $name . '">' . $this->tab_default_field[$name] . '</textarea>' );
 			
 		}
 		

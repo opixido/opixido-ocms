@@ -72,7 +72,7 @@
 
 
             /* Debut du select */
-            $this->addBuffer( '<select  '.$attributs.' ');
+            $this->addBuffer( '<div class="ajaxselect"><select  onkeydown="smartOptionFinder(this,event)"  '.$attributs.' ');
 
             /* Si c'est une clef avec un champ preview, on rajoute un peu de javascript */
             if(strlen($previewField[$this->table_name][$name]))
@@ -105,7 +105,15 @@
         /* FIN DU SELECT */
         $this->addBuffer( '</select>' );
 
-
+		if(count($result) > 20) {
+			$this->addBuffer('
+			<script type="text/javascript">
+				selectToSearch("genform_'.$name.'");
+			</script>
+			');
+		}
+        
+        
 
         /* On peut modifier cet element */
 
@@ -114,13 +122,15 @@
             $this->addBuffer( '<input
             type="image" src="'.t('src_editer').'" class="inputimage"
             name="genform_modfk__' . $fk_table . '__' . $name . '"
-            title="' . $this->trad( "modifier" ) . '" onclick="if(gid(\'genform_'.$name.'\').options[gid(\'genform_'.$name.'\').selectedIndex] == \'\' ) { alert(\'Veuillez choisir un element a modifier\');return false;}" />
-
+            title="' . $this->trad( "modifier" ) . '" onclick="if($(\'#genform_'.$name.'\').val() == \'\') { return false;}"  />
 
             ' );
+            
+            //if(gid(\'genform_'.$name.'\').options[gid(\'genform_'.$name.'\').selectedIndex] == \'\' ) { alert(\'Veuillez choisir un element a modifier\');return false;}"
 
         }
 
+        
 
         if(strlen($previewField[$this->table_name][$name])) {
             /*
@@ -142,6 +152,8 @@
 
 
         }
+        $this->addBuffer('</div>');
+        
     } else {
         /*
          * On est pas en modification, on affiche juste l'element selectionne

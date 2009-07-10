@@ -93,30 +93,24 @@ if ( !$this->editMode ) {
 		if(!$this->editMode) {
 
 
+
+//<label  style="float:none;width:200px;" for="generatepassword_'.$name.'" class="abutton"><input src="'.t('src_random_password').'" class="inputimage" type="image" id="generatepassword_'.$name.'"  />'.t('generate_random_password').'</label>');
 		$this->addBuffer( '
-			<script>
-
-			var keylist="abcdefghijklmnopqrstuvwxyz123456789"
-			var temp="";
-
-			function generatepass(plength){
-			temp="";
-			for (i=0;i<plength;i++)
-			temp+=keylist.charAt(Math.floor(Math.random()*keylist.length))
-			return temp
-			}
-
-			function populateform(enterlength){
-				gid("genform_admin_pwd").value=generatepass(enterlength);
-			}
-
-			</script>
-		');
-
-		$this->addBuffer( '
-			<label  style="float:none;width:200px;" for="generatepassword" class="abutton"><input src="'.t('src_random_password').'" class="inputimage" type="image" id="generatepassword" onclick="populateform(8);return false;" />'.t('generate_random_password').'</label>');
-
+			
+			<a href="#" class="titreListe" style="clear:both;" id="generatepassword_'.$name.'" ><img src="'.t('src_random_password').'" class="inputimage" type="image"  />'.t('generate_random_password').'</a>');
+		
+			$this->addBuffer( '
+				<script type="text/javascript">
+				$("#generatepassword_'.$name.'").click(
+					function() {
+						$("#genform_'.$name.'").val(generatepass(8));
+						return false;
+					});
+				</script>
+			');
 		}
+		
+	
 
 
 	/**
@@ -129,7 +123,7 @@ if ( !$this->editMode ) {
 		$fl = $this->tab_field[$name]->max_length;
 		
     	if( $fl >= 100) {
-			$this->addBuffer( '<textarea id="genform_'.$name.'" ' . $jsColor . ' '.$attributs.'  name="genform_' . $name . '" rows="2"  maxlength="'.$fl.'" class="genform_varchar" >' . ( $this->tab_default_field[$name] ) . '</textarea>' );
+			$this->addBuffer( '<textarea class="resizable" id="genform_'.$name.'" ' . $jsColor . ' '.$attributs.'  name="genform_' . $name . '" rows="2"  maxlength="'.$fl.'" class="genform_varchar" >' . ( $this->tab_default_field[$name] ) . '</textarea>' );
     	} else  {
         	$this->addBuffer('<input size="'.$fl.'" id="genform_'.$name.'" ' . $jsColor . ' '.$attributs.'  name="genform_' . $name . '" maxlength="'.$fl.'" class="genform_varchar" value="' . ( $this->tab_default_field[$name] ) . '" />');
    			$this->addBuffer($this->genInsertButtons('genform_'.$name.''));
