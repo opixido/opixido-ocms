@@ -2,8 +2,13 @@
 
 
 
-class rubrique extends baseObj {
+class rubrique extends row {
 	
+	public $table = 's_rubrique';
+	
+	function __construct($row) {
+		parent::__construct($this->table,$row);
+	}
 	
 	/**
 	 * Returns the $limit following rubriques
@@ -39,7 +44,7 @@ class rubrique extends baseObj {
 	 * @param string $order ASC or DESC
 	 * @return array
 	 */
-	function getAdjacentRubs($limit = 1,$order = 'ASC') {
+	function getAdjacentRubs($limit = 0,$order = '') {
 		
 		/**
 		 * Sql Query
@@ -47,11 +52,18 @@ class rubrique extends baseObj {
 		$sql = 'SELECT * FROM s_rubrique 
 		WHERE
 		fk_rubrique_id = '.sql($this->row['fk_rubrique_id']).' 
-		AND rubrique_ordre > '.$this->row['rubrique_ordre'].'
+		';
 		
-		'.sqlRubriqueOnlyOnline().' 
+		if($order == 'ASC') {
+			$sql .= ' AND rubrique_ordre > '.$this->row['rubrique_ordre'].' ';
+		} else if($order == 'DESC') {
+			$sql .= ' AND rubrique_ordre < '.$this->row['rubrique_ordre'].' ';
+		}
+		
+		$sql .= ' '.sqlRubriqueOnlyOnline().' 
 		
 		ORDER BY rubrique_ordre '.$order.' 
+		
 		';
 
 		/**

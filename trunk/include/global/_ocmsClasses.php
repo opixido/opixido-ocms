@@ -209,6 +209,7 @@ class baseGen extends baseObj {
 		
 		$this->site = $site;
 		$this->params = SplitParams($params,';','=');
+		
 		$this->plugins = $site->plugins;
 		if(method_exists($this,'ocms_defaultParams')) {
 			$defParams = $this->ocms_defaultParams();

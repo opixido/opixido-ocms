@@ -4,7 +4,7 @@ if($_REQUEST['curId'] != "new")  {
 
 	    if($form->tab_default_field['rubrique_type'] == 'link') {
         
-	        $form->genlg("rubrique_link");
+	       // $form->genlg("rubrique_link");
 	
 	     //   $form->gen("rubrique_link_en");     
 	        

@@ -14,8 +14,12 @@ if(rubriqueIsAPage($form) || true ) {
 
 	//$form->gen('fk_paragraphe_id');
 
-	$form->gen("fk_gabarit_id"); //,"",""," onchange='checkRubriqueType()' ");
-
+	global $restrictedMode;
+	$restrictedMode = true;
+	if($form->tab_default_field['rubrique_type'] != RTYPE_MENUROOT) {
+		$form->gen("fk_gabarit_id"); //,"",""," onchange='checkRubriqueType()' ");
+	}
+	$restrictedMode =false;
 	/**
 	 * Si on a un gabarit particulier
 	 */
@@ -45,6 +49,8 @@ if(rubriqueIsAPage($form) || true ) {
 			$r = call_user_method('ocms_getParams',$gabNom);
 		}
 		
+
+				
 		$plugs = GetPlugins();
 		foreach($plugs as $v) {
 			if(class_exists($v.'Admin') && method_exists($v.'Admin','ocms_getParams')) {
@@ -58,6 +64,16 @@ if(rubriqueIsAPage($form) || true ) {
 		}
 		
 		if(!$this->editMode) {
+			if(method_exists($gabNom,'ocms_getSubRubs')) {
+				p('
+				<script type="text/javascript">
+				$(document).ready(function() {
+					a = $("#genform_rubrique_option option[value=\'dynSubRubs\']").attr("selected", "selected");
+				});
+				</script>
+				');
+			}
+		
 			echo '<div style="display:inline;" class="genform_txt">'.t($gabNom.'_params').'</div>
 			<div class="genform_champ">';
 			$sf = new simpleForm();
@@ -142,8 +158,8 @@ if(rubriqueIsAPage($form) || true ) {
 		// print_r(genContact::$ocms_params);
 		
 		$form->gen("rubrique_gabarit_param");
-		$form->gen("rubrique_dyntitle");
-		$form->gen("rubrique_dynvisibility");
+
+		$form->gen("rubrique_option");
 		
 	}
 	 	
@@ -154,7 +170,10 @@ if($form->tab_default_field['rubrique_type'] == RTYPE_SITEROOT) {
 	$form->gen("rubrique_template");
 }
 
+
 $form->gen("rubrique_type");	
+if($form->tab_default_field['rubrique_type'] == 'link')
+$form->genlg("rubrique_link");
 //$form->gen("FAUXPARA");	
 
 }

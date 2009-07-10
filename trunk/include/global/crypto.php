@@ -94,9 +94,9 @@ class crypto
 			$iv = substr($str,0,$ivsize);
 			$str = substr($str,$ivsize);
 			
-			mcrypt_generic_init($td,$this->key,$iv);
+			@mcrypt_generic_init($td,$this->key,$iv);
 
-			$res = mdecrypt_generic ($td,$str);
+			$res = @mdecrypt_generic ($td,$str);
 
 			mcrypt_generic_deinit($td);
 			$this->_closeModule($td);

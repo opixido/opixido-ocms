@@ -34,6 +34,7 @@ $tabForms['plug_contact_field']['pages'] = array('../plugins/ocms_contact/form.f
  * nommé "contact_field_ordre" et qui définit l'ordre grace à la clef externe fk_rubrique_id
  */
 $orderFields['plug_contact_field'] = array('contact_field_ordre','fk_rubrique_id');
+$orderFields['plug_contact'] = array('contact_ordre','fk_rubrique_id');
 
 /**
  * Dans le formulaire de la table "s_rubrique" on rajoute 

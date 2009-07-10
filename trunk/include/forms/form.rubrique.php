@@ -175,8 +175,12 @@ if($_REQUEST['curId'] == "new") {
 		$form->genHiddenField('rubrique_url_'.$lg);
 		$form->gen('rubrique_titre_'.$lg,'','', 'onkeyup="updateChampUrl(\'mygen_rubrique_url_'.$lg.'\',this.value)"' );
 		?>
-		<label for="mygen_rubrique_url_<?=$lg?>"><?=t('url_'.$lg.'_will_be')?></label>
-		<input type="text" value="" name="genform_rubrique_url_<?=$lg?>" id="mygen_rubrique_url_<?=$lg?>" onchange="checkFields()" />
+		<label for="mygen_rubrique_url_<?=$lg?>"><?=t('url_'.$lg.'_will_be')?></label><span style="font-family:verdana;padding:5px;display:block;background:#eee;border:1px solid #999">
+		<?
+			echo getUrlFromId($_REQUEST['genform__add_sub_id'],$lg);
+		?>
+		<input type="text" style="border:0;font-family:verdana;" value="" name="genform_rubrique_url_<?=$lg?>" id="mygen_rubrique_url_<?=$lg?>" onchange="checkFields()" />
+		</span>
 		<hr/>
 	<?php
 	}

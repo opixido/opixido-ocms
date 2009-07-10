@@ -263,67 +263,9 @@ class genRubrique {
 		if ($this->hasBddInfo) {
 			$startTimeBdd = getmicrotime();
 			//debug($startTimeBdd);
-
-			$className = $this->gabarit['gabarit_classe'];
-			$deco = $this->gabarit['gabarit_bdd_deco'];
-
-			ob_start();
 			
-			$dossier = ($this->gabarit['gabarit_plugin']) ? path_concat('plugins',$this->gabarit['gabarit_plugin'])   :'bdd';
-			
-			$gb_obj->includeFile($className . '.php', $dossier);
+			$this->bddClasse = getGabaritClass($this->gabarit,$this->rubrique['rubrique_gabarit_param']);
 
-
-			if(class_exists($className)) {
-
-
-
-				if ($deco) {
-					/* On se connecte a une autre base de donnee
-
-					//$curco = $co;
-
-
-					$this->bddClasse = new $className($this->site, $this->rubrique['rubrique_gabarit_param'], $this);
-					$this->bddClasse->deco = true;
-
-					if(method_exists($this->bddClasse,'genBeforePara')) {
-							$this->htmlInClassBeforePara .= $this->bddClasse->genBeforePara();
-					}
-
-					$this->htmlInClass = $this->bddClasse->gen();
-
-					$this->bddClasse->Disconnect();
-
-					*/
-
-					debug('DECO ???');
-
-
-
-				} else {
-
-					/* On reste dans la meme base */
-
-
-					$this->bddClasse = new $className($this->site, $this->rubrique['rubrique_gabarit_param']. ','.$this->gabarit['gabarit_classe_param'], $this);
-
-					$this->bddClasse->deco = false;
-
-				}
-
-			} else {
-				derror('La classe associee n\'existe pas : '.$className);
-			}
-
-			$htTemp = ob_get_contents();
-
-			ob_end_clean();
-
-			if (strlen(trim($htTemp))) {
-
-				$this->htmlInClass = $htTemp;
-			}
 
 			$GLOBALS['times']['BDD'] += (getmicrotime() - $startTimeBdd);
 			$GLOBALS['times']['Plugins'] += $GLOBALS['times']['BDD'];

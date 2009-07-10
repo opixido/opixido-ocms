@@ -79,7 +79,8 @@ class genMenu{
 		/**
 		 * Cache for menu
 		 */
-		$this->cache2 = new GenCache('arbo'.$this->site->g_url->topRubId.'-'.$this->site->getCurId().'_'.$this->nom_menu,GetParam('date_update_arbo'));
+		
+		$this->cache2 = new GenCache('arbo'.md5($_ENV['REQUEST_URI'].'-'.$this->site->g_url->topRubId.'-'.$this->site->getCurId().'_'.$this->nom_menu),GetParam('date_update_arbo'));
 		if(!$this->cache2->cacheExists()) {
 			$this->genTab();
 		}
@@ -94,7 +95,7 @@ class genMenu{
 	function getTab(){
 		if(!$this->cache2->cacheExists())
 			$this->cache2->saveCache($this->gen($this->tabPrincipal, 2));
-			
+		
 		return $this->cache2->getCache();
 
 	}
@@ -176,10 +177,16 @@ class genMenu{
 			$style .= $nbM != $nbTot && $nbM != 1 ? 'milieu ' : '';
 			$style .= '" ';
 
+			if(!akev($value,'id')) {
+				$value['idmenu'] = nicename($value['titre']);
+			} else {
+				$value['idmenu'] = $value['id'];
+			}
+			
 			$style .= akev($value,'style');
-			$tpl->set('lien',akev($value,'url'));
+			$tpl->set('lien',getLgUrl(akev($value,'url')));
 			$tpl->set('titre',akev($value,'titre'));
-			$tpl->set('id',empty($rootId) ? ' id="ml'.akev($value,'id').'" ' : ' id="menu_' .$this->nom_menu .'_' .$cpt .'" ');
+			$tpl->set('id',empty($rootId) ? ' id="ml'.akev($value,'idmenu').'" ' : ' id="menu_' .$this->nom_menu .'_' .$cpt .'" ');
 			$tpl->set('style',akev($value,'style'));
 			$tpl->set('classa',akev($value,'selected') ? ' class="selected"  ' : '');
 			$tpl->set('style',$style);
@@ -252,8 +259,8 @@ class genMenu{
 		}
 	
 	}
-	
-	
+
+
 	
 	
 	
@@ -273,8 +280,8 @@ class genMenu{
 			$val = majuscules($val);
 		}
 	
-		$srcNormal = IMG_GENERATOR.'?text='.str_replace('-','%2d',urlencode($val));
-	
+		//$srcNormal = IMG_GENERATOR.'?nb='.$nb.'&text='.str_replace('-','%2d',urlencode($val));
+		$srcNormal = 'nb='.$nb;
 	
 	
 		if(is_array($this->conf['profiles']) && $this->conf['profiles'][$nb-1]) {
@@ -287,6 +294,11 @@ class genMenu{
 		
 		$srcNormal .= $this->addConf('width',$nb);
 		$srcNormal .= $this->addConf('imgW',$nb);
+		
+		if($selected) {
+			$srcNormal .= '&textColor='.$GLOBALS['menu_'.$this->nom_menu.'_'.$nb];
+			
+		}
 	
 		if($this->conf['rollover']) {
 			$srcOver =  IMG_GENERATOR.'?text='.str_replace('-','%2d',urlencode($val));
@@ -296,19 +308,22 @@ class genMenu{
 			} else {
 				$srcOver .= '&amp;profile='.$this->conf['rollover'];
 			}
+			
 	
 			$srcOver .= $this->addConf('width',$nb);
 			$srcOver .= $this->addConf('imgW',$nb);
+			//$srcOver .= $this->addConf('b',$nb);
 		}
 	
-
+		$srcNormal = getImgTextSrc($val,'',$srcNormal);
+		
 		$return = '<img src="'.$srcNormal.'" ';
 	
 		if($srcOver) {
 			$return .='	onmouseover="swapImage(\''.$srcOver.'\',this)" ';
 		}
 	
-		$return .= ' alt="'.altify($val).'" />';
+		$return .= ' alt='.alt($val).' />';
 	
 		//if($barre[$nom_menu][$nb] == 'oui') $return .= '<img src="/img/base/tirets_vert.gif" alt="" />';
 	

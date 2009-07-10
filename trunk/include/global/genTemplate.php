@@ -152,6 +152,14 @@ class genTemplate {
 	}
 
 	
+	final function __set($name,$value) {
+		$this->setVar($name,$value);
+	}
+	
+	final function __get($name) {
+		return $this->getVar($name);
+	}
+		
 	public function isDefined($nom) {
 		if(ake($this->vars,$nom)) {
 			return true;
@@ -175,9 +183,7 @@ class genTemplate {
 		$this->imgs[$nom]['src'] = $src;
 		if(!strlen($alt))
 			$alt = "";
-		$this->imgs[$nom]['alt'] = $alt;
-		
-			
+		$this->imgs[$nom]['alt'] = $alt;	
 		
 	}
 	
@@ -372,6 +378,7 @@ class genTemplate {
 
 	}
 
+	
 	
 	public function replaceBlock($bloc,$replace) {	
 		$this->blocks[$bloc]['template'] = $replace;

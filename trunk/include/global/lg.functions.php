@@ -473,7 +473,7 @@ function getGabaritByClass($classe) {
 
 
 /**
- * Cr�� l'url voulue si jamais le champ URL en question est du type @rubrique_id=XXX
+ * Cree l'url voulue si jamais le champ URL en question est du type @rubrique_id=XXX
  *
  * @param array $k tableau des valeurs
  * @param string $v Nom du champ
@@ -485,18 +485,8 @@ function checkLgUrl($k,$v) {
 
 	global $_Gconfig;
 
-	if ( arrayInWord( $_Gconfig['urlFields'], $k ) ) {
-
-		if(strstr($v,'@rubrique_id=') !== false) {
-			
-			$id = (int)str_replace('@rubrique_id=','',$v);
-			//debug($GLOBALS['site']->g_url->buildUrlFromId($id));
-			//return path_concat(WEB_URL,$GLOBALS['site']->g_url->buildUrlFromId($id));
-			return getUrlFromId($id);
-		}
-		else {
-			return $v;
-		}
+	if ( arrayInWord( $_Gconfig['urlFields'], $k ) || $k == 'link_'.LG ) {
+		return getLgUrl($v);
 	}
 	else {
 
@@ -505,6 +495,20 @@ function checkLgUrl($k,$v) {
 
 }
 
+
+function getLgUrl($v) {	
+	
+	if(strstr($v,'@rubrique_id=') !== false) {
+		
+		$id = (int)str_replace('@rubrique_id=','',$v);
+		
+		return getUrlFromId($id);
+	}
+	else {
+		return $v;
+	}
+		
+}
 
 
 
@@ -518,7 +522,7 @@ function checkLgUrl($k,$v) {
 function isBaseLgField($field,$table) {
 
 	$tab = GetTabField($table);
-	if(ake($tab,$field.'_'.LG_DEF)) {
+	if(ake($tab,$field.'_'.LG_DEF) && !ake($tab,$field)) {
 		return true;
 	}
 	return false;
@@ -784,12 +788,13 @@ function mystrftime($format,$timestamp=0) {
 		else if($format == '%A') {
 
 			$weekday = ((int)date('N',$timestamp));
+			if($weekday == 7)  {				
+				$weekday = 0;
+			}
+			
 			return $tab['weekdays_long'][$weekday] ;
 		}
 		else {
 			return strftime($format,$timestamp);
 		}
 }
-
-
-
