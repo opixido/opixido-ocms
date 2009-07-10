@@ -44,7 +44,7 @@ if(array_key_exists('editTrads',$_GET)) {
 function getEditTrad($nom) {
 	
 	if($_SESSION['editTrads']) {
-		$html .= '<a href="javascript:;" onclick="gid(\'ET_'.$nom.'\').style.display=\'inline\'" >+</a> <input id="ET_'.$nom.'" type="text" name="ET_'.$nom.'" value='.alt(t($nom)).' style="display:none" onchange="XHR_editTrad(this)" />';
+		$html .= '<a href="javascript:return false;" onclick="gid(\'ET_'.$nom.'\').style.display=\'inline\';return false" >+</a> <input onclick="return false" id="ET_'.$nom.'" type="text" name="ET_'.$nom.'" value='.alt(t($nom)).' style="display:none" onchange="XHR_editTrad(this)" />';
 		return $html;
 	}
 	
@@ -73,7 +73,7 @@ function getTableListing($table) {
 		
 		if(in_array($table,$_Gconfig['versionedTable'])) {
 			
-			$sql .= ' AND(  '.VERSION_FIELD.' = ""  OR  '.VERSION_FIELD.' IS NULL  )';
+			$sql .= ' AND(  '.VERSION_FIELD.' = ""  OR  '.VERSION_FIELD.' IS NULL   OR  '.VERSION_FIELD.' = 0  )';
 			
 		}
 		
@@ -253,7 +253,7 @@ function GetOnlyEditableVersion($table, $aliase='') {
 			$aliase = $aliase.".";
 	if(in_array($table,$_Gconfig['versionedTable'])) {
 		
-		return ' AND '.$aliase.VERSION_FIELD.' IS NOT NULL ';
+		return ' AND ( '.$aliase.VERSION_FIELD.' IS NOT NULL AND '.$aliase.VERSION_FIELD.' != 0 ) ';
 	} 
 	else if(in_array($table,$_Gconfig['multiVersionTable'])) {
 		
@@ -662,11 +662,16 @@ die();
 function backupDb() {
 	
 	global $_bdd_user,$_bdd_host,$_bdd_pwd, $_bdd_bdd;
+	
+	echo include($GLOBALS['gb_obj']->getIncludePath('config.server.php','config'));
+	
     //MySQL connection parameters
     $dbhost = $_bdd_host;
     $dbuser = $_bdd_user;
     $dbpsw = $_bdd_pwd;
     $dbname = $_bdd_bdd;
+    
+
 	
 	$nodata   = false;      #!DO NOT DUMP TABLES DATA
 	$nostruct = false;      #!DO NOT DUMP TABLES STRUCTURE
@@ -974,4 +979,21 @@ function setAllUrls() {
 	
 }
 
-?>
+
+function getPicto($nom,$taille="32x32") {
+	global $tabForms;
+	if($tabForms[$nom]['picto']) {
+		$p = $tabForms[$nom]['picto'];
+	} else if(tradExists($nom)) {
+		$p = t($nom);
+	}
+	$pos = strpos($p,ADMIN_PICTOS_FOLDER);
+	if($pos !== false ) {
+		$p = substr($p,$pos+strlen(ADMIN_PICTOS_FOLDER)+5);
+	}
+	
+	$a =  ADMIN_PICTOS_FOLDER.$taille.$p;
+//	debug($a);
+	return $a;
+	
+}

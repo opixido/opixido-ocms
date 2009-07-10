@@ -90,8 +90,10 @@ class genSearchV2 {
 				 */
 				$_SESSION['LastSearch'][$this->table] = 'full';
 				$_SESSION['LastSearchQuery'][$this->table] = $_POST;
-				
-				$this->getFullSearchForm();
+				global $searchField;
+				if($searchField[$this->table]) {					
+					$this->getFullSearchForm();
+				}
 				
 				$res = 	$this->doFullSearch();
 				
@@ -863,9 +865,9 @@ class genSearchV2 {
             	 * It's an n:1 relation
             	 */
             	
-                $in = implode(" , ",$v);
+                $in = implode(" ',' ",$v);
 
-                $wheresql .= " AND ".$k." IN ( ".$in." ) "."\n";
+                $wheresql .= " AND ".$k." IN ('".$in."') "."\n";
 
 
             }

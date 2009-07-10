@@ -68,6 +68,10 @@ class genXhrAdmin {
     				$this->searchTableRel();
     				
     				break;
+    			case 'searchRelation':
+    				$this->searchRelation();
+    				
+    				break;    				
     			case 'arbo':
     				
     				$this->getArboRubs();
@@ -105,9 +109,15 @@ class genXhrAdmin {
     				
     			case 'del404':
     				del404();
+    				
+    			case 'reorderRelinv';
+    				$this->reorderRelinv();
+    				break;
     		}
     	
     }
+    
+    
     
     function ajaxAction() {
     	
@@ -131,7 +141,7 @@ class genXhrAdmin {
     			$row =getRowFromId($_REQUEST['table'],$_REQUEST['id']);
     			$fkC = $row[$params['vfk1']] ? $params['vfk1'] : $params['vfk2'];
     			echo 'Descend '.$_REQUEST['table'].' - '.$_REQUEST['id'].' - '.$fkC;
-    			print_r($params);
+    			
     			$o = new GenOrder($_REQUEST['table'],$_REQUEST['id'],$row[$fkC],$fkC);
     			
     			$o->GetDown();
@@ -175,6 +185,16 @@ class genXhrAdmin {
     			$gr = new genRecord($table,$id);
     			$gr->DeleteRow($id);
     			
+    		}
+    		else if($action == 'reorderRelinv') {
+				print_r($params);
+				foreach($params['order'] as $k=>$v) {
+					$sql = ('UPDATE '.$table.' SET '.$params['relinv'].' = '.sql($k+1).' WHERE '.getPrimaryKey($table).' = '.sql($v));
+				
+					Dosql($sql);
+					
+				}
+    			die();
     		}
     		
     	}
@@ -234,6 +254,7 @@ class genXhrAdmin {
 				//echo mysql_error();
 				$id = InsertId();
 				
+				
 				if(!$_REQUEST['id'] || $_REQUEST['id'] == 'new') {
 					$_SESSION['sqlWaitingForInsert'][] = 'UPDATE '.$vals[0].' SET '.$vals[1].' = [INSERTID] WHERE '.getPrimaryKey($vals[0]).' = '.sql($id);
 				}
@@ -280,7 +301,8 @@ class genXhrAdmin {
     function editTrad() {
     	
     	$_REQUEST['nom'] = str_replace('ET_','',$_REQUEST['nom']);
-		DoSql('REPLACE INTO s_admin_trad (admin_trad_id,admin_trad_'.LG_DEF.') VALUES ("'.$_REQUEST['nom'].'",'.sql($_REQUEST['valeur']).')');
+    	$s = str_replace(str_replace(ADMIN_URL,"",ADMIN_PICTOS_FOLDER),'[ADMIN_PICTOS_FOLDER]',$_REQUEST['valeur']);
+		DoSql('REPLACE INTO s_admin_trad (admin_trad_id,admin_trad_'.LG_DEF.') VALUES ("'.$_REQUEST['nom'].'",'.sql($s).')');
     	  
 		print_r($_REQUEST);
     }
@@ -332,7 +354,7 @@ class genXhrAdmin {
 		
 
 		
-		$s = new genSearch($fk_table);
+		$s = new genSearchV2($fk_table);
 		$res = $s->doFullSearch($_REQUEST['q'],$clause);
 		
 		foreach($res as $row) {
@@ -340,6 +362,24 @@ class genXhrAdmin {
 		}
 		die();
     	
+    }
+    
+    function searchRelation() {
+    	
+    	$t = $_REQUEST['table'];
+    	$fk = str_replace('genform_','',$_REQUEST['fk']);
+    	global $relations;
+    	
+    	$table = $relations[$t][$fk];
+    	
+		$pk2 = getPrimaryKey($table);
+		$s = new genSearchV2($table);
+		$res = $s->doFullSearch($_REQUEST['q'],$clause);
+		foreach($res as $row) {
+			print('<li><a class="sal" onclick="selectRelationValue(this)" rel="'.$row[$pk2].'">'.getTitleFromRow($table,$row).'</a></li>')	;				
+		}
+		die();
+		
     }
     
     
@@ -421,4 +461,6 @@ class genXhrAdmin {
 }
 
 
-?>
+class object {
+	
+}

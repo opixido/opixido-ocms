@@ -351,7 +351,9 @@ class genRecord {
             	}
             	foreach($gr_on[$action]['ANY_TABLE'] as $v ) {
 	                if (function_exists($v)) {
+	                	
 	                    $status =  call_user_func($v, $this->id, $this->row, $this, $this->table);
+	                   
 	                } else {
 	                    error('Fonction non definie pour l\'action : ' . $action . ' sur ' . $this->table);
 	                }
@@ -439,6 +441,7 @@ class genRecord {
                     $fkch = $v_inv[$this->table];
                     $sql = 'DELETE FROM ' . $k . ' WHERE ' . $fkch . ' = "' . $id . '"';
                     DoSql($sql);
+                   
                 }
             }
 
@@ -666,6 +669,7 @@ class genRecord {
                         	*/
                         	
                             $value = $_POST['genform_' . $name ].' '.$_POST['genform_' . $name . '_hh'].':'.$_POST['genform_' . $name . '_mm'].':'.$_POST['genform_' . $name . '_ss'];
+                            
                             $dates = split("-", $value);
 
                            
@@ -677,12 +681,14 @@ class genRecord {
                             } else {
                                 $value = "";
                             }
-                        } else {
+                        } else if(is_array($value)) { 
+                        	$value = implode(",",$value);	
+                        }
 						   /**
 						          * Fout la merde
 							*/
                            // $value = addmyslashes($value);
-                        }
+                        
                         if ($value == DEFAULT_URL_VALUE)
                             $value = "";
 
@@ -802,6 +808,7 @@ class genRecord {
                 $query .= " WHERE " . $_REQUEST['curTableKey'] . ' = "' . $this->id . '"';
 
                 $res = DoSql($query);
+                              
             }
 
             if ($orderFields[$this->table]) {
