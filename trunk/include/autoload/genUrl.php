@@ -47,15 +47,6 @@ class genUrl{
 		$this->rootRow = $this->getSiteRoot();
 		$this->rootHomeId = $this->rootRow['rubrique_id'];
 
-		//$this->isMiniSite();
-		/*
-		if($this->isNewUrl()){
-			header ('HTTP/1.1 301 Moved Permanently');
-			header('location:' .$this->isNewUrl());
-			exit();
-		}
-		*/
-
 		
 		$this->roadSup = array();
 		$this->colorLevel = 'sd';
@@ -103,8 +94,7 @@ class genUrl{
 										'gabarit'=>$res['fk_gabarit_id'],
 										/*'isFolder'=>$res['rubrique_is_folder'],*/
 										 'param'=>$res['rubrique_gabarit_param'],
-										 'dyntitle'=>$res['rubrique_dyntitle'],
-										 'dynvisibility'=>$res['rubrique_dynvisibility'],							 
+										 'option'=>$res['rubrique_option'],
 									     'type' => $res['rubrique_type'],
 									     'webroot'=>($res['rubrique_type'] == RTYPE_SITEROOT ? $this->getDefWebRoot($res['rubrique_url_'.LG_DEF]) : ''	) 
 									     );
@@ -476,8 +466,8 @@ class genUrl{
 					$select .= ' R'.$i.'.rubrique_type AS r'.$i.'_rubrique_type ,  ';
 					$select .= ' R'.$i.'.fk_gabarit_id AS r'.$i.'_fk_gabarit_id ,  ';
 					$select .= ' R'.$i.'.rubrique_gabarit_param AS r'.$i.'_rubrique_gabarit_param ,  ';					
-					$select .= ' R'.$i.'.rubrique_dyntitle AS r'.$i.'_rubrique_dyntitle ,  ';					
-					$select .= ' R'.$i.'.rubrique_dynvisibility AS r'.$i.'_rubrique_dynvisibility ,  ';					
+					$select .= ' R'.$i.'.rubrique_option AS r'.$i.'_rubrique_option ,  ';					
+					
 					
 					global $_Gconfig;
 					reset($_Gconfig['LANGUAGES']);
@@ -584,8 +574,8 @@ class genUrl{
 										 'fkRub'=>$res['r'.$i.'_fk_rubrique_id'],
 										 'gabarit'=>$res['r'.$i.'_fk_gabarit_id'],
 										 'param'=>$res['r'.$i.'_rubrique_gabarit_param'],
-										 'dyntitle'=>$res['r'.$i.'_rubrique_dyntitle'],
-										 'dynvisibility'=>$res['r'.$i.'_rubrique_dynvisibility'],
+										 'option'=>$res['r'.$i.'_rubrique_option'],
+										 
 									     'type' => $res['r'.$i.'_rubrique_type'],		
 									     'selected'=> true,
 									    /* 'isFolder'=> $res['r'.$i.'_rubrique_is_folder'],	*/
@@ -750,7 +740,10 @@ class genUrl{
 			
 		} else {			
 			$url = $this->buildUrl($rubId,$lg);		
-			
+			if(is_array($url)) {
+				$params = array_merge($url[1],$params);
+				$url = $url[0];
+			}
 			$url = path_concat(BU,$url,$this->addParams($params));	
 			
 			if(strlen($action )) {
@@ -785,9 +778,16 @@ class genUrl{
 			
 
 		}
-		
+		$bddPart = explode('/'.GetParam('fake_folder_param').'/',$url);
+		if(count($bddPart) > 2) {
+			$url = $bddPart[0].'/'.GetParam('fake_folder_param').'/'.$bddPart[1];
+			if($bddPart[2]) {
+				$url.= '/'.$bddPart[2];
+			}
+		}
 		
 		$GLOBALS['urlCached'][$cachename] = $url;
+		
 		return $url;
 		
 	}
@@ -877,7 +877,7 @@ class genUrl{
 				   from s_rubrique as R1, s_rubrique as R2
 				   where R1.fk_rubrique_id = R2.rubrique_id
 				   '.sqlRubriqueOnlyOnline('R1').'
-				   and R1.rubrique_id = ' .$rubId;
+				   and R1.rubrique_id = ' .sql($rubId);
 			$res = GetSingle($sql);
 			
 
@@ -887,8 +887,8 @@ class genUrl{
 											'gabarit'=>$res['fk_gabarit_id'],
 											 'param'=>$res['rubrique_gabarit_param'],
 											/* 'isFolder'=>$res['rubrique_is_folder'],*/
-											 'dyntitle'=>$res['rubrique_dyntitle'],
-											 'dynvisibility'=>$res['rubrique_dynvisibility'],										 
+											 'option'=>$res['rubrique_option'],
+															 
 										     'type' => $res['rubrique_type'],
 										     'p_fkRubId' => $res['p_fkRubId'],
 										     'selected'=> in_array($res['rubId'],$this->selectedArbo)	
@@ -980,8 +980,14 @@ class genUrl{
 		if($GLOBALS['tabUrl'][$rubId]['type'] == 'folder' && $rubId != $this->root_id && $GLOBALS['tabUrl'][$rubId]['type'] != RTYPE_SITEROOT) {
 		
 			$subId = $rubId;
-			$subs = $this->recursRub($subId,1,1);		
+			//$subs = $this->recursRub($subId,1,1);		
+			if(rubHasOption($GLOBALS['tabUrl'][$rubId]['option'],'dynSubRubs')) {
 			
+				$subs = getGabaritSubRubs(getRowFromId('s_rubrique',$rubId),$GLOBALS['tabUrl'][$rubId]['gabarit']);
+				return array(path_concat('/'.$lg,$url),array($subs[0]['PARAM']=>$subs[0]['VALUE']));
+			} else {
+				$subs = $this->recursRub($subId,1,1);		
+			}
 			/**
 			 * On parcourt $SUBS et pour chaque sous rubrique ayant au moins une sous rubrique on recommence
 			 */
@@ -1000,6 +1006,7 @@ class genUrl{
 					break;
 				}
 			}
+			
 			if($subId != $rubId) {
 				return $this->buildUrl($subId,$lg);
 			}		
@@ -1032,6 +1039,8 @@ class genUrl{
 			return $GLOBALS['recursDone'][$rubId.'-'.$maxLevel];
 		} 
 		
+		
+		
 		/**
 		 * Sélection de toutes ses sous rubriques
 		 */
@@ -1049,6 +1058,29 @@ class genUrl{
 		$res = GetAll($sql);
 		
 		
+		if(!count($res)) {
+			
+			$r = getRowFromId('s_rubrique',$rubId);
+			if(rubHasOption($r['rubrique_option'],'dynSubRubs')) {
+				$subs = getGabaritSubRubs($r,$r['fk_gabarit_id']);
+				foreach($subs as $v) {
+						$k = getUrlFromId($rid).'_'.$v['VALUE'];
+						$tabTemp[$k] = array(
+							'fkRub'=>$rubId,
+							'url'=>getUrlFromId($rid,LG,array($v['PARAM']=>$v['VALUE'])),
+							'titre'=>$v['NAME'],
+							'type'=>'fake'								
+						);
+						if($_REQUEST[$v['PARAM']] == $v['VALUE']) {
+							$tabTemp[$k]['selected'] = true;
+						}
+						
+						
+				}
+				
+				return $tabTemp;
+			}
+		}
 		
 		/**
 		 * On parcourt toutes les sous rubriques
@@ -1064,13 +1096,15 @@ class genUrl{
 			 */
 			$sel = in_array($sRub['rubrique_id'],$this->selectedArbo);
 			
+			
+			
 			/**
 			 * On stock le tabUrl du GenUrl
 			 * Un cache temporaire
 			 */
 			$doIt = true;
 			
-			if($sRub['rubrique_dynvisibility']) {
+			if(rubHasOption($sRub['rubrique_option'],'dynVisibility')) {
 				
 				$res = getGabaritVisibility($sRub['fk_gabarit_id']);
 				
@@ -1086,8 +1120,8 @@ class genUrl{
 											     'fkRub' => $rubId,	
 											     'gabarit'=>$sRub['fk_gabarit_id'],
 												 'param'=>$sRub['rubrique_gabarit_param'],
-												 'dyntitle'=>$sRub['rubrique_dyntitle'],		
-												 'dynvisibility'=>$sRub['rubrique_dynvisibility'],
+												 'option'=>$sRub['rubrique_option'],		
+												 												 
 											     'type' => $sRub['rubrique_type'],
 											    /* 'isFolder' => $sRub['rubrique_is_folder'],*/
 											     'selected'=> $sel
@@ -1114,8 +1148,7 @@ class genUrl{
 				$tabTemp[$mu] = array('id'=>$sRub['rubrique_id'],
 										'url' => $mu,
 										    'titre' => GetLgValue('rubrique_titre',$sRub,false),
-										    'type' => $sRub['rubrique_type'],
-										  /*  'isFolder' => $sRub['rubrique_is_folder'],*/
+										    'type' => $sRub['rubrique_type'],										  
 										  	'selected'=>$sel					    
 										    );
 				reset($_Gconfig['LANGUAGES']);
@@ -1124,19 +1157,35 @@ class genUrl{
 				}									    
 									    
 	
-				
+					
 				/**
 				 * Et on fait la récursion 
 				 */
 				if($curLevel < $maxLevel) {
-					$tabTemp[$mu]['sub'] = $this->recursRub($sRub['rubrique_id'], $curLevel+1, $maxLevel);
+					if(rubHasOption($sRub['rubrique_option'],'dynSubRubs')) {
+						$rid = $sRub['rubrique_id'];
+						$subs = getGabaritSubRubs($sRub,$sRub['fk_gabarit_id']);
+						
+						foreach($subs as $v) {
+							$tabTemp[$mu]['sub'][getUrlFromId($rid).'_'.$v['VALUE']] = array(
+								'fkRub'=>$rid,
+								'url'=>getUrlFromId($rid,LG,array($v['PARAM']=>$v['VALUE'])),
+								'titre'=>$v['NAME'],
+								'type'=>'fake'								
+							);
+						}
+					} else {
+						$tabTemp[$mu]['sub'] = $this->recursRub($sRub['rubrique_id'], $curLevel+1, $maxLevel);
+					}
 				}
+					
 				}
-		}
+	}
 
 		$GLOBALS['recursDone'][$rubId] = $tabTemp;
 		return $tabTemp;
 	}
+	
 
 	/* Methode permettant de construire le "chemin de fer" de la page en-cours */
 	function buildRoad($curId=0){

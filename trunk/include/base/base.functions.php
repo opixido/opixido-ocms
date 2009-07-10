@@ -386,7 +386,8 @@ function getOnlineRubId($row) {
 */
 function niceName($str) {
 		
-		$str = mb_strtolower($str,'utf-8');
+		$str = trim(mb_strtolower($str,'utf-8'));
+		
 		
 		$string    = htmlentities($str,ENT_NOQUOTES,'utf-8');
 		$string = str_replace('&rsquo;','-',$string);
@@ -529,9 +530,9 @@ function nicedateyear2char($d) {
         $t = explode("-",$d[0]);
         
         if(LG == 'uk' || LG == 'us' || LG == 'en')
-           	return $t[1].'/'.$t[2].'/'.substr($t[0],2,2);
+           	return $t[1].'.'.$t[2].'.'.substr($t[0],2,2);
         else 
-            return $t[2].'/'.$t[1].'/'.substr($t[0],2,2);
+            return $t[2].'.'.$t[1].'.'.substr($t[0],2,2);
 }
 
 /**
@@ -545,19 +546,20 @@ function niceDateTime( $d,$show_year=true,$showSec=false) {
 	$t = explode(" ",$d);
 	$mydate = $t[0];
 	$mytime = $t[1];
-        $t = explode("-",$mydate);
-        $tim  = explode(":",$mytime);
-        if($show_year)
-         $date = $t[2].'/'.$t[1].'/'.$t[0];
-        else
-         $date = $t[2].'/'.$t[1];
+	
+    $t = explode("-",$mydate);
+    $tim  = explode(":",$mytime);
+    if($show_year)
+     $date = $t[2].'/'.$t[1].'/'.$t[0];
+    else
+     $date = $t[2].'/'.$t[1];
 
-         $tim = $tim[0].'h'.$tim[1];
-         
-         if($showSec) {
-         	$tim .= 'm'.$tim[2].'s';
-         }
-         return $date.' '.$tim;
+     $tim = $tim[0].'h'.$tim[1];
+     
+     if($showSec) {
+     	$tim .= 'm'.$tim[2].'s';
+     }
+     return $date.' '.$tim;
 }
 
 
@@ -667,7 +669,9 @@ function nicedate_str($date,$showYear=1){
 	
 	$d = strtotime($date);
 
-	$s = ((mystrftime("%A", $d))) .' ' .(int)date('d',$d) .' ' .((mystrftime("%B", $d)));
+	$ee = ((mystrftime("%A", $d)));
+	
+	$s = $ee .' ' .(int)date('d',$d) .' ' .((mystrftime("%B", $d)));
 	
 	if($showYear) {
 		$s .= ' ' .date('Y',$d);
@@ -944,7 +948,9 @@ function ucSentence( $sentence_split, $impexpA = array(". ","! ","? ")) {
 function GetStats() {
         //return;
 
-        if(strstr($_SERVER['REMOTE_ADDR'],'192.168.1.') || strstr($_SERVER['REMOTE_ADDR'],'82.67.200.175') || $_REQUEST['debugmode']) {
+        if(strstr($_SERVER['REMOTE_ADDR'],'192.168.1.') || 
+        		strstr($_SERVER['REMOTE_ADDR'],'82.67.200.175') 
+        		|| $_REQUEST['debugmode']) {
             global $sqlTime,$startTime,$nbRSql,$nbRetSql;
             
             p('<div onclick="this.style.display=\'none\'" style="z-index:0;_display:none;position:fixed;bottom:0px;right:0px;width:200px;text-align:right;background-color:#fff;opacity:0.8;font-family:arial;font-size:11px;">' ) ; //onclick="this.style.zIndex=50;">');
@@ -1487,6 +1493,7 @@ function getFlash($url,$w=290,$h=240,$alt="Flash",$tag='',$params=array()) {
 	$html .= ('<param name="quality" value="high" />');
 	$html .= ('<param name="allowFullScreen" value="true" />');
 	$html .= ('<param name="scalemode" value="showall" />');
+
 	foreach($params as $k=>$v) {
 		$html .= ('<param name="'.$k.'" value="'.$v.'" />');
 	}
@@ -1800,18 +1807,21 @@ function GetTitleFromRow($table,$row,$separator=" ") {
     $titre = '';
     while(list($k,$v) = each($tabForms[$table]['titre'])) {
 			            		
-    		if(akev($relations,$table) && akev($relations[$table],$v)) {
-    			$re = GetRowFromId($relations[$table][$v],$row[$v]);
-    			$row[$v] = GetTitleFromRow($relations[$table][$v],$re);
-    		}else if($tab[$v]->type == 'date' ||$tab[$v]->type == 'datetime') {
-    			$row[$v] = nicedate($row[$v]);
-    		}
-    		if(!$fields[$v]) {
-    			$titre .= getLgValue($v,$row).$separator;
-    			
-    		} else {
-    			$titre .= akev($row,$v).$separator;
-    		}
+		if(akev($relations,$table) && akev($relations[$table],$v)) {
+			$re = GetRowFromId($relations[$table][$v],$row[$v]);
+			$row[$v] = GetTitleFromRow($relations[$table][$v],$re);
+		}else if($tab[$v]->type == 'date' ) {
+			$row[$v] = nicetextdate($row[$v]);
+		}else if($tab[$v]->type == 'datetime' ) {
+			$row[$v] = nicetextdate($row[$v]).' '.nicetime($row[$v]);
+		}
+	
+		if(!$fields[$v]) {
+			$titre .= getLgValue($v,$row).$separator;
+			
+		} else {
+			$titre .= akev($row,$v).$separator;
+		}
     }
 
 
@@ -2046,6 +2056,11 @@ function etamp($str) {
  * @param unknown_type $params
  */
 function getUrlWithParams($params=array()) {
+	
+	if(!is_object($GLOBALS['site'])) {
+		$u = new genUrl(LG);
+		return $u->getUrlWithParams($params);
+	}
 
 	return $GLOBALS['site']->g_url->getUrlWithParams($params);
 
@@ -2066,13 +2081,14 @@ function addParamsToUrl($params=array()) {
  * @param array $params
  * @return string URL
  */
-function getUrlFromId($id, $lg='', $params=array()) {
+function getUrlFromId($id, $lg='', $params=array(),$action='') {
 
 	if(!is_object($GLOBALS['site'])) {
 		$u = new genUrl($lg);
-		return $u->buildUrlFromId($id,$lg,$params);
+		
+		return $u->buildUrlFromId($id,$lg,$params,$action);
 	}
-	return $GLOBALS['site']->g_url->buildUrlFromId($id, $lg, $params);
+	return $GLOBALS['site']->g_url->buildUrlFromId($id, $lg, $params,$action);
 
 }
 
@@ -2198,7 +2214,7 @@ function getServerUrl () {
  * pour l'envoi de mails via PHPMAILER
  * et retourne un phpmailer configuré
  * 
- * @return phpmailer
+ * @return PHPMailer
  */
 function includeMail() {
 	
@@ -2425,3 +2441,91 @@ function getRubArticles($rub_id){
 	return $return;
 	
 }*/
+
+
+function getAllPictos($size="32x32") {
+	$dir = str_replace(ADMIN_URL,'',ADMIN_PICTOS_FOLDER);
+	$pictosDir = array(
+	$dir.''.$size.'/actions/',
+			$dir.$size.'/apps/',
+			$dir.$size.'/categories/',
+			$dir.$size.'/devices/',
+			$dir.$size.'/emblems/',
+			$dir.$size.'/emotes/',
+			$dir.$size.'/mimetypes/',
+			$dir.$size.'/places/',
+			$dir.$size.'/status/'
+			
+			);
+			foreach($pictosDir as $v) {
+				$res = dir($v);
+				//echo '<p>'.$v.'</p>';
+				if($res) {
+				while (false !== ($entry = $res->read())) {					
+					if(is_file($v.$entry) && substr($entry,-3) == 'png' && filesize($v.$entry) > 0) {
+						$tab[] = $v.$entry;
+					}
+				}
+				}
+				
+			}
+			return $tab;
+}
+
+
+
+function getGabaritClass($gab,$param='',$instanciate=true) {
+	
+	$className = $gab['gabarit_classe'];
+
+	ob_start();
+	
+	$dossier = ($gab['gabarit_plugin']) ? path_concat('plugins',$gab['gabarit_plugin']) :'bdd';
+	
+	$GLOBALS['gb_obj']->includeFile($className . '.php', $dossier);
+
+
+	if(class_exists($className)) {
+		
+		if($instanciate) {
+			$bddClasse = new $className($GLOBALS['site'],$param. ','.$gab['gabarit_classe_param'], $this);
+		} else {
+			return $className;
+		}
+
+	} else {
+		derror('La classe associee n\'existe pas : '.$className);
+	}
+
+	$htTemp = ob_get_contents();
+
+	ob_end_clean();
+	
+	return $bddClasse;
+}
+
+
+function getObjUrl() {
+
+	$t = $_GET['curTable'];
+	$i = $_GET['curId'];
+	
+	if(!$t ||!$i) {
+		return false;
+	}
+	
+	if($t == 's_rubrique') {
+		$r = getRealForRubrique($i);
+		return getUrlFromId($r['rubrique_id'],LG,array(),('editer'));
+	}
+	
+	else {
+		global $tabForms;
+		if($tabForms[$t]['view']) {
+			$id = getRubFromGabarit($tabForms[$t]['view']['gabarit'],$tabForms[$t]['view']['gabaritparam']);
+			return getUrlFromId($id,LG,array($tabForms[$t]['view']['clef']=>$i));
+		}
+		
+	}
+	
+}

@@ -12,7 +12,7 @@ global $isTopNavRub, $noCopyTable, $tab_noCopyField,$tabForms,$uploadRep,$relati
 if($_GET['nocache']) {
 	define('CACHE_IS_ON',false);	
 } else {
-	define('CACHE_IS_ON',false);
+	define('CACHE_IS_ON',true);
 }
 
 /**
@@ -41,7 +41,7 @@ $_Gconfig['titre'] = '';
 /**
  * Liste des langues par defaut du site
  */
-$_Gconfig['LANGUAGES'] = array('fr');
+$_Gconfig['LANGUAGES'] = array('fr','en');
 $_Gconfig['ADMIN_LANGUAGES'] = array('fr');
 define('ADMIN_LG_DEF','fr');
 
@@ -297,4 +297,12 @@ $_Gconfig['gsNoFollowRel'];
 
 
 
-?>
+
+
+
+$tabForms["s_rubrique"]["picto"] = ADMIN_PICTOS_FOLDER.ADMIN_PICTOS_BIG_SIZE."/apps/system-file-manager.png";
+$tabForms["s_admin"]["picto"] = ADMIN_PICTOS_FOLDER.ADMIN_PICTOS_BIG_SIZE."/apps/preferences-desktop-theme.png";
+$tabForms["s_trad"]["picto"] = ADMIN_PICTOS_FOLDER.ADMIN_PICTOS_BIG_SIZE."/mimetypes/font-x-generic.png";
+$tabForms["s_plugin"]["picto"] = ADMIN_PICTOS_FOLDER.ADMIN_PICTOS_BIG_SIZE."/mimetypes/package-x-generic.png";
+$tabForms["s_param"]["picto"] = ADMIN_PICTOS_FOLDER.ADMIN_PICTOS_BIG_SIZE."/categories/preferences-system.png";
+$tabForms["s_admin_trad"]["picto"] = ADMIN_PICTOS_FOLDER.ADMIN_PICTOS_BIG_SIZE."/apps/preferences-desktop-font.png";
