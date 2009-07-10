@@ -6,7 +6,13 @@ class simpleForm {
 	public $badFields = array();
 	public $form_attr = '';
 	private $fieldsetStarted = false;
+	
+	public $postLabel = ' : ';
+	
+	public $radioBeforeLabel = false;
 
+	public $submitAsImage = true;
+	
 	function __construct($action='',$method='get',$id='') {
 
 		$this->action = $action;
@@ -29,7 +35,7 @@ class simpleForm {
 	 */
 	function gen( $needEnd = false ) {
 
-		$s = '<form  id="'.$this->id.'" '.$this->form_attr.' enctype="multipart/form-data" method="'.strtolower($this->method).'" action="'.$this->action.'">'."\n";
+		$s = '<form id="'.$this->id.'" '.$this->form_attr.' enctype="multipart/form-data" method="'.strtolower($this->method).'" action="'.$this->action.'">'."\n";
 		//$s .= '<fieldset>'."\n";
 		//$s .= '<div>';
 
@@ -41,7 +47,7 @@ class simpleForm {
 				break;
 			}
 		}
-
+		
 		if( $atLeastOneNeeded && $needEnd === false ) {
 			
 			$s .= '<div class="important need '.(count($this->badFields) && $this->isSubmited() ? 'formError' : '').'">'.t('simpleform_info_needed').'</div>';
@@ -128,8 +134,13 @@ class simpleForm {
 					break;
 
 				case 'radio':
-					$s .= $this->getLabel($field);
-					$s .= $this->getRadio($field);
+					if($this->radioBeforeLabel) {
+						$s .= $this->getRadio($field);
+						$s .= $this->getLabel($field);						
+					} else {
+						$s .= $this->getLabel($field);
+						$s .= $this->getRadio($field);
+					}
 					break;
 					
 				case 'captcha':
@@ -202,6 +213,54 @@ class simpleForm {
 		//$s .= '</fieldset>'."\n";
 		$s .= '</form>'."\n";
 
+		$s .= '
+				<script type="text/javascript" src="'.BU.'/js/jquery.validate.pack.js" ></script>
+				<script type="text/javascript">
+		
+				$("#'.$this->id.'").submit(function(){
+				
+					var neededFields  = new Array(0	';
+		
+				foreach($this->fields as $k=>$v) {
+					if($v['needed']) {
+						$s .= ','.alt($k);
+					}
+				}
+				$s .= ' );
+				var errorFields = new Array();
+				var len = neededFields.length;
+				var message = window.Trads["simpleform_check"]+"\n\n";
+				var errorFound = false;
+				var validRegExp = /^[^@]+@[^@]+.[a-z]{2,}$/i;
+				for(p=0;p<=len;p++) {
+					ob = $("#"+neededFields[p]);
+					if(ob.val() == "") {
+						$("#div_"+neededFields[p]).addClass("formError");
+						errorFound = true;
+						message += "- "+$("#div_"+neededFields[p]+" label:first span:first").text()+"\n";
+					}
+					else if(ob.attr("rel") == "email" && ob.val().search(validRegExp) == -1) {
+							errorFound = true;
+							message += "- "+$("#div_"+neededFields[p]+" label:first span:first").text()+"\n";
+					} else {
+						$("#div_"+neededFields[p]).removeClass("formError");
+						$("#div_"+neededFields[p]+" label").removeClass("formError");
+					}
+				}
+				
+				if(errorFound) {
+					alert(message);
+					return false;
+				}
+				
+				
+				});
+					
+				
+				</script>
+';
+
+		
 		return $s;
 	}
 
@@ -324,7 +383,7 @@ class simpleForm {
 			$field['name'] = $field['name'].'[]';
 		}
 
-		$s = '<select '.$this->classError($field).' '.$multi.' name="'.$field['name'].'" id="'.$field['id'].'" >'."\n";
+		$s = '<select '.$field['tag'].' '.$this->classError($field).' '.$multi.' name="'.$field['name'].'" id="'.$field['id'].'" >'."\n";
 		if(!$field['needed'])
 			$s .= '<option value="">-------------</option>';
 
@@ -407,7 +466,7 @@ class simpleForm {
 		
 		$html .= '<span class="captcha_q">'.t('simpleform_captchaq').' 
 					<strong>'.$chiffre1.' + '.$chiffre2.' = </strong>
-					<input type="text" name="captchaq" class="text captchaq" value="" size="2" />
+					<input id="'.$field['id'].'" type="text" name="captchaq" class="text captchaq" value="" size="2" />
 					<input type="hidden" name="captchaq_uniq" class="hidden" value="'.$unique.'"/>
 					</span>
 					
@@ -446,7 +505,8 @@ class simpleForm {
 	 */
 	function getInputText ($field) {
 
-		$s = '<input '.($field['disabled'] ? 'disabled="disabled"' : '' ).' class="text" '.$this->classError($field).' type="text" name="'.$field['name'].'" id="'.$field['id'].'" value='.alt($field['value']).' />'."\n";
+		$r = $field['type'] == 'email' ? 'rel="email"' : '';
+		$s = '<input  '.$r.' '.($field['disabled'] ? 'disabled="disabled"' : '' ).' class="text" '.$this->classError($field).' type="text" name="'.$field['name'].'" id="'.$field['id'].'" value='.alt($field['value']).' />'."\n";
 
 		return $s;
 
@@ -464,6 +524,9 @@ class simpleForm {
 
 		$s = '<div class="checkbox" >'."\n";
 		
+		if(!is_array($field['value'])) {
+			return '';
+		}
 		if($field['label']) {
 			$s .= '<fieldset '.$this->classError($field).'><legend>'.$field['label'].' '.($field['needed'] ? $this->neededSymbol:'').'</legend>';
 			$end = '</fieldset>';
@@ -585,8 +648,11 @@ class simpleForm {
 	 */
 	function getSubmit($field) {
 
-		$s = '<input class="submit" type="submit" name="'.$field['name'].'" id="'.$field['id'].'" value='.alt($field['value']).' />'."\n";
-
+		if($this->submitAsImage && function_exists('getImgText')) {
+			$s = '<input class="submitimg" src="'.getImgTextSrc($field['value'],'submit').'" type="image" name="'.$field['name'].'" id="'.$field['id'].'" alt='.alt($field['value']).' />'."\n";
+		} else {
+			$s = '<input class="submit" type="submit" name="'.$field['name'].'" id="'.$field['id'].'" value='.alt($field['value']).' />'."\n";
+		}
 		return $s;
 	}
 
@@ -631,7 +697,7 @@ class simpleForm {
 
 		if(strlen($field['label'])) {
 			$needed = $field['needed'] ? $this->neededSymbol : '';
-			$s = '<label  '.$this->classError($field).' id="label_'.$field['id'].'" for="'.$field['id'].'">'.$field['label'].' '.$needed.' : </label>'."\n";
+			$s = '<label  '.$this->classError($field).' id="label_'.$field['id'].'" for="'.$field['id'].'"><span>'.$field['label'].'</span> '.$needed.''.$this->postLabel.'</label>'."\n";
 
 		}
 		return $s;
@@ -685,7 +751,7 @@ class simpleForm {
 		
 		//debug($selected);
 		
-		$this->fields[] = array('type'=>$type,'value'=>$value,'label'=>$label,'name'=>$name,'id'=>$id,'needed'=>$needed,'selected'=>$selected,'disabled'=>$disabled);
+		$this->fields[$id] = array('type'=>$type,'value'=>$value,'label'=>$label,'name'=>$name,'id'=>$id,'needed'=>$needed,'selected'=>$selected,'disabled'=>$disabled);
 
 	}
 

@@ -29,7 +29,7 @@ class genFile {
 	 *
 	 * @var int
 	 */
-	var $quality = 95;
+	var $quality = 75;
 	
 	var $forceBaseFormat = true;
 	

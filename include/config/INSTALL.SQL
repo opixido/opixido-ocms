@@ -369,6 +369,7 @@ CREATE TABLE `s_rubrique` (
   `rubrique_dyntitle` tinyint(1) NOT NULL default '0',
   `rubrique_dynvisibility` tinyint(1) NOT NULL default '0',
   `rubrique_template` varchar(255) NOT NULL default '',
+  `rubrique_option` SET( 'dynVisibility', 'dynTitle', 'dynSubRubs' ) NOT NULL,
   PRIMARY KEY  (`rubrique_id`),
   KEY `fk_rubrique_id` (`fk_rubrique_id`,`fk_rubrique_version_id`),
   KEY `fk_gabarit_id` (`fk_gabarit_id`),
@@ -433,7 +434,7 @@ REPLACE INTO `s_admin_trad` VALUES ('s_admin_p_0', 'Informations', '','');
 REPLACE INTO `s_admin_trad` VALUES ('s_admin_p_1', 'Rubriques autorisées', '','');
 REPLACE INTO `s_admin_trad` VALUES ('table_log_action', 'Dernières opérations effectuées', '','');
 REPLACE INTO `s_admin_trad` VALUES ('modification', 'Modifier', '','');
-REPLACE INTO `s_admin_trad` VALUES ('empty_field', 'Champ non rempli', '','');
+REPLACE INTO `s_admin_trad` VALUES ('empty_field', 'Champ non remplit', '','');
 REPLACE INTO `s_admin_trad` VALUES ('ajout_sub_rub', 'Nouveau', '','');
 REPLACE INTO `s_admin_trad` VALUES ('invisible_rub', ' <span style="color:red">[Masquée]</span>', '','');
 REPLACE INTO `s_admin_trad` VALUES ('version_masquee', ' Cette rubrique est actuellement masquée', '','');
@@ -483,7 +484,7 @@ REPLACE INTO `s_admin_trad` VALUES ('src_editer', '[ADMIN_PICTOS_FOLDER][ADMIN_P
 REPLACE INTO `s_admin_trad` VALUES ('src_edit', '[ADMIN_PICTOS_FOLDER][ADMIN_PICTOS_FORM_SIZE]/apps/accessories-text-editor.png', '','');
 REPLACE INTO `s_admin_trad` VALUES ('src_voir', '[ADMIN_PICTOS_FOLDER][ADMIN_PICTOS_FORM_SIZE]/actions/edit-find.png', '','');
 REPLACE INTO `s_admin_trad` VALUES ('src_view', '[ADMIN_PICTOS_FOLDER][ADMIN_PICTOS_FORM_SIZE]/actions/edit-find.png', '','');
-REPLACE INTO `s_admin_trad` VALUES ('src_new', '[ADMIN_PICTOS_FOLDER][ADMIN_PICTOS_FORM_SIZE]/actions/document-new.png', '','');
+REPLACE INTO `s_admin_trad` VALUES ('src_new', '[ADMIN_PICTOS_FOLDER][ADMIN_PICTOS_FORM_SIZE]/actions/list-add.png', '','');
 REPLACE INTO `s_admin_trad` VALUES ('src_preview', '[ADMIN_PICTOS_FOLDER][ADMIN_PICTOS_FORM_SIZE]/mimetypes/image-x-generic.png', '','');
 REPLACE INTO `s_admin_trad` VALUES ('src_droite', '[ADMIN_PICTOS_FOLDER][ADMIN_PICTOS_FORM_SIZE]/actions/go-last.png', '','');
 REPLACE INTO `s_admin_trad` VALUES ('src_gauche', '[ADMIN_PICTOS_FOLDER][ADMIN_PICTOS_FORM_SIZE]/actions/go-first.png', '','');

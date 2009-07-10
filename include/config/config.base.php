@@ -416,6 +416,8 @@ $gr_on['insert']['s_rubrique'][] = 's_rubrique_createAll';
 $gr_on['beforeDelete']['s_rubrique'][]  = 's_rubrique_beforeDelete';
 $gr_on['update']['s_rubrique'][]  = 's_rubrique_update';
 $gr_on['save']['s_admin'][]  = 's_admin_update';
+$gr_on['save']['ANY_TABLE'][]  = 'saveTemoinChange';
+$gr_on['validate']['ANY_TABLE'][]  = 'saveTemoinChange';
 
 
 
@@ -538,7 +540,8 @@ $_Gconfig['ajaxRelinv']['TABLE']['NOM_DU_FAUX_CHAMP'] = array('SOUS_TABLE','CLEF
  *  Ca simplifie le tout
  */
 $_Gconfig['adminMenus'] = array();
-$_Gconfig['adminMenus'][] = array( 's_rubrique');
+//$_Gconfig['adminMenus'][] = array( 's_rubrique');
+$_Gconfig['bigMenus'][10] = array('s_rubrique');
 
 
 
@@ -550,6 +553,8 @@ $_Gconfig['nonMassAction'] = array('edit','view');
 
 
 define('ADMIN_PICTOS_FOLDER',ADMIN_URL.'pictos_stock/tango/');
+
+
 define('ADMIN_PICTOS_ARBO_SIZE','16x16');
 define('ADMIN_PICTOS_FORM_SIZE','22x22');
 define('ADMIN_PICTOS_FRONT_SIZE','22x22');
@@ -563,4 +568,4 @@ define('DEFAULT_URL_VALUE','http://www.');
 
 $GLOBALS['cans']= array();
 
-?>
+

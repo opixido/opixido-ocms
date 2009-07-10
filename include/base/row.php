@@ -80,4 +80,9 @@ class row {
 	}
 	
 	
+	function __get($name) {
+		return $this->get($name);		
+	}
+	
+	
 }

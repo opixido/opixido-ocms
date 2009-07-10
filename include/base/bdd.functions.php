@@ -128,9 +128,11 @@ function sqlParam($param) {
  * @param unknown_type $champ
  * @return unknown
  */
-function sqlLgValue($champ) {
-
-	return ' IF(LENGTH(TRIM('.$champ.'_'.LG.'))>=1,'.$champ.'_'.LG.','.$champ.'_'.LG_DEF.')  ';
+function sqlLgValue($champ,$alias = '') {
+	if($alias ) {
+		$alias = $alias.'.';
+	}
+	return ' IF(LENGTH(TRIM('.$alias.$champ.'_'.LG.'))>=1,'.$alias.$champ.'_'.LG.','.$alias.$champ.'_'.LG_DEF.')  ';
 	
 }
 
@@ -525,4 +527,17 @@ if(!function_exists('getPrimaryKey')) {
 }
 
 
-?>
+/**
+ * Checks if a rubrique has this particular option
+ *
+ * @param strong $set the "rubrique_option" field value
+ * @param string $option The option to check
+ * @return unknown
+ */
+function rubHasOption($set, $option) {
+	if(strstr($set,$option) !== false ) {
+		return true;
+	}
+	return false;
+}
+
