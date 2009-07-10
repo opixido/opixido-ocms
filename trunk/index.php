@@ -21,6 +21,7 @@
 # @package ocms
 #
     
+include('agressiveCache.php');
 
 /**
  * On inclu le fichier qui permettra d'inclure tous les autres
@@ -105,4 +106,6 @@ $genMessages->gen();
  */
 $co->disconnect();
 
-
+if($useCache && $fname) {
+	@file_put_contents($fname,ob_get_contents());
+}
