@@ -34,7 +34,7 @@ class genRteInline{
 //separator,insertdate,inserttime,print,help
 
 		    $formFooters .=  '
-		
+		//xhtmlxtras,accessilink,iespell,insertdatetime,searchreplace,print,contextmenu,paste,styleselect
 		</script>
 		
 		<script language="javascript" type="text/javascript">
@@ -43,31 +43,36 @@ class genRteInline{
 		    mode : "exact",
 			elements : "@@CHAMPS@@",
 			theme : "advanced",
-			plugins : "xhtmlxtras,accessilink,iespell,insertdatetime,searchreplace,print,contextmenu,paste,styleselect",
+			language : "en",
+			plugins : "paste,searchreplace",
 			entity_encoding : "raw",
 			content_css : "'.BU.'/css/baseadmin.css",
-			theme_advanced_buttons1 : "bold,italic,underline,separator,image,link,unlink,separator,pastetext,separator,search,replace,separator,bullist,bullnum,separator,undo,redo,separator,code,separator,sub,sup,separator,abbr,acronym,separator,charmap",
+			theme_advanced_styles : "En couleur et capitales=colored;Sous-titre=soustitre",
+			theme_advanced_buttons1 : "styleselect,bold,italic,underline,separator,removeformat,separator,hr,image,link,unlink,separator,pastetext,separator,search,replace,separator,bullist,bullnum,separator,code,cleanup,separator,sub,sup,separator,abbr,acronym,separator,charmap",
 			theme_advanced_buttons2 : "",
 			theme_advanced_buttons3 : "",
 			theme_advanced_toolbar_location : "top",
 			theme_advanced_toolbar_align : "left",
 			theme_advanced_statusbar_location : "",
 		    plugi2n_insertdate_dateFormat : "%d/%m/%Y",
-		    plugi2n_insertdate_timeFormat : "%H:%M:%S",
+		    plugi2n_insertdate_dateFormat : "%d/%m/%Y",		   
 		    relative_urls : false , 
 			auto_reset_designmode:true,
-			paste_use_dialog : false,	
+			paste_use_dialog : true,	
 			file_browser_callback : "fileBrowserCallBack",
 			theme_advanced_resize_horizontal : false,	
-			paste_auto_cleanup_on_paste : false,
+			paste_auto_cleanup_on_paste : true,
+			paste_use_dialog : true,
 			paste_convert_headers_to_strong : true,
 			paste_strip_class_attributes : "all",
 			paste_remove_spans : true,
 			paste_remove_styles : true,		
 			convert_fonts_to_spans : true,
 			verify_html : false 
+
+ 
 		});
-		
+		// force_p_newlines : true,
 		
 		function fileBrowserCallBack(field_name, url, type, win) {
 		var connector = "../../filemanager/browser.html?Connector=connectors/php/connector.php";
