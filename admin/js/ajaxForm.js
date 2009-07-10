@@ -2,7 +2,15 @@
     
     
 function arSaveValue(obj,table,champ,id,curtable) {
-	url = "index.php?xhr=ajaxRelinv&table="+table+"&field="+champ+"&id="+id+"&save="+obj.value+"&curtable="+curtable;
+
+	if(obj.value) {
+		v = obj.value;
+	}
+	else {
+		v = obj;
+	}
+
+	url = "index.php?xhr=ajaxRelinv&table="+table+"&field="+champ+"&id="+id+"&save="+v+"&curtable="+curtable;
 	//alert(url);
 	XHR(url);
 }
@@ -16,7 +24,7 @@ function arAddValue(obj,table,fake,id) {
 function addRowToTable(table,contenu) {
 	var tabl = gid(table);
 	//alert(tabl.innerHTML);
-	
+	/*
 	if(document.all) {
 	//alert("test");
 		outer = gid(table).outerHTML;
@@ -27,10 +35,13 @@ function addRowToTable(table,contenu) {
 		tabl.appendChild(newTb); 
 		newTb.innerHTML = contenu;
 		
+		
 		//tabl.lastChild.innerHTML = contenu;
 	}
-	// alert(contenu);
-	
+	*/
+	$("#"+table+" tbody:last").after("<tbody>"+contenu+"</tbody>");
+	checkScripts($("#"+table+" tbody:last")[0]);
+	// alert(contenu);	
 }	
 
 function is_ignorable( nod )
@@ -201,29 +212,36 @@ function ajaxActionUrl(action,table,id,params) {
 	return url;
 }
 			
-			
-function serialize( inp ) {
-    // Generates a storable representation of a value
+			function serialize( mixed_value ) {
+    // Returns a string representation of variable (which can later be unserialized)  
     // 
-    // +    discuss at: http://kevin.vanzonneveld.net/techblog/article/javascript_equivalent_for_phps_serialize/
-    // +       version: 804.1712
+    // version: 906.1807
+    // discuss at: http://phpjs.org/functions/serialize
     // +   original by: Arpad Ray (mailto:arpad@php.net)
+    // +   improved by: Dino
+    // +   bugfixed by: Andrej Pavlovic
+    // +   bugfixed by: Garagoth
+    // +      input by: DtTvB (http://dt.in.th/2008-09-16.string-length-in-bytes.html)
+    // +   bugfixed by: Russell Walker (http://www.nbill.co.uk/)
+    // %          note: We feel the main purpose of this function should be to ease the transport of data between php & js
+    // %          note: Aiming for PHP-compatibility, we have to translate objects to arrays
     // *     example 1: serialize(['Kevin', 'van', 'Zonneveld']);
     // *     returns 1: 'a:3:{i:0;s:5:"Kevin";i:1;s:3:"van";i:2;s:9:"Zonneveld";}'
-
-    var getType = function( inp ) {
+    // *     example 2: serialize({firstName: 'Kevin', midName: 'van', surName: 'Zonneveld'});
+    // *     returns 2: 'a:3:{s:9:"firstName";s:5:"Kevin";s:7:"midName";s:3:"van";s:7:"surName";s:9:"Zonneveld";}'
+    var _getType = function( inp ) {
         var type = typeof inp, match;
-        if(type == 'object' && !inp)
-        {
+        var key;
+        if (type == 'object' && !inp) {
             return 'null';
         }
         if (type == "object") {
-            if(!inp.constructor)
-            {
+            if (!inp.constructor) {
                 return 'object';
             }
             var cons = inp.constructor.toString();
-            if (match = cons.match(/(\w+)\(/)) {
+            match = cons.match(/(\w+)\(/);
+            if (match) {
                 cons = match[1].toLowerCase();
             }
             var types = ["boolean", "number", "string", "array"];
@@ -236,137 +254,86 @@ function serialize( inp ) {
         }
         return type;
     };
-
-    var type = getType(inp);
-    var val;
+    var type = _getType(mixed_value);
+    var val, ktype = '';
+    
     switch (type) {
-        case "undefined":
-            val = "N";
+        case "function": 
+            val = ""; 
             break;
         case "boolean":
-            val = "b:" + (inp ? "1" : "0");
+            val = "b:" + (mixed_value ? "1" : "0");
             break;
         case "number":
-            val = (Math.round(inp) == inp ? "i" : "d") + ":" + inp;
+            val = (Math.round(mixed_value) == mixed_value ? "i" : "d") + ":" + mixed_value;
             break;
         case "string":
-            val = "s:" + inp.length + ":\"" + inp + "\"";
+            val = "s:" + encodeURIComponent(mixed_value).replace(/%../g, 'x').length + ":\"" + mixed_value + "\"";
             break;
         case "array":
-            val = "a";
         case "object":
+            val = "a";
+            /*
             if (type == "object") {
-                var objname = inp.constructor.toString().match(/(\w+)\(\)/);
+                var objname = mixed_value.constructor.toString().match(/(\w+)\(\)/);
                 if (objname == undefined) {
                     return;
                 }
                 objname[1] = serialize(objname[1]);
                 val = "O" + objname[1].substring(1, objname[1].length - 1);
             }
+            */
             var count = 0;
             var vals = "";
             var okey;
-            for (key in inp) {
-                okey = (key.match(/^[0-9]+$/) ? parseInt(key) : key);
+            var key;
+            for (key in mixed_value) {
+                ktype = _getType(mixed_value[key]);
+                if (ktype == "function") { 
+                    continue; 
+                }
+                
+                okey = (key.match(/^[0-9]+$/) ? parseInt(key, 10) : key);
                 vals += serialize(okey) +
-                        serialize(inp[key]);
+                        serialize(mixed_value[key]);
                 count++;
             }
             val += ":" + count + ":{" + vals + "}";
             break;
+        case "undefined": // Fall-through
+        default: // if the JS object has a property which contains a null value, the string cannot be unserialized by PHP
+            val = "N";
+            break;
     }
-    if (type != "object" && type != "array") val += ";";
+    if (type != "object" && type != "array") {
+        val += ";";
+    }
     return val;
-}// }}}
-
-
-
-if(!document.documentElement.outerHTML){
-	Node.prototype.getAttributes = function(){
-		var attStr = "";
-		if(this && this.attributes.length > 0){
-			for(a = 0; a < this.attributes.length; a ++){
-				attStr += " " + this.attributes.item(a).nodeName + "=\"";
-				attStr += this.attributes.item(a).nodeValue + "\"";
-			}
-		}
-		return attStr;
-	}
-
-	Node.prototype.getInsideNodes = function(){
-		if(this){
-			var cNodesStr = "", i = 0;
-			var iEmpty = /^(img|embed|input|br|hr)$/i;
-			var cNodes = this.childNodes;
-			for(i = 0; i < cNodes.length; i ++){
-				switch(cNodes.item(i).nodeType){
-					case 1 :
-						cNodesStr += "<" + cNodes.item(i).nodeName.toLowerCase();
-						if(cNodes.item(i).attributes.length > 0){
-							cNodesStr += cNodes.item(i).getAttributes();
-						}
-						cNodesStr += (cNodes.item(i).nodeName.match(iEmpty))? "" : ">";
-						if(cNodes.item(i).childNodes.length > 0){
-							cNodesStr += cNodes.item(i).getInsideNodes();
-						}
-						if(cNodes.item(i).nodeName.match(iEmpty)){
-							cNodesStr += " />";
-						} else {
-							cNodesStr += "</" + cNodes.item(i).nodeName.toLowerCase() + ">";
-						}
-						break;
-					case 3 :
-						cNodesStr += cNodes.item(i).nodeValue;
-						break;
-					case 8 :
-						cNodesStr += "<!--" + cNodes.item(i).nodeValue + "-->";
-						break;
-				}
-			}
-			return cNodesStr;
-		}
-	}
-
-	HTMLElement.prototype.outerHTML getter = function(){
-		var strOuter = "";
-		var iEmpty = /^(img|embed|input|br|hr)$/i;
-		switch(this.nodeType){
-			case 1 :
-				strOuter += "<" + this.nodeName.toLowerCase();
-				strOuter += this.getAttributes();
-				if(this.nodeName.match(iEmpty)){
-					strOuter += " />";
-				} else {
-					strOuter += ">" + this.getInsideNodes();
-					strOuter += "</" + this.nodeName.toLowerCase() + ">";
-				}
-				break;
-			case 3 :
-				strOuter += this.nodeValue;
-				break;
-			case 8 :
-				cNodesStr += "<!--" + this.nodeValue + "-->";
-				break;
-		}
-		return strOuter;
-	}
-
-	HTMLElement.prototype.outerHTML setter = function(str){
-		var iRange = document.createRange();
-
-		iRange.setStartBefore(this);
-
-		var strFragment = iRange.createContextualFragment(str);
-		var sRangeNode = iRange.startContainer;
-
-		iRange.insertNode(strFragment);
-		sRangeNode.removeChild(this);
-	}
 }
+
+
 
 
 function set_it(){
 	document.getElementById('s').outerHTML = '<span id="s">' + document.getElementById('html').value + '</span>';
+}
+
+function loadjscssfile(filename, filetype){
+ if (filetype=="js"){ //if filename is a external JavaScript file
+  var fileref=document.createElement('script');
+  fileref.setAttribute("type","text/javascript");
+  fileref.setAttribute("src", filename);
+ }
+ else if (filetype=="css"){ //if filename is an external CSS file
+  var fileref=document.createElement("link");
+  fileref.setAttribute("rel", "stylesheet");
+  fileref.setAttribute("type", "text/css");
+  fileref.setAttribute("href", filename);
+ }
+ if (typeof fileref!="undefined") {
+  document.getElementsByTagName("head")[0].appendChild(fileref);
+  //alert(fileref);
+ }
 }
 
 

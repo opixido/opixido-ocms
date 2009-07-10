@@ -27,7 +27,7 @@ function handler_menuArbo(html) {
 }
 
 function XHR_editTrad(obj) {
-	XHR('index.php?xhr=editTrad&nom='+obj.name+'&valeur='+obj.value,'','','handler_editTrad(http.responseText)',obj);
+	XHR('index.php?xhr=editTrad&nom='+obj.name+'&valeur='+$(obj).val(),'','','handler_editTrad(http.responseText)',obj);
 	obj.style.display = "none";
 
 }
@@ -189,7 +189,11 @@ function XHR(url, paramsUrl, divToFill,dosomethingelse,obj) {
 		var resp = http.responseText;
 		if(divToFill) {
 			divToFill.innerHTML = http.responseText;
+			checkScripts(divToFill);
 		}
+		
+		
+		
 		if(resp.indexOf('//-TOEVAL-') > 0 && resp.indexOf('//-ENDEVAL-') > 0) {
 			var toev1 = resp.split('//-TOEVAL-');
 			var s = '';
@@ -216,8 +220,32 @@ function XHR(url, paramsUrl, divToFill,dosomethingelse,obj) {
 }
 
 
+function checkScripts(obj) {
+	
+	scr = obj.getElementsByTagName('script');
+	
+	for(p=0;p<scr.length;p++) {
+		if(scr[p].src) {
+			loadjscssfile(scr[p].src,'js');
+		} else {
+			//eval(scr[p].innerHTML);
+		    var fileref=document.createElement('script');
+			fileref.setAttribute("type","text/javascript");
+			fileref.text = scr[p].innerHTML;
+			document.getElementsByTagName("head")[0].appendChild(fileref);
+			//fileref.setAttribute("src", filename)
+		}
+	}
+}
 function ajaxSaveValue(obj,table,champ,id) {
-	var url = "index.php?xhr=ajaxForm&table="+table+"&champ="+champ+"&id="+id+"&save="+obj.value+"&";
+	if(obj.value) {
+		v = obj.value;
+	}
+	else {
+		v = obj;
+	}
+	
+	var url = "index.php?xhr=ajaxForm&table="+table+"&champ="+champ+"&id="+id+"&save="+v+"&";
 	XHR(url);
 }
 
@@ -252,11 +280,11 @@ function ajaxLgs(divname) {
 	sel = sel[0];
 	sel.onchange = function() {
 		window.ajax_cur_lg[divname] = this.value;
-		sel.style.backgroundImage = sel.options[sel.selectedIndex].style.backgroundImage;
+		sel.style.background = sel.options[sel.selectedIndex].style.background;
 		doAjaxLgs(div,sel.options[sel.selectedIndex].value);
 		
 	}
-	sel.style.backgroundImage = sel.options[sel.selectedIndex].style.backgroundImage;
+	sel.style.background = sel.options[sel.selectedIndex].style.background;
 
 		
 	doAjaxLgs(div,curlg);		

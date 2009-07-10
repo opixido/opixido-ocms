@@ -45,6 +45,21 @@ function smallPopup(href) {
 	
 }
 
+
+function popup(href,larg,haut) {
+
+	if(href.indexOf('@rubrique_id=') >= 0){
+			var id = href.substr(href.indexOf('=')+1);
+			
+			href = XHRs('index.php?xhr=reallink&id='+id);
+			
+			
+	}
+	window.open(href,'test','width='+larg+',height='+haut+',scrollbars=yes,resizable=yes');
+	
+	
+}
+
 function doblank (atag) {
 	window.open(atag.href);
 	return false;
@@ -398,5 +413,89 @@ function searchSelect(type) {
 			inputs[p].checked = type;
 		}
 	}
+	
+}
+
+
+function generatepass(plength){
+	var keylist="abcdefghijklmnopqrstuvwxyz123456789"
+	var temp="";
+	temp="";
+	for (i=0;i<plength;i++) {
+		temp+=keylist.charAt(Math.floor(Math.random()*keylist.length))
+	}
+	return temp
+}
+
+
+function doSubmitForm() {
+        for(p in multiField) {
+                for(z=0;z<(multiField[p].options.length);z++) {
+                        multiField[p].options[z].selected = true;
+                }
+                multiField[p].readonly = "readonly";
+                multiField[p].name = multiField[p].name+"[]";
+
+        }
+        //updateRTEs();
+
+}
+
+function selectToSearch(obj) {
+	
+	var o = $("#"+obj);
+	o.hide();
+	o.after('<input type="hidden" name="'+obj+'" id="'+obj+'"  value="'+$(o).val()+'" />');
+	
+	o.after('<ul class="ulajax" id="'+obj+'_liste"></ul>');	
+	$('#'+obj+'_liste').hide();
+	o.after('<input class="relationSelect" type="text" onclick="prepareSelect(this)" onkeyup="searchSelect(this)" rel="'+obj+'"  id="'+obj+'_helper" value="'+o.find('option:selected').text()+'"/>');	
+	o.remove();
+	
+}
+
+function prepareSelect(o) {
+	$(o).select();
+
+	liste = $("#"+$(o).attr('rel')+"_liste");
+	
+	
+	if(liste.css('display') == "block") {		
+		reinitSelect();
+	}else {
+		$(o).attr('title',$(o).val());
+		$(o).val("");
+		window.currentSelect = $(o);
+		searchSelect(o);
+		liste.show();
+		$(document).click(function(e){
+				if($(e.target).attr('id') != $(o).attr('id') && !$(e.target).is('.sal')) {
+					reinitSelect();
+				}
+		});	
+	}	
+}
+
+function reinitSelect() {
+	window.currentSelect.val(window.currentSelect.attr('title'));
+	liste.hide();
+}
+
+function searchSelect(o) {
+	var url = "index.php?xhr=searchRelation&table="+$('#curTable').val()+"&fk="+$(o).attr('rel')+"&q="+$(o).val();
+	$("#"+$(o).attr('rel')+"_liste").show();
+	$("#"+$(o).attr('rel')+"_liste").html('<li><img src="img/loading.gif" alt="Loading" /></li>');
+	$("#"+$(o).attr('rel')+"_liste").load(url);
+	//alert(url);
+}
+
+function selectRelationValue(obj) {
+	
+	var div = ($(obj).parent().parent().parent());
+	div.find('ul').hide();
+	div.find("input[type=text]").val($(obj).text());
+	
+	div.find("input[type=hidden]").val($(obj).attr('rel'));
+	$(document).unbind('click');
 	
 }
