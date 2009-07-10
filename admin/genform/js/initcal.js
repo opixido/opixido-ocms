@@ -23,17 +23,3 @@ function toggleDatePicker(eltName,formElt) {
 
 
 //  End -->
-
-function doSubmitForm() {
-        for(p in multiField) {
-                for(z=0;z<(multiField[p].options.length);z++) {
-                        multiField[p].options[z].selected = true;
-                }
-                multiField[p].readonly = "readonly";
-                multiField[p].name = multiField[p].name+"[]";
-
-        }
-        //updateRTEs();
-
-}
-
