@@ -19,7 +19,7 @@ img {
 
 
 .img_btn {
-vertical-align:middle;
+	vertical-align:middle;
 }
 
 
@@ -64,6 +64,7 @@ vertical-align:middle;
 	top:33px;
 	font-weight:normal;
 	font-size:12px;
+	display:none;
 }
 .logoa{
     width:420px;
@@ -194,7 +195,7 @@ margin-left:320px;
     padding-left:5px;
     padding-right:5px;
 	display: block;
-	float: left;
+	/*float: left;*/
 	background-position:-100px -50px ;
 	
 }
@@ -344,16 +345,18 @@ height:23px;
 
  .genform_onglet a {
                 padding:5px;
+                padding-bottom:3px;
                 display:block;
-                color:#3b2c29;
-
+                
+                color:#555;
  }
 
   .genform_onglet a:hover {
-                padding:5px;
+               
 
         	color:#000;
-                text-decoration:underline;
+        	
+                /*text-decoration:underline;*/
  }
 
  .btnOngletOn {
@@ -369,6 +372,9 @@ height:23px;
 
 
 
+ .btnOngletOff:hover {
+  background-color:#f8f8f8;
+ }
  .btnOngletOff {
  padding-left:3px;
  padding-right:3px;
@@ -417,6 +423,7 @@ li.mselected ul a {
 .genform_table {
     border:1px solid #aeaeae;
     background-color:#fcfcfc;
+    /*width:575px;*/
 
 }
 
@@ -433,6 +440,7 @@ li.mselected ul a {
 .titreListe {
     border:1px solid #aeaeae;
     padding:3px;
+    
 }
 
 .genform_txtres {
@@ -535,7 +543,7 @@ label.genform_txt {
     border:1px solid #aeaeae;
     padding:5px;
     line-height:20px;
-
+	
 }
 
 .genform_champ textarea{
@@ -668,8 +676,8 @@ a:hover{
 .genform_uploadfile a{
     display:block;
     padding:5px;
-    line-height:25px;
-    width:300px;
+
+ 
     text-align:center;
     border:1px solid #cccccc;
 }
@@ -678,6 +686,9 @@ a:hover{
     background-color:#dddddd;
 }
 
+.genform_uploadfile a img {
+	vertical-align:middle;
+}
 .genform_uploadfile a {
     font-weight:bold;
 }
@@ -1307,4 +1318,122 @@ a.button {
 .genform_champ #racine {
 	margin-left:0;
 	padding-left:0;
+}
+
+.ui-datepicker-trigger {
+	vertical-align:bottom;
+}
+
+div.grippie {
+	background:#EEEEEE url(../img/grippie.png) no-repeat scroll center 2px;
+	border-color:#DDDDDD;
+	border-style:solid;
+	border-width:0pt 1px 1px;
+	cursor:s-resize;
+	height:9px;
+	overflow:hidden;
+}
+.resizable-textarea textarea {
+	display:block;
+	margin-bottom:0pt;
+	width:95%;
+	height: 20%;
+}
+
+.fakeSubs li a {
+	padding:1px;
+	display:block;
+	padding-left:18px;
+	margin-left:9px;
+	background:url(../pictos_stock/tango/16x16/emblems/emblem-readonly.png) no-repeat;
+}
+.fakeSubs li {
+	opacity:0.5;
+}
+
+table.relinv {
+	width:600px;
+}
+
+
+.disabled {
+	cursor:default!important;
+	opacity:0.5;
+	
+}
+
+.ajax_lg_select {
+	padding:0px;	
+	padding-left:20px;
+	width:10px;	
+}
+
+
+.relationSelect {
+	background:url(../img/dropdown.gif) center right no-repeat white;	
+	height:16px;
+	width:500px;
+	cursor:pointer;
+	padding:3px;
+}
+
+.ulajax li a:hover{
+	background:#0a246a;
+	color:white;
+	
+}
+
+.ulajax li a {
+	display:block;
+	cursor:pointer;
+	padding-left:3px;
+	border-bottom:1px solid #ccc
+}
+.ulajax li {
+	list-style-type:none;
+}
+
+.ulajax {
+	max-height:200px;
+	width:504px;
+	overflow:auto;
+	border:1px solid #999;	
+	margin:0;
+	padding:1px;
+	background:white;
+	position:absolute;
+	left:0px;
+	top:25px;
+	_margin-top:20px;
+	
+}
+
+.bigmenus a span{
+	display:block;
+	color:#555;
+	font-weight:bold;
+	vertical-align:bottom;
+}
+
+.bigmenus a:hover{ 
+	background:#ddd;
+}
+
+.bigmenus a{
+	display:block;
+	width:100px;
+	height:80px;
+	float:left;
+	padding:5px;
+	margin:2px;
+	border:1px solid #aaa;
+	background:#eee;
+	text-align:center;
+}
+.ajaxselect {
+	position:relative;
+}
+
+.home h2 {
+	padding:5px;padding-top:15px;display:block;width:auto;margin:0;text-transform:uppercase;
 }
