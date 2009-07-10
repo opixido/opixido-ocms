@@ -76,7 +76,7 @@ class ajaxRelinv {
 		$html .= 'arAddValue(this,\''.$this->cur_table.'\',\''.$this->fake_name.'\',\''.$this->cur_id.'\');return false;">
 		<img src="'.ADMIN_PICTOS_FOLDER.ADMIN_PICTOS_FORM_SIZE.'/actions/list-add.png" alt="'.t('ajouter').'" /></a>
 		
-		<table class="ajax_table" id="ar_'.$this->cur_table.'-'.''.$this->fake_name.'">';
+		<table class="genform_table ajax_table" id="ar_'.$this->cur_table.'-'.''.$this->fake_name.'">';
 		
 		global $restrictedMode;
 		$restrictedMode = true;
@@ -101,19 +101,21 @@ class ajaxRelinv {
 		$restrictedMode = true;
 		
 		$this->nb_line++;
+		$idd = $row[getPrimaryKey($this->fk_table)];
 		
 		/**
 		 * TR
 		 */
-		$html .= "\n".'<tr id="ar_'.$row[getPrimaryKey($this->fk_table)].'">';
+		$html .= "\n".'<tr id="ar_'.$idd.'">';
 			
 		/**
 		 * Cellule Delete
 		 */
+		
 		$html .= '
 				<td> 
 					<a href=""
-					onclick="arDelete(this,\''.$this->fk_table.'\','.$row[getPrimaryKey($this->fk_table)].');return false;"
+					onclick="arDelete(this,\''.$this->fk_table.'\','.$idd.');return false;"
 					>
 					<img src="'.ADMIN_PICTOS_FOLDER.ADMIN_PICTOS_FORM_SIZE.'/actions/list-remove.png" 
 							alt="'.t('delete').'" />
@@ -123,12 +125,12 @@ class ajaxRelinv {
 		if(ake($this->fk_table,$orderFields)) {
 			$html .= '<td>';
 			
-			$html .= '<img onclick="arGoUp(this,'.js($this->fk_table).','.js($row[getPrimaryKey($this->fk_table)]).')" 
+			$html .= '<img onclick="arGoUp(this,'.js($this->fk_table).','.js($idd).')" 
 							src="'.ADMIN_PICTOS_FOLDER.ADMIN_PICTOS_FORM_SIZE.'/actions/go-up.png" 
 							alt="'.t('go_up').'" />';
 			
 			$html .= '</td>';
-			$html .= '<td><img onclick="arGoDown(this,'.js($this->fk_table).','.js($row[getPrimaryKey($this->fk_table)]).')" 
+			$html .= '<td><img onclick="arGoDown(this,'.js($this->fk_table).','.js($idd).')" 
 							src="'.ADMIN_PICTOS_FOLDER.ADMIN_PICTOS_FORM_SIZE.'/actions/go-down.png" 
 							alt="'.t('go_down').'" /></td>';
 			
@@ -146,7 +148,7 @@ class ajaxRelinv {
 		*/
 		//error_reporting(E_ALL);
 		
-		$af = new ajaxForm($this->fk_table,$row[getPrimaryKey($this->fk_table)]);
+		$af = new ajaxForm($this->fk_table,$idd);
 		foreach($fields as $v) {
 			$html .= '<td><label>'.t($v).'</label>'.$af->genField($v).'</td>';			
 		}
@@ -158,6 +160,3 @@ class ajaxRelinv {
 	
 	
 }
-
-
-?>

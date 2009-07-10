@@ -62,7 +62,7 @@ if(count($res) <= 4000 ) {
 				$this->addBuffer('<div >'); //style="height:200px;overflow:auto;"
 			}
 
-	        $this->addBuffer('<table border="0" width="'.($this->larg-25).'" class="genform_table" >');
+	        $this->addBuffer('<table rel="'.$fk_table.'__'.$orderFields[$fk_table][0].'" border="0" width="'.($this->larg-25).'" class="genform_table sortable relinv" ><thead>');
 	        $ml = 1;
 	        $this->addBuffer('<tr><th width="20">');
 	
@@ -90,7 +90,7 @@ if(count($res) <= 4000 ) {
  			
                 /* Collones pour les boutons up down */
                 if(array_key_exists($fk_table,$orderFields)) {
-                    $this->addBuffer('<th width="20" >&nbsp;</th><th width="20" >&nbsp;</th>');
+                    $this->addBuffer('<th width="20" class="order">&nbsp;</th><th width="20" class="order">&nbsp;</th>');
 
                 }
 
@@ -100,7 +100,7 @@ if(count($res) <= 4000 ) {
                         $this->addBuffer('<th>'.$this->trad($titre).'</th>');
                 }
 
-                $this->addBuffer('</tr>');
+                $this->addBuffer('</tr></thead><tbody>');
                 reset($tabForms[$fk_table]['titre']);
 
                 $nbTotIt = count($res);
@@ -108,7 +108,7 @@ if(count($res) <= 4000 ) {
                 $ch = ' checked="checked" ' ;
                 foreach( $res as $row ) {
                         	$ml = $row[$clef];
-                            $this->addBuffer( '<tr>');
+                            $this->addBuffer( '<tr rel="'.$row[$clef].'" >');
                             $ch = "";
                              reset($tabForms[$fk_table]['titre']);
 
@@ -220,7 +220,7 @@ if(count($res) <= 4000 ) {
                                     **************/
                                   if(array_key_exists($fk_table,$orderFields)) {
 
-                                        $this->addBuffer( '<td>');
+                                        $this->addBuffer( '<td class="order">');
 
                                         if($nbIt > 1) {
                                             $this->addBuffer( '<input
@@ -242,7 +242,7 @@ if(count($res) <= 4000 ) {
                                         }
                                         $this->addBuffer( '</td>' );
 
-                                        $this->addBuffer( '<td>');
+                                        $this->addBuffer( '<td class="order">');
 
                                         if($nbIt < $nbTotIt) {
                                         	
@@ -282,7 +282,7 @@ if(count($res) <= 4000 ) {
                         	$this->addBuffer('<tr><td colspan="10" style="text-align:center;">'.$this->trad('aucun_element').'</td></tr>');
                         }
 
-                        $this->addBuffer('</table><br /> ');
+                        $this->addBuffer('</tbody></table><br /> ');
 
 			if(count($res) > 5) {
 				$this->addBuffer('</div>');
