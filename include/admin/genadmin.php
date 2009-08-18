@@ -286,16 +286,20 @@ class genAdmin {
 
 
 		 $go = new GenOrder('s_rubrique',$_GET['rubId'],$_GET['fkrubId']);
+		 $r = getSingle('SELECT rubrique_id FROM s_rubrique WHERE fk_rubrique_version_id = '.sql($_GET['rubId']));
+		// $go2 = new GenOrder('s_rubrique',$r['rubrique_id'],$_GET['fkrubId']);
 
          if(isset($_GET['bas_1']))
          {
          	$go->getDown();
+        // 	$go2->getDown();
 
          }
 
          if(isset($_GET['haut_1']))
          {
 
+         //	$go2->getUp();
          	$go->getUp();
 
 
@@ -392,18 +396,6 @@ class genAdmin {
 
     function checkActions()
     {
-    	
-    	if(ake('genform_relinvaction',$_REQUEST)) {
-    		
-    		foreach($_REQUEST['genform_relinvaction'] as $action=>$v) {
-    			foreach($v as $table=>$value) {
-    				  $this->action = new GenAction($action , $table ,$value );
-	          		  $this->action->DoIt();
-    			}
-    		}
-    		
-    	}
-    	
         if (ake('genform_action', $_REQUEST)) 		{
         	
         	
@@ -831,6 +823,7 @@ class genAdmin {
 
 
 		if($this->id) {
+			
 			$ht = '&nbsp;&nbsp;&nbsp;<a id="goHautLink" href="index.php?haut_1=1&amp;curTable='.$this->table.'&amp;curId='.$this->id.'&amp;rubId='.$this->real_rub_id.'&amp;resume=1&amp;fkrubId='.$this->real_fk_rub.'" title="Monter d\'un niveau"><img src="'.ADMIN_PICTOS_FOLDER.''.ADMIN_PICTOS_ARBO_SIZE.'/actions/go-up.png" alt="" /> '.t('monter').' </a>';
 
 			$bs = '&nbsp;&nbsp;&nbsp;<a id="goBasLink"  href="index.php?bas_1=1&amp;curTable='.$this->table.'&amp;curId='.$this->id.'&amp;rubId='.$this->real_rub_id.'&amp;resume=1&amp;fkrubId='.$this->real_fk_rub.'" title="Descendre d\'un niveau"><img src="'.ADMIN_PICTOS_FOLDER.''.ADMIN_PICTOS_ARBO_SIZE.'/actions/go-down.png" alt="" /> '.t('descendre').'</a>';
@@ -931,9 +924,12 @@ class genAdmin {
 		}
 		
         $query = GetAll($q); 
+        
        
-
-       foreach($query as $aff ) {
+		$tot = count($query)-1;
+		
+       foreach($query as $knb => $aff ) {
+       
 			$fakeRubs = false;
 		    $real_rub = $aff['fk_rubrique_version_id'];
 		    $version_rub = $aff['rubrique_id'];
@@ -1065,11 +1061,11 @@ class genAdmin {
 				}
 				/**
 				 * Sommes nous en fin de rubrique ?
-				 */
+				 
 				$m = "SELECT max(rubrique_ordre) as maxi FROM s_rubrique WHERE fk_rubrique_id ".sqlParam($id).' '.sqlRubriqueOnlyReal();
 				$max = GetSingle($m);
 				$maxxi = $max["maxi"];
-		
+				*/
 				
 				/**
 				 * Si on a des sous-rubriques on affiche le plus/moins
@@ -1079,16 +1075,16 @@ class genAdmin {
 	            		 ( $aff['fk_rubrique_version_id'] == $_SESSION['XHRlastCurId'] && !$_REQUEST['curId']) ) {
 	        
 	            
-					if($aff['rubrique_ordre'] == 1){
-						p('<script type="text/javascript">$("#goHautLink").attr("href","").addClass("disabled");</script>');
+					if($knb == 0){
+						p('<script type="text/javascript">$("#goHautLink").attr("href","#").addClass("disabled");</script>');
 					}
 	
-					if($aff['rubrique_ordre'] == $maxxi){
-						p('<script type="text/javascript">$("#goBasLink").attr("href","").addClass("disabled");</script>');
+					if($knb == $tot){
+						p('<script type="text/javascript">$("#goBasLink").attr("href","#").addClass("disabled");</script>');
 					}
 					
 					if($fakeRubs) {
-						p('<script type="text/javascript">$("#addSubLink").attr("href","").addClass("disabled");</script>');
+						p('<script type="text/javascript">$("#addSubLink").attr("href","#").addClass("disabled");</script>');
 					}
 					
         		}				
