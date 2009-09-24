@@ -102,7 +102,7 @@ class genContact {
 		 */
 		//$this->form->add('submit',t('c_submit'),'','contact_submit','contact_submit');
 		$this->form->add('submit',t('c_submit'),'','contact_submit','contact_submit');
-			
+		$this->form->submitAsImage = false;
 
 	
 
@@ -289,7 +289,7 @@ class genContact {
 		
 		$html .= '</div>';
 		$html .= '<div class="clearer" style="clear:both:">&nbsp;<br/></div>';
-		return ( $html );
+		return $html;
 		
 	}
 
