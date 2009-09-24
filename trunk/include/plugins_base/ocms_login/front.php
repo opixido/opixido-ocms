@@ -101,7 +101,7 @@ class ocms_loginFront {
 		/**
 		 * Si il n'est pas connecte, on gere le formulaire
 		 */
-		if($this->privee && !$this->isLogged()) {
+		//if($this->privee && !$this->isLogged()) {
 			if($_POST['login'] && $_POST['password']) {
 				$log = $this->isPasswordOk($_POST['login'],$_POST['password']);
 			} 
@@ -111,7 +111,7 @@ class ocms_loginFront {
 				$log = $this->isPasswordOk(($dec[1]),$_POST['password']);
 			}
 			
-		}
+		//}
 		
 		
 		/**
@@ -490,7 +490,7 @@ class ocms_loginFront {
 		$f = new simpleForm('','post','login_form');
 		//$f->add('html','');
 		$f->add('text','',t('la_login'),'login','la_login',true);
-		$f->add('password','',t('la_password'),'password','la_password',true);
+		$f->add('password','',t('la_password'),'password','la_password',!$_REQUEST['laEdit']);
 		$f->add('checkbox','1',t('la_remember'),'la_remember','la_remember');
 		$f->add('submit',t('la_submit'));
 
@@ -848,7 +848,6 @@ class ocms_loginFront {
 
 }
 
-
 class laSimpleSignUp {
 	
 	
@@ -904,9 +903,9 @@ class laSimpleSignUp {
 		
 		$this->showform = true;
 		$this->isSubmitted = $this->f->isSubmited();
-		$this->isValid = $this->f->isValid();
+		$this->isValide = $this->f->isValid();
 		
-		if($this->f->isSubmited() && $this->isValid() && $this->isValid  ) {
+		if($this->isSubmitted &&$this->isValid() &&  $this->isValide ) {
 			$this->showform = false;
 			$this->record();
 		}
@@ -922,7 +921,7 @@ class laSimpleSignUp {
 		
 		$this->f = new simpleForm('','post','signup');
 		
-		$this->f->add('email_conf','',t('la_email'),'la_email','la_email',true);
+		$this->f->add('email','',t('la_email'),'la_email','la_email',true);
 				
 		$this->f->add('submit',t('la_signup'));
 		
@@ -938,7 +937,6 @@ class laSimpleSignUp {
 		
 		
 		if($this->showform ) {
-
 			return $html .= $this->f->gen();
 		}
 		
@@ -976,7 +974,83 @@ class laSimpleSignUp {
 		//$autoValide = $this->la->params['validation'] == 'auto' ? 1 : 0;
 		
 		
-		return $this->la->addUser($login,$email,$password,$this->la->params['validation']);
+		$uid =  $this->la->addUser($login,$email,$password,$this->la->params['validation']);
+		
+		if(!$this->table) {
+			return $uid;
+		}
+		/**
+		 * Specific
+		 */
+		if(!$this->curRow[getPrimaryKey($this->table)]) {
+			DoSql('INSERT INTO '.$this->table.' ('.getPrimaryKey($this->table).',fk_utilisateur_id) VALUES ("",'.sql($uid).')');
+			$this->curId =  InsertId();
+			$this->curRow = getRowFromId($this->table,$this->curId);
+		}
+		
+		$sql = 'UPDATE '.$this->table.' SET ';
+		$sql .= ' '.getPrimaryKey($this->table).' =  '.$this->curId;
+		
+		$fields= getTabField($this->table);
+		
+		foreach($this->champs as $k=>$v) {
+			if($v == 'date') {
+				$_POST[$k] = $_POST[$k.'_y'].'-'.$_POST[$k.'_m'].'-'.$_POST[$k.'_d'];
+			
+			}
+			if(is_object($fields[$k]) && $v != 'image') {
+				$sql .= ' , '.$k.' = '.sql($_POST[$k]);
+			}
+			if($v == 'image' ) {
+				$addImage[] = $k;
+			}
+		}
+		
+		$sql .= ' WHERE '.getPrimaryKey($this->table).' = "'.$this->curRow[getPrimaryKey($this->table)].'" ';
+
+		$res = DoSql($sql);
+
+		if(!$res) {
+			$this->addError(t('la_error'));
+			return;
+		}
+		
+		
+		
+		$userId = choose($this->curId,InsertId());
+		
+		foreach($addImage as $v) {
+			if($_FILES[$v]['name']) {
+				
+				$gf = new genFile($this->table,$v,$userId,$_FILES[$v]['name'],false,false);
+				($gf->uploadFile($_FILES[$v]['tmp_name'],true));
+				
+			}
+		}
+		
+		genTableRelReverse();
+		
+		global $tablerel_reverse;
+			
+		if(is_array($tablerel_reverse[$this->table])) {	
+			
+			foreach($tablerel_reverse[$this->table] as $v) {	
+						
+				$t = new tablerel($v['tablerel'],$this->table,$userId);
+				$t->record($_REQUEST[$v['tablerel']]);
+				
+			}
+		}
+		
+		if($this->la->isLogged()) {
+			addMessageInfo(t('la_edit_ok'));
+			addMessageInfo('<a href="?">'.t('retour').'</a>');
+			return $res;
+		}
+		
+		$this->sendMailConf();
+		
+		addMessageInfo(t('la_signup_ok'));
 		
 	}
 	
@@ -1043,35 +1117,96 @@ class laSimpleSignUp {
 	 */
 	function addBaseField($f) {
 		
-		$f->add('fieldset',t('la_base'));
 		if($this->la->isLogged()) {
+		
+			$f->add('html','<a href="#" class="delete" rel="'.getUrlWithParams(array('la_delete_account'=>1)).'" onclick="if(confirm(\''.str_replace(array("\n","\r","'"),array(" ", " ",""),t('la_delete_confirm')).'\')) {window.location=this.rel;}" >'.t('la_delete').'</a>');
+			
 			$f->add('html','<strong class="la_login">'.t('la_login').' : '.$_SESSION['ocms_login']['utilisateur_login'].'</strong>');
 			$f->add('email',$_SESSION['ocms_login']['utilisateur_email'],t('la_email'),'la_email','la_email',true);			
-			$f->add('html',t('la_to_change_pwd'));
-			$f->add('password','',t('la_password'),'la_password','la_password',true);
-			$f->add('password','',t('la_password_conf'),'la_password_conf','la_password_conf',true);
+			$f->add('password','',t('la_password'),'la_password','la_password',false);
+			$f->add('password','',t('la_password_conf'),'la_password_conf','la_password_conf',false);
 		} else {
-			$f->add('text','',t('la_login_form'),'la_login','la_login',true);
+			$f->add('text','',t('la_login'),'la_login','la_login',true);
 			$f->add('email','',t('la_email'),'la_email','la_email',true);
-			
-			
 			$f->add('password','',t('la_password'),'la_password','la_password',true);
 			$f->add('password','',t('la_password_conf'),'la_password_conf','la_password_conf',true);
 		}
-		$f->add('endfieldset');
+		
+	}
+	
+	function addSpecificField($f) {		
+		global $relations,$tabForms,$tablerel;
+		$tab = $this->champs;
+		
+		foreach($tab as $v=>$k) {
+			
+			if($k == 'select') {
+				/**
+				 * Default
+				 */
+				$res = array();	
+				if($relations[$this->table][$v]) {
+					
+					$fktable = $relations[$this->table][$v];
+					$sql = 'SELECT '.sqlLgValue($tabForms[$fktable]['titre'][0]).' AS label, 					
+								'.getPrimaryKey($fktable).' AS value FROM '.$fktable.' ORDER BY label';
+					
+					$res = GetAll($sql);					
+				}			
+				
+				$f->add('select',$res,t($v),$v,$v,true,array($this->curRow[$v]));
+			} 
+			else if($k == 'checkbox') {				
+				if($tablerel[$v]) {				
+					$t = new tablerel($v,$this->table);
+					$res = $t->getFullListing();					
+					$f->add('checkbox',$res,t($v),$v,$v,true,($this->curRow[$v]));					
+				}
+			}
+			else if($k == 'image') {
+				if($this->curRow[$v]) {
+					$gf = new genFile($this->table,$v,$this->curRow);
+					$f->add('html','<img src="'.$gf->getWebUrl().'" alt="" />');
+				}				
+				$f->add('file',$this->curRow[$v],t($v),$v,$v,!in_array($v,$this->noneed));
+			}
+			else {
+				$f->add($k,$this->curRow[$v],t($v),$v,$v,!in_array($v,$this->noneed));
+			}		
+		
+		}
 
+		$this->f = $f;
+		
 	}
 	
 	
 	function sendMailConf() {
 		
-		$m = includeMail();
+	
 		
-		$m->AddAddress($_POST['utilisateur_email']);
-		$m->Subject = t('la_email_conf_subject');
-		$m->Body = tf('la_email_conf_body',array('PASSWORD'=>$password,'LOGIN'=>$login,'URL'=>getServerUrl().getUrlWithParams()));
+		$m = includeMail();
+				
+		$m->AddAddress($_POST['bug_user_email']);
+		$m->Subject = t('bug_email_conf_subject');
+		$m->Body = tf('bug_email_conf_body',array('PASSWORD'=>$password,'LOGIN'=>$login,'URL'=>getServerUrl().getUrlWithParams()));
 		$m->Send();
 		
+	}
+	
+	function getRowMdp($email) {
+		
+		$sql = 'SELECT * FROM e_utilisateur AS U  WHERE 
+					
+					utilisateur_email LIKE '.sql($_POST['oubli_email']).' 
+					OR utilisateur_login LIKE '.sql($_POST['oubli_email']).' 
+					AND utilisateur_valide = 1					
+					';
+
+		$row = GetSingle($sql);
+
+		return $row;
+
 	}
 	
 	
