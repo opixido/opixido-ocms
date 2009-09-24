@@ -252,6 +252,9 @@ class genFile {
 		}
 		//}
 		if(count($fltr)) {
+			if(!is_array($fltr)) {
+				$fltr = array($fltr);
+			}
 			foreach($fltr as $v) {
 				$s .= '&amp;fltr[]='.$v;
 			}
@@ -363,9 +366,9 @@ class genFile {
 	 * @param string $tag
 	 * @return string HTML
 	 */
-	function getExactImgtag($w=0,$h=0,$alt='',$tag='') {
+	function getExactImgtag($w=0,$h=0,$alt='',$tag='',$filters=array()) {
 		
-		$url = $this->getThumbUrlExact($w,$h);
+		$url = $this->getThumbUrlExact($w,$h,$filters);
 		
 		if(strlen($url)) {
 			return '<img src="'.$url.'" alt="'.$alt.'" '.$tag.' />';
@@ -398,9 +401,9 @@ class genFile {
 	 * @param string $tag
 	 * @return string HTML
 	 */
-	function getThumbImgtag($w=0,$h=0,$alt='',$tag='') {
+	function getThumbImgtag($w=0,$h=0,$alt='',$tag='',$filters=array()) {
 		
-		$url = $this->getThumbUrl($w,$h);
+		$url = $this->getThumbUrl($w,$h,$filters);
 		
 		if(strlen($url)) {
 			return '<img src="'.$url.'" alt="'.$alt.'" '.$tag.' />';
@@ -418,9 +421,9 @@ class genFile {
 	 * @param string $tag
 	 * @return string HTML
 	 */
-	function getCropImgtag($w=0,$h=0,$alt='',$tag='') {
+	function getCropImgtag($w=0,$h=0,$alt='',$tag='',$filters=array()) {
 		
-		$url = $this->getCropUrl($w,$h);
+		$url = $this->getCropUrl($w,$h,$filters);
 		
 		if(strlen($url)) {
 			return '<img src="'.$url.'" alt="'.$alt.'" '.$tag.' />';
@@ -944,6 +947,9 @@ class genFile {
 
 	}
 
+	function __tostring() {
+		return $this->getWebUrl();
+	}
 
 }
 
