@@ -199,15 +199,21 @@ function sqlOnlyOnline($table,$alias = '') {
 	
 	global $_Gconfig;
 	
-	if(!@in_array($table,$_Gconfig['hideableTable'])){
-		return;
-	}
-	$sql = ' AND ';
+	$t = getTabField($table);
 	if( strlen($alias )) {
 		$alias = $alias.'.';
 		$sql .= $alias;		
 	}
-	$sql .= ONLINE_FIELD.' = "1" ';
+	if($t['date_online'] && $t['date_offline']) {
+		$sql .= ' AND ( date_online <= NOW() OR date_online = "0000-00-00" ) 
+		AND (date_offline >= NOW() OR date_offline = "0000-00-00"  ) ';
+	}
+	if(!@in_array($table,$_Gconfig['hideableTable'])){
+		return $sql;
+	}
+	$sql = ' AND ';
+
+	$sql .= $alias.ONLINE_FIELD.' = "1" ';
 	if(in_array($table,$_Gconfig['versionedTable'])) {
 		$sql .= 'AND '.$alias.''.VERSION_FIELD.' IS NULL ';
 	}
