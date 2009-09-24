@@ -11,7 +11,7 @@ class simpleForm {
 	
 	public $radioBeforeLabel = false;
 
-	public $submitAsImage = true;
+	public $submitAsImage = false;
 	
 	function __construct($action='',$method='get',$id='') {
 
@@ -264,7 +264,31 @@ class simpleForm {
 		return $s;
 	}
 
+	
 
+	function addDate($field) {
+		
+		$this->add('fieldset',$field['label'],'','',$field['id']);
+		
+		global $_locale;
+		$mm = array('');
+		for($p=0;$p<=11;$p++) {
+			$mm[] = array('value'=>($p+1),'label'=>$_locale[LG]['months_long'][$p]);
+		}
+		
+		
+		if($field['value']) {
+			$v = explode('-',$field['value']);
+			
+		}
+		
+		$this->add('select',array_merge(array(''),range(1,31)),t('sf_day'),$field['name'].'_d',$field['id'].'_d',$field['needed'],array($v[2]));
+		$this->add('select',$mm,t('sf_month'),$field['name'].'_m',$field['id'].'_m',$field['needed'],array($v[1]));
+		$this->add('select',array_merge(array(''),range(1900,date('Y'))),t('sf_year'),$field['name'].'_y',$field['id'].'_y',$field['needed'],array($v[0]));			
+		
+		$this->add('endfieldset');
+		
+	}
 	
 	
 
@@ -750,7 +774,10 @@ class simpleForm {
 		}
 		
 		//debug($selected);
-		
+		if($type == 'date') {
+			$this->addDate($field);
+			//return;
+		}
 		$this->fields[$id] = array('type'=>$type,'value'=>$value,'label'=>$label,'name'=>$name,'id'=>$id,'needed'=>$needed,'selected'=>$selected,'disabled'=>$disabled);
 
 	}
