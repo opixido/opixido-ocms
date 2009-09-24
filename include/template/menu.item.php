@@ -1,2 +1,19 @@
 
-<li <?=$this->get('id')?> <?=$this->get('style')?> ><? if($this->get('lien')) { ?><a <?=$this->get('classa')?> href="<?=$this->get('lien')?>"><? } ?><?=$this->get('titre')?><? if($this->get('lien')) { ?></a><? } ?><?=$this->get('sub')?></li>
+<li @@id@@ @@style@@ >
+	<? if($this->get('lien')) { ?>
+	<a @@classa@@ href="@@lien@@">
+	<? } ?>
+	
+	<span class="in">
+	
+	@@titre@@	
+	
+	</span>
+	
+	<? if($this->get('lien')) { ?>
+	</a>
+	<? } ?>
+	<span class="out"></span>
+	
+	<?=$this->sub ?>
+</li>
