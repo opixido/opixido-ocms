@@ -21,7 +21,7 @@
                 <?=t('username')?> </label>
                 <input 
 				style="border:0px;background:url(./img/fond.bloc2.gif) #eee;
-		;border-bottom:1px solid;border-right:1px solid;" id="gs_adminuser"  name="gs_adminuser" type="text" value="<?php print($_REQUEST['gs_adminuser']); ?>" />
+		;border-bottom:1px solid;border-right:1px solid;" id="gs_adminuser"  name="gs_adminuser" type="text" value=<?=alt($_REQUEST['gs_adminuser']));?> />
             </p>
             
             <p style="margin-left:20px;">
