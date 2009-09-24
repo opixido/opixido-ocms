@@ -122,7 +122,7 @@ class bloc {
 			}
 		}
 				
-		$this->contenu[$nom] = '<div id="bloc_'.$this->nom.'_'.$nom.'">'.$html.'</div>';
+		$this->contenu[$nom] = '<div class="bloc" id="bloc_'.$this->nom.'_'.$nom.'">'.$html.'</div>';
 		
 		if(ake($this->toAddAfter,$nom)) {
 			
@@ -146,7 +146,7 @@ class bloc {
 			
 		}
 		else {
-			$this->toAddAfter[$other][$nom] ='<div id="col_'.$nom.'">'.$html.'</div>';		
+			$this->toAddAfter[$other][$nom] ='<div class="bloc" id="col_'.$nom.'">'.$html.'</div>';		
 		}
 	}
 	
@@ -163,7 +163,7 @@ class bloc {
 			
 		}
 		else {
-			$this->toAddBefore[$other][$nom] ='<div id="col_'.$nom.'">'.$html.'</div>';		
+			$this->toAddBefore[$other][$nom] ='<div class="bloc" id="col_'.$nom.'">'.$html.'</div>';		
 		}
 	}
 		
@@ -176,7 +176,7 @@ class bloc {
 	
 	function addAtTop($nom,$html) {
 		
-		$this->contenu = array_merge(array($nom=>'<div id="bloc_'.$this->nom.'_'.$nom.'">'.$html.'</div>'),$this->contenu);
+		$this->contenu = array_merge(array($nom=>'<div class="bloc" id="bloc_'.$this->nom.'_'.$nom.'">'.$html.'</div>'),$this->contenu);
 		
 	}
 	
