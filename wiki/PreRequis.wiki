@@ -3,29 +3,29 @@
 = Logiciels requis =
 
 - Serveur Web
-* Apache 1.3 + 
-* IIS
-* Tout autre serveur Web capable d'utiliser PHP en CGI ou modules ...
+  * Apache 1.3 + 
+  * IIS
+  * Tout autre serveur Web capable d'utiliser PHP en CGI ou modules ...
 ( Apache avec mod_rewrite est requis pour la réécriture d'URL par défaut)
 
 
 - SGBD 
-* Mysql 5+
+  * Mysql 5+
 
 - PHP 5+
-* MbString
-* MCrypt
-* GD2 
-* Freetype
-* ...
+  * MbString
+  * MCrypt
+  * GD2 
+  * Freetype
+  * ...
 
 = Outils open source inclus et utilisés =
 
-* Tinymce comme éditeur WYSIWYG 
-* phpThumb pour le retaillage d'image
-* adoDB-Php Pour l'abstraction de base de donnée
-* jQuery et ses plugins comme framework Javascript
-* editArea Pour l'édition de code dans l'admin
-* ImageManager pour le retaillage/recadrage d'images
-* Tango comme jeu d'icône pour l'admin
-* ...
+  * Tinymce comme éditeur WYSIWYG 
+  * phpThumb pour le retaillage d'image
+  * adoDB-Php Pour l'abstraction de base de donnée
+  * jQuery et ses plugins comme framework Javascript
+  * editArea Pour l'édition de code dans l'admin
+  * ImageManager pour le retaillage/recadrage d'images
+  * Tango comme jeu d'icône pour l'admin
+  * ...
