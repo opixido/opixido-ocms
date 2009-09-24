@@ -24,7 +24,6 @@
 
 class genAction {
 
-
 	public $action;
 	public $table;
 	public $id;
@@ -1268,6 +1267,9 @@ class genActionTranslate {
       
       $filename = gen_include_path.'/plugins/'.$this->row['plugin_nom'].'/datas.xml';
      
+	 /**
+	  * Loading Data File
+	  */
       if(file_exists($filename) && $x =  simplexml_load_file($filename)) {     				
 				
 		foreach($x as $table=>$v) {			
