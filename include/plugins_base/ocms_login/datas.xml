@@ -1,0 +1,479 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+-
+- phpMyAdmin XML Dump
+- version 2.11.9.2
+- http://www.phpmyadmin.net
+-
+- Host: localhost
+- Generation Time: Sep 18, 2009 at 03:35 PM
+- Server version: 5.0.67
+- PHP Version: 5.2.6
+-->
+
+<!--
+- Database: 'ecafe'
+-->
+<ecafe>
+  <!-- Table s_trad -->
+    <s_trad>
+        <trad_id>la_body_confirm</trad_id>
+        <trad_fr>Bonjour, 
+
+Pour valider votre inscription, merci de cliquer sur le lien ci-dessous :
+[URL]
+
+Nous vous rappelons vos identifiants :
+Nom d'utilisateur : [LOGIN]
+Mot de passe : [PWD]</trad_fr>
+        <trad_uk>Hello,
+
+Please click on the link below to confirm your registration: 
+[URL]
+
+Your details:
+Username: [LOGIN]
+Password: [PWD]
+
+
+</trad_uk>
+        <trad_us></trad_us>
+        <trad_it>Salve,
+
+Per favore, clicca sul link qui di seguito per confermare la tua registrazione: 
+[URL]
+
+I tuoi parametri:
+Nome utente: [LOGIN]
+Password: [PWD]</trad_it>
+        <trad_es>Hola,
+
+Haga clic en el enlace siguiente para confirmar su registro: 
+[URL]
+
+Sus datos:
+Nombre de usuario: [LOGIN]
+Contraseña: [PWD]</trad_es>
+        <trad_nl>Hi,
+
+Klik op de koppeling hieronder om uw registratie te bevestigen: 
+[URL]
+
+Uw gegevens:
+Gebruikersnaam: [LOGIN]
+Wachtwoord: [PWD]</trad_nl>
+        <trad_de>&quot;Hallo,
+
+Bitte klicken Sie auf den untenstehenden Link, um Ihre Registrierung zu bestätigen:
+[URL]
+
+Ihre Details:
+Benutzername: [LOGIN]
+Paßwort: [PWD]&quot;
+GIN]
+Paßwort: [PWD]</trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>la_deconnexion</trad_id>
+        <trad_fr>Se déconnecter </trad_fr>
+        <trad_uk>Logout</trad_uk>
+        <trad_us></trad_us>
+        <trad_it>Scollegati</trad_it>
+        <trad_es>Desconectar</trad_es>
+        <trad_nl>Verbinding verbreken</trad_nl>
+        <trad_de>Trennen</trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>la_delete</trad_id>
+        <trad_fr>Supprimer mon compte</trad_fr>
+        <trad_uk></trad_uk>
+        <trad_us></trad_us>
+        <trad_it></trad_it>
+        <trad_es></trad_es>
+        <trad_nl></trad_nl>
+        <trad_de></trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>la_deleted</trad_id>
+        <trad_fr>Ce compte n'existe pas</trad_fr>
+        <trad_uk></trad_uk>
+        <trad_us></trad_us>
+        <trad_it></trad_it>
+        <trad_es></trad_es>
+        <trad_nl></trad_nl>
+        <trad_de></trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>la_delete_confirm</trad_id>
+        <trad_fr>Etes vous certain de vouloir supprimer votre compte ? 
+Vous ne pourrez plus vous connecter.</trad_fr>
+        <trad_uk></trad_uk>
+        <trad_us></trad_us>
+        <trad_it></trad_it>
+        <trad_es></trad_es>
+        <trad_nl></trad_nl>
+        <trad_de></trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>la_delete_ok</trad_id>
+        <trad_fr>Votre compte a bien été supprimé</trad_fr>
+        <trad_uk></trad_uk>
+        <trad_us></trad_us>
+        <trad_it></trad_it>
+        <trad_es></trad_es>
+        <trad_nl></trad_nl>
+        <trad_de></trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>la_edit</trad_id>
+        <trad_fr>Mon compte </trad_fr>
+        <trad_uk>My account</trad_uk>
+        <trad_us></trad_us>
+        <trad_it>Il mio account</trad_it>
+        <trad_es>Mi cuenta</trad_es>
+        <trad_nl>Mijn account</trad_nl>
+        <trad_de>Mein Konto</trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>la_edit_ok</trad_id>
+        <trad_fr>Vos modifications ont bien été enregistrées </trad_fr>
+        <trad_uk>Your changes have been taken into account</trad_uk>
+        <trad_us></trad_us>
+        <trad_it>Le tue modifiche sono state salvate</trad_it>
+        <trad_es>Sus cambios se han tenido en cuenta</trad_es>
+        <trad_nl>Uw wijzigingen zijn verwerkt</trad_nl>
+        <trad_de>Ihre Änderungen wurden berücksichtigt</trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>la_email</trad_id>
+        <trad_fr>Votre e-mail </trad_fr>
+        <trad_uk>Your e-mail</trad_uk>
+        <trad_us></trad_us>
+        <trad_it>La tua e-mail</trad_it>
+        <trad_es>Su e-mail</trad_es>
+        <trad_nl>Uw e-mailadres</trad_nl>
+        <trad_de>Ihre Email</trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>la_login</trad_id>
+        <trad_fr>Votre nom d'utilisateur </trad_fr>
+        <trad_uk>Your login</trad_uk>
+        <trad_us></trad_us>
+        <trad_it>Il tuo nome utente</trad_it>
+        <trad_es>Su nombre de usuario</trad_es>
+        <trad_nl>Uw gebruikersnaam</trad_nl>
+        <trad_de>Ihr Benutzername</trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>la_login_laSignUpBug</trad_id>
+        <trad_fr></trad_fr>
+        <trad_uk>The eCAFÉ™ uses an open-source Linux operating system. There are lots of users for this operating system who contribute, regardless of their level of knowledge in development or computer languages. Hercules has made available a technical forum (coming soon) to allow everyone who would like to help improve the eCAFÉ™ to discuss technical subjects. There is also a form available for bug reports, which will be directly viewable by the Hercules Research and Development team.
+
+To access the Linux Technical Community section, you must register</trad_uk>
+        <trad_us></trad_us>
+        <trad_it></trad_it>
+        <trad_es></trad_es>
+        <trad_nl></trad_nl>
+        <trad_de></trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>la_login_laSignUpForum</trad_id>
+        <trad_fr>Pour poster un message dans ce forum vous devez vous enregistrer</trad_fr>
+        <trad_uk>To post a message in this forum, you must first register
+</trad_uk>
+        <trad_us></trad_us>
+        <trad_it>Per poter inviare un messaggio in questo forum, devi prima registrarti
+</trad_it>
+        <trad_es>Para publicar un mensaje en este foro, primero tienes que registrarte
+</trad_es>
+        <trad_nl>U moet geregistreerd zijn om een bericht op dit forum te mogen plaatsen
+</trad_nl>
+        <trad_de>Um in diesem Forum eine Nachricht zu posten, müssen Sie registriert sein
+</trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>la_login_taken</trad_id>
+        <trad_fr>Ce nom d'utilisateur est déjà pris </trad_fr>
+        <trad_uk>This login is already taken</trad_uk>
+        <trad_us></trad_us>
+        <trad_it>Questo nome utente è già stato scelto.</trad_it>
+        <trad_es>Ese nombre de usuario ya está en uso.</trad_es>
+        <trad_nl>Deze gebruikersnaam is al in gebruik.</trad_nl>
+        <trad_de>Dieser Benutzername existiert bereits.</trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>la_mauvais_pwd</trad_id>
+        <trad_fr>le nom d'utilisateur et le mot de passe sont incorrects
+</trad_fr>
+        <trad_uk>The username and password doesn't match</trad_uk>
+        <trad_us></trad_us>
+        <trad_it>Il nome utente e la password non corrispondono
+</trad_it>
+        <trad_es>El nombre de usuario y la contraseña no coinciden
+</trad_es>
+        <trad_nl>Gebruikersnaam en wachtwoord komen niet overeen 
+</trad_nl>
+        <trad_de>Der Benutzername und das Paßwort passen nicht
+</trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>la_mdp_sent</trad_id>
+        <trad_fr>Votre mot de passe vient de vous être envoyé </trad_fr>
+        <trad_uk>Your password has just been sent</trad_uk>
+        <trad_us></trad_us>
+        <trad_it>La tua password è stata inviata.</trad_it>
+        <trad_es>Se ha enviado su contraseña.</trad_es>
+        <trad_nl>Uw wachtwoord is verzonden.</trad_nl>
+        <trad_de>Ihr Paßwort wurde gesendet.</trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>la_not_valid</trad_id>
+        <trad_fr>Votre inscription n'a pas encore été validée </trad_fr>
+        <trad_uk>Your account is not active yet</trad_uk>
+        <trad_us></trad_us>
+        <trad_it>La tua registrazione non è stata ancora confermata.</trad_it>
+        <trad_es>Su registro aún no ha sido confirmado.</trad_es>
+        <trad_nl>Uw registratie is nog niet bevestigd.</trad_nl>
+        <trad_de>Ihre Registrierung ist noch nicht bestätigt.</trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>la_oubli_bad</trad_id>
+        <trad_fr>Ce nom d'utilisateur n'existe pas
+</trad_fr>
+        <trad_uk>This username doesn't exist</trad_uk>
+        <trad_us></trad_us>
+        <trad_it>Il tuo nome utente non esiste
+</trad_it>
+        <trad_es>Este nombre de usuario no existe
+</trad_es>
+        <trad_nl>Deze gebruikersnaam bestaat niet 
+</trad_nl>
+        <trad_de>Dieser Benutzername existiert nicht
+</trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>la_oubli_body</trad_id>
+        <trad_fr>Bonjour, Votre nom d'utilisateur est : [EMAIL] et votre mot de passe est : [PWD]</trad_fr>
+        <trad_uk>Hello, Your login is: [EMAIL] And your password is: [PWD] </trad_uk>
+        <trad_us></trad_us>
+        <trad_it>Salve, il tuo nome utente è: [EMAIL] e la tua password è: [PWD] </trad_it>
+        <trad_es>Hola, su nombre de usuario es: [EMAIL] Y su contraseña es: [PWD]</trad_es>
+        <trad_nl>Hi, uw gebruikersnaam is: [EMAIL] En uw wachtwoord is: [PWD] </trad_nl>
+        <trad_de>Hallo, Ihr Login ist: [EMAIL] und Ihr Paßwort lautet: [PWD] </trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>la_oubli_mdp</trad_id>
+        <trad_fr>Vous avez oublié votre nom d'utilisateur ou mot de passe ? </trad_fr>
+        <trad_uk>Did you forget your login or password ?</trad_uk>
+        <trad_us></trad_us>
+        <trad_it>Hai dimenticato il tuo nome utente e/o la tua password?</trad_it>
+        <trad_es>¿Ha perdido su nombre de usuario y/o contraseña?</trad_es>
+        <trad_nl>Bent u uw gebruikersnaam en/of wachtwoord kwijt?</trad_nl>
+        <trad_de>Haben Sie Ihren Benutzernamen und/oder Paßwort vergessen?</trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>la_oubli_saisir</trad_id>
+        <trad_fr>Veuillez saisir votre nom d'utilisateur </trad_fr>
+        <trad_uk>Please enter your login</trad_uk>
+        <trad_us></trad_us>
+        <trad_it>Per favore, inserisci il tuo nome utente</trad_it>
+        <trad_es>Proporcione su nombre de usuario</trad_es>
+        <trad_nl>Geef uw gebruikersnaam op</trad_nl>
+        <trad_de>Bitte nennen Sie Ihren Benutzernamen</trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>la_oubli_subject</trad_id>
+        <trad_fr>Votre mot de passe </trad_fr>
+        <trad_uk>Your password</trad_uk>
+        <trad_us></trad_us>
+        <trad_it>La tua password</trad_it>
+        <trad_es>Su contraseña</trad_es>
+        <trad_nl>Uw wachtwoord</trad_nl>
+        <trad_de>Ihr Paßwort</trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>la_oubli_submit</trad_id>
+        <trad_fr>Récupérer mon mot de passe</trad_fr>
+        <trad_uk>Send me my password</trad_uk>
+        <trad_us></trad_us>
+        <trad_it>Inviami la mia password</trad_it>
+        <trad_es>Recuperar mi contraseña</trad_es>
+        <trad_nl>Stuur me mijn wachtwoord</trad_nl>
+        <trad_de>Bitte Paßwort zusenden</trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>la_password</trad_id>
+        <trad_fr>Votre mot de passe </trad_fr>
+        <trad_uk>Your password</trad_uk>
+        <trad_us></trad_us>
+        <trad_it>La tua password</trad_it>
+        <trad_es>Su contraseña</trad_es>
+        <trad_nl>Uw wachtwoord</trad_nl>
+        <trad_de>Ihr Paßwort</trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>la_password_conf</trad_id>
+        <trad_fr>Confirmation </trad_fr>
+        <trad_uk>Confirmation</trad_uk>
+        <trad_us></trad_us>
+        <trad_it>Conferma</trad_it>
+        <trad_es>Confirmación</trad_es>
+        <trad_nl>Bevestiging</trad_nl>
+        <trad_de>Bestätigung</trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>la_password_error</trad_id>
+        <trad_fr>Merci de vérifier votre mot de passe </trad_fr>
+        <trad_uk>Please confirm your password</trad_uk>
+        <trad_us></trad_us>
+        <trad_it>Per favore, conferma la tua password</trad_it>
+        <trad_es>Confirme su contraseña</trad_es>
+        <trad_nl>Bevestig uw wachtwoord</trad_nl>
+        <trad_de>Bitte Ihr Paßwort bestätigen</trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>la_retour</trad_id>
+        <trad_fr>&lt; Retour</trad_fr>
+        <trad_uk>&lt; Back</trad_uk>
+        <trad_us></trad_us>
+        <trad_it></trad_it>
+        <trad_es></trad_es>
+        <trad_nl></trad_nl>
+        <trad_de></trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>la_signup</trad_id>
+        <trad_fr>S'inscrire </trad_fr>
+        <trad_uk>Register</trad_uk>
+        <trad_us></trad_us>
+        <trad_it>Registrazione</trad_it>
+        <trad_es>Registrar</trad_es>
+        <trad_nl>Registreren</trad_nl>
+        <trad_de>Registrierung</trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>la_signup_laSignUpBug</trad_id>
+        <trad_fr>Si vous n'avez pas encore de compte pour l'espace bugtracker, inscrivez vous ci-dessous </trad_fr>
+        <trad_uk>If you don't have an account for the Linux Technical Community section, please register below</trad_uk>
+        <trad_us></trad_us>
+        <trad_it>Se non possiedi un account per accedere alla sezione Linux Technical Community, registrati qui sotto.</trad_it>
+        <trad_es>Si no tiene una cuenta para la sección de la Comunidad Técnica de Linux, regístrese a continuación.</trad_es>
+        <trad_nl>Registreer u hieronder wanneer u geen account hebt voor de Linux Technical Community-sectie. </trad_nl>
+        <trad_de>Sollten Sie kein Konto für die Linux Technical Community Sektion haben, registrieren Sie sich bitte untenstehend. </trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>la_signup_laSignUpForum</trad_id>
+        <trad_fr>Si vous n'avez pas encore de compte utilisateur vous pouvez en créer un ci-dessous</trad_fr>
+        <trad_uk>If you have not yet created a user account, you can create one below
+</trad_uk>
+        <trad_us></trad_us>
+        <trad_it>Se non hai ancora creato un account utente, puoi crearne uno qui di seguito
+</trad_it>
+        <trad_es>Si aún no has creado una cuenta de usuario, puedes crearla a continuación
+</trad_es>
+        <trad_nl>U kunt hieronder een gebruikersaccount aanmaken
+</trad_nl>
+        <trad_de>Sollten Sie bislang noch keinen Nutzerkonto erstellt haben, können Sie dies untenstehend tun
+</trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>la_signup_ok</trad_id>
+        <trad_fr>Votre inscription a bien été prise en compte </trad_fr>
+        <trad_uk>Your registration has been taken into account</trad_uk>
+        <trad_us></trad_us>
+        <trad_it>La tua richiesta di registrazione è in fase di elaborazione.</trad_it>
+        <trad_es>Su registro se ha tenido en cuenta.</trad_es>
+        <trad_nl>Uw registratie is ontvangen. </trad_nl>
+        <trad_de>Ihre Registrierung wurde berücksichtigt.</trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>la_subject_confirm</trad_id>
+        <trad_fr>Confirmation d'inscription </trad_fr>
+        <trad_uk>Registration confirmation.</trad_uk>
+        <trad_us></trad_us>
+        <trad_it>Registrazione confermata.</trad_it>
+        <trad_es>Confirmación de registro</trad_es>
+        <trad_nl>Registratiebevestiging.</trad_nl>
+        <trad_de>Registrierungsbestätigung.</trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>la_submit</trad_id>
+        <trad_fr>Connexion </trad_fr>
+        <trad_uk>Connection</trad_uk>
+        <trad_us></trad_us>
+        <trad_it>Connessione</trad_it>
+        <trad_es>Conexión</trad_es>
+        <trad_nl>Verbinding</trad_nl>
+        <trad_de>Verbindung</trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>la_utilisateur_inexistant</trad_id>
+        <trad_fr>Ce nom d'utilisateur est introuvable dans notre base de données
+</trad_fr>
+        <trad_uk>This username doesn't exist in our database</trad_uk>
+        <trad_us></trad_us>
+        <trad_it>Questo nome utente non è presente nel nostro database 
+</trad_it>
+        <trad_es>Este nombre de usuario no existe en nuestra base de datos.
+</trad_es>
+        <trad_nl>Deze gebruikersnaam bestaat niet in onze database.
+</trad_nl>
+        <trad_de>Dieser Benutzername existiert nicht in Ihrer Datenbank
+</trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>la_validation_email</trad_id>
+        <trad_fr>Pour valider votre inscription vous devez cliquer sur lien qui vient de vous être envoyé par email </trad_fr>
+        <trad_uk>To confirm your registration, please click on the link in the email that was just sent to you.</trad_uk>
+        <trad_us></trad_us>
+        <trad_it>Per confermare la tua registrazione, clicca sul link contenuto nella e-mail che ti è stata inviata.</trad_it>
+        <trad_es>Para confirmar su registro, haga clic en el vínculo del correo electrónico que acaba de recibir.</trad_es>
+        <trad_nl>Als u uw registratie wilt bevestigen, klikt u op de koppeling in het e-mailbericht dat zojuist naar u is verstuurd.</trad_nl>
+        <trad_de>Zur Bestätigung Ihrer Registrierung klicken Sie bitte auf den Link in der Mail, die Ihnen gerade zugesandt wurde.</trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>la_valide_ok</trad_id>
+        <trad_fr>Merci, Votre inscription a bien été confirmée. Vous pouvez maintenant vous connecter ci-dessous </trad_fr>
+        <trad_uk>Thank you, your registration has been confirmed. You can now connect below.</trad_uk>
+        <trad_us></trad_us>
+        <trad_it>Grazie, la tua registrazione è stata confermata. Ora puoi collegarti qui di seguito.</trad_it>
+        <trad_es>Gracias, su registro se ha confirmado. Ahora puede conectar a continuación.</trad_es>
+        <trad_nl>Dank u, uw registratie is bevestigd. U kunt nu hieronder verbinding maken.</trad_nl>
+        <trad_de>Danke, Ihre Registrierung wurde bestätigt. Sie können sich nun untenstehend verbinden.</trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+</ecafe>
