@@ -52,6 +52,7 @@ class genRubrique {
 	public $doGenMain = true;
 	public $rubrique = array();
 	public $fk_rubrique_version_id = 0;
+	public $params = array();
 	
 	public $bddClasse = '';
 	/**
@@ -127,6 +128,8 @@ class genRubrique {
 			$this->rubrique['fk_gabarit_id'] = $this->gabarit['gabarit_id'];
 			$this->hasBddInfo = true;
 		}
+		
+		$this->params = SplitParams($this->rubrique['rubrique_gabarit_param']);
 		
 
 
@@ -212,13 +215,14 @@ class genRubrique {
 		}
 		
 		foreach($p as $v) {
-			$GLOBALS['gb_obj']->includeFile('front.php',PLUGINS_FOLDER.''.$v.'/');
-
+			$GLOBALS['gb_obj']->includeFile('front.php',PLUGINS_FOLDER.''.$v.'/');		
+		}
+		
+		foreach($p as $v) {
 			$adminClassName = $v.'Front';
 			if(class_exists($adminClassName)) {
 				$this->plugins[$v] = new $adminClassName($this->site);
 			}
-			
 		}
 		$GLOBALS['times']['LoadingPlugins'] = getmicrotime()-$t;
 		$GLOBALS['times']['Plugins'] += $GLOBALS['times']['LoadingPlugins'];
