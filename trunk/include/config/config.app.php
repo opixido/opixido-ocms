@@ -41,7 +41,7 @@ $_Gconfig['titre'] = '';
 /**
  * Liste des langues par defaut du site
  */
-$_Gconfig['LANGUAGES'] = array('fr','en');
+$_Gconfig['LANGUAGES'] = array('fr');
 $_Gconfig['ADMIN_LANGUAGES'] = array('fr');
 define('ADMIN_LG_DEF','fr');
 
