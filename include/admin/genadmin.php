@@ -433,7 +433,7 @@ class genAdmin {
 	         
 	         	foreach($_REQUEST['massiveActions'] as $k=>$v) {
 	         		
-	         		$action = new GenAction($_REQUEST['mass_action'] , $this->table , $k );
+	         		$action = new GenAction($_REQUEST['mass_action'] , $this->table , $v );
 	            	$action->DoIt();
 	         	
 	         	}
