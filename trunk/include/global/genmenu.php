@@ -33,6 +33,7 @@ class genMenu{
 	public $visible = true;
 	public $tpl_name = 'menu.item';
 	public $tpl_folder = '';
+	private $level = 1;
 
 	/**
 	 * Menu creation
@@ -60,6 +61,7 @@ class genMenu{
 			$this->conf = $_Gconfig['menus']['__default__'];
 		}
 		
+				
 		/**
 		 * If no $row, selecting it in database
 		 */
@@ -127,6 +129,8 @@ class genMenu{
 		if(!$this->visible) {
 			return;
 		}
+		
+		
 
 		$ulId = empty($rootId) ? '' : ' id="menu_' .$this->nom_menu .'"';
 		$divid = empty($rootId) ? '' : ' id="div_menu_' .$this->nom_menu .'"';
@@ -190,16 +194,19 @@ class genMenu{
 			$tpl->set('style',akev($value,'style'));
 			$tpl->set('classa',akev($value,'selected') ? ' class="selected"  ' : '');
 			$tpl->set('style',$style);
+			$tpl->set('level',$this->level);
 			//debug(akev($value,'selected']);
-
+			$this->level++;
 			if(is_array(akev($value,'sub'))) {
 				$tpl->set('sub',$this->gen(akev($value,'sub')));
 			}
 			else if(akev($value,'selected') && $this->conf['open_selected']) {
 				$sub = $this->site->g_url->recursRub(akev($value,'id'),1,1);
+				
 				$tpl->set('sub',$this->gen($sub));
+				
 			}
-
+			$this->level--;
 			$html .= $tpl->gen();
 
 			$cpt++;
