@@ -132,7 +132,7 @@ class genTemplate {
 	public function setVar($nom,$valeur,$strreplace=false) {
 		$this->vars[$nom] = $valeur;
 		
-		if($this->doreplace && !in_array('@@'.$nom.'@@',$this->replaces)) {
+		if($this->doreplace && !in_array('@@'.$nom.'@@',$this->replaces) ) {
 			$this->replaces[] = '@@'.$nom.'@@';
 		}
 	}
@@ -446,7 +446,7 @@ class genTemplate {
 				
  			} else {
  				if(strpos($nom,'!') === false) {
- 					devbug('Template : '.$this->tplnom.' : BLOC inexistant : '.$nom);
+ 					//devbug('Template : '.$this->tplnom.' : BLOC inexistant : '.$nom);
  				}
  			}
 					
@@ -560,7 +560,7 @@ class genTemplate {
 			/**
 			 * Les textes
 			 */
-		
+			
 			$html =	str_ireplace($this->replaces,$this->vars,$html);
 			
 			/**
