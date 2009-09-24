@@ -500,7 +500,7 @@ class genSecurity {
 					$sql = 'SELECT '.getPrimaryKey($a[0]).' , '.getPrimaryKey($a[0]).' 
 								FROM '.$a[0].' AS REL, '.$table.' AS T 
 								WHERE REL.'.$a[1].' = T.'.getPrimaryKey($table).'
-								AND '.getPrimaryKey($table).' IN ('.implode($this->myroles[$table]['rows']) .') ';
+								AND '.getPrimaryKey($table).' IN ('.implode(",",$this->myroles[$table]['rows']) .') ';
 					
 					$res = $co->GetAssoc($sql);
 					
