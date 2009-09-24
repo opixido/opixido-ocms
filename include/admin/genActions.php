@@ -206,6 +206,8 @@ class genActionDel {
 		$this->action = $action;
 		$this->table = $table;
 		$this->id = $id;
+		
+		
 	}
 	
 	
@@ -214,13 +216,15 @@ class genActionDel {
 	}	
 	
 	public function doIt() {
-		
+		        
 		$gr = new genRecord($this->table,$this->id);
 		$gr->DeleteRow($this->id);
 		
 		//dinfo(t('element_supprime'));
-		header('location:?curTable='.$this->table);
-		die();
+		if(!$_REQUEST['fromList']) {
+			header('location:?curTable='.$this->table);
+			die();
+		}
 		//header('location:index.php?curTable='.$this->table);
 		
 	}
@@ -1261,7 +1265,24 @@ class genActionTranslate {
       	}
       }
       
+      
+      $filename = gen_include_path.'/plugins/'.$this->row['plugin_nom'].'/datas.xml';
      
+      if(file_exists($filename) && $x =  simplexml_load_file($filename)) {     				
+				
+		foreach($x as $table=>$v) {			
+			$tabFields = getTabField($table);
+			$sql = 'REPLACE '.$table .' SET ';
+			foreach($v as $champ=>$valeur) {
+				if($tabFields[$champ]) {
+					$sql .= (' '.$champ.' = '.sql($valeur).' ,');
+				}
+			}
+			DoSql(substr($sql,0,-1));
+		}
+		
+      }
+      
       recheckTranslations();
 
       dinfo('Fichier install.sql exécuté');
