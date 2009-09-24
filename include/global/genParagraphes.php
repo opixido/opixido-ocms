@@ -99,6 +99,7 @@ class genParagraphes {
 			$fichier = new GenFile('s_paragraphe', 'paragraphe_file_1', $para['paragraphe_id'], $para,true,true);
 
 			
+			$tpl->setVar('file1',$fichier);
 			$tpl->setVar('file1_url',$fichier->getWebUrl());
 			$tpl->setVar('file1_size',$fichier->getNiceSize());
 			$tpl->setVar('file1_type',mb_strtoupper($fichier->getExtension()));
