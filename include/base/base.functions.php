@@ -627,19 +627,26 @@ function niceTextDate( $date , $jour = false) {
  */
 function nicedate_interval( $date1, $date2='', $separator = '/'){
 	global $lg,$lglocale;
+	
+	if($nb = strpos($date1,' ')) {
+		$date1 = substr($date1,0,$nb);
+	}
 	$d_deb = explode('-', $date1);
 	$d_fin = explode('-', $date2);
+	
 	@setlocale($GLOBALS['CURLOCALE']);
-	if($date1 == $date2 || $date2 == '0000-00-00' || $date2 == ''){
-		return t('le').' ' .nicedate($date1, true,$separator);
+	
+	if($date1 == $date2 || $date2 == '0000-00-00' || $date2 == '' || $date2 == '0000-00-00 00:00:00'){
+		return t('le').' ' .nicetextdate($date1, true,$separator);
 	}
 	elseif($d_deb[1] == $d_fin[1] && $d_deb[0] == $d_fin[0]){
+		if($d_deb[2] == "01") {
+			$d_deb[2] = '1er';
+		}
 		//setLocale(LC_TIME, $lglocale);
 		//return t('du').' ' .$d_deb[2] .' '.t('au').' ' .$d_fin[2] .' ' .(ucfirst(strftime("%B", strtotime($date1)))) .' ' .$d_deb[0];
-		return t('du').' ' .$d_deb[2] .' '.t('au').' ' .nicedate($date2, true, $separator);
-	
-	}
-	
+		return t('du').' ' .$d_deb[2] .' '.t('au').' ' .nicetextdate($date2, false, $separator);	
+	}	
 	else{
 		return t('du').' ' .nicedate($date1,true,$separator) .' '.t('au').' '.nicedate($date2, true, $separator);
 	}
@@ -748,7 +755,7 @@ function debug($txt,$class='') {
 	global $genMessages;
 
 	$backt = debug_backtrace();
-	if(!is_array($txt)) {
+	if(!is_array($txt) && !is_object($txt)) {
 		$txt .= '<br/><span style="font-weight:normal !important">'.basename($backt[1]['file']).' : '.$backt[1]['line'].' : '.$backt[1]['function'].'</span>';
 		$txt .= '<br/><span style="font-weight:normal !important">'.basename($backt[2]['file']).' : '.$backt[2]['line'].' : '.$backt[2]['function'].'</span>';
 		$txt .= '<br/><span style="font-weight:normal !important">'.basename($backt[3]['file']).' : '.$backt[3]['line'].' : '.$backt[3]['function'].'</span>';
@@ -1387,7 +1394,7 @@ function arraySplit($array_with_elements, $key_name) {
 }
 
 function arrayInWord($arr,$word) {
-        while(list(,$v) =each($arr)) {
+        while(list(,$v) = @each($arr)) {
                 if(ereg($v,$word))
                         return true;
         }
@@ -1596,16 +1603,16 @@ function printMedia($url,$alt="") {
 			print('MOV FILE NOT SUPPORTED YET');
 			break;
 		case 'jpg':
-			printImage($src,$alt);
+			printImage($url,$alt);
 			break;
 		case 'jpeg':
-			printImage($src,$alt);
+			printImage($url,$alt);
 			break;
 		case 'png':
-			printImage($src,$alt);
+			printImage($url,$alt);
 			break;
 		case 'gif':
-			printImage($src,$alt);
+			printImage($url,$alt);
 			break;
 
 	}
