@@ -178,6 +178,7 @@ class genSearchV2 {
         $fields = getTabField($table);
 
         p('<div style="clear:both">&nbsp;</div>
+        
         	<form id="search" method="post" action="index.php"  class="fond1" style="float:left;padding:5px !important;">');
 
         p('<fieldset style="border:0;padding:0;margin:0;">');
@@ -339,6 +340,7 @@ class genSearchV2 {
         
         
         print('<div class="clearer">&nbsp;</div></div>');
+        
         global $searchField,$relations,$tabForms,$tables,$Gconfig;
 
 
@@ -397,7 +399,10 @@ class genSearchV2 {
         
         ';
         
-        $r .= '<div ><table border="0"  width="100%"><tr><td style="text-align:center;display:block;width:100px;" width="100" class="fond1" >';
+        $r .= '<div >
+        
+        <table border="0"  width="100%">
+        <tr><td style="text-align:center;display:block;width:100px;" width="100" class="fond1" >';
      	
      	
      	/**
@@ -449,7 +454,11 @@ class genSearchV2 {
      		$r .= '<a style="display:block" href="?fromList=1&amp;curTable='.$this->table.'&amp;lstart='.($lend).'"><img src="'.ADMIN_PICTOS_FOLDER.ADMIN_PICTOS_FORM_SIZE.'/actions/go-next.png" alt="" /><br/>'.t('page_suivante').'</a>';
      	}
      	
-     	$r .= '</td></tr ></table></div>';
+     	$r .= '</td>
+     	</tr >
+     	</table>
+     	</div>
+     	<div>';
      	
         
         $r .= '<table style="clear:both" border="0" class="genform_table" width="99%">';
@@ -458,11 +467,11 @@ class genSearchV2 {
         /**
          * Nombre de résultats
          */
-        $r .= '<td colspan="10">'.('<h4  >'.t('il_y_a').' '.count($res).' '.t('resultats').'</h4>').'</td>';
+        $r .= '<tr><td colspan="10">'.('<h4  >'.t('il_y_a').' '.count($res).' '.t('resultats').'</h4>').'</td></tr>';
         
         
         if($totRes == 0) {
-        	echo $r.'</tr></table></form>'	;
+        	echo $r.'</table></div></form>'	;
         	return;
         }
         
@@ -473,7 +482,7 @@ class genSearchV2 {
         $_Gconfig['tableSearchAsItems']['d_dessin'] = true;
         
         /**
-         * Si on liste les items PAS EN TABLEAU
+         * Si on liste les items PAS EN TABLEAU MAIS EN BLOCS
          */
         if($_Gconfig['tableSearchAsItems'][$this->table]) {
         	
@@ -580,7 +589,7 @@ class genSearchV2 {
 	                reset($tablo);
 	                //$r .= '<input type="checkbox" name="massiveActions[]" value="1" checked="checked"/>';
 	                
-	                $r .= '<th style="width:20px;"><input type="checkbox"  name="massiveActions['.$id.']" value="1" /> '.$row[$thisPk].''."&nbsp;</th>";
+	                $r .= '<th style="width:20px;"><input type="checkbox"  name="massiveActions[]" value="'.$id.'" /> '.$row[$thisPk].''."&nbsp;</th>";
 	                $t1 = getmicrotime();
 	                while(list($kk,$vv) = each( $tablo)) {
 							$form->bufferPrint = "";
@@ -620,7 +629,7 @@ class genSearchV2 {
 	        }
 	
 
-	        p('<div style="clear:both;">');
+	        //p('<div style="clear:both;">');
 	     
 	
 	        if(count($res) > 0) {
@@ -630,9 +639,11 @@ class genSearchV2 {
 	
 	          
 	        }
-          	p('</div>');
+          	
 	          
             p('</table>');
+            
+            p('</div>');
 	      
 	        
         }
@@ -640,13 +651,13 @@ class genSearchV2 {
         
         $actions = $GLOBALS['gs_obj']->getActions($this->table);
         
-	   
+	    
 	   	global $_Gconfig;
 	   	
 	   	p('<div style="clear:both;text-align:right"  class="fond1">');
 	   	
-	   	$html .= '<a href="#" onclick="searchSelect(true);return false;">'.t('select_all').'</a> / ';
-	   	$html .= '<a href="#" onclick="searchSelect(false);return false;">'.t('select_none').'</a>';
+	   	$html .= '<a href="#" onclick="searchSelectMass(true);return false;">'.t('select_all').'</a> / ';
+	   	$html .= '<a href="#" onclick="searchSelectMass(false);return false;">'.t('select_none').'</a>';
 	   	
 	   	$html .= '<select name="mass_action">';
 	   	$html .= '<option value="">-----------------</option>';
