@@ -115,3 +115,10 @@
 	background:#ddd;
 
 }
+
+#genform_rubrique_gabarit_param {
+	background:#eee;
+	font-family:courrier, monospace;
+	border:1px solid #ddd;
+	cursor:default;
+}
