@@ -55,9 +55,8 @@
              *
              */
 
-             if(is_array($preValues) && count($preValues)) {
-					$result = $preValues;
-					
+            if(is_array($preValues) && count($preValues)) {
+					$result = $preValues;					
 			}
 
 			else {
