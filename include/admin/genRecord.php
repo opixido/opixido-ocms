@@ -373,7 +373,7 @@ class genRecord {
 	
         global $uploadFields, $uploadRep, $orderFields;
 
-        if ($id > 0 || $id != '') {
+         if (($id > 0 || $id != '') && $id != 'new') {
             if (!$this->gs->can('del', $this->table, '', $id)) {
                 $this->gs->showError();
             }
