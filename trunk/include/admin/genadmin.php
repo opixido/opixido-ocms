@@ -642,8 +642,12 @@ class genAdmin {
 
             case "resume":
             	
-
-		//if(!count($_SESSION['levels']) {
+	            	
+            	if(!$this->id || $this->id == 'new') {
+            		
+            		return ;
+            	}
+		
 		
 				$gl = new GenLocks();
 		
@@ -1395,7 +1399,10 @@ class genAdmin {
                 $_REQUEST['curPage']--;
         }
         
-        
+		if($_REQUEST['genform_cancel'] && $_REQUEST['curId'] == 'new') {
+        	return 'searchv2';
+        }
+		
 		global $_Gconfig;
         /**
          *  Si on finit apres avoir soumis le formulaire
