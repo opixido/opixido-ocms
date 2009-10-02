@@ -3,11 +3,11 @@
 if ( !$this->editMode ) {
 
 	/**
-	 * VARCHAR DE TYPE URL
+	 * VARCHAR DE TYPE COLOR
 	 * 
 	 */
 	 
-	if ( arrayInWord( $_Gconfig['colorFields'], $name ) ) {
+	if ( is_array($_Gconfig['colorFields']) && arrayInWord( $_Gconfig['colorFields'], $name ) ) {
 		
 		$this->genHelpImage('help_texte',$name);
     	
@@ -15,17 +15,26 @@ if ( !$this->editMode ) {
 	
     	
     	
-    	if($this->tab_default_field[$name])
+    	if($this->tab_default_field[$name]) {
     		$style = 'style="background-color:#'.$this->tab_default_field[$name].'"';
-    	
+    	}
+		
     	$this->addBuffer('<span class="colorField" id="colorField_'.$name.'" '.$style.'>
     						&nbsp;   &nbsp;   						
     					 </span> ');
     	
-    	$this->addBuffer(' &nbsp;<input size="6" onchange="gid(\'colorField_'.$name.'\').style.backgroundColor=\'#\'+this.value;" id="genform_'.$name.'" ' . $jsColor . ' '.$attributs.'  name="genform_' . $name . '" maxlength="'.$fl.'" class="genform_varchar" value="' . ( $this->tab_default_field[$name] ) . '" />');
-		//$this->addBuffer($this->genInsertButtons('genform_'.$name.''));
+    	$this->addBuffer(' &nbsp;<input 
+									size="6" 
+									onchange="gid(\'colorField_'.$name.'\').style.backgroundColor=\'#\'+this.value;" 
+									id="genform_'.$name.'" ' . $jsColor . ' '.$attributs.'  
+									name="genform_' . $name . '" maxlength="'.$fl.'" 
+									class="genform_varchar" 
+									value=' . alt( $this->tab_default_field[$name] ) . ' />');
     
-    	$this->addBuffer(' <a class="btn_spectre" href="#" onclick="popup(\'./colorPicker/colorSelector.html?id='.$name.'\',360,240);return false;">
+    	$this->addBuffer(' <a class="btn_spectre" 
+								href="#" 
+								onclick="popup(\'./colorPicker/colorSelector.html?id='.$name.'\',360,240);return false;"
+							>
     					 	<img src="./colorPicker/spectre.jpg" alt="" style="vertical-align:middle"  />
     					 </a>');
     	
@@ -50,7 +59,7 @@ if ( !$this->editMode ) {
 		    		name="genform_' . $name . '" 
 		    		size="80" 
 		    		maxlength="' . $this->tab_field[$name]->max_length . '" 
-		    		value="' . $this->tab_default_field[$name] . '" /> ' );
+		    		value=' . alt($this->tab_default_field[$name]) . ' /> ' );
 		    
 		
 		        
@@ -78,7 +87,13 @@ if ( !$this->editMode ) {
     	
     	$this->genHelpImage('help_email',$name);
 
-        $this->addBuffer( '<input id="genform_'.$name.'"  ' . $jsColor . ' '.$attributs.' type="text" name="genform_' . $name . '" size="60"  value="' . $this->tab_default_field[$name] . '" />  ' );
+        $this->addBuffer( '<input 
+							id="genform_'.$name.'"  ' . $jsColor . ' '.$attributs.' 
+							type="text" 
+							name="genform_' . $name . '" 
+							size="60"  
+							value=' . alt($this->tab_default_field[$name]) . '
+							/>  ' );
 
         
         
@@ -88,20 +103,33 @@ if ( !$this->editMode ) {
     } else if(in_array($name,$_Gconfig['passwordFields']) ){
     	
 		/* Mot de passe avec génération auto */
-		$this->addBuffer( '<input id="genform_'.$name.'" ' . $jsColor . ' type="text" '.$attributs.' name="genform_' . $name . '" size="12" maxlength="' . $this->tab_field[$name]->max_length . '" value="' . $this->tab_default_field[$name] . '" />' );
+		$this->addBuffer( '<input 
+							id="genform_'.$name.'" ' . $jsColor . ' 
+							type="text" '.$attributs.' 
+							name="genform_' . $name . '" 
+							size="12" 
+							maxlength="' . $this->tab_field[$name]->max_length . '" 
+							value=' . alt($this->tab_default_field[$name]) . ' />' );
 
 		if(!$this->editMode) {
 
 
 
 //<label  style="float:none;width:200px;" for="generatepassword_'.$name.'" class="abutton"><input src="'.t('src_random_password').'" class="inputimage" type="image" id="generatepassword_'.$name.'"  />'.t('generate_random_password').'</label>');
-		$this->addBuffer( '
-			
-			<a href="#" class="titreListe" style="clear:both;" id="generatepassword_'.$name.'" ><img src="'.t('src_random_password').'" class="inputimage" type="image"  />'.t('generate_random_password').'</a>');
+		$this->addBuffer( '		
+		
+			<a href="#" 
+				class="titreListe" 
+				style="clear:both;" 
+				id="generatepassword_'.$name.'" >
+				<img src="'.t('src_random_password').'" 
+					class="inputimage" 
+					type="image"  
+					/>'.t('generate_random_password').'</a>');
 		
 			$this->addBuffer( '
 				<script type="text/javascript">
-				$("#generatepassword_'.$name.'").click(
+					$("#generatepassword_'.$name.'").click(
 					function() {
 						$("#genform_'.$name.'").val(generatepass(8));
 						return false;
@@ -123,9 +151,25 @@ if ( !$this->editMode ) {
 		$fl = $this->tab_field[$name]->max_length;
 		
     	if( $fl >= 100) {
-			$this->addBuffer( '<textarea class="resizable" id="genform_'.$name.'" ' . $jsColor . ' '.$attributs.'  name="genform_' . $name . '" rows="2"  maxlength="'.$fl.'" class="genform_varchar" >' . ( $this->tab_default_field[$name] ) . '</textarea>' );
+			$this->addBuffer( '<textarea 
+							class="resizable" 
+							id="genform_'.$name.'" ' . $jsColor . ' '.$attributs.'  
+							name="genform_' . $name . '" 
+							rows="2"  
+							maxlength="'.$fl.'" 
+							class="genform_varchar" >' . ( $this->tab_default_field[$name] ) . '</textarea>' );
     	} else  {
-        	$this->addBuffer('<input size="'.$fl.'" id="genform_'.$name.'" ' . $jsColor . ' '.$attributs.'  name="genform_' . $name . '" maxlength="'.$fl.'" class="genform_varchar" value="' . ( $this->tab_default_field[$name] ) . '" />');
+        	$this->addBuffer('<input
+								size="'.$fl.'" 
+								id="genform_'.$name.'" 
+								' . $jsColor . ' 
+								'.$attributs.'  
+								name="genform_' . $name . '" 
+								maxlength="'.$fl.'" 
+								class="genform_varchar" 
+								value=' . alt( $this->tab_default_field[$name] ) . '"
+								/>');
+								
    			$this->addBuffer($this->genInsertButtons('genform_'.$name.''));
     	}
     	
