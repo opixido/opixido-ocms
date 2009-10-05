@@ -1133,7 +1133,11 @@ class laSimpleSignUp {
 		}
 		
 	}
-	
+	/**
+	 * 
+	 * @param simpleForm  $f
+	 * @return unknown_type
+	 */
 	function addSpecificField($f) {		
 		global $relations,$tabForms,$tablerel;
 		$tab = $this->champs;
@@ -1169,6 +1173,10 @@ class laSimpleSignUp {
 					$f->add('html','<img src="'.$gf->getWebUrl().'" alt="" />');
 				}				
 				$f->add('file',$this->curRow[$v],t($v),$v,$v,!in_array($v,$this->noneed));
+			}
+			else if($k == 'radio') {
+				@list($nom,$valeur) = @preg_split('/[\[\]]/',$v);				
+				$f->add($k,$this->curRow[$nom],t($valeur),$nom,$nom.'_'.$valeur,!in_array($valeur,$this->noneed));
 			}
 			else {
 				$f->add($k,$this->curRow[$v],t($v),$v,$v,!in_array($v,$this->noneed));
