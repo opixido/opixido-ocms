@@ -75,7 +75,7 @@ class simpleForm {
 
 			} else {
 
-			$s .= '<div id="div_'.$field['id'].'" '.($field['needed'] ? 'class="needed"' : '').'>';
+			$s .= '<div id="div_'.$field['id'].'" class="div_'.$field['type'].' '.($field['needed'] ? 'needed' : '').'">';
 
 			switch ($field['type']) {
 
