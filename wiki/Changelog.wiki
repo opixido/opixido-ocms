@@ -1,6 +1,15 @@
 #labels changelog
 = Changelog 1.1 =
 
+==Main updates==
+
+  * Added date_online date_offline possibility for all objects
+  * News download plugin
+  * Import any data through "datas.xml" file during plugin install
+  * Improved simpleForm
+  * Action d'actions sur les relations inverses
+
+==Other changes==
   * Added css class of field type on enclosing div
   * Added radio field support for addSpecificField
   * Cleaned code
