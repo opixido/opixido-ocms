@@ -1,5 +1,4 @@
 #labels changelog
-
 = Changelog 1.1 =
 
   * Added css class of field type on enclosing div
@@ -13,17 +12,22 @@
   * Added support for automatic import of datas.xml in plugins installation
   * Fixed MassiveActionsCall
   * Fixed massiveAction
-  * Cleaned HTML template of search Result   * Fixed multiAction
+  * Cleaned HTML template of search Result 
+  * Fixed multiAction
   * Fixed recursRelinv when multiple sources
   * Fixed XSS bug in login field
-  * Changed default submit not to be as Image   * Added Date field type
-  * Fixed printMedia on Images   * Cleaned nicedate_interval function
+  * Changed default submit not to be as Image 
+  * Added Date field type
+  * Fixed printMedia on Images   
+  * Cleaned nicedate_interval function
   * Added online / offline dates in sqlOnlyOnline
-  * Added Image Filters   * added __tostring method to return getWebUrl
+  * Added Image Filters   
+  * added __tostring method to return getWebUrl
   * Added "bloc" CSS class on all blocs
   * Moved Plugin params at the top, so they are loaded even if no Gabarit is used
   * Added check to prevent multiple declaration of same variable in a template
-  * added genRubrique::params with all the rubrique Params as Array   * Split Loading of front plugins and pluign instantiation in two different loops, so each plugin may refer to another
+  * added genRubrique::params with all the rubrique Params as Array   
+  * Split Loading of front plugins and pluign instantiation in two different loops, so each plugin may refer to another
   * Added direct access to $file1 Genfile object from template
   * Added "level" of recursion
   * Added default translations
