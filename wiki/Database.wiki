@@ -1,6 +1,14 @@
 #Base de donnée
 
 
+[http://www.opixido.com/ocms/screen/droits.png]
+
+[http://www.opixido.com/ocms/screen/textes.png]
+
+[http://www.opixido.com/ocms/screen/plug.png]
+
+
+
 =s_admin=
 Commentaires sur la table: InnoDB free: 11264 kB
 
