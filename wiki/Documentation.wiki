@@ -2,9 +2,7 @@
 
 = Introduction =
 
-Bientôt ici
-La documentation de l'oCms
-
+[http://code.google.com/p/opixido-ocms/wiki/Database Tables principales]
 
 = Details =
 
