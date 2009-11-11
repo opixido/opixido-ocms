@@ -1,0 +1,239 @@
+#Base de donnée
+
+
+=s_admin=
+Commentaires sur la table: InnoDB free: 11264 kB
+
+Champ 	Type 	Null 	Défaut 	Commentaires
+admin_id 	smallint(5) 	Non 		
+admin_login 	varchar(64) 	Non 		
+admin_nom 	varchar(255) 	Non 		
+admin_pwd 	varchar(255) 	Non 		
+admin_email 	varchar(255) 	Non 			
+admin_last_cx 	datetime 	Non 	0000-00-00 00:00:00 	
+
+=s_admin_role=
+Commentaires sur la table: InnoDB free: 11264 kB
+
+Champ 	Type 	Null 	Défaut 	Commentaires
+fk_admin_id 	int(10) 	Non 	0 	
+fk_role_id 	int(10) 	Non 	0 
+	
+=s_admin_rows=
+Commentaires sur la table: InnoDB free: 11264 kB
+
+Champ 	Type 	Null 	Défaut 	Commentaires
+fk_admin_id 	int(10) 	Non 	0 	
+fk_row_id 	int(10) 	Non 	0 	
+fk_table 	varchar(64) 	Non 		
+
+=s_admin_trad=
+Champ 	Type 	Null 	Défaut 	Commentaires
+admin_trad_id 	varchar(128) 	Non 		
+admin_trad_fr 	text 	Non 		
+admin_trad_en 	text 	Non 		
+fk_plugin_id 	varchar(64) 	Non 	
+	
+=s_gabarit=
+Commentaires sur la table: InnoDB free: 11264 kB
+
+Champ 	Type 	Null 	Défaut 	Commentaires
+gabarit_id 	smallint(5) 	Non 		
+gabarit_titre 	varchar(128) 	Non 		
+gabarit_para_crea 	varchar(255) 	Non 		
+gabarit_para_include 	varchar(64) 	Non 		
+gabarit_full_template 	longtext 	Non 		
+gabarit_bdd_deco 	tinyint(1) 	Non 	0 	
+gabarit_classe 	varchar(64) 	Non 		
+gabarit_classe_param 	varchar(255) 	Non 		
+gabarit_plugin 	varchar(128) 	Non 		
+gabarit_index_table 	varchar(64) 	Non 		
+gabarit_index_url 	varchar(255) 	Non 		
+fk_default_rubrique_id 	int(10) 	Non 	0 
+	
+=s_groupe=
+Commentaires sur la table: InnoDB free: 11264 kB
+
+Champ 	Type 	Null 	Défaut 	Commentaires
+groupe_id 	int(10) 	Non 		
+groupe_nom 	varchar(64) 	Non 	
+	
+=s_image=
+Commentaires sur la table: InnoDB free: 11264 kB
+
+Champ 	Type 	Null 	Défaut 	Commentaires
+image_id 	int(11) 	Non 		
+image_img 	varchar(255) 	Non 		
+image_titre_fr 	varchar(255) 	Non 		
+image_legende_fr 	varchar(255) 	Non 		
+image_copyright 	varchar(255) 	Non 		
+image_lien_fr 	varchar(255) 	Oui 	
+	
+=s_langue=
+Commentaires sur la table: InnoDB free: 11264 kB
+
+Champ 	Type 	Null 	Défaut 	Commentaires
+langue_nom 	varchar(64) 	Non 		
+langue_id 	varchar(3) 	Non 
+		
+=s_lock=
+Commentaires sur la table: InnoDB free: 11264 kB
+
+Champ 	Type 	Null 	Défaut 	Commentaires
+fk_admin_id 	smallint(5) 	Non 	0 	
+lock_table 	varchar(64) 	Non 		
+lock_id 	int(10) 	Non 	0 	
+lock_time 	bigint(12) 	Non 	0 
+
+	
+=s_log_action=
+Commentaires sur la table: InnoDB free: 11264 kB
+
+Champ 	Type 	Null 	Défaut 	Commentaires
+log_action_id 	int(10) 	Non 		
+fk_admin_id 	smallint(5) 	Non 	0 	
+log_action_table 	varchar(128) 	Non 		
+log_action_fk_id 	varchar(255) 	Non 	0 	
+log_action_action 	varchar(128) 	Non 		
+log_action_time 	datetime 	Non 	0000-00-00 00:00:00 	
+
+=s_para_type=
+Commentaires sur la table: InnoDB free: 11264 kB
+
+Champ 	Type 	Null 	Défaut 	Commentaires
+para_type_id 	smallint(5) 	Non 		
+para_type_titre 	varchar(128) 	Non 		
+para_type_template 	text 	Non 		
+para_type_template_popup 	text 	Non 		
+para_type_vignette 	varchar(255) 	Non 		
+para_type_use_img 	tinyint(1) 	Non 	0 	
+para_type_use_file 	tinyint(1) 	Non 	0 	
+para_type_use_table 	tinyint(1) 	Non 	0 	
+para_type_use_txt 	tinyint(1) 	Non 	1 	
+para_type_use_link 	tinyint(1) 	Non 	0 	
+
+=s_paragraphe=
+Commentaires sur la table: InnoDB free: 11264 kB
+
+Champ 	Type 	Null 	Défaut 	Commentaires
+paragraphe_id 	bigint(20) 	Non 		
+fk_rubrique_id 	int(10) 	Oui 	NULL 	
+fk_para_type_id 	smallint(5) 	Oui 	NULL 	
+paragraphe_ordre 	tinyint(3) 	Non 	0 	
+paragraphe_titre_fr 	varchar(255) 	Non 		
+paragraphe_contenu_fr 	text 	Non 		
+paragraphe_contenu_csv_fr 	text 	Non 		
+paragraphe_img_1_fr 	varchar(255) 	Non 		
+paragraphe_img_2_fr 	varchar(255) 	Non 		
+paragraphe_img_1_alt_fr 	varchar(80) 	Non 		
+paragraphe_img_2_alt_fr 	varchar(80) 	Non 		
+paragraphe_params_fr 	varchar(255) 	Oui 	NULL 	
+paragraphe_file_1_fr 	varchar(255) 	Non 		
+paragraphe_file_1_legend_fr 	varchar(255) 	Non 		
+paragraphe_link_1_fr 	varchar(255) 	Non 		
+paragraphe_img_1_copyright 	varchar(80) 	Non 		
+paragraphe_img_2_copyright 	varchar(80) 	Non 
+		
+=s_param=
+Commentaires sur la table: InnoDB free: 11264 kB
+
+Champ 	Type 	Null 	Défaut 	Commentaires
+param_id 	varchar(64) 	Non 		
+param_valeur 	text 	Non 		
+param_description 	text 	Non 		
+fk_plugin_id 	varchar(64) 	Non 		
+
+=s_plugin=
+Commentaires sur la table: InnoDB free: 11264 kB
+
+Champ 	Type 	Null 	Défaut 	Commentaires
+plugin_nom 	varchar(64) 	Non 		
+plugin_actif 	tinyint(1) 	Non 	0 	
+plugin_ordre 	smallint(5) 	Non 	0 	
+plugin_installe 	tinyint(1) 	Non 	0 	
+
+=s_role=
+Commentaires sur la table: InnoDB free: 11264 kB
+
+Champ 	Type 	Null 	Défaut 	Commentaires
+role_id 	int(10) 	Non 		
+role_nom 	varchar(64) 	Non 		
+s_role_table
+Commentaires sur la table: InnoDB free: 11264 kB
+
+Champ 	Type 	Null 	Défaut 	Commentaires
+role_table_id 	int(10) 	Non 		
+role_table_table 	varchar(64) 	Non 		
+fk_role_id 	int(10) 	Non 	0 	
+role_table_type 	enum('all', 'per_user', 'specific') 	Non 	all 	
+role_table_specific 	varchar(128) 	Non 		
+role_table_view 	tinyint(1) 	Non 	0 	
+role_table_add 	tinyint(1) 	Non 	0 	
+role_table_edit 	tinyint(1) 	Non 	0 	
+role_table_delete 	tinyint(1) 	Non 	0 	
+role_table_actions 	varchar(255) 	Non 		
+role_table_champs 	text 	Non 	
+	
+=s_rubrique=
+Commentaires sur la table: InnoDB free: 11264 kB
+
+Champ 	Type 	Null 	Défaut 	Commentaires
+rubrique_id 	int(10) 	Non 		
+fk_rubrique_id 	int(10) 	Oui 	NULL 	
+fk_rubrique_version_id 	int(10) 	Oui 	NULL 	
+rubrique_ordre 	tinyint(3) 	Non 	0 	
+rubrique_etat 	enum('redaction', 'attente', 'en_ligne') 	Non 	redaction 	
+rubrique_gabarit_param 	varchar(255) 	Non 		
+fk_gabarit_id 	smallint(5) 	Oui 	NULL 	
+fk_creator_id 	smallint(5) 	Oui 	NULL 	
+rubrique_url_fr 	varchar(255) 	Non 		
+rubrique_titre_fr 	varchar(255) 	Non 		
+rubrique_sous_titre_fr 	varchar(255) 	Non 		
+rubrique_texte_fr 	text 	Non 		
+rubrique_keywords_fr 	varchar(255) 	Non 		
+rubrique_desc_fr 	text 	Non 		
+rubrique_date_crea 	datetime 	Non 	0000-00-00 00:00:00 	
+rubrique_date_modif 	datetime 	Non 	0000-00-00 00:00:00 	
+rubrique_date_publi 	datetime 	Non 	0000-00-00 00:00:00 	
+rubrique_type 	enum('page', 'link', 'folder', 'siteroot', 'menuroot') 	Non 	page 	
+rubrique_link_fr 	varchar(255) 	Non 		
+rubrique_dyntitle 	tinyint(1) 	Non 	0 	
+rubrique_dynvisibility 	tinyint(1) 	Non 	0 	
+rubrique_template 	varchar(255) 	Non 		
+rubrique_option 	set('dynVisibility', 'dynTitle', 'dynSubRubs') 	Non 		
+
+=s_trad=
+Commentaires sur la table: InnoDB free: 11264 kB
+
+Champ 	Type 	Null 	Défaut 	Commentaires
+trad_id 	varchar(64) 	Non 		
+trad_fr 	text 	Non 		
+fk_plugin_id 	varchar(64) 	Non 		
+
+=s_traduction=
+Commentaires sur la table: InnoDB free: 11264 kB
+
+Champ 	Type 	Null 	Défaut 	Commentaires
+fk_table 	varchar(32) 	Non 		
+fk_id 	int(10) 	Non 	0 	
+fk_champ 	varchar(64) 	Non 		
+fk_langue_id 	varchar(3) 	Non 	0 	
+traduction_texte 	text 	Non 		
+
+=s_utilisateur=
+Commentaires sur la table: InnoDB free: 11264 kB
+
+Champ 	Type 	Null 	Défaut 	Commentaires
+utilisateur_id 	int(10) 	Non 		
+utilisateur_civilite 	enum('Mme', 'Mlle', 'Mr') 	Non 	Mme 	
+utilisateur_nom 	varchar(128) 	Non 		
+utilisateur_prenom 	varchar(128) 	Non 		
+utilisateur_email 	varchar(255) 	Non 		
+utilisateur_pwd 	varchar(255) 	Non 		
+utilisateur_organisme 	varchar(255) 	Non 		
+utilisateur_adresse 	varchar(255) 	Non 		
+utilisateur_ville 	varchar(64) 	Non 		
+utilisateur_cp 	varchar(10) 	Non 		
+utilisateur_pays 	varchar(64) 	Non 		
+utilisateur_tel 	varchar(64) 	Non 		
+utilisateur_valide 	tinyint(1) 	Non 	0 	
