@@ -116,7 +116,7 @@ class genParagraphes {
 
 			$tpl->setVar('lien_popup', $this->site->g_url->getUrlWithParams(array('ocms_mode'=>'popup','para'=>$para['paragraphe_id'])));
 			
-			$html .= '<a name="para_'.nicename(GetLgValue('paragraphe_titre', $para)).'"></a>';
+			$html .= '<a class="cacher" name="para_'.nicename(GetLgValue('paragraphe_titre', $para)).'"></a>';
 			
 			
 			$html .= '<div id="para_nb_'.$curpara.'" class="paragraphe_simple">';
