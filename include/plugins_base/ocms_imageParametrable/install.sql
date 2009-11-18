@@ -3,7 +3,7 @@ CREATE TABLE `p_imagep` (
   `imagep_id` int(11) NOT NULL auto_increment,
   `imagep_label` varchar(32) NOT NULL,
   `imagep_img_[LG]` varchar(255) NOT NULL,
-  `imagep_alt_[LG]` varchar(64) NOT NULL,
+  `imagep_alt_[LG]` varchar(80) NOT NULL,
   `fk_version` varchar(32) NOT NULL,
   `en_ligne` tinyint(1) NOT NULL,
   PRIMARY KEY  (`imagep_id`),
