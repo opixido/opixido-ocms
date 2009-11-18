@@ -298,6 +298,7 @@ class genSecurity {
 					foreach($res as $Aow) {
 						$this->myroles[$row['role_table_table']]['rows'][] = $Aow[$pk];
 					}
+					
     			}
     			
     			
@@ -631,7 +632,10 @@ class genSecurity {
 				
 				else { 
 					$actions[] ='validateVersion';
-				
+				    $actions[] ='hideVersion';
+				    $actions[] ='askValidation';
+				    $actions[] ='refuseValidation';
+				    /*
 					$ro = GetRowFromId($table,$tab_default_field[VERSION_FIELD]);
 					if(!count($ro)) {
 						derror(t('dev_object_has_no_base_version_wrong_creation').' ');
@@ -639,6 +643,7 @@ class genSecurity {
 					if($ro[ONLINE_FIELD]) {
 							$actions[] ='hideVersion';
 					}
+					*/
 				}
 			}
 			/**
@@ -650,17 +655,11 @@ class genSecurity {
 				{
 					derror(t('dev_please_create_online_field_in_table_to_make_it_hideable').' : '.ONLINE_FIELD);
 				} else
-				if($tab_default_field[ONLINE_FIELD]) {
+				
 					
-					$actions[] ='hideObject';
-					
-				}
-				else
-				if(!$tab_default_field[ONLINE_FIELD]) {
-					
+					$actions[] ='hideObject';				
 					$actions[] ='showObject';
-					
-				}
+			
 				
 			}	
 			
@@ -840,13 +839,18 @@ class genSecurity {
             Verifie dans l'ordre si on peut modifier la table, puis la ligne en question
         */
 
+        
 	
         if(!is_array($row) || !count($row)) {
+        	
             $row = $this->idToRow($table,$id);
+            
         }
         if(!$id) {
         	$id = $row[getPrimaryKey($table)];
         }
+        
+        
         
 
         if(@array_key_exists("all",$this->myroles[$table]) || $this->myroles[$table]['type'] == 'all') {
@@ -883,6 +887,8 @@ class genSecurity {
 
     function canChamp($action,$table,$row = array(),$id=0,$champ,$valeur) {
 
+    	
+    	
         $myChamps = $this->myroles[$table]['champs'];
 
         if($this->canRow($action,$table,$row,$id)) {
@@ -969,8 +975,15 @@ class genSecurity {
         	
         		return true;        
         }
-
-        		
+				//debug($condition);
+        		if(in_array('proprio',$condition) || ake('proprio',$condition)) {
+                	
+                	if($row['ocms_creator'] == $this->adminid) {
+                		return true;
+                	} 
+                	
+                }
+                
                 if(in_array('arbo',$condition) || ake('arbo',$condition)) {
                 	
                     if($table == "s_rubrique" && false) {
@@ -986,13 +999,8 @@ class genSecurity {
                         return $this->reverseRecurseArbo($table,$row);
                     }
                 }
-                if(in_array('proprio',$condition)) {
-                	
-                	if($row['fk_creator_id'] == $this->adminid) {
-                		return true;
-                	} 
-                	
-                }
+                
+               
                 return false;
     }
 
