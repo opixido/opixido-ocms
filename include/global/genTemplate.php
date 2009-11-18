@@ -640,6 +640,10 @@ class genTemplate {
 		$this->conditions[$nom] = $val;
 		
 	}	
+	
+	public function __tostring() {
+		return $this->gen();
+	}
 }
 
 
