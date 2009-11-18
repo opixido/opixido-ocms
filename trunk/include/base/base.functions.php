@@ -751,9 +751,18 @@ function derror($txt) {
  * Comme la fonction derror()
  * * @param mixed $txt
  */
-function debug($txt,$class='') {
+function debug() {
 	global $genMessages;
 
+	$vars = func_get_args();
+	
+	if(count($vars) == 1 ) {
+		$txt = $vars[0];
+	} else {
+		$txt = str_replace("\n","<br/>",var_export($vars,true));
+	}
+
+	
 	$backt = debug_backtrace();
 	if(!is_array($txt) && !is_object($txt)) {
 		$txt .= '<br/><span style="font-weight:normal !important">'.basename($backt[1]['file']).' : '.$backt[1]['line'].' : '.$backt[1]['function'].'</span>';
@@ -766,6 +775,7 @@ function debug($txt,$class='') {
 	} else {
 		die($txt);
 	}
+	
 
 }
 
@@ -1293,15 +1303,11 @@ function tf($t,$rep=array()) {
 	
 	global $_trads,$otherLg;
 
-    if($_trads[$t][LG]) {
-        $v = $_trads[$t][LG];
-        $id=$t;
-    } else if($_trads[$t][$otherLg])  {
-    	/* Sinon dans l'autre langue */
-    	$v = $_trads[$t][$otherLg];
-        $id=$t;
-    }
-
+	$v = t($t);
+	if(!$v) {
+		$v = ta($t);
+	}
+	
     if(!$v) {
     	foreach($rep as $k=>$vv) {
     		$v .= $k.' : ['.$k.']'."\n";
@@ -1780,6 +1786,10 @@ function getUrlFromSearch($obj,$row) {
 
 		$rubid = $gabs[$obj['obj']]['rubrique_id'];
 		$params = $gabs[$obj['obj']]['gabarit_index_url'];
+		if(strpos($params,'php:') !== false ) {
+	    	$code = substr($params,4);		    	
+	    	return eval($code);    			    	
+    	}
 		$params = splitParams($params);
 		$mp = array();
 		foreach($params as $param=>$value) {
@@ -2221,8 +2231,9 @@ function getServerUrl () {
  * pour l'envoi de mails via PHPMAILER
  * et retourne un phpmailer configuré
  * 
- * @return PHPMailer
+ * @return PHPMailer PHPMailer
  */
+
 function includeMail() {
 	
 	/**
