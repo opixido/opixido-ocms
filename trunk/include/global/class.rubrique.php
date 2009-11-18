@@ -105,7 +105,7 @@ class rubrique extends row {
 	 * @return array
 	 */
 	function getChildRubs() {
-		$sql = 'SELECT * s_rubrique WHERE fk_rubrique_id = '.sql($this->id).' '.sqlRubriqueOnlyOnline();
+		$sql = 'SELECT * FROM s_rubrique WHERE fk_rubrique_id = '.sql($this->id).' '.sqlRubriqueOnlyOnline();
 		return GetAll($sql);			
 	}
 	
@@ -120,6 +120,15 @@ class rubrique extends row {
 
 		return getUrlFromId($this->id,LG,$params);
 		
+	}
+	
+	/**
+	 * Returns Rubrique Title
+	 *
+	 * @return string Title
+	 */
+	function getTitle() {
+		return $this->rubrique_titre;
 	}
 	
 	
