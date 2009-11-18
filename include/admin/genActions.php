@@ -24,6 +24,7 @@
 
 class genAction {
 
+
 	public $action;
 	public $table;
 	public $id;
@@ -458,7 +459,7 @@ class genActionShowObject {
 	
 	public function checkCondition() {
 
-		if(!$this->row[ONLINE_FIELD])
+		if($this->row[ONLINE_FIELD] != "1")
 			return true;
 		else 
 			return false;
@@ -742,7 +743,15 @@ class genActionValidateVersion {
 	
 	
 	public function checkCondition() {
-
+		global $_Gconfig;
+		if(ake($this->row,$_Gconfig['field_date_maj'])) {
+			$r = getRowFromId($this->table,$this->row[VERSION_FIELD]);
+			if(strtotime($this->row[$_Gconfig['field_date_maj']]) > strtotime($r[$_Gconfig['field_date_maj']])) {
+				return true;
+			} else {
+				return false;
+			}
+		}
 		return true;
 
 	}	
@@ -765,15 +774,157 @@ class genActionValidateVersion {
 		
 		global $co;
 		($co->AutoExecute($this->table,$record,'UPDATE',' '.getPrimaryKey($this->table).' = '.sql($newId)));
+		
+		$record[ONLINE_FIELD] = 0;
+		($co->AutoExecute($this->table,$record,'UPDATE',' '.getPrimaryKey($this->table).' = '.sql($this->id)));
+		
+		
+		DoSql('UPDATE '.$this->table.' SET '.$_Gconfig['field_date_maj'].' = NOW() WHERE '.getPrimaryKey($this->table).' = '.sql($this->row[VERSION_FIELD]));
+		
+		
 		dinfo(t('modifications_en_ligne'));			
 		return;
-		
-		
 		
 	}
 	
 	
 }
+
+class genActionAskValidation extends ocms_action {
+	
+	public $canReturnToList = true;
+	function checkCondition () {
+		
+		global $_Gconfig;
+		if($this->row[ONLINE_FIELD] == 1 || $this->row[ONLINE_FIELD] == -1 ) {
+			return false;
+		}
+		if(ake($this->row,$_Gconfig['field_date_maj'])) {
+			$r = getRowFromId($this->table,$this->row[VERSION_FIELD]);
+			if(strtotime($this->row[$_Gconfig['field_date_maj']]) > strtotime($r[$_Gconfig['field_date_maj']])) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		return true;
+		
+	}
+	
+	function doIt() {
+		global $_Gconfig;
+		$m = includeMail();
+		
+		$m->AddAddress(t('email_validations'));
+		
+		$m->Subject = '['.t('base_title').'] '.t('askvalidation_subject');
+		
+		$trads['URL'] = getServerUrl().BU.'/admin/?curTable='.$this->table.'&curId='.$this->id.'&genform_action[view]=1';
+		$trads['MESSAGE'] = $_REQUEST['message'];
+		$trads['CREATOR'] = $GLOBALS['gs_obj']->adminnom;
+		//debug($_REQUEST['message']);
+		$m->Body = tf('askvalidation_body',$trads);	
+		
+		$m->Send();
+		
+		DoSql('UPDATE '.$this->table.' SET '.ONLINE_FIELD.' = -1 WHERE '.getPrimaryKey($this->table).' = '.sql($this->id));
+		
+		dinfo(t('askvalidation_done'));
+		
+	}
+	
+	
+	function getSmallForm() {
+		
+		return '<a onclick="mess = prompt(\''.t('message').'\');if(mess == null) return false; this.href += \'&message=\'+mess;" href="?genform_action%5BaskValidation%5D=1&curTable='.$this->table.'&curId='.$this->id.'&action=askValidation&fromList=1">
+					<img alt='.alt(t('ask_validation')).' src="'.BU.'/admin/pictos_stock/tango/22x22/apps/system-software-update.png"/>
+				</a>';
+		
+	}
+	
+	
+	function getForm() {
+		echo '<a onclick="mess = prompt(\''.t('message').'\');if(mess == null) return false; this.href += \'&message=\'+mess;"  class="abutton" href="?genform_action%5BaskValidation%5D=1&curTable='.$this->table.'&curId='.$this->id.'">
+				<img src="'.BU.'/admin/pictos_stock/tango/22x22/apps/system-software-update.png"/>
+				'.t('ask_validation').'
+				</a>';
+
+	}
+	
+	
+	
+	
+}
+
+
+class genActionRefuseValidation extends ocms_action {
+	
+	public $canReturnToList = true;
+	function checkCondition () {	
+		global $_Gconfig;
+		if($this->row[ONLINE_FIELD] == "-1" ) {
+			if(ake($this->row,$_Gconfig['field_date_maj'])) {
+				$r = getRowFromId($this->table,$this->row[VERSION_FIELD]);
+				if(strtotime($this->row[$_Gconfig['field_date_maj']]) > strtotime($r[$_Gconfig['field_date_maj']])) {
+					return true;
+				} else {
+					return false;
+				}
+			}
+			return true;
+		}
+		
+		return false;		
+	}
+	
+	function doIt() {
+		global $_Gconfig;
+		$m = includeMail();
+		
+		$admin = getRowFromId('s_admin',$this->row['ocms_creator']);
+		
+		$m->AddAddress($admin['admin_email']);
+		
+		$m->Subject = '['.t('base_title').'] '.t('refusevalidation_subject');
+		
+		//$trads['URL'] = getServerUrl().BU.'/admin/?curTable='.$this->table.'&curId='.$this->id.'&genform_action[view]=1';
+		$trads['MESSAGE'] = $_REQUEST['message'];
+		$trads['CREATOR'] = $GLOBALS['gs_obj']->adminnom;
+		$trads['TITRE'] =GetTitleFromRow($this->table,$this->row);
+		
+		//debug($_REQUEST['message']);
+		$m->Body = tf('refusevalidation_body',$trads);	
+		
+		$m->Send();
+		
+		DoSql('UPDATE '.$this->table.' SET '.ONLINE_FIELD.' = 0 WHERE '.getPrimaryKey($this->table).' = '.sql($this->id));
+		
+		dinfo(t('refusevalidation_done'));
+		
+	}
+	
+	
+	function getSmallForm() {
+		
+		return '<a onclick="mess = prompt(\''.t('message').'\');if(mess == null) return false; this.href += \'&message=\'+mess;" href="?genform_action%5BrefuseValidation%5D=1&curTable='.$this->table.'&curId='.$this->id.'&action=refuseValidation&fromList=1">
+					<img alt='.alt(t('refuse_validation')).' src="'.BU.'/admin/pictos_stock/tango/22x22/actions/system-log-out.png"/>
+				</a>';
+		
+	}
+	
+	
+	function getForm() {
+		echo '<a onclick="mess = prompt(\''.t('message').'\');if(mess == null) return false; this.href += \'&message=\'+mess;"  class="abutton" href="?genform_action%5BrefuseValidation%5D=1&curTable='.$this->table.'&curId='.$this->id.'">
+				<img src="'.BU.'/admin/pictos_stock/tango/22x22/actions/system-log-out.png"/>
+				'.t('refuse_validation').'
+				</a>';
+
+	}
+	
+	
+	
+}
+
 
 
 class genActionValidate {
@@ -1267,9 +1418,6 @@ class genActionTranslate {
       
       $filename = gen_include_path.'/plugins/'.$this->row['plugin_nom'].'/datas.xml';
      
-	 /**
-	  * Loading Data File
-	  */
       if(file_exists($filename) && $x =  simplexml_load_file($filename)) {     				
 				
 		foreach($x as $table=>$v) {			
