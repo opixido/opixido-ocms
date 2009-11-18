@@ -41,7 +41,7 @@ if(rubriqueIsAPage($form) || true ) {
 	 * Si on a un gabarit particulier
 	 */
 	
-	if($form->tab_default_field['fk_gabarit_id'] || count($r)) {
+	if($form->tab_default_field['fk_gabarit_id'] || count($rPlugin)) {
 	
 		/**
 		 * Quel gabarit
