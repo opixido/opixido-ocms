@@ -111,7 +111,7 @@ if ( @in_array( $name, $rteFields ) || in_array(getBaseLgField($name),$rteFields
 			 * Textarea normal
 			 */
 						
-			$this->addBuffer( '<textarea ' . $jsColor . ' class="resizable" rows="5"'.$attributs.' id="genform_'.$name.'" name="genform_' . $name . '">' . $this->tab_default_field[$name] . '</textarea>' );
+			$this->addBuffer( '<textarea style="height:20px" ' . $jsColor . ' class="resizable" rows="5" '.$attributs.' id="genform_'.$name.'" name="genform_' . $name . '">' . $this->tab_default_field[$name] . '</textarea>' );
 			
 		}
 		
