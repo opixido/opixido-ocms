@@ -47,10 +47,17 @@ class genAdmin {
     function genAdmin ($table="",$id = 0) {
 
         /* Always do on loading */
-
+ 
         
         $this->table =$table;
         $this->id = $id;
+        $t = getTables();
+        
+        if($table && !in_array($table,$t)) {
+        	echo '<a href="?">'.ta('this_table_doesnt_exist').'</a>';
+        	die();
+        	
+        }
 
 	    //debug('GenAdmin: '.$table.' : '.$id);
 
@@ -208,6 +215,10 @@ class genAdmin {
 			if(class_exists($adminClassName)) {
 				
 				$this->plugins[$v] = new $adminClassName($this);
+				if(method_exists($this->plugins[$v],'ocms_getParams')) {
+					global $_Gconfig;
+					$_Gconfig['pluginsParams'][] = $v;
+				}
 			}
 			
 		}
@@ -412,9 +423,11 @@ class genAdmin {
         	
             while(list($action,) = each($_REQUEST['genform_action'])) {
             
+           
             $this->action = new GenAction($action , $this->table , $this->id , $this->row);
-            $this->action->DoIt();
             
+            $this->action->DoIt();
+           
             
             if($_REQUEST['fromList'] && $this->action->canReturnToList()) {
             	$_REQUEST['curId'] = '';
@@ -427,10 +440,11 @@ class genAdmin {
             }
         }
        
+       
          if (ake('mass_action', $_REQUEST) ) 		{
          	
          	if( $_REQUEST['mass_action'] != '') {
-	         
+	        	
 	         	foreach($_REQUEST['massiveActions'] as $k=>$v) {
 	         		
 	         		$action = new GenAction($_REQUEST['mass_action'] , $this->table , $v );
@@ -642,12 +656,8 @@ class genAdmin {
 
             case "resume":
             	
-	            	
-            	if(!$this->id || $this->id == 'new') {
-            		
-            		return ;
-            	}
-		
+
+		//if(!count($_SESSION['levels']) {
 		
 				$gl = new GenLocks();
 		
@@ -812,7 +822,7 @@ class genAdmin {
 
 
     function  csvenc($str) {
-        /* pour �iter les probl�es en CSV on r�ncode les retours �la ligne et les ";" */
+        /* pour ï¿½iter les problï¿½es en CSV on rï¿½ncode les retours ï¿½la ligne et les ";" */
 
         return str_replace(array(";","\n","\r"),array(":"," "," "),$str);
     }
@@ -870,7 +880,7 @@ class genAdmin {
 			$ht = t('select_rub_below');
 		}
 		
-		/* construction simplifiée de l'aroborescence  */
+		/* construction simplifiÃ©e de l'aroborescence  */
 		if($_REQUEST['curId'] AND $_REQUEST['curId'] != 'new')
        	 $arbo = '&nbsp;&nbsp;&nbsp;<a href="index.php?arbo=1&amp;rubId='.$this->id.'&amp;fkrubId='.$this->real_fk_rub.'" title="'.t('arborescence').'"><img src="'.ADMIN_PICTOS_FOLDER.''.ADMIN_PICTOS_ARBO_SIZE.'/actions/arbo.png" alt="" /></a>';
 		else $arbo ='';
@@ -913,7 +923,7 @@ class genAdmin {
 		if($id == 0 && is_array($this->gs->myroles['s_rubrique']['rows'])) {
 			/**
 			 * Pour les utilisateurs simples
-			 * avec des accès sous-rubriques
+			 * avec des accÃ¨s sous-rubriques
 			 */			
 			$q = "SELECT 
 						G.*,
@@ -957,7 +967,7 @@ class genAdmin {
 				p('<ul id="arbo_'.$id.'">');
 	
 				/**
-				 * Titre par défaut si vide
+				 * Titre par dÃ©faut si vide
 				 */
 	            if(!strlen($aff['rubrique_titre_'.LG_DEF])) {
 	                    $aff['rubrique_titre_'.LG_DEF] = "[TITRE VIDE]";
@@ -965,11 +975,11 @@ class genAdmin {
 	
 				
 	            /**
-	             * Si jamais l'ordre n'était pas bon pour une raison X 
+	             * Si jamais l'ordre n'Ã©tait pas bon pour une raison X 
 	             */
 	            if($souldBeOrder != $aff["r2_ordre"]) {
 					/**
-					 * Si jamais l'ordre est faux, on réordonne
+					 * Si jamais l'ordre est faux, on rÃ©ordonne
 					 */
 					$sql = 'UPDATE s_rubrique SET rubrique_ordre = "'.$souldBeOrder.'" WHERE `rubrique_id` = "'.$real_rub.'"';
 					$res = DoSql($sql);
@@ -989,7 +999,7 @@ class genAdmin {
 				$cl = '';
 				
 	            /**
-	             * Cette rubrique est-elle sélectionnée ?
+	             * Cette rubrique est-elle sÃ©lectionnÃ©e ?
 	             */
 	            if($this->insideRealRubId == $aff['fk_rubrique_version_id'] ||
 	            		 ( $aff['fk_rubrique_version_id'] == $_SESSION['XHRlastCurId'] && !$_REQUEST['curId']) ) {
@@ -1007,7 +1017,7 @@ class genAdmin {
 	                  p('<a name="rub'.$aff["rubrique_id"].'" />');
 	
 	            /**
-	             * Classe transparente si rubrique masquée
+	             * Classe transparente si rubrique masquÃ©e
 	             */
 				$classColor = '';
 			    $classColor = $aff['r2_etat'] == 'en_ligne' ? '' : ' pasenligne';
@@ -1015,7 +1025,7 @@ class genAdmin {
 				
 				
 	            /**
-	             * Dossier ouvert / fermé :
+	             * Dossier ouvert / fermÃ© :
 	             * plus ou moins
 	             */
 	            $paramShow = $_SESSION['visibleRubs'][$real_rub] ? 'hideRub='.$real_rub : 'showRub='.$real_rub;
@@ -1030,7 +1040,7 @@ class genAdmin {
 	            $imageToShow = '';
 	       
 	            /**
-	             * URL d'accès
+	             * URL d'accÃ¨s
 	             */
 	            $url = '?'.$paramShow.'&amp;curTable=s_rubrique';
 	            
@@ -1151,8 +1161,8 @@ class genAdmin {
 			}
 			else {				
 				/**
-				 * On avait pas accès à cette rubrique, 
-				 * On parcourt en dessous voir si on a accès
+				 * On avait pas accÃ¨s Ã  cette rubrique, 
+				 * On parcourt en dessous voir si on a accÃ¨s
 				 */
 				$this->recurserub($real_rub,$nivv+1,$dolink);
 			}
@@ -1276,7 +1286,7 @@ class genAdmin {
 
         /**
          * On reste sur le meme formulaire 
-         * Car il y a un champ mal remplit ou bien on a demander à rester
+         * Car il y a un champ mal remplit ou bien on a demander Ã  rester
          */
         if(is_array($fieldError) ||  strlen($_POST['genform_stay'])) {
             $gl = new GenLocks();
@@ -1355,14 +1365,14 @@ class genAdmin {
                     		$_SESSION['levels'][$_SESSION['nbLevels']]['curId']."'";
 
 
-                    /* On r�rganise / r�rdone */
+                    /* On rï¿½rganise / rï¿½rdone */
                     $ord = new GenOrder($_REQUEST['curTable'],$_REQUEST['curId'],$_REQUEST['curId']);
                     $ord->OrderAfterInsert();
 
                 }
 
                 /*
-                        Si on a pas annulé on fait vraiment cette requ�e
+                        Si on a pas annulÃ© on fait vraiment cette requï¿½e
                  */
 
                 if(!$_POST['genform_cancel'] && $sql) {
@@ -1399,10 +1409,7 @@ class genAdmin {
                 $_REQUEST['curPage']--;
         }
         
-		if($_REQUEST['genform_cancel'] && $_REQUEST['curId'] == 'new') {
-        	return 'searchv2';
-        }
-		
+        
 		global $_Gconfig;
         /**
          *  Si on finit apres avoir soumis le formulaire
@@ -1415,7 +1422,7 @@ class genAdmin {
 
         		
         	/**
-        	 * Si c'est une table en "updateAfterInsert" et qu'on vient de la créer, on revient dessus
+        	 * Si c'est une table en "updateAfterInsert" et qu'on vient de la crÃ©er, on revient dessus
         	 */
          	if(in_array($this->table,$_Gconfig['updateAfterInsert']) && $this->firstId == 'new') {
 
@@ -1427,7 +1434,7 @@ class genAdmin {
                   
          	}
          	/**
-         	 * Sinon on retourne au résumé si on a fait OK ou CANCEL ou qu'on a demandé le résumé
+         	 * Sinon on retourne au rÃ©sumÃ© si on a fait OK ou CANCEL ou qu'on a demandÃ© le rÃ©sumÃ©
          	 */         	
 	     	if((ake('genform_ok',$_POST)
 	            || ake('genform_ok_x',$_POST)
