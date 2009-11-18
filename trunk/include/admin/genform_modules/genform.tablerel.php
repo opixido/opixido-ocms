@@ -449,7 +449,7 @@ class genform_tablerel extends genform_base {
 				
 				$this->valuesSelect .= $thisValue;
 				
-				$this->optionsSelected .= ( '<option value="' . $row[$this->pk2] . '">' . $thisValue . '</option>' );
+				$this->optionsSelected .= ( '<option selected="selected" value="' . $row[$this->pk2] . '">' . $thisValue . '</option>' );
 			
 				/**
 				 * Liste des elements deja selectionnés é mettre dans la clause NOT IN
