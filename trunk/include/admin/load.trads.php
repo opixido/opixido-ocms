@@ -1,8 +1,7 @@
 <?php
 
 
-$sql = 'SELECT * FROM s_admin_trad';
-$res = GetAll($sql);
+
 
 global $admin_trads,$_Gconfig;
 /*
@@ -12,6 +11,27 @@ define('ADMIN_PICTOS_FORM_SIZE','22x22');
 define('ADMIN_PICTOS_FRONT_SIZE','22x22');
 
 */
+
+$sql = 'SELECT * FROM s_trad';
+$res = GetAll($sql);
+
+
+if($res) {
+	foreach($res as $row) {
+		reset($_Gconfig['LANGUAGES']);
+		foreach($_Gconfig['LANGUAGES'] as $v) {
+	
+			if($v) {				
+				$admin_trads[$row['trad_id']][$v] = $row['trad_'.$v];
+			}
+		}
+		reset($_Gconfig['LANGUAGES']);
+	}
+}
+
+$sql = 'SELECT * FROM s_admin_trad';
+$res = GetAll($sql);
+
 if($res) {
 	foreach($res as $row) {
 		reset($_Gconfig['LANGUAGES']);
@@ -32,21 +52,7 @@ if($res) {
 	}
 }
 
-$sql = 'SELECT * FROM s_trad';
-$res = GetAll($sql);
 
-if($res) {
-	foreach($res as $row) {
-		reset($_Gconfig['LANGUAGES']);
-		foreach($_Gconfig['LANGUAGES'] as $v) {
-	
-			if($v) {				
-				$admin_trads[$row['trad_id']][$v] = $row['trad_'.$v];
-			}
-		}
-		reset($_Gconfig['LANGUAGES']);
-	}
-}
 
 
 //debug($admin_trads);
