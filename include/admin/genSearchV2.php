@@ -654,7 +654,17 @@ class genSearchV2 {
 	    
 	   	global $_Gconfig;
 	   	
-	   	p('<div style="clear:both;text-align:right"  class="fond1">');
+	   	p('
+	   	<script type="text/javascript">
+	   	$(".genform_table tr").click(function() {
+	   		if($(this).find("input[type=checkbox]").is(":checked")) {
+	   			$(this).find("input[type=checkbox]").attr("checked",false);
+	   		} else {
+	   			$(this).find("input[type=checkbox]").attr("checked",true);
+	   		}
+	   	});
+	   	</script>
+	   	<div style="clear:both;text-align:right"  class="fond1">');
 	   	
 	   	$html .= '<a href="#" onclick="searchSelectMass(true);return false;">'.t('select_all').'</a> / ';
 	   	$html .= '<a href="#" onclick="searchSelectMass(false);return false;">'.t('select_none').'</a>';
