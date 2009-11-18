@@ -62,7 +62,8 @@ if(count($res) <= 4000 ) {
 				$this->addBuffer('<div >'); //style="height:200px;overflow:auto;"
 			}
 
-	        $this->addBuffer('<table rel="'.$fk_table.'__'.$orderFields[$fk_table][0].'" border="0" width="'.($this->larg-25).'" class="genform_table sortable relinv" ><thead>');
+			$sortable = array_key_exists($fk_table,$orderFields);
+	        $this->addBuffer('<table rel="'.$fk_table.'__'.$orderFields[$fk_table][0].'" border="0" width="'.($this->larg-25).'" class="genform_table '.($sortable?'sortable':'').' relinv" ><thead>');
 	        $ml = 1;
 	        $this->addBuffer('<tr><th width="20">');
 	
@@ -89,7 +90,7 @@ if(count($res) <= 4000 ) {
  			}
  			
                 /* Collones pour les boutons up down */
-                if(array_key_exists($fk_table,$orderFields)) {
+                if($sortable) {
                     $this->addBuffer('<th width="20" class="order">&nbsp;</th><th width="20" class="order">&nbsp;</th>');
 
                 }
@@ -129,6 +130,7 @@ if(count($res) <= 4000 ) {
 								type="image"
 								src="'.t('src_editer').'"
 								class="inputimage"
+								rel="edit"
 								name="genform_modfk__' . $fk_table . '"
 								title="' . $this->trad( "edit" ) . '"
 								onclick="document.getElementById(\'genform_modfk__' . $fk_table . '_value_'.$ml.'\').checked = \'checked\'" /><input '.$ch.'
@@ -218,7 +220,7 @@ if(count($res) <= 4000 ) {
                                   /*************
                                     On ajoute les boutons pour la gestion de l'ordre ?
                                     **************/
-                                  if(array_key_exists($fk_table,$orderFields)) {
+                                  if($sortable) {
 
                                         $this->addBuffer( '<td class="order">');
 
