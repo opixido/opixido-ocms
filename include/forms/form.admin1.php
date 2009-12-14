@@ -57,7 +57,7 @@ if($this->editMode) {
 
 	p('<input type="hidden" name="genform_rel__r_admin_rubrique__rubrique_id_temoin" value="1" />');
 	
-	$_SESSION['curFields'][] = 'r_rubrique_id';
+	$_SESSION[gfuid()]['curFields'][] = 'r_rubrique_id';
 
 	getRubsArbored(0,1,$this->admin_curdroits);
 	

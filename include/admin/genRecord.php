@@ -51,21 +51,21 @@ class genRecord {
 
                 $this->JustInserted = true;
 
-                if ($_SESSION['levels'][$_SESSION['nbLevels']]['insertOtherField'] || $_SESSION['genform__add_sub_table']) {
+                if ($_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['insertOtherField'] || $_SESSION[gfuid()]['genform__add_sub_table']) {
                     global $relinv;
                     reset($relinv);
 
-                    $otherTable = $_SESSION['genform__add_sub_table'] ? $_SESSION['genform__add_sub_table'] : $_SESSION['levels'][$_SESSION['nbLevels']]['curTable'];
-                    $fk_id = $_SESSION['levels'][$_SESSION['nbLevels']]['curId'] ? $fk_id = $_SESSION['levels'][$_SESSION['nbLevels']]['curId'] : $_SESSION['genform__add_sub_id'];
+                    $otherTable = $_SESSION[gfuid()]['genform__add_sub_table'] ? $_SESSION[gfuid()]['genform__add_sub_table'] : $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['curTable'];
+                    $fk_id = $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['curId'] ? $fk_id = $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['curId'] : $_SESSION[gfuid()]['genform__add_sub_id'];
 
                     foreach($relinv[$otherTable] as $v) {
                         if ($v[0] == $this->table) {
                             $chp = $v[1];
                         }
                     }
-                    if( $_SESSION['newTableFk']) {
-                    	$chp = $_SESSION['newTableFk'];
-                    	$_SESSION['newTableFk'] = '';
+                    if( $_SESSION[gfuid()]['newTableFk']) {
+                    	$chp = $_SESSION[gfuid()]['newTableFk'];
+                    	$_SESSION[gfuid()]['newTableFk'] = '';
                     }
                 }
 
@@ -116,12 +116,12 @@ class genRecord {
 
                 $_REQUEST['curId'] = $this->id;
                 
-                if($_SESSION['sqlWaitingForInsert']) {
-                	foreach($_SESSION['sqlWaitingForInsert'] as $v) {                		
+                if($_SESSION[gfuid()]['sqlWaitingForInsert']) {
+                	foreach($_SESSION[gfuid()]['sqlWaitingForInsert'] as $v) {                		
                 		doSql(str_replace('[INSERTID]',$this->id,$v));
                 	}
                 }
-                $_SESSION['sqlWaitingForInsert'] = array();
+                $_SESSION[gfuid()]['sqlWaitingForInsert'] = array();
 
                 /* Si on vient de rajouter un element qui pointe vers le nbLevel precedent */
 
@@ -135,8 +135,8 @@ class genRecord {
                     $query = ' UPDATE ' . $this->table . ' SET ' . $chp . ' =  "' . $fk_id . '" WHERE ' . $this->pk . ' = ' . sql($this->id);
                     DoSql($query);
 
-                    $_SESSION['levels'][$_SESSION['nbLevels']]['insertOtherField'] = "";
-                    $_SESSION['genform__add_sub_id'] = $_SESSION['genform__add_sub_table'] = "";
+                    $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['insertOtherField'] = "";
+                    $_SESSION[gfuid()]['genform__add_sub_id'] = $_SESSION[gfuid()]['genform__add_sub_table'] = "";
                 }
 
                 global $genMessages;
@@ -182,7 +182,10 @@ class genRecord {
             $ord->ReOrder();
         }
 
-        $_SESSION['curFields'] = array();
+       
+        $_SESSION[gfuid()]['curFields'] = array();
+        // mail('conort@gmail.com','clean',gfuid());
+        
         return $this->id;
     }
 
@@ -490,6 +493,7 @@ class genRecord {
         // debug($_POST);
         reset($_POST);
         // debug('New Record');
+        
         while (list($key_name, $value) = each($_POST)) {
         	
         	
@@ -557,7 +561,7 @@ class genRecord {
                     $tab = explode("__", $key_name);
                     // if($this->table != $tab[1]) {
                     $_REQUEST['newTable'] = $tab[1];
-                    $_SESSION['newTableFk'] = $tab[2];
+                    $_SESSION[gfuid()]['newTableFk'] = $tab[2];
                     $_REQUEST['insertOtherField'] = "1";
                     $_REQUEST['newId'] = "new";
                     // }
@@ -624,7 +628,9 @@ class genRecord {
                 } else
 
                     /* Est-il dans la liste des champs que j'ai le droit de modifier */
-                    if (in_array($name, $_SESSION['curFields'])) {
+              
+                    if (in_array($name, $_SESSION[gfuid()]['curFields'])) {
+                    	 
                         /* Nombre r?l */
                         if ($tab_field[$name]->type == "real") {
                             $val1 = (real)$value;
@@ -704,7 +710,8 @@ class genRecord {
 
                         if (substr($name, -4) == "_del" || substr($name, -4) == "_del_x") {
                             $name = substr($name, 0, -4);
-
+							$_REQUEST['genform_stay'] = 1;
+							
                             /**
                              *
                              * @unlink ($uploadRep.$myobj->tab_default_field[$name]);
@@ -848,5 +855,6 @@ class genRecord {
             }
         }
     }
+
 
 ?>

@@ -100,7 +100,7 @@ class genAdminPopup{
 			}else{
 
 				$_SESSION["genform_".$_REQUEST['table']][$champ_csv] = addslashes($gCsv->showCsvContent($gCsv->openCsvFile()));
-				$_SESSION['curFields'][] = $_REQUEST['champ'];
+				$_SESSION[gfuid()]['curFields'][] = $_REQUEST['champ'];
 				$gRte = new genRte('Default', $gCsv->gen());
 			}
 

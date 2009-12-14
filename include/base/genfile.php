@@ -261,6 +261,27 @@ class genFile {
 		}
 		return $s;
 	}
+	
+	function getCacheFile($src) {
+		
+		$src = urldecode(str_replace('&amp;','&',$src));
+		$fCname = (dirname($_SERVER['SCRIPT_FILENAME']).substr(THUMBPATH,strlen(BU)).'cache').'/'.md5($src);	
+		/*debugOpix($src);
+		debugOpix($fCname);*/
+		
+		if(file_exists($fCname)) {		
+			
+			if(filemtime($fCname) >= filemtime($this->getSystemPath())) {		
+				return THUMBPATH.'cache'.'/'.md5($src);
+			}
+		}
+		 else {
+		 	//debugOpix($fCname.' - '.$src);
+		 }
+		
+		return $src;
+	}
+	
 	/**
 	 * Retourne l'URI vers la fonction Thumb
 	 *
@@ -272,8 +293,8 @@ class genFile {
 		if(!$this->isImage()) return $this->getWebUrl();
 		
 		if($this->imageExists) {
-			return path_concat(THUMBPATH).'?q='.$this->quality.'&amp;w='.$w.'&amp;h='.$h.'&amp;src='.$this->getSystemPath().''.$this->getFilters($fltr);
-			return path_concat(THUMBPATH).'?q='.$this->quality.'&amp;w='.$w.'&amp;h='.$h.'&amp;table='.$this->table.'&amp;champ='.$this->champ.'&amp;id='.$this->id;
+			return $this->getCacheFile(path_concat(THUMBPATH).'?q='.$this->quality.'&amp;w='.$w.'&amp;h='.$h.'&amp;src='.$this->getSystemPath().''.$this->getFilters($fltr));
+			//return path_concat(THUMBPATH).'?q='.$this->quality.'&amp;w='.$w.'&amp;h='.$h.'&amp;table='.$this->table.'&amp;champ='.$this->champ.'&amp;id='.$this->id;
 		
 		} else {
 			return '';
@@ -289,7 +310,7 @@ class genFile {
 	 */
 	function getThumbUrlExact($w=200,$h=200,$fltr=array()) {
 		if($this->imageExists) {
-			return path_concat(THUMBPATH).'?q='.$this->quality.'&amp;zc=1&amp;w='.$w.'&amp;h='.$h.'&amp;src='.$this->getSystemPath().$this->getFilters($fltr);
+			return $this->getCacheFile(path_concat(THUMBPATH).'?q='.$this->quality.'&amp;zc=1&amp;w='.$w.'&amp;h='.$h.'&amp;src='.$this->getSystemPath().$this->getFilters($fltr));
 			return path_concat(THUMBPATH).'?q='.$this->quality.'&amp;zc=1&amp;w='.$w.'&amp;h='.$h.'&amp;table='.$this->table.'&amp;champ='.$this->champ.'&amp;id='.$this->id;
 		} else {
 			return '';
@@ -305,7 +326,7 @@ class genFile {
 	 */
 	function getCropUrl($w=200,$h=200,$fltr=array()) {
 		if($this->imageExists) {
-			return path_concat(THUMBPATH).'?q='.$this->quality.'&amp;zc=1&amp;w='.$w.'&amp;h='.$h.'&amp;src='.$this->getSystemPath().$this->getFilters($fltr);
+			return $this->getCacheFile(path_concat(THUMBPATH).'?q='.$this->quality.'&amp;zc=1&amp;w='.$w.'&amp;h='.$h.'&amp;src='.$this->getSystemPath().$this->getFilters($fltr));
 			return path_concat(THUMBPATH).'?q='.$this->quality.'&amp;zc=1&amp;w='.$w.'&amp;h='.$h.'&amp;src='.$this->getSystemPath().$this->getFilters($fltr);
 			return path_concat(THUMBPATH).'?q='.$this->quality.'&amp;zc=1&amp;sw='.$w.'&amp;sh='.$h.'&amp;table='.$this->table.'&amp;champ='.$this->champ.'&amp;id='.$this->id;
 		} else {

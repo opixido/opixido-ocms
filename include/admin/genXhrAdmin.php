@@ -374,9 +374,9 @@ class genXhrAdmin {
     	
 		$pk2 = getPrimaryKey($table);
 		$s = new genSearchV2($table);
-		$res = $s->doFullSearch($_REQUEST['q'],$clause);
+		$res = $s->doFullSearch($_REQUEST['q'],$clause,false);
 		foreach($res as $row) {
-			print('<li><a class="sal" onclick="selectRelationValue(this)" rel="'.$row[$pk2].'">'.getTitleFromRow($table,$row).'</a></li>')	;				
+			print('<li><a class="sal" onclick="selectRelationValue(this)" rel="'.$row[$pk2].'">'.getTitleFromRow($table,$row,' > ',true).'</a></li>')	;				
 		}
 		die();
 		

@@ -133,13 +133,13 @@ class GenForm {
 
 
 
-		if($_SESSION['levels'][$_SESSION['nbLevels']]['insertOtherField'] || $_SESSION['genform__add_sub_table'] ) {
+		if($_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['insertOtherField'] || $_SESSION[gfuid()]['genform__add_sub_table'] ) {
 	
 			global $relinv;
 			reset($relinv);
 	
-			$otherTable = $_SESSION['genform__add_sub_table'] ? $_SESSION['genform__add_sub_table']  : $_SESSION['levels'][$_SESSION['nbLevels']]['curTable'];
-			$fk_id = $_SESSION['levels'][$_SESSION['nbLevels']]['curId'] ? $fk_id = $_SESSION['levels'][$_SESSION['nbLevels']]['curId'] : $_SESSION['genform__add_sub_id'];
+			$otherTable = $_SESSION[gfuid()]['genform__add_sub_table'] ? $_SESSION[gfuid()]['genform__add_sub_table']  : $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['curTable'];
+			$fk_id = $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['curId'] ? $fk_id = $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['curId'] : $_SESSION[gfuid()]['genform__add_sub_id'];
 	
 			//debug($otherTable);
 			foreach($relinv[$otherTable] as $v) {
@@ -186,8 +186,8 @@ class GenForm {
     	
 		$lgs = $_Gconfig['LANGUAGES'];
 		
-		if($_SESSION['nbLevels']) {
-			$inf = $_SESSION['levels'][$_SESSION['nbLevels']];			
+		if($_SESSION[gfuid()]['nbLevels']) {
+			$inf = $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']];			
 			$sql = 'SELECT DISTINCT(fk_langue_id) 
 						FROM s_traduction 
 						WHERE fk_table LIKE "'.$inf['curTable'].'" 
@@ -503,7 +503,7 @@ class GenForm {
         }
         
         
-            		
+        
 		
 		if(!$this->editMode)	 {
 			$this->addBuffer('</label>');
@@ -521,7 +521,7 @@ class GenForm {
 					$toHide .= '$("#lgfield_'.$name.'_'.$lg.'").hide();';
 				}
 				
-				$_SESSION['curFields'][] = $tab_name.'_'.$lg;
+				$_SESSION[gfuid()]['curFields'][] = $tab_name.'_'.$lg;
 			}		
 			
 			$lg = $_SESSION['onlyLg'] && $_SESSION['onlyLg'] != 'ALL' ?  $_SESSION['onlyLg'] : $_Gconfig['LANGUAGES'][0];
@@ -992,13 +992,13 @@ class GenForm {
 
 
         if(!$this->editMode) {
-			$_SESSION['curFields'][] = $name;
+			$_SESSION[gfuid()]['curFields'][] = $name;
 
         }
         if(trim($this->getBuffer()) == trim($lastBuffer))
         	$this->addBuffer('<span class="light">'.t('empty_field').'</span>');
 		
-		
+
 		
 	}
 
@@ -1080,6 +1080,8 @@ class GenForm {
 		');
 		$this->genHiddenItem( 'genform_stay', '' );
 		$this->genHiddenItem( 'genform_fromForm', '1' );
+		
+		$this->genHiddenItem( 'gfuid', gfuid() );
 		if(isset($_REQUEST['gfa'])) {
 			$this->genHiddenItem( 'gfa' , '1');
 		}
@@ -1339,7 +1341,8 @@ class GenForm {
 	function genHiddenField($klef) {
 		/* Genere un champ cach�a la mode genform */
 		//debug($this);
-		$_SESSION['curFields'][] = $klef;
+		$_SESSION[gfuid()]['curFields'][] = $klef;
+		
 		p("<input type='hidden' name='genform_".$klef."' value='".$this->tab_default_field[$klef]."' />");
 	}
 
@@ -1487,5 +1490,3 @@ class GenForm {
 	}
 
 }
-
-?>

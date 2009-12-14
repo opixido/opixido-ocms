@@ -133,7 +133,7 @@
 
                              $this->addBuffer('</div>');
                              
-                            $_SESSION['curFields'][] = $name . "_del";
+                            $_SESSION[gfuid()]['curFields'][] = $name . "_del";
                             
                         }
                     } else {
@@ -207,8 +207,8 @@
                     	if(count($liste)) {
                     		$ij=0;
                     		
-                    		$_SESSION['curFields'][] = $name . "_importftp";
-							 $_SESSION['curFields'][] = $name . "_importftp_x";
+                    		$_SESSION[gfuid()]['curFields'][] = $name . "_importftp";
+							$_SESSION[gfuid()]['curFields'][] = $name . "_importftp_x";
 							 
                     		$this->addBuffer(' 
 				                    <img class="inputimage" onclick="showHide(\'filelisting_'.$name.'\')" type="image" src="'.t('src_importftp').'"  alt="'.t('import_from_ftp').'" />

@@ -87,8 +87,8 @@ class genAdmin {
         /* Si on clique sur le logo, on revient  vide */
 
         if((!count($_POST)  && $_GET['curTable'] && !$_GET['delId'] && !$_GET['goBack'] ) || $_GET['home'])  {
-            $_SESSION['levels'] = array();
-            $_SESSION['nbLevels'] = 0;
+            $_SESSION[gfuid()]['levels'] = array();
+            $_SESSION[gfuid()]['nbLevels'] = 0;
 
             $gl = new GenLocks();
 
@@ -191,7 +191,7 @@ class genAdmin {
 		if($this->table == 's_rubrique') {
 			return true;
 		}
-		else if($_SESSION['levels'][1]['curTable'] == 's_rubrique') {
+		else if($_SESSION[gfuid()]['levels'][1]['curTable'] == 's_rubrique') {
 			return true;
 		}
 
@@ -230,12 +230,12 @@ class genAdmin {
 
 		if($this->real_rub_id > 0)
 			return $this->real_rub_id;
-		if(is_array($_SESSION['levels'])) {
-		@reset($_SESSION['levels']);
-		foreach($_SESSION['levels'] as $lev) {
+		if(is_array($_SESSION[gfuid()]['levels'])) {
+		@reset($_SESSION[gfuid()]['levels']);
+		foreach($_SESSION[gfuid()]['levels'] as $lev) {
 			
 			if($lev['curTable'] == 's_rubrique') {
-				@reset($_SESSION['levels']);
+				@reset($_SESSION[gfuid()]['levels']);
 				
 				if( $this->rubver[$lev['curId']])
 					return $this->rubver[$lev['curId']];
@@ -244,7 +244,7 @@ class genAdmin {
 					return $lev['curId'];
 			}
 		}
-		@reset($_SESSION['levels']);
+		@reset($_SESSION[gfuid()]['levels']);
 		}
 		return false;
 	}
@@ -464,8 +464,8 @@ class genAdmin {
     function doRecord() {
 
         if($_REQUEST['genform__add_sub_table'] && $_REQUEST['genform__add_sub_id']) {
-            $_SESSION['genform__add_sub_table'] = $_REQUEST['genform__add_sub_table'];
-            $_SESSION['genform__add_sub_id'] = $_REQUEST['genform__add_sub_id'];
+            $_SESSION[gfuid()]['genform__add_sub_table'] = $_REQUEST['genform__add_sub_table'];
+            $_SESSION[gfuid()]['genform__add_sub_id'] = $_REQUEST['genform__add_sub_id'];
         }
 
 		
@@ -621,13 +621,6 @@ class genAdmin {
             	if(is_array($tl)) {
             		dinfo(t('erreur_lock_existe'));
 
-            		/*if($_SESSION['levels'] > 1) {
-            		$this->FormToInclude = $this->whichForm();
-            		$this->includeForm();
-            		} else {
-            			$this->FormToInclude = 'resume';
-            			$this->includeForm();
-            		}*/
 
             		global $editMode;
             		$editMode = true;
@@ -636,9 +629,7 @@ class genAdmin {
             		$form->editMode = true;
             		//debug($tl);
             	} else {
-            		/*$_SESSION['genform_curTable'] = $this->table;
-            		$_SESSION['genform_curId'] = $this->id;
-            		*/
+
 
 				}
 				
@@ -657,7 +648,6 @@ class genAdmin {
             case "resume":
             	
 
-		//if(!count($_SESSION['levels']) {
 		
 				$gl = new GenLocks();
 		
@@ -1223,7 +1213,7 @@ class genAdmin {
          if($urlOnline) {
          	p('<a style="float:right" href="'.$urlOnline.'" target="_blank"><img src="'.ADMIN_PICTOS_FOLDER.ADMIN_PICTOS_FORM_SIZE.'/actions/document-properties.png" alt='.alt(t('voir_enligne')).' /></a>');
          }
-         $table = strlen($_SESSION['levels'][0]['curTable']) ? $_SESSION['levels'][0]['curTable'] : $_REQUEST['curTable'];
+         $table = strlen($_SESSION[gfuid()]['levels'][0]['curTable']) ? $_SESSION[gfuid()]['levels'][0]['curTable'] : $_REQUEST['curTable'];
          if($table) {
          	$src = $tabForms[$table]['picto'] ? str_replace(ADMIN_PICTOS_BIG_SIZE,ADMIN_PICTOS_FORM_SIZE,$tabForms[$table]['picto']) : t('src_desktop');
          	p('<a class="titreListe" title='.alt(t('retour').' '.t($table)).' href="?curTable='.$table.'&amp" ><img class="inputimage" src="'.$src.'"  alt="" /> ');
@@ -1231,14 +1221,14 @@ class genAdmin {
          }
          if($this->id  || $this->id == 'new') {
 
-                        if($_SESSION['nbLevels'] > 0) {
+                        if($_SESSION[gfuid()]['nbLevels'] > 0) {
 
 
-                        	p('<a href="?curTable='.$_SESSION['levels'][1]['curTable'].'&amp;curId='.$_SESSION['levels'][1]['curId'].'&resume=1" ><img class="inputimage" src="'.t('src_first').'" alt="Retour" /></a> ');
+                        	p('<a href="?curTable='.$_SESSION[gfuid()]['levels'][1]['curTable'].'&amp;curId='.$_SESSION[gfuid()]['levels'][1]['curId'].'&resume=1" ><img class="inputimage" src="'.t('src_first').'" alt="Retour" /></a> ');
 
                         	p('<a href="?'.time().'" ><img class="inputimage" src="'.t('src_back').'" alt="Retour" /></a> ');
 							
-							while(list($k,$v) = each($_SESSION['levels'])) {
+							while(list($k,$v) = each($_SESSION[gfuid()]['levels'])) {
 							        if($v['curTable']) {
 							        	p('<span class="titreListe">'.limitWords(strip_tags($this->GetRecordTitle($v["curTable"],$v["curId"]," ",$v["curTableKey"])),15)." [".$v["curId"]."] </span> &raquo;");
 							        }
@@ -1304,14 +1294,14 @@ class genAdmin {
                         On stock les infos actuelles dans la session
                  */
 
-                $_SESSION['nbLevels']++;
-                $_SESSION['levels'][$_SESSION['nbLevels']]['curTable'] = $_REQUEST['curTable'];
-                $_SESSION['levels'][$_SESSION['nbLevels']]['curTableKey'] = $_REQUEST['curTableKey'];
-                $_SESSION['levels'][$_SESSION['nbLevels']]['curId'] = $_REQUEST['curId'];
-                $_SESSION['levels'][$_SESSION['nbLevels']]['fieldToUpdate'] = $_REQUEST['fieldToUpdate'];
-                $_SESSION['levels'][$_SESSION['nbLevels']]['curPage'] = $_REQUEST['curPage'];
-                $_SESSION['levels'][$_SESSION['nbLevels']]['tableToUpdate'] = $_REQUEST['tableToUpdate'];
-                $_SESSION['levels'][$_SESSION['nbLevels']]['insertOtherField'] = $_REQUEST['insertOtherField'];
+                $_SESSION[gfuid()]['nbLevels']++;
+                $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['curTable'] = $_REQUEST['curTable'];
+                $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['curTableKey'] = $_REQUEST['curTableKey'];
+                $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['curId'] = $_REQUEST['curId'];
+                $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['fieldToUpdate'] = $_REQUEST['fieldToUpdate'];
+                $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['curPage'] = $_REQUEST['curPage'];
+                $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['tableToUpdate'] = $_REQUEST['tableToUpdate'];
+                $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['insertOtherField'] = $_REQUEST['insertOtherField'];
 
 
 
@@ -1331,17 +1321,17 @@ class genAdmin {
             /**
              *  Sinon, si on revient d'un formulaire vers un autre 
              **/
-            else if ($_SESSION['nbLevels'] > 0   ) {
+            else if ($_SESSION[gfuid()]['nbLevels'] > 0   ) {
 				/*
                         On recupere nos variables de sessions
                  */
                 $beforeRequest = $_REQUEST;
 
-                $_REQUEST['curTable'] = $_SESSION['levels'][$_SESSION['nbLevels']]['curTable'];
-                $_REQUEST['curTableKey'] = $_SESSION['levels'][$_SESSION['nbLevels']]['curTableKey'];
-                $_REQUEST['curPage'] = $_SESSION['levels'][$_SESSION['nbLevels']]['curPage'];
-                $_REQUEST['tableToUpdate'] = $_SESSION['levels'][$_SESSION['nbLevels']]['tableToUpdate'];
-                $_REQUEST['insertOtherField'] = $_SESSION['levels'][$_SESSION['nbLevels']]['insertOtherField'];
+                $_REQUEST['curTable'] = $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['curTable'];
+                $_REQUEST['curTableKey'] = $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['curTableKey'];
+                $_REQUEST['curPage'] = $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['curPage'];
+                $_REQUEST['tableToUpdate'] = $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['tableToUpdate'];
+                $_REQUEST['insertOtherField'] = $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['insertOtherField'];
 
                 $sql = "";
                 /*
@@ -1349,20 +1339,20 @@ class genAdmin {
                  */
                 if($_REQUEST['tableToUpdate'] && $_REQUEST['curId'] && $_REQUEST['curId'] != 'new') {
                     $sql = "INSERT INTO ".$_REQUEST['tableToUpdate'].
-                    		" ( fk_".$_SESSION['levels'][$_SESSION['nbLevels']]['fieldToUpdate']." , fk_".
+                    		" ( fk_".$_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['fieldToUpdate']." , fk_".
                     		$_REQUEST['curTableKey']." )  VALUES  ( ".
                     		$_REQUEST['curId']." , ".
-                    		$_SESSION['levels'][$_SESSION['nbLevels']]['curId']." ) ";
+                    		$_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['curId']." ) ";
 
-                 } else if($_SESSION['levels'][$_SESSION['nbLevels']]['fieldToUpdate'] &&
+                 } else if($_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['fieldToUpdate'] &&
              		 $_REQUEST['curId'] && $_REQUEST['curId'] != "new") {
 	                /*
 	                        On modifie la Clef externe simple
 	                 */
                     $sql = "UPDATE ".$_REQUEST['curTable']." SET ".
-                    		$_SESSION['levels'][$_SESSION['nbLevels']]['fieldToUpdate']." = ".
+                    		$_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['fieldToUpdate']." = ".
                     		$_REQUEST['curId']." WHERE ".$_REQUEST['curTableKey']." = '".
-                    		$_SESSION['levels'][$_SESSION['nbLevels']]['curId']."'";
+                    		$_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['curId']."'";
 
 
                     /* On rï¿½rganise / rï¿½rdone */
@@ -1385,12 +1375,12 @@ class genAdmin {
 
 
             if(!$_POST['nextPage'] && !$_POST['prevPage']) {
-                    $_REQUEST['curId'] = $_SESSION['levels'][$_SESSION['nbLevels']]['curId'];
+                    $_REQUEST['curId'] = $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['curId'];
 
-                    $_SESSION['levels'][$_SESSION['nbLevels']] = "";
+                    $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']] = "";
                     $comingBack = 1;
 
-                    $_SESSION['nbLevels']--;
+                    $_SESSION[gfuid()]['nbLevels']--;
                     $_REQUEST['curTable'] = $_REQUEST['curTable'];
             } else {
                     $_REQUEST = $beforeRequest;
@@ -1474,7 +1464,7 @@ class genAdmin {
                 return "form";
        		}
 
-                                //return ($formsRep.$tabForms[$_REQUEST['curTable']]['pages'][$_REQUEST['curPage']]);
+            //return ($formsRep.$tabForms[$_REQUEST['curTable']]['pages'][$_REQUEST['curPage']]);
             else if ($_REQUEST['curTable']) {
             	if(in_array($_REQUEST['curTable'] , $_Gconfig['multiVersionTable'])) {
 	       			return ("searchv2");
@@ -1501,4 +1491,18 @@ class genAdmin {
 }
 
 
-?>
+function gfuid() {
+	
+	
+	if($_REQUEST['gfuid']) {
+		//debug($_REQUEST['gfuid']);
+		return $_REQUEST['gfuid'];
+	}
+	else {
+		
+		$_REQUEST['gfuid'] ="guid_". str_replace('.','',getmicrotime());//getmicrotime();//str_replace('.','',getmicrotime());
+		//debug($_REQUEST['gfuid']);
+		return $_REQUEST['gfuid'];
+	}
+	
+}

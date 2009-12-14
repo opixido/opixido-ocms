@@ -96,10 +96,12 @@ if(rubriqueIsAPage($form) || true ) {
 					$type = $type[0];
 				}
 				
+				
 				if($type == 'selectm') {
 					echo $sf->getSelect(array('id'=>$nom,'value'=>$vals,'selected'=>$defV[$nom]),true);					
 				} else
 				if($type == 'select') {
+					
 					echo $sf->getSelect(array('id'=>$nom,'value'=>$vals,'selected'=>$defV[$nom]));
 					
 				} else {
