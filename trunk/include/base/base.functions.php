@@ -1812,8 +1812,8 @@ function getUrlFromSearch($obj,$row) {
  * @param string $separator
  * @return string
  */
-function GetTitleFromRow($table,$row,$separator=" ") {
-   global $tabForms,$relations;
+function GetTitleFromRow($table,$row,$separator=" ",$html=false) {
+   global $tabForms,$relations,$uploadFields;
    $fields = getTabField($table);
 
    if(!is_array($tabForms[$table]['titre'])) {
@@ -1833,6 +1833,16 @@ function GetTitleFromRow($table,$row,$separator=" ") {
 			$row[$v] = nicetextdate($row[$v]).' '.nicetime($row[$v]);
 		}
 	
+		if($html && arrayInWord($uploadFields,$v)) {
+			
+			$gf = new genFile($table,$v,$row);
+			if($gf->isImage()) {
+				
+				$titre .= $gf->getThumbImgtag(40,40).$separator;
+				
+			}
+		}
+		else 		
 		if(!$fields[$v]) {
 			$titre .= getLgValue($v,$row).$separator;
 			
@@ -1840,9 +1850,11 @@ function GetTitleFromRow($table,$row,$separator=" ") {
 			$titre .= akev($row,$v).$separator;
 		}
     }
+    
+    
 
 
-     return $titre;
+    return substr($titre,0,-strlen($separator));
 }
 
 /**

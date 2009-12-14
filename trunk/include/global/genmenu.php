@@ -197,10 +197,12 @@ class genMenu{
 			$tpl->set('level',$this->level);
 			//debug(akev($value,'selected']);
 			$this->level++;
+			
 			if(is_array(akev($value,'sub'))) {
 				$tpl->set('sub',$this->gen(akev($value,'sub')));
 			}
-			else if(akev($value,'selected') && $this->conf['open_selected']) {
+			
+			else if(akev($value,'selected') && $this->conf['open_selected'] && $this->conf['max_open_selected']  >= $this->level) {
 				$sub = $this->site->g_url->recursRub(akev($value,'id'),1,1);
 				
 				$tpl->set('sub',$this->gen($sub));

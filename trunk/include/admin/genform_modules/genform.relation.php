@@ -64,9 +64,21 @@
 				if($_Gconfig['specialListing'][$fk_table][$this->table_name]) {
 					$result = $_Gconfig['specialListing'][$fk_table][$this->table_name]($this);
 				} else {
-					$sql = 'SELECT G.* FROM '.$fk_table.' AS G WHERE 1 ORDER BY G.' . $nomSql;
+					$sql = 'SELECT G.* FROM '.$fk_table.' AS G WHERE 1';
+					
+					global $_Gconfig;
+					
+					if(in_array($fk_table,$_Gconfig['versionedTable'])) {		
+						$sql .= ' AND ( G.'.VERSION_FIELD.' IS NULL  ) ';
+						
+					} 
+					else if(in_array($fk_table,$_Gconfig['multiVersionTable'])) {						
+						$sql .= ' AND G.'.MULTIVERSION_FIELD.' = '.getPrimaryKey($fk_table);								
+					}
+					$sql .= ' ORDER BY G.' . $nomSql.' ';
 					$result = GetAll( $sql );
 				}
+				
 			}
 
 
@@ -93,7 +105,7 @@
 
                 $thisValue = '';
 
-                $thisValue = truncate(GetTitleFromRow($fk_table,$row," "),100);
+                $thisValue = truncate(GetTitleFromRow($fk_table,$row," ",false),100);
 				
                 if ( strcmp( $this->tab_default_field[$name], $row[$clef] ) == 0  )
                     $this->addBuffer( '<option selected="selected" value="' . $row[$clef] . '">' . ( $thisValue ) . '</option>' );
@@ -104,7 +116,7 @@
         /* FIN DU SELECT */
         $this->addBuffer( '</select>' );
 
-		if(count($result) > 20) {
+		if(count($result) > 1) {
 			$this->addBuffer('
 			<script type="text/javascript">
 				selectToSearch("genform_'.$name.'");

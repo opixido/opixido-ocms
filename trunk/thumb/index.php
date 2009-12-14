@@ -9,6 +9,25 @@
 //                                                         ///
 //////////////////////////////////////////////////////////////
 
+
+
+$fCname = realpath('./cache').'/'.md5(urldecode($_SERVER['REQUEST_URI']));
+
+if(file_exists($fCname)) {
+
+	if(filemtime($fCname) >= filemtime($_REQUEST['src'])) {		
+		
+		header('Content-Disposition: inline; filename="'.basename($_REQUEST['src']).'"');
+		header('Content-type:image/jpeg');
+		header('X-Cache-Type:aggressive');
+		readfile($fCname);
+	
+		die();
+	}
+	
+}
+
+
 error_reporting(E_ALL & ~E_NOTICE);
 ini_set('display_errors', '1');
 ini_set('magic_quotes_runtime', '0');
@@ -589,6 +608,8 @@ if ($phpThumb->config_allow_parameter_file && $phpThumb->file) {
 
 } else {
 
+	$phpThumb->cache_filename = $fCname;
+	
 	phpthumb_functions::EnsureDirectoryExists(dirname($phpThumb->cache_filename));
 	if ((file_exists($phpThumb->cache_filename) && is_writable($phpThumb->cache_filename)) || is_writable(dirname($phpThumb->cache_filename))) {
 

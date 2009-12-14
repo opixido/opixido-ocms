@@ -64,7 +64,7 @@ img {
 	top:33px;
 	font-weight:normal;
 	font-size:12px;
-	display:none;
+
 }
 .logoa{
     width:420px;
@@ -1432,6 +1432,10 @@ table.relinv {
 }
 .ajaxselect {
 	position:relative;
+}
+
+.ajaxselect img {
+	vertical-align:middle;
 }
 
 .home h2 {

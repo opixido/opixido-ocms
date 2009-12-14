@@ -263,6 +263,24 @@ function GetOnlyEditableVersion($table, $aliase='') {
 
 }
 
+
+function GetOnlyVisibleVersion($table, $aliase='') {
+
+	global $multiVersionField,$_Gconfig;
+	if(strlen($aliase))
+			$aliase = $aliase.".";
+	if(in_array($table,$_Gconfig['versionedTable'])) {
+		
+		return ' AND ( '.$aliase.VERSION_FIELD.' IS NULL ) ';
+	} 
+	else if(in_array($table,$_Gconfig['multiVersionTable'])) {
+		
+		return ' AND '.$aliase.ONLINE_FIELD.' = "1"';
+				
+	}
+
+}
+
 function mymail($to,$sujet='',$text='',$headers='') {
 	mail($to,$sujet,$text,$headers);
 }

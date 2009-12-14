@@ -1405,41 +1405,46 @@ class genActionTranslate {
       if(file_exists($filename) && file_get_contents($filename) != '') {
      
       
-      $quers = importSqlFile($filename);
-      foreach($quers as $sql) {
-      	if(!DoSql($sql)) {
-      		  echo ("<p class=\"error\">Error at the line $linenumber: ". trim($dumpline)."</p>\n");
-	          echo ("<p>Query: ".trim(nl2br(htmlentities($query)))."</p>\n");
-	          echo ("<p>MySQL: ".mysql_error()."</p>\n");
-	          debug($query);
-      	}
-      }
-      
-      
-      $filename = gen_include_path.'/plugins/'.$this->row['plugin_nom'].'/datas.xml';
-     
-      if(file_exists($filename) && $x =  simplexml_load_file($filename)) {     				
-				
-		foreach($x as $table=>$v) {			
-			$tabFields = getTabField($table);
-			$sql = 'REPLACE '.$table .' SET ';
-			foreach($v as $champ=>$valeur) {
-				if($tabFields[$champ]) {
-					$sql .= (' '.$champ.' = '.sql($valeur).' ,');
-				}
-			}
-			DoSql(substr($sql,0,-1));
-		}
-		
-      }
-      
-      recheckTranslations();
-
-      dinfo('Fichier install.sql exécuté');
+	      $quers = importSqlFile($filename);
+	      foreach($quers as $sql) {
+	      	if(!DoSql($sql)) {
+	      		  echo ("<p class=\"error\">Error at the line $linenumber: ". trim($dumpline)."</p>\n");
+		          echo ("<p>Query: ".trim(nl2br(htmlentities($query)))."</p>\n");
+		          echo ("<p>MySQL: ".mysql_error()."</p>\n");
+		          debug($query);
+	      	}
+	      }
+	      
+	      
+	      
+	      
+	      recheckTranslations();
+	
+	      dinfo('Fichier install.sql exécuté');
       }
       else  {
           dinfo('Fichier "install.sql" inexistant ou vide.');
       }
+      
+      $filename = gen_include_path.'/plugins/'.$this->row['plugin_nom'].'/datas.xml';
+	     
+	      if(file_exists($filename) && $x =  simplexml_load_file($filename)) {     				
+			dinfo('Found datas.xml');
+			foreach($x as $table=>$v) {			
+				$tabFields = getTabField($table);
+				$sql = 'REPLACE '.$table .' SET ';
+				foreach($v as $champ=>$valeur) {
+					if($tabFields[$champ]) {
+						$sql .= (' '.$champ.' = '.sql($valeur).' ,');
+					}
+				}
+				
+				DoSql(substr($sql,0,-1));
+			}
+			
+	      } else {
+	      	dinfo('no datas.xml');
+	      }
        $sql ='UPDATE s_plugin SET plugin_installe=1, plugin_actif = 1 WHERE plugin_nom='.sql($this->row['plugin_nom']);
 	 $res = doSql($sql);
 

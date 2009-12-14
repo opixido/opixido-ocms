@@ -760,7 +760,7 @@ class genSearchV2 {
      * @return array liste de résultats MySQL
      */
 
-    function doFullSearch($searchTxt = '',$clauseSql='') {
+    function doFullSearch($searchTxt = '',$clauseSql='',$onlyEditable=true) {
     	
     	global $searchField,$relations,$tablerel,$_Gconfig;
     	
@@ -783,8 +783,10 @@ class genSearchV2 {
         
         if(in_array($table,$_Gconfig['multiVersionTable'])) {
         	$wheresql = ' WHERE 1 ';
-        } else {
+        } else if($onlyEditable) {
         	$wheresql = ' WHERE 1 '.GetOnlyEditableVersion($table,"T").' ';
+        } else {
+        	$wheresql = ' WHERE 1 '.GetOnlyVisibleVersion($table,"T").' ';
         }
         $wheresql .= $GLOBALS['gs_obj']->sqlCanRow($this->table).' ';
         $wheresql .= $clauseSql;

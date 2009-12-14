@@ -162,6 +162,11 @@ class simpleForm {
 					$s .= $this->getFile($field);
 					break;
 					
+				case 'date':
+					$s .= $this->getLabel($field);
+					$s .= $this->getDate($field);
+					break;					
+					
 				case 'checkbox':
 				
 					$s .= $this->getCheckbox($field);
@@ -212,9 +217,11 @@ class simpleForm {
 		//$s .= '</div>'."\n";
 		//$s .= '</fieldset>'."\n";
 		$s .= '</form>'."\n";
-
+//<script type="text/javascript" src="'.BU.'/js/jquery.validate.pack.js" ></script>
 		$s .= '
-				<script type="text/javascript" src="'.BU.'/js/jquery.validate.pack.js" ></script>
+				
+				<script type="text/javascript" src="'.BU.'/js/jquery-ui-cal.js" ></script>
+
 				<script type="text/javascript">
 		
 				$("#'.$this->id.'").submit(function(){
@@ -266,8 +273,33 @@ class simpleForm {
 
 	
 
-	function addDate($field) {
+	function getDate($field) {
 		
+		$s = '<input class="date"'.$this->classError($field).' type="text" name="'.$field['name'].'" id="'.$field['id'].'" />'."\n";
+		
+		$s .= '
+		<script type="text/javascript">
+		$(document).ready(
+		function(){
+			$("#'.$field['id'].'").datepicker({
+				showOn: "button",
+				buttonImage: "'.BU.'/admin/img/calendar.gif", 
+				buttonImageOnly: true,
+				changeMonth: true,
+				changeYear: true,
+				showButtonPanel: true,
+				dateFormat:"dd/mm/yy",
+				showAnim:"slideDown",
+				buttonText:'.alt(t('calendar')).'
+			})
+		}
+		);
+		
+		</script>
+		';
+		
+		return $s;
+		/*
 		$this->add('fieldset',$field['label'],'','',$field['id']);
 		
 		global $_locale;
@@ -287,6 +319,7 @@ class simpleForm {
 		$this->add('select',array_merge(array(''),range(1900,date('Y'))),t('sf_year'),$field['name'].'_y',$field['id'].'_y',$field['needed'],array($v[0]));			
 		
 		$this->add('endfieldset');
+		*/
 		
 	}
 	
@@ -674,6 +707,8 @@ class simpleForm {
 
 		if($this->submitAsImage && function_exists('getImgText')) {
 			$s = '<input class="submitimg" src="'.getImgTextSrc($field['value'],'submit').'" type="image" name="'.$field['name'].'" id="'.$field['id'].'" alt='.alt($field['value']).' />'."\n";
+		} else if($field['image']) {
+			$s = '<input class="submit" type="image" name="'.$field['name'].'" id="'.$field['id'].'" value='.alt($field['value']).' src='.alt($field['image']).'/>'."\n";
 		} else {
 			$s = '<input class="submit" type="submit" name="'.$field['name'].'" id="'.$field['id'].'" value='.alt($field['value']).' />'."\n";
 		}
@@ -772,14 +807,15 @@ class simpleForm {
 		if(is_array($value) && $this->isSubmited() && $_REQUEST[$name] && !is_array($_REQUEST[$name])) {
 			$selected = array($_REQUEST[$name]);
 		}
-		
+		/**
 		//debug($selected);
 		if($type == 'date') {
 			$this->addDate($field);
 			//return;
 		}
+		*/
 		$this->fields[$id] = array('type'=>$type,'value'=>$value,'label'=>$label,'name'=>$name,'id'=>$id,'needed'=>$needed,'selected'=>$selected,'disabled'=>$disabled);
-
+		return $this->fields[$id];
 	}
 
 
@@ -800,4 +836,3 @@ class simpleForm {
 }
 
 
-?>
