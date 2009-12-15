@@ -11,10 +11,7 @@
 - PHP Version: 5.2.6
 -->
 
-<!--
-- Database: 'ecafe'
--->
-<ecafe>
+<bdd>
   <!-- Table s_trad -->
     <s_trad>
         <trad_id>la_body_confirm</trad_id>
@@ -476,4 +473,8 @@ To access the Linux Technical Community section, you must register</trad_uk>
         <trad_de>Danke, Ihre Registrierung wurde bestätigt. Sie können sich nun untenstehend verbinden.</trad_de>
         <fk_plugin_id></fk_plugin_id>
     </s_trad>
-</ecafe>
+    <s_admin_trad>
+        <admin_trad_id>cp_txt_e_utilisateur</admin_trad_id>
+        <admin_trad_fr>Bonjour, </admin_trad_fr>
+    </s_admin_trad>  	
+</bdd>
