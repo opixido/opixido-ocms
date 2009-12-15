@@ -72,5 +72,3 @@ CREATE TABLE IF NOT EXISTS `e_utilisateur_groupe` (
 
 
 ALTER TABLE `s_rubrique` ADD `privee` TINYINT(1)  NOT NULL DEFAULT '0';
-
-ALTER TABLE `e_utilisateur` ADD `utilisateur_valide` TINYINT( 1 ) NOT NULL ;
