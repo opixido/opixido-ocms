@@ -22,6 +22,9 @@
 #
 
 
+/**
+ * Gestion des fichiers
+ */
 class genFile {
 
 	/**
