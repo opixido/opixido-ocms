@@ -51,22 +51,39 @@ class genParagraphes {
 			$curpara++;
 			
 			$html = '';
-			
+
 			/**
-			 *  Creation du template 
+			 *  Creation du template
 			 **/
 			$tpl = new genTemplate(true);
-			
+
 			if(ake($_REQUEST,'ocms_mode') && $para['para_type_template_'.$_REQUEST['ocms_mode']])
 				$tpl->setTemplate($para['para_type_template_'.$_REQUEST['ocms_mode']]);
 			else
 				$tpl->setTemplate(''.$para['para_type_template']);
-				
+
+
+            
+            if($para['para_type_gabarit']) {
+               
+                if($para['para_type_plugin']) {
+                    $GLOBALS['gb_obj']->includeFile($para['para_type_gabarit'].'.php','plugins/'.$para['para_type_plugin']);
+                }
+                else {
+                    $GLOBALS['gb_obj']->includeFile($para['para_type_gabarit'].'.php','bdd');
+                }
+
+                $paraObj = new $para['para_type_gabarit']($para,$tpl);
+                
+            }
+
+
 			/**
 			 * Contenu
 			 */
 			$conte = GetLgValue('paragraphe_contenu', $para);		
-			
+
+
 
 			$tpl->setVar('titre', GetLgValue('paragraphe_titre', $para));
 			$tpl->setVar('texte', ($conte));
