@@ -9,7 +9,14 @@
 
 class genRecord {
 	
-	
+
+    /**
+     * On force l'autorisation de suppression ?
+     * @var bool
+     */
+    public $forceDeletionPrivilege = false;
+
+
 	
     function genRecord($table, $id,$fromGenAdmin=0)
     {
@@ -378,7 +385,7 @@ class genRecord {
 
         if (($id > 0 || $id != '') && $id != 'new') {
 
-            if (!$this->gs->can('del', $this->table, '', $id)) {
+            if (!$this->forceDeletionPrivilege && !$this->gs->can('del', $this->table, '', $id) ) {
                 $this->gs->showError();
             }
 
