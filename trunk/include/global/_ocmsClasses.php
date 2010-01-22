@@ -39,6 +39,7 @@ class ocmsPlugin {
 	function __construct($site) {
 		
 		$this->site = $site;
+		$this->plugins = $site->plugins;
 		
 	}
 	
