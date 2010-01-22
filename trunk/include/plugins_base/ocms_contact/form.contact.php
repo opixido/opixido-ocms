@@ -9,6 +9,6 @@ $row = getGabaritByClass('genContact');
 if($form->tab_default_field['fk_gabarit_id'] == $row['gabarit_id']) {
 	$form->gen('fk_contact_id');
 	$form->gen('fk_contact_field_id');
+
 }
 
-?>

@@ -56,3 +56,6 @@ VALUES (
 NULL , 'Formulaire de contact', '', '', '', '0', 'genContact', '', '', '', '0','ocms_contact'
 );
 
+
+ALTER TABLE `s_paragraphe` ADD `fk_contact_id` INT NOT NULL ;
+
