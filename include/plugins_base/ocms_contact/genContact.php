@@ -33,19 +33,21 @@ class genContact {
 		 * Default CSS
 		 */		
 		$this->site->g_headers->addCss('contact.css');
+		$this->site->g_headers->addCss(BU.'/css/overcast/jquery-ui-1.7.2.custom.css');
 
 		
 		/**
 		 * No longer used
 		 * Everything is in sub tables
 		 */
-		$this->params = SplitParams($params,"\n","=");
+		$this->params = SplitParams($params,";","=");
 	
 		/**
 		 * New Form
 		 */
 		$this->form = new simpleForm('./','post','contact_form');		
-
+		$this->form->postLabel = '';
+       // $this->form->submitAsImage = BU.'/img/envoyer_'.LG.'.gif';
 		/**
 		 * On selectionne les champs supplémentaires à afficher
 		 */
@@ -67,15 +69,19 @@ class genContact {
 		/**
 		 * Champ email obligatoire
 		 */
-		$this->form->add('email',$_REQUEST['c_email'],t('c_email'),'c_email',false,true);
+		
+		if(isTrue($this->params['contact_show_email']))  {
+			$this->form->add('email',$_REQUEST['c_email'],t('c_email'),'c_email',false,true);
+		}
 
 		
 		
 		/**
 		 * Champ de commentaire, obligatoire
 		 */
-		$this->form->add('textarea',$_REQUEST['c_comment'],t('c_comment'),'c_comment',false,true);
-
+		if(isTrue($this->params['contact_show_comment']))  {
+			$this->form->add('textarea',$_REQUEST['c_comment'],t('c_comment'),'c_comment',false,true);
+		}
 		
 		/**
 		 * Si on utilise le captcha on le rajoute ...
@@ -101,7 +107,9 @@ class genContact {
 		 * Boutons Submit 
 		 */
 		//$this->form->add('submit',t('c_submit'),'','contact_submit','contact_submit');
-		$this->form->add('submit',t('c_submit'),'','contact_submit','contact_submit');
+		$s = $this->form->add('submit',t('c_submit'),'','contact_submit','contact_submit');
+       // debug( $this->form->fields['contact_submit']);
+        $this->form->fields['contact_submit']['image'] = BU.'/img/envoyer_'.LG.'.gif';
 			
 
 	
@@ -333,8 +341,6 @@ class genContact {
 	 */
 	private function sendMailContact(){	
 		
-
-
 		/**
 		 * On sélectionne la personne
 		 */
@@ -346,6 +352,7 @@ class genContact {
 		 * bizarre mais passons ...
 		 */
 		if(!count($row)) {
+			dinfo($row);
 			dinfo('ERROR WHILE SENDING NO EMAIL FOUND '.$_REQUEST['c_qui']);
 			return false;
 		}
@@ -388,7 +395,7 @@ class genContact {
 		 * PhpMailer
 		 */
 		$m = includeMail();
-		
+		$m->isHtml(true);
 		/**
 		 * PhpMailer Settings
 		 */
@@ -397,6 +404,8 @@ class genContact {
 		/**
 		 * On rajoute les champs
 		 */
+		
+		$content .= '<table style="border-collapse:collapse;">';
 		foreach($this->champs as $champ) {			
 			if($champ['contact_field_type'] == 'file') {
 				if($_FILES[$champ['contact_field_name']]) {
@@ -405,11 +414,11 @@ class genContact {
 			} else if($champ['contact_field_type'] == 'captcha_question') {
 				// nothing to do
 			}else {
-				$content .= "\n".getLgValue('contact_field_nom',$champ).' :'."\t\t".$_REQUEST[$champ['contact_field_name']];			
+				$content .= "<tr><th style='border:1px solid;text-align:right;padding:3px'>".getLgValue('contact_field_nom',$champ).'</th><td style="border:1px solid;padding:3px">'."".$_REQUEST[$champ['contact_field_name']].'</td></tr>';			
 			}
 		} 
 		
-		$content .= "\n\n".$_REQUEST['c_comment'];
+		$content .= "</table>".$_REQUEST['c_comment'];
 		
 		
 		

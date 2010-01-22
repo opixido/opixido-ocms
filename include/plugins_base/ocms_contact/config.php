@@ -3,7 +3,7 @@
 /**
  * Variables de conf
  */
-global $tabForms,$uploadFields,$_Gconfig,$relinv,$orderFields,$admin_trads, $gs_roles;
+global $tabForms,$uploadFields,$_Gconfig,$relinv,$orderFields,$admin_trads, $gs_roles,$relations;
 
 /**
  * Fichier qu'on n'accepte pas.
@@ -63,4 +63,29 @@ $_Gconfig['duplicateWithRubrique'][] = 'plug_contact';
 $_Gconfig['duplicateWithRubrique'][] = 'plug_contact_field';
 
 
-?>
+$relations['s_paragraphe']['fk_contact_id'] = "plug_contact";
+
+$tabForms['s_paragraphe']['pages'][0] = array($tabForms['s_paragraphe']['pages'][0],'../plugins/ocms_contact/form.paracontact.php');
+//$tabForms['s_paragraphe']['pages']['contact'] = array('../plugins/ocms_contact/form.contact.php');
+
+$_Gconfig['specialListing']['plug_contact']['s_paragraphe'] = 'listContacts';
+
+function listContacts() {
+    
+    $sql = 'SELECT C.*, R.rubrique_titre_fr AS titre1 , R2.rubrique_titre_fr AS titre2
+                    FROM plug_contact AS C , s_rubrique AS R, s_rubrique AS R2
+                    WHERE C.fk_rubrique_id = R.rubrique_id
+                    AND R.fk_rubrique_id = R2.rubrique_id
+                    AND R.rubrique_etat= "redaction"
+                    ORDER BY R2.rubrique_id , R.rubrique_id ASC, contact_ordre ASC
+                    ';
+
+    $res = getAll($sql);
+
+    foreach($res as $k=>$row) {
+        $res[$k]['contact_titre_fr'] = $row['titre2'].' => '.$row['titre1'].' => '.$row['contact_titre_fr'];
+    }
+
+    return $res;
+
+}
