@@ -57,7 +57,7 @@ class genLocks {
 		$sql = 'INSERT INTO s_lock
 			 (fk_admin_id,lock_table,lock_id,lock_time)
 			 VALUES
-			 ("'.$this->gs->adminid.'" , "'.mes($this->table).'", "'.mes($this->id).'",UNIX_TIMESTAMP())
+			 ('.sql($this->gs->adminid).' , "'.mes($this->table).'", "'.mes($this->id).'",UNIX_TIMESTAMP())
 			 ';
 
 		return TrySql($sql);
@@ -80,7 +80,7 @@ class genLocks {
 		$this->row = $row;
 
 		$sql = 'DELETE from s_lock
-			 WHERE fk_admin_id = "'.$this->gs->adminid.'"
+			 WHERE fk_admin_id = '.sql($this->gs->adminid).'
 			 AND lock_table = "'.mes($this->table).'"
 			 AND  lock_id = "'.mes($this->id).'" ';
 
@@ -93,7 +93,7 @@ class genLocks {
 		/*debug('Unset All locks : ');
 		return;*/
 
-		$sql = 'DELETE FROM s_lock WHERE fk_admin_id = "'.$this->gs->adminid.'"  ';
+		$sql = 'DELETE FROM s_lock WHERE fk_admin_id = '.sql($this->gs->adminid).' ';
 
 		return DoSql($sql,'Suppression des locks');
 	}
@@ -109,7 +109,7 @@ class genLocks {
 			WHERE lock_table = "'.mes($this->table).'"
 			AND lock_id = "'.mes($this->id).'"
 			AND lock_time >  '.(time() - (int)GetParam('lock_timeout')).'
-			AND fk_admin_id <> '.$this->gs->adminid.'';
+			AND fk_admin_id <> '.sql($this->gs->adminid).'';
 
 
 		$res = GetAll($sql);
