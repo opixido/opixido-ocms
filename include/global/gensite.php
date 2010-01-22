@@ -57,7 +57,15 @@ class genSite {
 	 */
 	public $g_rubrique ;
 
-
+	
+	/**
+	 * La page en cours a t'elle été trouvée ?
+	 * 
+	 * @var boolean
+	 */
+	public $isCurrent404 = false;
+	
+	
 	/**
 	 * Génération du site
 	 * Gestion des headers / footer / rubrique  / menu / url
