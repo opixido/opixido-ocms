@@ -17,7 +17,7 @@ class genUrl{
 	public $tabUrl;		
 	
 	private $lg;			//La langue en cours de la page
-	private $roadSup;		//Le tableau gerant les rubriques qui ne sont pas dans la bdd
+	public $roadSup;		//Le tableau gerant les rubriques qui ne sont pas dans la bdd
 	private $otherLgParamsUrl;
 	public $paramsUrl = array();
 	public $topRubId;
@@ -280,44 +280,53 @@ class genUrl{
 		
 		$templg = $this->parsedUrl[1];
 		
-				
-		/**
-		 * Si on est dans une seconde langue ( /fr-de/ )
-		 */
-		if( strpos($templg,'-')) {
-			$templg = explode('-',$templg);
-			$this->lg = $templg[0];
-			if(!in_array($this->lg,$_Gconfig['LANGUAGES'])) {
-				$this->lg = $this->getBrowserLang();
-			}
-			$this->tradlg = $templg[1];
-			define('TRADLG',$this->tradlg);
+		global $_Gconfig;
+		if($_Gconfig['onlyOneLgForever']) {
 			
+			define("LG",$_Gconfig['LANGUAGES'][0]);
+			$this->lg = LG;
+			mylocale(LG);
+			define('TRADLG',false);
 			
-		} else if(count($this->parsedUrl) > 1 && $templg) {
-			
+		} else {
 			/**
-			 * Si on a a priori la langue en paramètres
+			 * Si on est dans une seconde langue ( /fr-de/ )
 			 */
-				$this->lg = $templg;
-			
+			if( strpos($templg,'-')) {
+				$templg = explode('-',$templg);
+				$this->lg = $templg[0];
 				if(!in_array($this->lg,$_Gconfig['LANGUAGES'])) {
 					$this->lg = $this->getBrowserLang();
 				}
+				$this->tradlg = $templg[1];
+				define('TRADLG',$this->tradlg);
 				
-				define("LG",$this->lg);
+				
+			} else if(count($this->parsedUrl) > 1 && $templg) {
+				
+				/**
+				 * Si on a a priori la langue en paramètres
+				 */
+					$this->lg = $templg;
+				
+					if(!in_array($this->lg,$_Gconfig['LANGUAGES'])) {
+						$this->lg = $this->getBrowserLang();
+					}
+					
+					define("LG",$this->lg);
+					mylocale($this->lg);
+					define('TRADLG',false);
+				
+				
+			} else {
+				
+				$this->lg = empty($this->lg) ? $this->getBrowserLang() : $this->lg;
+				
+				define("LG",$this->lg);				
 				mylocale($this->lg);
 				define('TRADLG',false);
-			
-			
-		} else {
-			
-			$this->lg = empty($this->lg) ? $this->getBrowserLang() : $this->lg;
-			
-			define("LG",$this->lg);				
-			mylocale($this->lg);
-			define('TRADLG',false);
-			
+				
+			}
 		}
 		
 		
@@ -668,19 +677,22 @@ class genUrl{
 	 */
 	function trimTab($tab){
 		$newTab = array();
-		$cpt = 1;
-
+		global $_Gconfig;
+		if($_Gconfig['onlyOneLgForever']) {
+			$cpt = 2;
+		} else {
+			$cpt = 1;
+		}
 		foreach($tab as  $value){
 
 			if(!empty($value)) {
 				if($cpt>1) {
-					$newTab[$cpt-1] = niceName($value);
-					
+					$newTab[$cpt-1] = niceName($value);					
 				}
 				$cpt++;
 			}
 		}
-
+		
 		return $newTab;
 	}
 
@@ -826,8 +838,10 @@ class genUrl{
 			$url = ''.GetParam('fake_folder_param').'/';
 			foreach($params as $k => $v) {
 				if(is_array($v)) {
+					
 					$k = $k.'__list';
-					$v = implode('_-_',$v);
+					//$v = implode('_-_',$v);
+					$v = serialize($v);
 				}
 				$url = path_concat($url,$k);
 				if($v) {
@@ -946,6 +960,10 @@ class genUrl{
 		
 		$url = '';
 		$key = $rubId;
+		
+		if($_Gconfig['onlyOneLgForever']) {
+			$lg = '';
+		}
 		
 		/**
 		 * Si on ne demande pas la page racine
