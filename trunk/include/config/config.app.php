@@ -43,6 +43,9 @@ $_Gconfig['titre'] = '';
  */
 $_Gconfig['LANGUAGES'] = array('fr');
 $_Gconfig['ADMIN_LANGUAGES'] = array('fr');
+
+$_Gconfig['onlyOneLgForever'] = true;
+
 define('ADMIN_LG_DEF','fr');
 
 /**
