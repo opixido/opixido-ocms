@@ -39,7 +39,7 @@ class ocmsPlugin {
 	function __construct($site) {
 		
 		$this->site = $site;
-		$this->plugins = $site->plugins;
+		$this->plugins = &$site->plugins;
 		
 	}
 	
@@ -211,7 +211,7 @@ class baseGen extends baseObj {
 		$this->site = $site;
 		$this->params = SplitParams($params,';','=');
 		
-		$this->plugins = $site->plugins;
+		$this->plugins = &$site->plugins;
 		if(method_exists($this,'ocms_defaultParams')) {
 			$defParams = $this->ocms_defaultParams();
 			foreach($defParams as $k=>$v) {
