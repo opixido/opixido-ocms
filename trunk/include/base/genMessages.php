@@ -53,6 +53,8 @@ class genMessages {
 			$this->genCss();
 			p('
 			<div id="genMessages">
+			<div class="top">
+			<div class="middle">
 			');
 			foreach($this->messages as $level=>$messages) {
 				if(count($messages)) {
@@ -63,7 +65,7 @@ class genMessages {
 
 				}
 			}
-			p('</div>');
+			p('</div><div  class="bottom"></div></div>');
 		}
 	}
 	
