@@ -768,6 +768,9 @@ function debug() {
 		$txt .= '<br/><span style="font-weight:normal !important">'.basename($backt[1]['file']).' : '.$backt[1]['line'].' : '.$backt[1]['function'].'</span>';
 		$txt .= '<br/><span style="font-weight:normal !important">'.basename($backt[2]['file']).' : '.$backt[2]['line'].' : '.$backt[2]['function'].'</span>';
 		$txt .= '<br/><span style="font-weight:normal !important">'.basename($backt[3]['file']).' : '.$backt[3]['line'].' : '.$backt[3]['function'].'</span>';
+		$txt .= '<br/><span style="font-weight:normal !important">'.basename($backt[4]['file']).' : '.$backt[4]['line'].' : '.$backt[3]['function'].'</span>';
+		
+		//$txt .= var_export($backt,true);
 	}
 
 	if(is_object($genMessages))  {
@@ -2168,6 +2171,7 @@ function getRubriqueByGabarit ($gab) {
 					';
 
 	$row = GetSingle($sql);
+	
 	if(!count($row)) {
 		$sql = 'SELECT R.rubrique_id
 					FROM s_rubrique AS R , s_gabarit AS G
@@ -2178,6 +2182,7 @@ function getRubriqueByGabarit ($gab) {
 					';
 		$row = GetSingle($sql);
 	}
+	
 	return $row['rubrique_id'];
 }
 
@@ -2558,4 +2563,20 @@ function getObjUrl() {
 		
 	}
 	
+}
+
+
+function br2nl($string){
+  $return=eregi_replace('<br[[:space:]]*/?'.
+    '[[:space:]]*>',"\n ",$string);
+  $return=str_replace('<p'," \n <p",$return);    
+  $return=str_replace('<div'," \n <div",$return);   
+
+  return $return;
+} 
+
+function myStripTags($str,$allow='') {
+	$str = br2nl($str);
+	$str = strip_tags($str,$allow);
+	return $str;
 }
