@@ -17,8 +17,7 @@ class row {
 			$this->row = getRowAndRelFromId($table,$this->id);			
 		}
 		
-		$this->tabField = getTabField($this->table);
-		
+		$this->tabField = getTabField($this->table);		
 		
 	}
 	
@@ -71,6 +70,17 @@ class row {
 		 * Raw value
 		 */
 		} else {
+			
+			$type = $this->tabField[$field]->type;
+			
+			if($type == 'date' || $type == 'datetime') {
+				
+				return new Date($this->row[$field]);
+			}
+			
+			if(substr($type,0,4) == 'set(') {
+				return explode(',',$this->row[$field]);
+			}
 			
 			return $this->row[$field];
 			
