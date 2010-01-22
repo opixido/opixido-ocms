@@ -165,8 +165,10 @@ class genMenu{
 			if(!empty($rootId)) {
 				if($this->conf['use_images']) {				
 					$value['titre'] = $this->genImageMenu($value['titre'],$this->nom_menu,$cpt,$value['selected']).'';
-				} else {
-					$value['titre'] = ''.$value['titre'].'';					
+                                } else if($this->conf['use_premade_images']) {
+                                        $value['titre'] = '<img src="'.BU.'/img/menu_'.$this->nom_menu.'/'.$cpt.($value['selected'] ? '-roll':'').'.png" alt='.alt($value['titre']).' />';
+                                } else {
+					$value['titre'] = $value['titre'].'';					
 				}
 			}
 			
