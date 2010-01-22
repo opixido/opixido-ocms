@@ -1,17 +1,33 @@
 <?php
+#
+# This file is part of oCMS.
+#
+# oCMS is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# oCMS is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with oCMS. If not, see <http://www.gnu.org/licenses/>.
+#
+# @author Celio Conort / Opixido
+# @copyright opixido 2009
+# @link http://code.google.com/p/opixido-ocms/
+# @package ocms
+#
 
-
-
-
-/*******************************************************************
- * Classe de verification des droits d'acces a tous les elements
- 
- 
- *****************/
 
 if(!class_exists('genSecurity'))
 {
-	
+
+/**
+ * Gestion des autorisations d'accès
+ */
 class genSecurity {
 
 
@@ -38,7 +54,11 @@ class genSecurity {
         global $gs_roles;
 		
 		/* Initialisation */
-		$this->crypto = new crypto(crypto_cipher,crypto_mode,crypto_key);
+
+		//$this->crypto = new crypto(crypto_cipher,crypto_mode,crypto_key);
+
+        $this->crypto = new Crypt_AES();
+        $this->crypto->setKey(crypto_key);
 
 
         $this->uniqueId = rand();
@@ -65,7 +85,7 @@ class genSecurity {
         $sql = 'SELECT admin_id FROM s_admin WHERE 1 LIMIT 0,1';
     	$row = GetSingle($sql);
 
-    	
+
 
         if($_POST['gs_adminpassword']) {
            $_SESSION['gs_adminpassword'] = $this->adminpassword = $this->encrypt($_POST['gs_adminpassword']);
