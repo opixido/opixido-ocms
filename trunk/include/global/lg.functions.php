@@ -392,7 +392,7 @@ function getLgValue($k,$tab,$addspan='') {
 	/**
 	 * Si on l'a dans la langue normale
 	 */
-	if(ake($tab,$k.'_'.$curLg) && strlen(trim(strip_tags($tab[$k.'_'.$curLg])))) {
+	if(ake($tab,$k.'_'.$curLg) && strlen(trim(strip_tags($tab[$k.'_'.$curLg],'<object><img><video><audio><hr>')))) {
 
 		if($addspan) {
 
