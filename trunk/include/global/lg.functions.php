@@ -41,7 +41,7 @@ function addTranslations($table,$id,$lg){
 						("'.$table.'","'.$id.'","'.$field.'","'.addmyslashes($lg).'","")');
 
 		}
-
+ 
 }
 
 /**
@@ -392,7 +392,7 @@ function getLgValue($k,$tab,$addspan='') {
 	/**
 	 * Si on l'a dans la langue normale
 	 */
-	if(ake($tab,$k.'_'.$curLg) && strlen(trim(strip_tags($tab[$k.'_'.$curLg],'<object><img><video><audio><hr>')))) {
+	if(ake($tab,$k.'_'.$curLg) && strlen(trim(strip_tags($tab[$k.'_'.$curLg])))) {
 
 		if($addspan) {
 
@@ -798,3 +798,25 @@ function mystrftime($format,$timestamp=0) {
 			return strftime($format,$timestamp);
 		}
 }
+
+function strftimeloc($format,$timestamp=0) {
+	global $_locale;
+		if($timestamp == 0)
+			$timestamp = time();
+
+		@setlocale($GLOBALS['CURLOCALE']);
+
+		$tab = $_locale[LG] ? $_locale[LG] : $_locale[LG_DEF];
+
+        $moisnum = ((int)date('m',$timestamp))-1;
+        $format = str_replace('%B',$tab['months_long'][$moisnum],$format);
+        $weekday = ((int)date('N',$timestamp));
+        if($weekday == 7)  {
+            $weekday = 0;
+        }
+        $format = str_replace('%A',$tab['weekdays_long'][$weekday],$format);
+
+        return strftime($format,$timestamp);
+		//}
+}
+
