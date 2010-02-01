@@ -85,7 +85,7 @@ class Date
 
 	function toString( $format )
 	{
-		return strftime( $format, $this->getTimestamp() );
+		return strftimeloc( $format, $this->getTimestamp() );
 	}
 	
 	function __tostring() {
@@ -98,7 +98,7 @@ class Date
 	 */
 	function format( $format, $timestamp )
 	{
-		return strftime( $format, $timestamp );
+		return strftimeloc( $format, $timestamp );
 	}
 
 /**************************************************** GETTERS ****/
