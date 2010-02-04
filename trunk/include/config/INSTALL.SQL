@@ -145,7 +145,7 @@ CREATE TABLE IF NOT EXISTS  `s_para_type` (
   `para_type_use_txt` tinyint(1) NOT NULL default '1',
   `para_type_use_link` tinyint(1) NOT NULL default '0',
   `para_type_gabarit` VARCHAR( 64 ) NOT NULL ,
-  `para_type_plugin` VARCHAR( 64 ) NOT NULL 
+  `para_type_plugin` VARCHAR( 64 ) NOT NULL ,
   PRIMARY KEY  (`para_type_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8  ;
 
