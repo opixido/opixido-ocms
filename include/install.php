@@ -193,7 +193,7 @@ class genInstall {
 			
 			$rubMasquee = InsertId();
 			
-			DoSql('INSERT INTO `s_para_type` VALUES ("1", "Titre + texte", "<h2><'.'?=$this->get(\'titre\')?'.'></h2>\r\n<div class=\'para\'><'.'?=$this->get(\'texte\')?'.'></div>\r\n", "","", 0, 0, 0, 1, 0);');
+			DoSql('INSERT INTO `s_para_type` VALUES ("1", "Titre + texte", "<h2><'.'?=$this->get(\'titre\')?'.'></h2>\r\n<div class=\'para\'><'.'?=$this->get(\'texte\')?'.'></div>\r\n", "","", 0, 0, 0, 1, 0, "", "");');
 			$paraType = InsertId();
 			
 			
