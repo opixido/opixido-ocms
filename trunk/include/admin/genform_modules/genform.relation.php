@@ -116,7 +116,7 @@
         /* FIN DU SELECT */
         $this->addBuffer( '</select>' );
 
-		if(count($result) > 1) {
+		if(count($result) > 30 ) {
 			$this->addBuffer('
 			<script type="text/javascript">
 				selectToSearch("genform_'.$name.'");
