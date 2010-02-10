@@ -37,7 +37,7 @@ class genBase {
 	private $cacheLoadedFiles = array();
 
 	public function __construct() {
-
+		ini_set('short_open_tags','on');
 		$this->getBasePath();
 
 	}
