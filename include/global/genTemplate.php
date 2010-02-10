@@ -197,15 +197,13 @@ class genTemplate {
 	public function setGFImg($nom,$table,$champ,$row,$alt='') {
 		
 		$this->imgs[$nom] = array();
-		$gf = new genFile($table,$champ,$row[getPrimaryKey($table)],$row,true,!ake($row,$champ));
+		$gf = new genFile($table,$champ,$row);
 		
 		$this->imgs[$nom]['src'] = $gf->getWebUrl();
 		if(!strlen($alt))
 			$alt = "";
 		$this->imgs[$nom]['alt'] = $alt;
-		$this->imgs[$nom]['gf'] = $gf;
-		
-			
+		$this->imgs[$nom]['gf'] = $gf;			
 		
 	}	
 	
@@ -347,6 +345,10 @@ class genTemplate {
 			
 		if(!$this->imgs[$nom]['src']) {
 			return '';
+		}
+		
+		if($this->imgs[$nom]['gf']) {
+			return $this->imgs[$nom]['gf']->getThumbUrl($w,$h);
 		}
 		return THUMBPATH.'?src='.$this->imgs[$nom]['src'].'&amp;w='.$w.'&amp;h='.$h.'&amp;f='.substr($this->imgs[$nom]['src'],-3).'&amp;q='.$this->q.''.$add;
 	}	
