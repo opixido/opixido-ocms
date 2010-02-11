@@ -1084,6 +1084,10 @@ class phpthumb {
 	}
 
 	function ImageMagickCommandlineBase() {
+		global $PHPTHUMB_CONFIG['prefer_imagemagick'];
+		if(!$PHPTHUMB_CONFIG['prefer_imagemagick']) {
+			return false;
+		}
 		static $commandline = null;
 		if (is_null($commandline)) {
 			$commandline = (!is_null($this->config_imagemagick_path) ? $this->config_imagemagick_path : '');
@@ -1135,7 +1139,10 @@ class phpthumb {
 	}
 
 	function ImageMagickVersion($returnRAW=false) {
-		return 0;
+		global $PHPTHUMB_CONFIG['prefer_imagemagick'];
+		if(!$PHPTHUMB_CONFIG['prefer_imagemagick']) {
+			return false;
+		}
 		static $versionstring = null;
 		if (is_null($versionstring)) {
 			$commandline = $this->ImageMagickCommandlineBase();
