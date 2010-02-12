@@ -243,7 +243,7 @@ function ajaxSaveValue(obj,table,champ,id) {
 	if(obj.value) {
 		v = obj.value;
 	} else {
-		v = obj;
+		v = '';
 	}
 	//v = espace(v).replace(new RegExp( "\\+", "g" ), "%2B" );
 
