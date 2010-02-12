@@ -9,7 +9,11 @@ function arSaveValue(obj,table,champ,id,curtable) {
 	else {
 		v = obj;
 	}
-
+	
+	//v = espace(v).replace(new RegExp( "\\+", "g" ), "%2B" );
+	$.post("index.php", { xhr: "ajaxForm", table: table, champ : champ , id : id ,save : v} );
+	
+	return;
 	url = "index.php?xhr=ajaxRelinv&table="+table+"&field="+champ+"&id="+id+"&save="+v+"&curtable="+curtable;
 	//alert(url);
 	XHR(url);
@@ -212,7 +216,7 @@ function ajaxActionUrl(action,table,id,params) {
 	return url;
 }
 			
-			function serialize( mixed_value ) {
+function serialize( mixed_value ) {
     // Returns a string representation of variable (which can later be unserialized)  
     // 
     // version: 906.1807

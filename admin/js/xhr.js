@@ -27,13 +27,15 @@ function handler_menuArbo(html) {
 }
 
 function XHR_editTrad(obj) {
-	XHR('index.php?xhr=editTrad&nom='+obj.name+'&valeur='+$(obj).val(),'','','handler_editTrad(http.responseText)',obj);
+	//v = escape($(obj.val())).replace(new RegExp( "\\+", "g" ), "%2B" );
+
+	$.post("index.php", { xhr: "editTrad", nom: obj.name , valeur : $(obj).val() });
+	
+	
+	//XHR('index.php?xhr=editTrad&nom='+obj.name+'&valeur='+$(obj).val(),'','','handler_editTrad(http.responseText)',obj);
+	
 	obj.style.display = "none";
 
-}
-
-function handler_editTrad(resp) {
-		
 }
 
 lastChampRel= '';
@@ -240,13 +242,14 @@ function checkScripts(obj) {
 function ajaxSaveValue(obj,table,champ,id) {
 	if(obj.value) {
 		v = obj.value;
-	}
-	else {
+	} else {
 		v = obj;
 	}
-	
-	var url = "index.php?xhr=ajaxForm&table="+table+"&champ="+champ+"&id="+id+"&save="+v+"&";
-	XHR(url);
+	//v = espace(v).replace(new RegExp( "\\+", "g" ), "%2B" );
+
+	$.post("index.php", { xhr: "ajaxForm", table: table, champ : champ , id : id ,save : v} );
+	//var url = "index.php?xhr=ajaxForm&table="+table+"&champ="+champ+"&id="+id+"&save="+v+"&";
+	//XHR(url);
 }
 
 
