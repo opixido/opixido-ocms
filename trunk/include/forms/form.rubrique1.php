@@ -146,7 +146,10 @@ if(rubriqueIsAPage($form) || true ) {
 				}
 				
 				for ( p in window.FieldsToTech) {
-					gid(window.FieldsToTech[p]).onchange = updateFieldsToTech;
+					o = gid(window.FieldsToTech[p]);
+					if(o) {
+						o.onchange = updateFieldsToTech;
+					}
 				}
 						
 			</script>
