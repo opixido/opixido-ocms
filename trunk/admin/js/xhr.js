@@ -242,7 +242,7 @@ function checkScripts(obj) {
 function ajaxSaveValue(obj,table,champ,id) {
 	if(obj.value) {
 		v = obj.value;
-	} else if( typeOf obj == 'string') {
+	} else if( typeof obj == 'string') {
 		v = obj;
 	} else {
 		v = '';
