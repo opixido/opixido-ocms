@@ -247,7 +247,6 @@ function ajaxSaveValue(obj,table,champ,id) {
 	} else {
 		v = '';
 	}
-	//v = espace(v).replace(new RegExp( "\\+", "g" ), "%2B" );
 
 	$.post("index.php", { xhr: "ajaxForm", table: table, champ : champ , id : id ,save : v} );
 	//var url = "index.php?xhr=ajaxForm&table="+table+"&champ="+champ+"&id="+id+"&save="+v+"&";
