@@ -23,6 +23,7 @@ class genXhrAdmin {
 		if(!$this->gs->isLogged()) {
 			die();			
 		}
+		
         $this->field = strstr($_REQUEST['field'],"_-_") ? explode("_-_",$_REQUEST['field']) : $_REQUEST['field'];
         if(!$this->field) {
         	$this->field = $_SESSION['lastUsedField'];
@@ -112,12 +113,59 @@ class genXhrAdmin {
     				
     			case 'reorderRelinv';
     				$this->reorderRelinv();
+    				
+    			case 'autocompletesearch':
+    				$this->autocompletesearch();
     				break;
+    				
+    				
     		}
     	
     }
     
+    function autocompletesearch() {
+
+		$x = array('query'=>$_REQUEST['query'],'suggestions'=>array(),'data'=>array());
+
+		global $tabForms;
+		if(!$tabForms[$_REQUEST['table']]) {
+			die();
+		}
+		
+		$sql = 'SELECT * FROM '.$_REQUEST['table'].' 
+					WHERE '.$_REQUEST['champ'].' 
+					LIKE '.sql('%'.$_REQUEST['query'].'%').'';
+		$res = GetAll($sql);
+		
+		
     
+		$add = true;
+		if(strpos(getTitleFromtable($_REQUEST['table']),$_REQUEST['champ'])) {
+			$add = false;
+		}
+			
+		$pk = getPrimaryKey($_REQUEST['table']);
+		/**
+		 * Formatage pour JSON
+		 */
+		foreach($res as $row) {
+			if(true) {
+				$x['suggestions'][] =limitwords(strip_tags($row[$_REQUEST['champ']]));
+			}else
+			if($add) {
+				$x['suggestions'][] = limitwords(strip_tags($row[$_REQUEST['champ']].' - '.GetTitleFromRow($_REQUEST['table'],$row,' - ')),50);
+			} else {
+				$x['suggestions'][] = limitwords(strip_tags(GetTitleFromRow($_REQUEST['table'],$row,' - ')),50);
+			}
+			$x['data'][] = $row[$pk];
+		}
+		
+		/**
+		 * Retour
+		 */
+		echo json_encode($x);
+		die();			
+    }
     
     function ajaxAction() {
     	
