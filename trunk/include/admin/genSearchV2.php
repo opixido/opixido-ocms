@@ -46,7 +46,7 @@ class genSearchV2 {
 		if($this->table != 's_rubrique') {
 			
 			p('<div style="background:url(./img/fond.bloc2.gif) #ccc;clear:both;margin-bottom:10px;border-right:1px solid #555;border-bottom:1px solid #555;">
-		<h1 style="text-align:center;padding:5px;background:url(./img/fond.bloc2.gif) #eee;border-bottom:1px solid #555">'.t('search').'</h1>
+					<h1 style="text-align:center;padding:5px;background:url(./img/fond.bloc2.gif) #eee;border-bottom:1px solid #555">'.t('search').'</h1>
 		');
 			
 			/**
@@ -97,16 +97,10 @@ class genSearchV2 {
 				
 				$res = 	$this->doFullSearch();
 				
-				$this->printRes($res);
+				$this->printRes($res);			
+			}	
 			
-			}
-				
-				
-		}
-		
-		
-		
-		
+		}		
     }
 
 
@@ -181,7 +175,22 @@ class genSearchV2 {
         
         	<form id="search" method="post" action="index.php"  class="fond1" style="float:left;padding:5px !important;">');
 
-        p('<fieldset style="border:0;padding:0;margin:0;">');
+        p('
+        	<script type="text/javascript" src="jq/js/jquery.autocomplete-min.js"></script>	
+        	<script type="text/javascript">
+        		function submitFormRech(a,b) {
+        			window.location = "?curTable='.$_REQUEST['curTable'].'&curId="+b;        			
+        		}
+        	</script>
+            <style type="text/css">
+                .autocomplete-w1 { background:url(../img/shadow.png) no-repeat bottom right; position:absolute; top:0px; left:0px; margin:6px 0 0 6px; /* IE6 fix: */ _background:none; _margin:1px 0 0 0; }
+				.autocomplete { width:300px!important;border:1px solid #999; background:#FFF; cursor:default; text-align:left; max-height:350px; overflow:auto; margin:-6px 6px 6px -6px; /* IE6 specific: */ _height:350px;  _margin:0; _overflow-x:hidden; }
+				.autocomplete .selected { background:#F0F0F0; }
+				.autocomplete div { padding:5px 5px; white-space:nowrap; overflow:hidden;font-size:11px;border-bottom:1px solid #ccc }
+				.autocomplete strong { font-weight:bold; color:#ff9600;font-size:11px }                        
+            </style>
+            <fieldset style="border:0;padding:0;margin:0;"> 	
+        ');
        
 
         p('<input type="hidden" name="curTable" value="'.$this->table.'" />');
@@ -307,10 +316,24 @@ class genSearchV2 {
                     	
                     }
                     else  {
-                        p('<input style="float:left;" type="text" name="'.$k.'" value="'.$_REQUEST[$k].'" />');
+                    	
+                        p('<input style="float:left;" type="text" 
+                        			id="rech_'.$k.'" name="'.$k.'" 
+                        			value="'.$_REQUEST[$k].'" />');
+                        
+                        p('
+
+                        <script type="text/javascript">                        
+                        jQuery(function(){
+							  options = { serviceUrl:"?xhr=autocompletesearch&table='.$_REQUEST['curTable'].'&champ='.$k.'", onSelect: submitFormRech   };
+							  a = $("#rech_'.$k.'").autocomplete(options);
+							});	
+						</script>	
+						');
+                        
                     }
                 }
-               // p('<input class="rightsub" type="submit" value="'.t('rechercher').'"  />');
+               
                 p('</div>');
 
 

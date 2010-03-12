@@ -64,8 +64,70 @@ class row {
 		 */
 		else if($relations[$this->table][$field] ) {
 			
-			return new row($relations[$this->table][$field],$this->row[$field]);
+			$fk_table = $relations[$this->table][$field];
+			$coup = mb_substr($fk_table,strpos($this->table,'_')+1);
 			
+			if(class_exists($fk_table)) {
+				$classe = $this->table;
+			}
+			else if(class_exists($coup)) {
+				$classe = $coup;
+			}
+			
+			if($classe) {
+				return new $classe($this->row[$field]);
+			} 
+			
+			return new row($fk_table,$this->row[$field]);
+			
+		} else if ($tablerel[$field]) {
+		
+			$found = false;
+			
+			while ( list( $k, $v ) = each( $tablerel[$field] ) ) {
+				
+				if ( $v == $this->table && !$found) {
+					$found = true;
+					$pk1 = $k;
+				} else {
+					$pk2 = $k;
+					$fk_table = $v;
+				}
+			
+			}		
+			
+			if ($found) {
+				
+				$sql = 'SELECT *
+						FROM '.$fk_table.'
+						WHERE '.getPrimaryKey($fk_table).' IN (SELECT '.$pk2.'
+															   FROM '.$field.'
+															   WHERE '.$pk1.' = '.$this->id.')';
+				
+				return GetAll($sql);
+				
+			}
+			
+				
+		/**
+		 * Relation inverse
+		 */
+		} else if ($relinv[$this->table][$field]) {
+		
+			$foreignTable = $relinv[$this->table][$field][0];
+			
+			$sql = 'SELECT *
+				    FROM '.$foreignTable.'
+				    WHERE '.$relinv[$this->table][$field][1].' = '.$this->id;
+			
+			if ($orderFields[$foreignTable]) {
+				
+				$sql .= ' ORDER BY '.$orderFields[$foreignTable][0];
+				
+			}
+			
+			return GetAll($sql);
+					
 		/**
 		 * Raw value
 		 */
