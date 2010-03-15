@@ -47,6 +47,13 @@ img {
 
 }
 
+#logout {
+	position:absolute;
+	right:10px;
+	top:10px;
+	padding-top:5px;
+	padding-bottom:4px;
+}
 
 #logo {
 	background-color: #ffffff;
