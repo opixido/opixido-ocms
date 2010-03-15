@@ -81,10 +81,6 @@ class genSecurity {
         if($_SESSION['gs_adminpassword']) {
            $this->adminpassword = $_SESSION['gs_adminpassword'];
         }
-        
-        $sql = 'SELECT admin_id FROM s_admin WHERE 1 LIMIT 0,1';
-    	$row = GetSingle($sql);
-
 
 
         if($_POST['gs_adminpassword']) {
@@ -184,7 +180,6 @@ class genSecurity {
                 			admin_login like '".mes($this->adminuser)."' ";
 
                 $row = GetSingle($sql);
-
 
                 $this->checkedAuth = true;
 
