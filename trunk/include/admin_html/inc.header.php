@@ -2,82 +2,86 @@
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
 <head>
-
-
   <title>Administration :: <?php echo ta('base_title') ?> :: </title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  
+  <?php 
+
+  $css = array('/css/style.css',
+  				'/css/style_suite.css',
+  				'/css/arbo.css',
+  				'/genform/css/genform.css',
+  				'/jq/css/cupertino/jquery-ui-1.7.1.custom.css',
+  				'/jq/css/tipsy.css'
+  );
+  $js = array(
+  	'/genform/js/tjmlib.js',
+  	'/js/script.js',
+  	'/js/xhr.js',  	
+  	'/js/ajaxForm.js',
+  	'/jq/js/jquery.js',
+  	'/jq/js/jquery-ui.js',
+  	'/jq/js/jquery.textarearesizer.compressed.js',
+  	'/jq/js/jquery.tablednd_0_5.js',
+  	'/jq/js/jquery.autocomplete-min.js',
+  	'/jq/js/jquery.tipsy.js'
+  );
+
+  //'/js/tooltip.js',
+
+  $g = new genHeaders(false);
+  $g->fCacheFolder = 'admin/c';
+  $css = $g->getCssPath($css);
+  $js = $g->getJsPath($js);
+
+  echo '<link rel="stylesheet" type="text/css" href="'.$css.'" />';  
+  echo '<script type="text/javascript" src="'.$js.'"></script>	';  
+  
+  ?>
+  <!-- 
   <link rel="stylesheet" type="text/css" href="css/style.css" />
   <link rel="stylesheet" type="text/css" href="css/style_suite.css" />
   <link rel="stylesheet" type="text/css" href="css/arbo.css" />
-
-<link rel="StyleSheet" type="text/css" href="genform/css/genform.css" />
-<script type="text/javascript" src="genform/js/tjmlib.js"></script>
-<script type="text/javascript" src="js/script.js"></script>
-<script type="text/javascript" src="js/xhr.js"></script>
-<script type="text/javascript" src="js/tooltip.js"></script>
-<script type="text/javascript" src="js/ajaxForm.js"></script>
-
-<!--JQUERY-->
-		<link type="text/css" href="jq/css/cupertino/jquery-ui-1.7.1.custom.css" rel="stylesheet" />	
+  <link rel="StyleSheet" type="text/css" href="genform/css/genform.css" />  
+  <link type="text/css" href="jq/css/cupertino/jquery-ui-1.7.1.custom.css" rel="stylesheet" />	
+	<script type="text/javascript" src="genform/js/tjmlib.js"></script>
+	<script type="text/javascript" src="js/script.js"></script>
+	<script type="text/javascript" src="js/xhr.js"></script>
+	<script type="text/javascript" src="js/tooltip.js"></script>
+	<script type="text/javascript" src="js/ajaxForm.js"></script>  
 		<script type="text/javascript" src="jq/js/jquery-1.3.2.min.js"></script>
 		<script type="text/javascript" src="jq/js/jquery-ui-1.7.1.custom.min.js"></script>
 		<script type="text/javascript" src="jq/js/jquery.textarearesizer.compressed.js"></script>
-		<script type="text/javascript" src="jq/js/jquery.tablednd_0_5.js"></script>
+		<script type="text/javascript" src="jq/js/jquery.tablednd_0_5.js"></script>	
+ -->
+
+
+
+<!--JQUERY-->
+
+
 <!--/JQUERY-->
 
-<style type="text/css"/>
-<?php
-//global $_Gconfig;
-// foreach($_Gconfig['LANGUAGES'] as $lg) {
-//
-// 	echo '.lg_'.$lg.' textarea {background-image:url(img/flags/'.$lg.'.gif);background-repeat:no-repeat;background-position:top right	}
-// 	';
-// 
-// }
-?>
-</style>
 <script type="text/javascript">
-if (/Mozilla\/5\.0/.test(navigator.userAgent))
-   document.write('<script type="text/javascript" src="mozInnerHTML.js"></sc' + 'ript>');
-
-function winopen(url,w,h) {
-        window.open(url,'popup'+Math.random(100),'width='+w+",height="+h+",scrollbars=no,status=no,location=no");
-        return false;
-}
-// on construit le tableau des langues
-        <? 
+<? 
         
-        global $_Gconfig;
-        
-        foreach($_Gconfig['LANGUAGES'] as $lg)
+        global $_Gconfig;        
+        foreach($_Gconfig['LANGUAGES'] as $lg) {
             $lgs[] = '"'.$lg.'"';
-            
-        $tab = 'var lgs = ['.implode(', ',$lgs).'];';
+        }
         
+        $tab = 'var lgs = ['.implode(', ',$lgs).'];';        
         echo $tab;
-
         ?>
-
 </script>
-	
-
-    <?php
-    
-    
-    
+<?php   
     if(strstr($_SERVER["HTTP_USER_AGENT"],'MSIE')) {
     	p('<link rel="StyleSheet" href="css/ie.css" />');
     }
-    ?>
-    
-<!--[if lt IE 3.]>
-<script defer type="text/javascript" src="./js/pngfix.js"></script>
-<![endif]-->
-    
+?>   
 </head>
 
 <body onbeforeunload="showLoader()">
-
 
 <div id="xhrloader"></div>
 
@@ -87,34 +91,21 @@ function winopen(url,w,h) {
 
 <div id="contenant">
 	
-	<?php
-	
-	if(!$_GET['simple'] ) {
-		
-	?>
+<?php if(!$_GET['simple'] ) { ?>
 	    <div id="bandeau">
 	
 	        <div id="logo">
 	
 				
-		<?php
+			<? if($GLOBALS['gs_obj']->isLogged() ) { ?>
+			<a href="index.php?logout=1" class="abutton" id="logout" ><img src="<?=t('src_logout')?>" alt="" class="inputimage" /> <?=t('logout')?></a>
+			<? } ?>
 	
-	if($GLOBALS['gs_obj']->isLogged() ) {
-	?>
-			<a href="index.php?logout=1" class="abutton" style="height:19px;float:right;padding-top:5px;"><img src="<?=t('src_logout')?>" alt="Logout" class="inputimage" /> <?=t('logout')?></a>
-	
-		<?php
-	
-	}
-	?>
-	
-	            <a class="logoa" href="index.php?home=1"><h1><?php echo ta('base_title') ?></h1></a>
-	
+            <a class="logoa" href="index.php?home=1"><h1><?php echo ta('base_title') ?></h1></a>
+
 	        </div>
 	
 	    </div>
-	<?php
-	}
-	?>
+<?php } ?>
 
-	<div id="bas">
+<div id="bas">
