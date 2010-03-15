@@ -97,8 +97,7 @@ function showLoader(obj) {
 		lood.style.top = (mouseY+20)+"px";
 	}
 
-	lood.style.display = "block";
-	tooltip.hide();
+	lood.style.display = "block";	
 }
 
 jsevents = "";
@@ -242,11 +241,10 @@ function checkScripts(obj) {
 function ajaxSaveValue(obj,table,champ,id) {
 	if(obj.value) {
 		v = obj.value;
-	} else if( typeof obj == 'string') {
-		v = obj;
 	} else {
-		v = '';
+		v = obj;
 	}
+	//v = espace(v).replace(new RegExp( "\\+", "g" ), "%2B" );
 
 	$.post("index.php", { xhr: "ajaxForm", table: table, champ : champ , id : id ,save : v} );
 	//var url = "index.php?xhr=ajaxForm&table="+table+"&champ="+champ+"&id="+id+"&save="+v+"&";
@@ -285,12 +283,10 @@ function ajaxLgs(divname) {
 	sel.onchange = function() {
 		window.ajax_cur_lg[divname] = this.value;
 		sel.style.background = sel.options[sel.selectedIndex].style.background;
-		doAjaxLgs(div,sel.options[sel.selectedIndex].value);
-		
-	}
-	sel.style.background = sel.options[sel.selectedIndex].style.background;
-
-		
+		doAjaxLgs(div,sel.options[sel.selectedIndex].value);		
+	};
+	
+	sel.style.background = sel.options[sel.selectedIndex].style.background;		
 	doAjaxLgs(div,curlg);		
 }
 
