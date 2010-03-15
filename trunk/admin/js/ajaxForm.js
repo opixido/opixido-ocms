@@ -421,7 +421,7 @@ ARBO
             // champ de saisie
             var childTagInput = document.createElement('input');
             childTagInput.setAttribute('type','text');
-            inputNameLG = inputName + '[' + lgs[k] + ']'
+            inputNameLG = inputName + '[' + lgs[k] + ']';
             childTagInput.setAttribute('name',inputNameLG);
             childTagLi.appendChild(childTagInput);
         }
