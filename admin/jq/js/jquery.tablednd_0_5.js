@@ -371,7 +371,7 @@ jQuery.tableDnD = {
         return result;
     }
 
-}
+};
 
 jQuery.fn.extend(
 	{

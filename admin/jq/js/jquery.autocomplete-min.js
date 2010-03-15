@@ -1,3 +1,4 @@
+/*packed*/
 /*
 *  Ajax Autocomplete for jQuery, version 1.1
 *  (c) 2009 Tomas Kirda
