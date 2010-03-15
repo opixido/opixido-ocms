@@ -112,6 +112,12 @@ class genCache {
 	 */
 	function saveCachePlain($str) {
 
+			
+		if(!file_exists(dirname($this->cache_path))) {
+			devbug('Cache directory missing : '.$this->cache_path);
+			return;
+		}
+		
 		$this->cacheChecked = true;
 		$this->strCache = $str;
 	
