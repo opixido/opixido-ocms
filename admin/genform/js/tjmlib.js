@@ -94,7 +94,7 @@ function setPosition(elt,positionername,isPlacedUnder) {
   }
  }
  elt.left = getAbsX(positioner);
- elt.top = getAbsY(positioner)//+ (isPlacedUnder ? positioner.height : 0);
+ elt.top = getAbsY(positioner);
  elt.zIndex = 1546;
 }
 
