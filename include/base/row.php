@@ -81,7 +81,11 @@ class row {
 			return new row($fk_table,$this->row[$field]);
 			
 		} else if ($tablerel[$field]) {
-		
+			
+			/**
+			 * Table de relation
+			 */
+			
 			$found = false;
 			
 			while ( list( $k, $v ) = each( $tablerel[$field] ) ) {
@@ -98,11 +102,14 @@ class row {
 			
 			if ($found) {
 				
-				$sql = 'SELECT *
-						FROM '.$fk_table.'
-						WHERE '.getPrimaryKey($fk_table).' IN (SELECT '.$pk2.'
-															   FROM '.$field.'
-															   WHERE '.$pk1.' = '.$this->id.')';
+				$sql = 'SELECT T.*
+						FROM '.$fk_table.' AS T, '.$field.' AS R
+						WHERE '.getPrimaryKey($fk_table).' = '.$pk2.'
+						AND '.$pk1.' = '.$this->id.')';
+				
+				if ($orderFields[$field]) {					
+					$sql .= ' ORDER BY '.$orderFields[$field][0];					
+				}
 				
 				return GetAll($sql);
 				

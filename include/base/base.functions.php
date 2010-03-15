@@ -1510,8 +1510,10 @@ function getFlash($url,$w=290,$h=240,$alt="Flash",$tag='',$params=array()) {
 	$html .= ('<param name="allowFullScreen" value="true" />');
 	$html .= ('<param name="scalemode" value="showall" />');
 
-	foreach($params as $k=>$v) {
-		$html .= ('<param name="'.$k.'" value="'.$v.'" />');
+	if(is_array($params)) {
+		foreach($params as $k=>$v) {
+			$html .= ('<param name="'.$k.'" value="'.$v.'" />');
+		}
 	}
 	$html .= ('<p>'.$alt.'</p>');
 	$html .= ('</object>');

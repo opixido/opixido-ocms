@@ -204,10 +204,12 @@ function sqlOnlyOnline($table,$alias = '') {
 	}
 	
 	$t = getTabField($table);
+	
 	if( strlen($alias )) {
 		$alias = $alias.'.';
-		$sql .= $alias;		
+		//$sql .= $alias;		
 	}
+	
 	if($t['date_online'] && $t['date_offline']) {
 		$sql .= ' AND ( date_online <= NOW() OR date_online = "0000-00-00" ) 
 		AND (date_offline >= NOW() OR date_offline = "0000-00-00"  ) ';
