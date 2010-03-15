@@ -109,7 +109,7 @@ class genInstall {
 					if(!$connec) {
 						$this->error('Error connecting to MySQL Server');
 					} else {
-						$res = DoSql('DROP DATABASE `'.$_POST['bdd_bdd'].'`');
+						//$res = DoSql('DROP DATABASE `'.$_POST['bdd_bdd'].'`');
 						$res = DoSql('CREATE DATABASE '.$_POST['bdd_bdd']);
 						if($res) {
 							$co->disconnect();
@@ -315,6 +315,7 @@ class genInstall {
 			$this->error('Can\'t find configuration file : config.server.php.base');
 				return;
 		}
+		print_r($_POST);
 		$_POST['CRYPTO_KEY'] = md5(time().'.'.microtime().'.'.rand(0,10000000)).rand(0,10000000);
 		$_POST['current_ip'] = $_SERVER['SERVER_ADDR'];
 		$vars = array('bdd_bdd','bdd_user','bdd_pwd','bdd_type','bdd_host','CRYPTO_KEY','ADMIN_URL','WEB_URL','session_cookie_server','current_ip');
@@ -370,10 +371,10 @@ class genInstall {
 		}
 		$this->info('SQL configuration OK');
 		
-		DoSql('REPLACE s_param SET param_valeur = '.sql($_POST['mail_type']).' WHERE param_id = "mail_type"');
-		DoSql('REPLACE s_param SET param_valeur = '.sql($_POST['mail_host']).' WHERE param_id = "mail_host"');
-		DoSql('REPLACE s_trad SET trad_'.LG_DEF.' = '.sql($_POST['mail_from']).' WHERE trad_id = "mail_from"');
-		DoSql('REPLACE s_trad SET trad_'.LG_DEF.' = '.sql($_POST['mail_from_name']).' WHERE trad_id = "mail_from_name"');
+		DoSql('REPLACE INTO s_param SET param_valeur = '.sql($_POST['mail_type']).' , param_id = "mail_type"');
+		DoSql('REPLACE INTO s_param SET param_valeur = '.sql($_POST['mail_host']).' , param_id = "mail_host"');
+		DoSql('REPLACE INTO s_trad SET trad_'.LG_DEF.' = '.sql($_POST['mail_from']).' , trad_id = "mail_from"');
+		DoSql('REPLACE INTO s_trad SET trad_'.LG_DEF.' = '.sql($_POST['mail_from_name']).' , trad_id = "mail_from_name"');
 		
 		$this->doForm = 2;
 	}
@@ -398,10 +399,10 @@ class genInstall {
 		$this->f1->add('html','<p><h2>Installation de l\'OCMS</h2> Veuillez saisir ci-dessous les informations sur la base de donn&eacute;e</p><p>&nbsp;</p>','');
 		
 		$this->f1->add('fieldset','Infos BDD');		
-		$this->f1->add('text','localhost','Serveur','bdd_host');
-		$this->f1->add('text','root','Nom d\'utilisateur','bdd_user');
-		$this->f1->add('text','','Mot de passe','bdd_pwd');
-		$this->f1->add('text','ocms','Base de donn&eacute;e','bdd_bdd');
+		$this->f1->add('text','localhost','Serveur','bdd_host','bdd_host',true);
+		$this->f1->add('text','root','Nom d\'utilisateur','bdd_user','bdd_user',true);
+		$this->f1->add('text','','Mot de passe','bdd_pwd','bdd_pwd',true);
+		$this->f1->add('text','ocms','Base de donn&eacute;e','bdd_bdd','bdd_bdd',true);
 		
 		$this->f1->add('select',array('1'=>'Oui','0'=>'Non'),'Cr&eacute;er la base ?','bdd_creer','',false,array(0));
 		$this->f1->add('select',array('1'=>'Oui','0'=>'Non'),'Importer le dump SQL ?','bdd_import','',false,array(1));
@@ -442,12 +443,12 @@ class genInstall {
 		$this->f2->add('html','<p><h2>Installation de l\'OCMS</h2> Veuillez saisir ci-dessous le nom d\'utilisateur et le mot de passe du premier administrateur</p><p>&nbsp;</p>','');
 		
 		$this->f2->add('fieldset','Infos administrateur');		
-		$this->f2->add('text','','Nom d\'utilisateur','admin_login');
-		$this->f2->add('text','','Mot de passe','admin_pwd');
+		$this->f2->add('text','','Nom d\'utilisateur','admin_login','admin_login',true);
+		$this->f2->add('text','','Mot de passe','admin_pwd','admin_pwd',true);
 		//$this->f2->add('html','<p>&nbsp;</p>','');
 
 		$this->f2->add('fieldset','Infos Site');		
-		$this->f2->add('text','','Nom du site','site_nom');
+		$this->f2->add('text','','Nom du site','site_nom','site_nom',true);
 		
 		$this->f2->add('endfieldset');
 		
