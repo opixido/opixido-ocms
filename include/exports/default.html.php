@@ -14,16 +14,14 @@
     <link rel="icon" href="<?=BU?>/favicon.ico" type="image/gif" />
 	<link rel="shortcut icon" type="image/gif" href="<?=BU?>/favicon.ico" />
 
-	<link rel="Stylesheet" type="text/css" href="<?=BU?>/css/base.css" media="screen" />
 	<link rel="Stylesheet" type="text/css" href="<?=BU?>/css/print.css" media="print" />
-	<link rel="Stylesheet" type="text/css" href="<?=BU?>/css/position.css" media="screen" />
-
-
-	<script type="text/javascript"  src="<?=BU?>/js/base.js" ></script>
-
-
+	
     <?php echo $this->g_headers->gen() ?>
 
+	<script type="text/javascript">
+		window.bu = "<?=BU?>";
+		window.Trads = new Array();
+	</script>
 </head>
 
 <body>
