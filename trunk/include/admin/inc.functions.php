@@ -1015,3 +1015,67 @@ function getPicto($nom,$taille="32x32") {
 	return $a;
 	
 }
+
+
+function cleanFiles() {
+
+	global $uploadRep;
+
+	if ($tables = opendir('../'.$uploadRep)) {
+		
+		 while (false !== ($table = readdir($tables))) {
+			
+			if($table != '.' && $table != '..' && is_dir('../'.$uploadRep.'/'.$table)) {
+		 
+				$handle = opendir('../'.$uploadRep.'/'.$table);
+				while (false !== ($file = readdir($handle))) {
+					if ($file != "." && $file != "..") {
+						if(is_dir('../'.$uploadRep.'/'.$table.'/'.$file)) {
+							$res = getSingle('SELECT * FROM '.$table.' WHERE '.getPrimaryKey($table).' = '.sql($file).'');		        		
+							
+							if($res && count($res)) {
+								
+								echo "<font color=green>$table/$file</font><br/>";
+							} else {
+								$useless++;
+								$r = @rmdir('../'.$uploadRep.'/'.$table.'/'.$file);
+								if($r) 
+								{
+									echo "<font color=orange>$table/$file</font><br/>";	
+								} else {
+									echo "<font color=red>$table/$file</font><br/>";		
+									$subs = opendir('../'.$uploadRep.'/'.$table.'/'.$file);
+									while (false !== ($sub = readdir($subs))) {
+										$fi = '../'.$uploadRep.'/'.$table.'/'.$file.'/'.$sub;
+										if(is_file($fi)) {
+											$f = filesize($fi);
+											
+											$m = md5($fi);
+											if($m == $_REQUEST['del']) {
+												unlink($fi);
+											} else {
+												$totf += $f;
+												echo ' - <a target="_blank" href="'.$table.'/'.$file.'/'.$sub.'">'.$sub.' ['.pretty_bytes($f).'] </a> [<a href="?globalAction=cleanFiles&amp;del='.$m.'">X</a>]<br/>';
+											}
+										}
+									}
+								}
+							}
+						} else {
+							//echo $file;
+						}
+					}
+				}
+				 closedir($handle);
+			   
+			}
+			
+			
+		}
+		closedir($tables);
+	}
+	echo '<hr/>';
+	echo 'Fichiers inutilisés : '.$useless.' / Totalisants : ';
+	echo '  '.pretty_bytes($totf);
+
+}
