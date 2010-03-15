@@ -230,7 +230,11 @@ class Date
 	function setTimestamp( $ts )
 	{
 		// TODO : basic validation
-		$this->ts = strtotime($ts);
+		if(!is_int($ts)) {
+			$this->ts = strtotime($ts);
+		} else {
+			$this->ts =  $ts;
+		}
 		$a = getdate( $this->ts );
 		$this->Y = $a['year'];
 		$this->M = $a['mon'];
