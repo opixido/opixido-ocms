@@ -10,24 +10,15 @@
 <div style="clear: both;">&nbsp;</div>
 <div id="jsevents" style="display:none;overflow:auto;height:200px;border:2px solid;background:white;"></div>
 
-<script type="text/javascript">
+<script type="text/javascript" >
 
 $(document).ready(function() {
-$('.resizable').TextAreaResizer();
+	$('.resizable').TextAreaResizer();
+	$('input, a').tipsy({html: true ,gravity:  $.fn.tipsy.autoWE});
+	$('img.helpimg').tipsy({html: true ,gravity:  $.fn.tipsy.autoWE,title:'alt'});
 });
-<?php if($GLOBALS['rteElements']) { ?>
-if(tinyMCE_GZ) {
-tinyMCE_GZ.init({
-				   
-					theme : "advanced",
-					skin : "default",
-					language : "en",
-					plugins : "safari,paste,fullscreen,advimage,xhtmlxtras,contextmenu"
 
-		 
-				});
-}
-<? } ?>
+
 
 $("table.sortable .order").remove();
 
@@ -57,6 +48,19 @@ $("table.sortable").each( function() {
 });
 
 $('#arbo_1').sortable();
+
+
+
+<?php if($GLOBALS['rteElements']) { ?>
+if(tinyMCE_GZ) {
+tinyMCE_GZ.init({				   
+	theme : "advanced",
+	skin : "default",
+	language : "en",
+	plugins : "safari,paste,fullscreen,advimage,xhtmlxtras,contextmenu"		 
+});
+}
+<? } ?>
 
 
 </script>
@@ -96,14 +100,10 @@ tinyMCE.init({
 					verify_html : false ,
 					forced_root_block : 'p',	
 					remove_linebreaks : false
-					
-
-		 
+						 
 				});
-
-<? }
-
-
+<? 
+}
 ?>
 
 </script>
@@ -126,15 +126,3 @@ tinyMCE.init({
 </style>
 </body>
 </html>
-<?php
-
-/*
-global $admin_trads;
-print_r($admin_trads);
-
-foreach($admin_trads as $k=>$v) {
-	DoSql('REPLACE INTO s_admin_trad VALUES ("'.$k.'",'.sql($v['fr']).','.sql($v['en']).')');
-}
-*/
-
-?>
