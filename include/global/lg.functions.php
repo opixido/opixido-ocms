@@ -820,3 +820,32 @@ function strftimeloc($format,$timestamp=0) {
 		//}
 }
 
+  function compressCSS($buffer) {
+    /* remove comments */
+    $buffer = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $buffer);
+    /* remove tabs, spaces, newlines, etc. */
+    $buffer = str_replace(array("\r\n", "\r", "\n", "\t", '  ', '    ', '    '), '', $buffer);
+    $buffer = str_replace(array(' : ', ' :',': '), ':', $buffer);
+    $buffer = str_replace(array(' ; ', ' ;','; '), ';', $buffer);
+    $buffer = str_replace(array(' {'), '{', $buffer);
+    $buffer = str_replace(array(';}'), '}', $buffer);
+
+    return $buffer;
+  }
+  
+
+function compressJs($buffer) {
+    /* remove comments */
+    	
+
+   // $buffer = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $buffer);
+
+    /* remove tabs, spaces, newlines, etc. */
+    //$buffer = str_replace(array("\r\n", "\r", "\n", "\t", '  ', '    ', '    '), '', $buffer);
+    $buffer = str_replace(array(' : ', ' :',': '), ':', $buffer);
+    $buffer = str_replace(array(' ; ', ' ;','; '), ';', $buffer);
+    $buffer = str_replace(array(' {'), '{', $buffer);
+    
+
+    return $buffer;
+  }  

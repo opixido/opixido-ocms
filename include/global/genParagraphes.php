@@ -99,11 +99,9 @@ class genParagraphes {
 			$img2 = new GenFile('s_paragraphe', 'paragraphe_img_2', $para['paragraphe_id'], $para,true,true);
 
 			
-			//$tpl->setImg(1, $img->getWebUrl(), GetLgValue('paragraphe_img_1_alt', $para,false));
-			//$tpl->setImg(2, $img2->getWebUrl(), GetLgValue('paragraphe_img_2_alt', $para,false));
+			$tpl->setImg(1, $img->getWebUrl(), GetLgValue('paragraphe_img_1_alt', $para,false));
+			$tpl->setImg(2, $img2->getWebUrl(), GetLgValue('paragraphe_img_2_alt', $para,false));
 			
-			$tpl->setGFImg(1,'s_paragraphe', 'paragraphe_img_1', $para);
-			$tpl->setGFImg(2,'s_paragraphe', 'paragraphe_img_2', $para);
 			$tpl->setGFImg('img1','s_paragraphe', 'paragraphe_img_1', $para);
 			
 			$tpl->setVar('legend_1' , GetLgValue('paragraphe_img_1_legend' , $para ) ) ;
