@@ -1075,6 +1075,7 @@ class genUrl{
 		
 		$res = GetAll($sql);
 		
+
 		
 		if(!count($res)) {
 			
