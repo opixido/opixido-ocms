@@ -1,7 +1,9 @@
 <?php
 
 
-
+if(!defined('BU')) {
+	define('BU', substr($_SERVER['SCRIPT_NAME'],0,strpos($_SERVER['SCRIPT_NAME'],'/admin/')));	
+}
 
 
 /**
