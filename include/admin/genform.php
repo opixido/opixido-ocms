@@ -910,7 +910,7 @@ class GenForm {
 		
 		include($gb_obj->getIncludePath('genform.upload.php' , 'admin/genform_modules'));
 		
-		} else if ( in_array($this->tab_field[$name]->type,array('int','smallint','tinyint','bigint','float')) ) {
+		} else if ( in_array($this->tab_field[$name]->type,array('int','smallint','tinyint','bigint','float','double','mediumint')) ) {
 	
 			/**
 			* INTEGER
@@ -935,8 +935,7 @@ class GenForm {
 			
 			/**
 			* TEXTAREA
-			*/
-	
+			*/	
 			include($gb_obj->getIncludePath('genform.text.php' , 'admin/genform_modules'));
 	
 	
@@ -948,7 +947,7 @@ class GenForm {
 			include($gb_obj->getIncludePath('genform.date.php' , 'admin/genform_modules'));
 	
 		}
-		else if ( $this->tab_field[$name]->type == 'datetime' ) {
+		else if ( $this->tab_field[$name]->type == 'datetime' || $this->tab_field[$name]->type == 'timestamp' ) {
 	
 			/**
 			* DATE
