@@ -54,8 +54,11 @@ class genCache {
 		/**
 		 * Full path to cache file
 		 */
-		$cachepath = is_object($gb_obj) ? $gb_obj->include_path.'/'.GetParam('cache_path').'/'.$this->cache_id : $cache_path.'/'.$this->cache_id;
-		
+		if(!$cache_path) {
+			$cache_path = is_object($gb_obj) ? $gb_obj->include_path.'/'.GetParam('cache_path').'/'.$this->cache_id : $cache_path.'/'.$this->cache_id;
+		} else {
+			$cache_path .= '/'.$cache_id;		
+		}
 		/**
 		 * When was the content modified
 		 */
@@ -64,7 +67,7 @@ class genCache {
 		/**
 		 * Full path
 		 */
-		$this->cache_path = $cachepath;
+		$this->cache_path = $cache_path;
 
 	}
 
@@ -111,8 +114,10 @@ class genCache {
 
 		$this->cacheChecked = true;
 		$this->strCache = $str;
-		
-		return file_put_contents($this->cache_path, $str);
+	
+		$a = file_put_contents($this->cache_path, $str);
+		chgrp($this->cache_path,'www-data');
+		return $a;
 	}
 
 	/**

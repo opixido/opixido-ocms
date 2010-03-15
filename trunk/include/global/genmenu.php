@@ -112,6 +112,9 @@ class genMenu{
 
 		if(!count($this->tabPrincipal))
 			$this->tabPrincipal = $this->site->g_url->recursRub($this->id_menu,1,$this->conf['max_levels']);
+			
+
+
 	}
 
 

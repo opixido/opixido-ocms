@@ -296,6 +296,7 @@ class genRubrique {
 
 
 
+		$this->Execute('init');
 		$this->Execute('afterInit');
 
 
