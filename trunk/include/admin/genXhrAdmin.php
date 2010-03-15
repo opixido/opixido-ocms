@@ -145,6 +145,8 @@ class genXhrAdmin {
 		}
 			
 		$pk = getPrimaryKey($_REQUEST['table']);
+		
+		
 		/**
 		 * Formatage pour JSON
 		 */

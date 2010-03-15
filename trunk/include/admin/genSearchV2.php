@@ -176,19 +176,11 @@ class genSearchV2 {
         	<form id="search" method="post" action="index.php"  class="fond1" style="float:left;padding:5px !important;">');
 
         p('
-        	<script type="text/javascript" src="jq/js/jquery.autocomplete-min.js"></script>	
         	<script type="text/javascript">
         		function submitFormRech(a,b) {
         			window.location = "?curTable='.$_REQUEST['curTable'].'&curId="+b;        			
         		}
         	</script>
-            <style type="text/css">
-                .autocomplete-w1 { background:url(../img/shadow.png) no-repeat bottom right; position:absolute; top:0px; left:0px; margin:6px 0 0 6px; /* IE6 fix: */ _background:none; _margin:1px 0 0 0; }
-				.autocomplete { width:300px!important;border:1px solid #999; background:#FFF; cursor:default; text-align:left; max-height:350px; overflow:auto; margin:-6px 6px 6px -6px; /* IE6 specific: */ _height:350px;  _margin:0; _overflow-x:hidden; }
-				.autocomplete .selected { background:#F0F0F0; }
-				.autocomplete div { padding:5px 5px; white-space:nowrap; overflow:hidden;font-size:11px;border-bottom:1px solid #ccc }
-				.autocomplete strong { font-weight:bold; color:#ff9600;font-size:11px }                        
-            </style>
             <fieldset style="border:0;padding:0;margin:0;"> 	
         ');
        

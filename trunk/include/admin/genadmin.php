@@ -1110,7 +1110,7 @@ class genAdmin {
 				 */
 				$linka = '<a '.$cl.' 
 								href="index.php?curTable=s_rubrique&amp;showRub='.$real_rub.'&amp;curId='.$version_rub.'&amp;resume=1" 
-								title="'.$aff['rubrique_titre_'.LG_DEF].'" 
+								
 								onmouseover="swapactions(\'imm_'.$real_rub.'\',this)">';
 		
 		
