@@ -252,13 +252,16 @@ class genHeaders {
 	public function addScript($name,$addBase=true,$group='page') {
 
 		if($addBase) {
-			$name =  BU.'/js/'.$name;
+			$name =  '/js/'.$name;
 			//$this->addHtmlHeaders('<script '.$tag.' type="text/javascript" src="'.BU.'/js/'.$name.'" ></script>');
 		} 
 		if($group) {
 			$this->jsFiles[$group][] = $name;
 		}
 		else {
+			if($addBase) {
+				$name = BU.$name;
+			}
 			$this->addHtmlHeaders('<script  type="text/javascript" src="'.$name.'" ></script>');
 		}
 	}
