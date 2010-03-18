@@ -399,6 +399,7 @@ $_Gconfig['globalActions'][]= 'executeSql';
 $_Gconfig['globalActions'][]= 'changeTranslations';
 $_Gconfig['globalActions'][]= 'recheckTranslations';
 $_Gconfig['globalActions'][]= 'setAllUrls';
+$_Gconfig['globalActions'][]= 'cleanFiles';
 
 
 
