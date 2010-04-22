@@ -32,7 +32,7 @@
 
   $g = new genHeaders(false);
   $g->fCacheFolder = 'admin/c';
-  $g->addFolder = '/admin/';
+  $g->addFolder = '../';
 
   $css = $g->getCssPath($css);
   $js = $g->getJsPath($js);
