@@ -43,13 +43,10 @@ class genUrl{
 		$GLOBALS['urlCached'] = array();
 		$this->parseUrl();
 		
-		$this->isMiniSite();
 		
 		$this->rootRow = $this->getSiteRoot();
-		//$this->rootHomeId = $this->rootRow['rubrique_id'];
+		$this->rootHomeId = $this->rootRow['rubrique_id'];
 
-		
-		
 		
 		$this->roadSup = array();
 		$this->colorLevel = 'sd';
@@ -78,7 +75,9 @@ class genUrl{
 		global $_Gconfig;
 		$host = $_SERVER["HTTP_HOST"];
 		$path = dirname($_SERVER["SCRIPT_NAME"]);
-				
+		
+
+		
 
 		$sql = 'SELECT * FROM s_rubrique 
 					WHERE rubrique_type 
@@ -87,7 +86,7 @@ class genUrl{
 		
 		$cRes = GetAll($sql);		
 			
-
+		
 		foreach($cRes as $res) {
 					
 			$rub = $GLOBALS['tabUrl'][$res['rubrique_id']] = array(
@@ -96,6 +95,7 @@ class genUrl{
 										/*'isFolder'=>$res['rubrique_is_folder'],*/
 										 'param'=>$res['rubrique_gabarit_param'],
 										 'option'=>$res['rubrique_option'],
+										 'template'=>$res['rubrique_template'],
 									     'type' => $res['rubrique_type'],
 									     'webroot'=>($res['rubrique_type'] == RTYPE_SITEROOT ? $this->getDefWebRoot($res['rubrique_url_'.LG_DEF]) : ''	) 
 									     );
@@ -109,53 +109,50 @@ class genUrl{
 			}
 		}
 
-		
-		if(false && $this->minisite) {
-			$row = $this->minisite_row;
-			$this->homeId = $this->rootHomeId = $this->root_id = $row['rubrique_id'];
-			
-			
-		} else {	
-			$sql = 'SELECT * FROM s_rubrique
-					 WHERE rubrique_type 
-					 LIKE "'.RTYPE_SITEROOT.'" 
-					 '.sqlRubriqueOnlyOnline().' 
-					 '.lgFieldsLike("rubrique_url", '%;'.mes($host).';%',' OR ').'
-					  ';
-			$row = GetSingle($sql);
-		
-		}
+	
+		$sql = 'SELECT * FROM s_rubrique
+				 WHERE rubrique_type 
+				 LIKE "'.RTYPE_SITEROOT.'" 
+				 '.sqlRubriqueOnlyOnline().' 
+				 '.lgFieldsLike("rubrique_url", '%;'.mes($host).';%',' OR ').'
+				  ';
+		$row = GetSingle($sql);
 		
 		if(count($row)) {
-			$this->currentRootHomeId =$this->homeId = $this->rootHomeId = $this->root_id = $row['rubrique_id'];
+			
+			$this->homeId = $this->rootHomeId = $this->root_id = $row['rubrique_id'];
 			$this->curWebRoot = $this->getDefWebRoot($row['rubrique_url_'.LG_DEF]);
 			$this->TEMPLATE  = $row['rubrique_template'];
 			
-			
+			//debug($row);
 			return $row;		
 			
 		} else {
 			
-			$sql = 'SELECT * FROM s_rubrique WHERE rubrique_type 	
-						LIKE "'.RTYPE_SITEROOT.'" '.sqlRubriqueOnlyOnline().' LIMIT 0,1';
-			$row = GetSingle($sql);	
+			$rId = $this->getRubId();
+			$this->reversRecursRub($rId);
+			
+			
+			while($rId) {
+				$R = $GLOBALS['tabUrl'][$rId];
+
+				if($R['template']) {
+					$this->homeId = $this->rootHomeId = $this->root_id = $rId;
+					$this->curWebRoot = $this->getDefWebRoot($R['url'.LG_DEF]);
+					$this->TEMPLATE  = $R['template'];
+					return $R;
+				}
+				$rId = $R['fkRub'];				
+			}
+			
+			$sql = 'SELECT * FROM s_rubrique WHERE rubrique_type LIKE "'.RTYPE_SITEROOT.'" 
+						'.sqlRubriqueOnlyOnline().' LIMIT 0,1';
+			$row = GetSingle($sql);		
 		
 			if(count($row)) {
-				if($this->minisite_row) {
-					
-					$this->homeId = $this->minisite_row['rubrique_id'];
-					$this->rootHomeId = $row['rubrique_id'];
-					$this->root_id = $this->minisite_row['rubrique_id'];
-					$this->curWebRoot = $this->getDefWebRoot($this->minisite_row['rubrique_url_'.LG_DEF]);
-					$this->TEMPLATE  = $row['rubrique_template'];
-					$row = $this->minisite_row;
-					$this->currentRootHomeId = $row['rubrique_id'];
-				} else {
-					$this->currentRootHomeId = $this->homeId = $this->rootHomeId = $this->root_id = $row['rubrique_id'];
-					$this->curWebRoot = $this->getDefWebRoot($row['rubrique_url_'.LG_DEF]);
-					$this->TEMPLATE  = $row['rubrique_template'];					
-				}
-
+				$this->homeId = $this->rootHomeId = $this->root_id = $row['rubrique_id'];
+				$this->curWebRoot = $this->getDefWebRoot($row['rubrique_url_'.LG_DEF]);
+				$this->TEMPLATE  = $row['rubrique_template'];
 				
 				return $row;
 			} else if(!isLoggedAsAdmin()) {
@@ -175,7 +172,6 @@ class genUrl{
 				return $v;
 			}
 		}
-		
 		return $_SERVER['HTTP_HOST'];
 		if(strlen($et[0])) {
 			 return $et[0];
@@ -213,7 +209,7 @@ class genUrl{
 	function isMiniSite() {
 		global $_Gconfig;
 
-		$host = ($_SERVER["HTTP_HOST"]);
+		$host = niceName($_SERVER["HTTP_HOST"]);
 
 		if(strstr($host,$_Gconfig['minisite_sous_domaine']) && 'http://'.$_SERVER["HTTP_HOST"].'/' != WEB_URL) {
 			
@@ -221,34 +217,49 @@ class genUrl{
 
 			
 			$this->minisite_nom = str_replace($_Gconfig['minisite_sous_domaine'],'',$host);
-			$this->minisite_nom = str_replace('www.','',$this->minisite_nom);
 
 
 			//print('Mini site nom : '.$this->minisite_nom);
 
-			$sql = 'SELECT * FROM s_rubrique WHERE rubrique_url_fr = "'.$this->minisite_nom.'" 
-						AND rubrique_type = "'.RTYPE_SITEROOT.'"';
+			$sql = 'SELECT * FROM s_rubrique WHERE rubrique_url_fr = "'.$this->minisite_nom.'" AND rubrique_type = "'.RTYPE_SITEROOT.'"';
 
-			$row = GetSingle($sql,true);
-			
+			$row = GetSingle($sql);
+
 			if(count($row)) {
 				$this->minisite_row = $row;
-				
-				$this->selectedArbo[] = $row['rubrique_id'];
-				$this->selectedArbo[] = $row['fk_rubrique_id'];
+				//$this->rootHomeId = $this->root_id = $row['rubrique_id'];
 
 			} else {
-
+				/*print('Mini site Inconnu ! : '.$this->minisite_nom);
+				die();
+				*/
 				$this->minisite = false;
 				return false;
 			}
-			
+/*
+			$sql = 'SELECT * FROM s_rubrique WHERE fk_rubrique_id = "'.$this->root_id.'" '.sqlRubriqueOnlyReal().' ORDER BY rubrique_ordre ASC';
+			$res = GetAll($sql);
 
+
+
+			global $rootId ;
+			$row = current($res);
+
+			$rootId = $row['rubrique_id'];
+
+			global $footRootId;
+			$row = next($res);
+			$footRootId = $row['rubrique_id'];
+
+			global $headRootId;
+
+			$headRootId = '999999999999999';
+			*/
 
 		}
 		return $this->minisite;
 	}
-	
+
 
 	
 
@@ -273,7 +284,7 @@ class genUrl{
 		
 		$this->splitAction();
 
-		$x_url = explode('/'.GetParam('fake_folder_param').'/',$x_url[0]);
+		$x_url = explode('/'.GetParam('fake_folder_param').'',$x_url[0]);
 
 		$x_url[0] = str_replace(BU,'',$x_url[0]);
 		
@@ -287,7 +298,7 @@ class genUrl{
 
 		$this->parsedUrl = $x_url;
 		
-		$templg = $this->parsedUrl[1];
+		
 		
 		global $_Gconfig;
 		if($_Gconfig['onlyOneLgForever']) {
@@ -298,6 +309,7 @@ class genUrl{
 			define('TRADLG',false);
 			
 		} else {
+			$templg = $this->parsedUrl[1];
 			/**
 			 * Si on est dans une seconde langue ( /fr-de/ )
 			 */
@@ -370,22 +382,17 @@ class genUrl{
 	 */
 	function splitParams($params) {
 
-		$params = explode('/',$params);
+		$params = explode(getParam('param_key_sep'),$params);
 		$paramNom = '';
 		foreach($params as $param) {
-			if(strlen($paramNom)) {
-				if(substr($paramNom,-6) == '__list') {
-					$paramNom = substr($paramNom,0,-6);
-					$this->paramsUrl[$paramNom] =  $_REQUEST[$paramNom] = $_GET[$paramNom] = explode('_-_',urldecode($param));
-				} else {
-					$this->paramsUrl[$paramNom] =  $_REQUEST[$paramNom] = $_GET[$paramNom] = urldecode($param);
-				}
-				$paramNom = '';
-			} else {
-				$paramNom = $param;
-			}
-		}
-		
+			list($paramNom,$param) = explode(getParam('param_val_sep'),$param);			
+			if(substr($paramNom,-6) == '__list') {
+				$paramNom = substr($paramNom,0,-6);
+				$this->paramsUrl[$paramNom] =  $_REQUEST[$paramNom] = $_GET[$paramNom] = explode('_-_',urldecode($param));
+			} else {					
+				$this->paramsUrl[$paramNom] =  $_REQUEST[$paramNom] = $_GET[$paramNom] = urldecode($param);
+			}				
+		}	
 		
 	}
 
@@ -423,54 +430,23 @@ class genUrl{
 			
 			
 		
-			if(count($this->parsedUrl) == 0){
+			if(count($this->parsedUrl) == 0){		
 				/**
-				 * On est soit à la racine du site soit à la racine d'un minisite
-				 * 
-				 * @deprecated
-				 			*/	
-				if($this->minisite) {
-					
-					/**
-					 * Si on pointe vers la premiere sous rubrique => 
-					 * On selectionne au cas où ...
-					 * 
-					 * @deprecated 
-					 */	
-					if($_Gconfig['rubLinkToSub']) {
-					
-						$sql = 'SELECT rubrique_id FROM s_rubrique WHERE
-								 fk_rubrique_id = '.sql($this->minisite_row['rubrique_id']).' 
-								 	'.sqlRubriqueOnlyOnline().' 
-								 	ORDER BY rubrique_ordre ASC LIMIT 0,1';
-						
-						$r = GetSingle($sql);
-					
-						if(count($r)) {
-							$this->minisite_row['rubrique_id'] = $this->rubId = $r['rubrique_id'];
-						}
-					}	
-					
-					return $this->minisite_row['rubrique_id'];
-								 
-
-				} else if (false) {	
+				 * Racine du site ou minisite
+				 */
+				if($this->action == 'editer') {
+					$sql = 'SELECT * FROM s_rubrique
+							 WHERE fk_rubrique_version_id = '.$this->rootHomeId;
+					$row = GetSingle($sql);
+					#debug($row);
+					$this->rubId  = $row['rubrique_id'];
+				} else {
+					$this->rubId = $this->rootHomeId;
 				}
-				else {
-					
-					if($this->action == 'editer') {
-						$sql = 'SELECT * FROM s_rubrique
-								 WHERE fk_rubrique_version_id = '.$this->currentRootHomeId;
-						$row = GetSingle($sql);
-						#debug($row);
-						$this->rubId  = $row['rubrique_id'];
-					} else {
-						$this->rubId = $this->currentRootHomeId;
-					}
-					return $this->rubId ;
-				}
+				return $this->rubId ;				
 							
 			} else {
+				
 				/**
 				 * Sinon on sélectionne les rubriques correspondantes
 				 */
@@ -485,6 +461,7 @@ class genUrl{
 					$select .= ' R'.$i.'.fk_gabarit_id AS r'.$i.'_fk_gabarit_id ,  ';
 					$select .= ' R'.$i.'.rubrique_gabarit_param AS r'.$i.'_rubrique_gabarit_param ,  ';					
 					$select .= ' R'.$i.'.rubrique_option AS r'.$i.'_rubrique_option ,  ';					
+					$select .= ' R'.$i.'.rubrique_template AS r'.$i.'_rubrique_template ,  ';					
 					
 					
 					global $_Gconfig;
@@ -567,11 +544,16 @@ class genUrl{
 					
 					return $this->rubId;
 					
-				}else{					
-
+				}else{
+					
+					
+					
 					$this->topRubId = $res['r'.$nbUrls.'_rubrique_id'];
-					$this->rubId = $res['r1_rubrique_id'];							
+					$this->rubId = $res['r1_rubrique_id'];
+					
 
+					
+				
 					/**
 					 * Sinon on met en cache ce qu'on a trouvé pour la construction des URLs
 					 */
@@ -588,6 +570,7 @@ class genUrl{
 										 'gabarit'=>$res['r'.$i.'_fk_gabarit_id'],
 										 'param'=>$res['r'.$i.'_rubrique_gabarit_param'],
 										 'option'=>$res['r'.$i.'_rubrique_option'],
+										 'template'=>$res['r'.$i.'_rubrique_template'],
 										 
 									     'type' => $res['r'.$i.'_rubrique_type'],		
 									     'selected'=> true,
@@ -760,33 +743,22 @@ class genUrl{
 				$params = array_merge($url[1],$params);
 				$url = $url[0];
 			}
-			$url = path_concat(BU,$url,$this->addParams($params));	
+			$url = path_concat(BU,$url);
+			$url .= $this->addParams($params);	
 			
-			if(strlen($action )) {
-				
+			if(strlen($action )) {				
 				$url = path_concat($url,'_action',$action);
 			}
+			
 		}
 		
 		/**
 		 * Si on est dans un mini site en sous domaine
 		 */
-		if($this->curLinkRoot ) {			
+		if($this->curLinkRoot && false ) {			
 			//$url = path_concat('http://',$this->curLinkRoot['url'.LG].$_Gconfig['minisite_sous_domaine'],$url);
 			
-			//$url = path_concat('http://',$GLOBALS['tabUrl'][$rubId]['webroot'],$url);
-			
-			if($this->curLinkRoot['url'.LG]) {
-				if(strstr($_Gconfig['minisite_sous_domaine'],$this->curLinkRoot['url'.LG]) ) {
-					$url = path_concat('http://',$this->curLinkRoot['url'.LG],$url);
-				} else {
-					$url = path_concat('http://',$this->curLinkRoot['url'.LG].$_Gconfig['minisite_sous_domaine'],$url);
-				}
-				
-			} else  {
-				$url = path_concat('http://',$this->curLinkRoot['rubrique_url_'.LG].$_Gconfig['minisite_sous_domaine'],$url);
-			}
-					
+			$url = path_concat('http://',$GLOBALS['tabUrl'][$rubId]['webroot'],$url);
 			
 		} else {
 
@@ -806,14 +778,18 @@ class genUrl{
 			
 
 		}
-		$bddPart = explode('/'.GetParam('fake_folder_param').'/',$url);
+		
+		/**
+		 * Utile si on a plusieurs /bdd/.../bdd/
+		 
+		$bddPart = explode(''.GetParam('fake_folder_param').'',$url);
 		if(count($bddPart) > 2) {
-			$url = $bddPart[0].'/'.GetParam('fake_folder_param').'/'.$bddPart[1];
+			$url = $bddPart[0].''.GetParam('fake_folder_param').''.$bddPart[1];
 			if($bddPart[2]) {
-				$url.= '/'.$bddPart[2];
+				$url.= ''.$bddPart[2];
 			}
 		}
-		
+		*/
 		$GLOBALS['urlCached'][$cachename] = $url;
 		
 		return $url;
@@ -851,20 +827,21 @@ class genUrl{
 	 */
 	function addParams($params) {
 		if(is_array($params) && count($params) > 0) {
-			$url = ''.GetParam('fake_folder_param').'/';
+			$url = ''.GetParam('fake_folder_param').'';
+
 			foreach($params as $k => $v) {
-				if(is_array($v)) {
-					
+				if(is_array($v)) {					
 					$k = $k.'__list';
 					//$v = implode('_-_',$v);
 					$v = serialize($v);
 				}
-				$url = path_concat($url,$k);
+				$url .= $k;
 				if($v) {
-					$url = path_concat($url,urlencode($v));
+					$url .= getParam('param_val_sep').urlencode($v);
 				} else {
-					$url .= '//';
+					//$url .= getParam('param_val_sep');
 				}
+				$url .= getParam('param_key_sep');
 			}
 			return $url;
 		}
@@ -918,6 +895,7 @@ class genUrl{
 											 'param'=>$res['rubrique_gabarit_param'],
 											/* 'isFolder'=>$res['rubrique_is_folder'],*/
 											 'option'=>$res['rubrique_option'],
+											 'template'=>$res['rubrique_template'],
 															 
 										     'type' => $res['rubrique_type'],
 										     'p_fkRubId' => $res['p_fkRubId'],
@@ -1011,14 +989,7 @@ class genUrl{
 		 * Si jamais on demande aux pages de pointer vers la premiere sous page
 		 */
 		//if($_Gconfig['rubLinkToSub'] && $rubId != $this->root_id && $GLOBALS['tabUrl'][$rubId]['type'] != RTYPE_SITEROOT) {
-		if(
-			$rubId != $this->root_id &&
-			(
-				$GLOBALS['tabUrl'][$rubId]['type'] == 'folder' ||		
-				$GLOBALS['tabUrl'][$rubId]['type'] == RTYPE_SITEROOT
-			)
-			
-			) {
+		if($GLOBALS['tabUrl'][$rubId]['type'] == 'folder' && $rubId != $this->root_id && $GLOBALS['tabUrl'][$rubId]['type'] != RTYPE_SITEROOT) {
 		
 			$subId = $rubId;
 			//$subs = $this->recursRub($subId,1,1);		
@@ -1100,7 +1071,7 @@ class genUrl{
 		
 
 		
-		if(!count($res)&& USE_DYNSUBRUBS) {
+		if(!count($res)) {
 			
 			$r = getRowFromId('s_rubrique',$rubId);
 			if(rubHasOption($r['rubrique_option'],'dynSubRubs')) {
@@ -1311,7 +1282,7 @@ class genUrl{
 	}
 
 	/* Methode qui permet d'ajouter un element au tableau des rubriques hors bdd */
-	function addRoad($titre, $url=''){
+	function addRoad($titre, $url){
 		$this->roadSup[] = array('titre'=>$titre,'url'=>$url);
 	}
 
