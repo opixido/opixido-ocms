@@ -43,6 +43,15 @@ $_Gconfig['cacheGlobales'] = array('recursDone','tabUrl','urlCached');
 $_Gconfig['field_creator'] = 'ocms_creator';
 
 /**
+ * Liste des caches à vider
+ */
+$_Gconfig['cachePaths']['cms'] = INCLUDE_PATH.'/cache/';
+$_Gconfig['cachePaths']['pages'] = INCLUDE_PATH.'/cache_agr/';
+$_Gconfig['cachePaths']['thumbs'] = $_Gconfig['basePath'].'/thumb/cache/';
+$_Gconfig['cachePaths']['css'] = $_Gconfig['basePath'].'/c/';
+
+
+/**
  * TABFORMS
  * $tabForms['TABLE']['pages'] = array(FORMULAIRES);
  * $tabForms['TABLE']['titre'] = array(CHAMPS);
