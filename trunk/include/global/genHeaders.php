@@ -72,8 +72,8 @@ class genHeaders {
 	 */
 	public function __construct($site) {
 		$this->site = $site;
-		$this->cssFiles['global'][] = BU.'/css/base.css';
-		$this->jsFiles['global'][] = BU.'/js/base.js';
+		$this->cssFiles['global'][] = '/css/base.css';
+		$this->jsFiles['global'][] = '/js/base.js';
 	}
 
 
