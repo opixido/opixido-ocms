@@ -332,7 +332,7 @@ class genRecord {
     {
         global $gr_on;
         //if ($action != 'save')
-      
+
         logAction($action, $this->table, $this->id);
 		
         if (is_array($gr_on)) {
@@ -522,7 +522,7 @@ class genRecord {
                 /*
                             On enregistre tout ca, et on va ins?er quelquechose ...
                     */
-                if (ereg("genform_modfk_", $key_name) && !ereg("_value", $key_name) && $value != "") {
+                if (strstr($key_name,"genform_modfk_") !== false && !strstr($key_name,"_value" ) !== false && $value != "") {
                     /* FK SIMPLE */
                     $tab = explode("__", $key_name);
                     // if($this->table != $tab[1]) {
@@ -534,7 +534,7 @@ class genRecord {
                     }
                     // }
                 } else
-                if (ereg("genform_delfk_", $key_name) && !ereg("_value", $key_name) && $value != "") {
+                if (strstr($key_name,"genform_delfk_") !== false && !strstr($key_name,"_value" ) !== false && $value != "") {
                 	
                     $tab = explode("__", $key_name);
                     // if($this->table != $tab[1]) {
@@ -554,7 +554,7 @@ class genRecord {
                     }
                     // }
                 } else
-                if (ereg("genform_add_", $key_name)) {
+                if (strstr($key_name,"genform_add_") !== false) {
                     /* FK SIMPLE */
                     $tab = explode("_-_", $key_name);
                     if ($this->table != $tab[1]) {
@@ -563,7 +563,7 @@ class genRecord {
                         $_REQUEST['newId'] = "new";
                     }
                 } else
-                if (ereg("genform_addfk_", $key_name)) {
+                if (strstr($key_name,"genform_addfk_") !== false) {
                     /* TABLE FK DISTANTE */
                     $tab = explode("__", $key_name);
                     // if($this->table != $tab[1]) {
@@ -573,7 +573,7 @@ class genRecord {
                     $_REQUEST['newId'] = "new";
                     // }
                 } else
-                if (ereg("genform_addrel_", $key_name)) {
+                if (strstr($key_name, "genform_addrel_" ) !== false) {
                     /* TABLE DE RELATION */
                     $tab = explode("__", $key_name);
                     if ($this->table != $tab[1]) {
@@ -583,7 +583,7 @@ class genRecord {
                         $_REQUEST['newId'] = "new";
                     }
                 } else
-                if (ereg("genform_editrel_", $key_name) && $value > 0) {
+                if (strstr($key_name,"genform_editrel_") !== false && $value > 0) {
                     /* TABLE DE RELATION */
                     $tab = explode("__", $key_name);
                     if ($this->table != $tab[1]) {
@@ -595,7 +595,7 @@ class genRecord {
                         $_REQUEST['newId'] = $value;
                     }
                 } else
-                if (ereg("genform_rel", $key_name) && ereg("_temoin", $key_name)) {
+                if (strstr($key_name,"genform_rel") !== false   && strstr($key_name,"_temoin") !== false ) {
                     $key_name = str_replace("_temoin", "", $key_name);
                     $value = $_POST[$key_name];
 
@@ -649,7 +649,7 @@ class genRecord {
                         }
 
                         /* Entier non FK */
-                        else if ($tab_field[$name]->type == "int" && !ereg("fk", $name) && $value != "") {
+                        else if ($tab_field[$name]->type == "int" && !strstr($name,"fk") !== false && $value != "") {
                             $val1 = (int)$value;
                             $value = str_replace(" ", "", $value);
                             $value = str_replace(".", "", $value);

@@ -8,13 +8,27 @@
 </div>
 
 <div style="clear: both;">&nbsp;</div>
-<div id="jsevents" style="display:none;overflow:auto;height:200px;border:2px solid;background:white;"></div>
+
 
 <script type="text/javascript" >
 
+$.fn.tipsy.defaults = {
+        delayIn: 0.3,
+        delayOut: 0.3,
+        fade: true,
+        fallback: '',
+        gravity: 'n',
+        html: true,
+        opacity: 2,
+        title: 'title'
+    };
+
+
 $(document).ready(function() {
-	$('.resizable').TextAreaResizer();
-	$('input, a').tipsy({html: true ,gravity:  $.fn.tipsy.autoWE});
+	//$('.resizable').TextAreaResizer();
+	$('.resizable').each(function() {FitToContent($(this).attr('id'));});
+	
+	$('input, a, div.rtePreview').tipsy({html: true ,gravity:  $.fn.tipsy.autoWE});
 	$('img.helpimg').tipsy({html: true ,gravity:  $.fn.tipsy.autoWE,title:'alt'});
 });
 
@@ -26,7 +40,8 @@ $("table.sortable").each( function() {
 
 	if($(this).find("tbody tr").length > 1) {
 		
-		$(this).find("tbody tr").prepend("<td class='dragHandle'></td>");
+		$(this).find("tbody tr").prepend('<td class="dragHandle" title=<?=alt(t('relinv_move'));?>></td>');
+		$(this).find('td.dragHandle').tipsy({html: true ,gravity:  'e'});
 		$(this).find("thead th:first").after("<th ></th>");
 		
 		$(this).tableDnD({
@@ -65,11 +80,12 @@ tinyMCE_GZ.init({
 
 </script>
 <script type="text/javascript">
-<?php if($GLOBALS['rteElements']) { ?>
-
+<?php if($GLOBALS['rteElements']) { //<?=substr($GLOBALS['rteElements'],0,-2)? >
+?>
+function setupTinymce(elementsId) {
 tinyMCE.init({
 				    mode : "exact",
-					elements : "<?=substr($GLOBALS['rteElements'],0,-2)?>",
+					elements : elementsId,
 					theme : "advanced",
 					skin : "default",
 					language : "en",
@@ -102,27 +118,12 @@ tinyMCE.init({
 					remove_linebreaks : false
 						 
 				});
+}
 <? 
 }
 ?>
 
 </script>
 
-<style type="text/css">
-	td.dragHandle {
-		width:20px;
-		background:url(img/move_light.png) no-repeat center center #eee!important ;
-		cursor:move;
-	}
-	tr.myDragClass  td {
-		background-color:#ddd!important;
-	}
-	tr.myDragClass td.dragHandle {
-		background:url(img/move.png) no-repeat center center #eee!important ;
-	}
-	tr.myDragClass  {
-	
-	}
-</style>
 </body>
 </html>

@@ -298,7 +298,7 @@ class genRubrique {
 
 		$this->Execute('init');
 		$this->Execute('afterInit');
-
+		$this->Execute('postInit');
 
 
 
@@ -416,28 +416,6 @@ class genRubrique {
 
 	}
 
-	
-	
-	function genContextBoxes() {
-
-			/* On parcourt Chaque boite */
-			$gfa = new genFrontAdmin('s_rubrique',$this->site->getCurId());
-			$gfa->authorized = !$this->site->g_rubrique->isRealRubrique();
-			$html_in_cont = '';
-			foreach($this->contextBoxes as $box) {
-
-
-				$html_in_cont .= $gfa->startField($box->champ,array(),0);
-				$html_in_cont .= $gfa->endField();
-
-				$html_in_cont .= $box->gen();
-			}
-
-			return $html_in_cont;
-
-	}
-	
-
 
 	/**
 		Generation des paragraphes
@@ -539,16 +517,6 @@ class genRubrique {
 
 
 
-	/**
-		Ajoute un objet BOX a la page
-		@param box_obj = objet box
-	*/
-	function addBox($box_obj)
-	{
-
-
-		$this->contextBoxes[] = &$box_obj;
-	}
 
 }
 

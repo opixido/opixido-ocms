@@ -123,7 +123,13 @@ class genRteInline{
 	function instanceRte(){
 
 		$html .= ('<textarea  name="'.$this->champ.'" id="'.$this->champ.'" 
-						style="height:300px;width:500px" > '.$this->valeur .' </textarea >');
+						style="height:300px;width:500px" > '.$this->valeur .' </textarea >
+						
+						<script type="text/javascript">
+							toggleRteInline("'.$this->champ.'")
+						</script>
+						
+						');
 		
 		return $html;
 	}

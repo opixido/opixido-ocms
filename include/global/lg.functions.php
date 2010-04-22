@@ -51,7 +51,7 @@ function addTranslations($table,$id,$lg){
  * @return unknown
  */
 function getTranslatedFields($table) {
-
+	
 	$fields = getTabField($table);
 	$lgfields = array();
 	foreach($fields  as $k=> $v) {

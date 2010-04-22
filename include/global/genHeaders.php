@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with oCMS. If not, see <http://www.gnu.org/licenses/>.
 #
-# @author Celio Conort / Opixido 
+# @author Celio Conort / Opixido
 # @copyright opixido 2009
 # @link http://code.google.com/p/opixido-ocms/
 # @package ocms
@@ -31,7 +31,8 @@ class genHeaders {
 	private $html_headers;
 	public $titleSep = ' - ';
 	public $firstBody = '';
-	
+
+	public $getAllCss = false;
 	/**
 	 * Contenu des CSS en ligne
 	 * @var string
@@ -43,13 +44,13 @@ class genHeaders {
 	 * @var array
 	 */
 	public $cssFiles = array();
-	
+
 	/**
 	 * Liste des fichiers JS
 	 * @var array
 	 */
 	public $jsFiles = array();
-		
+
 	/**
 	 * Durée du cache
 	 * @var int
@@ -61,8 +62,8 @@ class genHeaders {
 	 * @var string
 	 */
 	public $fCacheFolder = 'c';
-	
-	
+
+
 	/**
 	 * Handles HTML Headers
 	 *
@@ -74,7 +75,7 @@ class genHeaders {
 		$this->cssFiles['global'][] = BU.'/css/base.css';
 		$this->jsFiles['global'][] = BU.'/js/base.js';
 	}
-	
+
 
 	/**
 	 * Generates full headers
@@ -88,77 +89,114 @@ class genHeaders {
 		$tpl = new genTemplate();
 		$tpl->loadTemplate('headers.html');
 
-		/**
-		 * Compression et Cache des CSS
-		 */
-		if(count($this->cssFiles)) {
-			
-			$preHeaders = $this->html_headers;
-			$this->html_headers = '';
-			
-			foreach($this->cssFiles as $k => $v) {			
-				
-				$pathCss = $this->getCssPath($v);
-				/**
-				 * Un seul CSS mis en cache
-				 */
-				$this->html_headers .= '<style type="text/css" media="screen"> /*'.$k.'-'.implode('-',$v).'*/ @import "'.$pathCss.'"; </style>'."\n";
 
-			}
-			$this->html_headers .= $preHeaders;
-		}
-		
 		/**
 		 * Compression et Cache des JS
 		 */
 		if(count($this->jsFiles)) {
-			
+
+			$preHeaders = $this->html_headers;
+			$this->html_headers = '';
+
 			foreach($this->jsFiles as $k=>$v) {
-				
+
 				$jsF = $this->getJsPath($v);
 				/**
 				 * Un seul js mis en cache
 				 */
-				$this->addHtmlHeaders('<script type="text/javascript" src="'.$jsF.'"></script>');
+				$this->html_headers .=('<script type="text/javascript" src="'.$jsF.'"></script>'."\n");
+			}
+			$this->html_headers .= $preHeaders;
+
+		}
+
+        
+		if($this->getAllCss) {
+			$this->cssFiles = array();
+			
+			$files =	$GLOBALS['gb_obj']->getFileListing('../www/css/');
+			foreach($files as $v) {
+				if(strstr($v,'.css')) {
+					$this->cssFiles['global'][] = '/css/'.$v;
+				}
+			}
+			if(count($this->cssFiles)) {
+					
+				$preHeaders = $this->html_headers;
+				$this->html_headers = '';
+					
+				foreach($this->cssFiles as $k => $v) {
+	
+					$pathCss = $this->getCssPath($v);
+					/**
+					 * Un seul CSS mis en cache
+					 */
+					$this->html_headers .= "\n".'<style type="text/css" media="screen"> /*'.$k.'-'.implode('-',$v).'*/ @import "'.$pathCss.'"; </style>'."\n";
+	
+				}
+				$this->html_headers .= $preHeaders;
 			}
 			
-		}		
+		} else {
+			/**
+			 * Compression et Cache des CSS
+			 */
+			if(count($this->cssFiles)) {
+					
+				$preHeaders = $this->html_headers;
+				$this->html_headers = '';
+					
+				foreach($this->cssFiles as $k => $v) {
+	
+					$pathCss = $this->getCssPath($v);
+					/**
+					 * Un seul CSS mis en cache
+					 */
+					$this->html_headers .= "\n".'<style type="text/css" media="screen"> /*'.$k.'-'.implode('-',$v).'*/ @import "'.$pathCss.'"; </style>'."\n";
+	
+				}
+				$this->html_headers .= $preHeaders;
+			}
+		}
+
 
 		/**
 		 * Compression des CSS en ligne
 		 */
 		if(strlen($this->cssTexts)) {
-			$this->addHtmlHeaders('<style type="text/css"> '.compressCSS($this->cssTexts).' </style>');
+			$this->addHtmlHeaders('<style type="text/css"> '.compressCSS($this->cssTexts).' </style>'."\n");
 		}
-		
+
 		$tpl->set('lg',$this->site->getLg());
-				
+
 		$tpl->set('title',altify($this->getTitle()));
 		$tpl->set('keywords',altify($this->getMetaKeywords()));
 		$tpl->set('desc',altify($this->getMetaDescription()));
 		$tpl->set('headers',$this->getHtmlHeaders());
 		$tpl->set('first_body',$this->firstBody);
-		
+
 
 		return $tpl->gen();
 
 	}
-	
-	
+
+
 	public function getJsPath($fichiers) {
-		
+
+		global $_Gconfig;
+
 		/**
-		 * Chemin du cache des js 
+		 * Chemin du cache des js
 		 */
 		$jsCacheName = ''.md5(implode('_',$fichiers)).'.js';
 		$jsCache = new genCache($jsCacheName,(time() - ($this->fCacheTime) ),$_SERVER['DOCUMENT_ROOT'].BU.'/'.$this->fCacheFolder.'/');
-					
-		if(!$jsCache->cacheExists()) {				
+			
+		if(!$jsCache->cacheExists()) {
 			/**
 			 * Si le cache est expiré ou inexistant
 			 * On récupère le contenu de toutes les js
-			 */		
-			$j = new ECMAScriptPacker();					
+			 */
+			$j = new ECMAScriptPacker();
 			foreach($fichiers as $v) {
 				$jj = @file_get_contents('.'.$v);
 				if(!$jj) {
@@ -167,46 +205,48 @@ class genHeaders {
 				/**
 				 * Si déjà compressé on ne touche pas
 				 */
-				
+
 				$js .= "\n//".$v."\n";
-				
+
 				if(substr($jj,0,10) == '/*packed*/') {
 					$js .= $jj."\n";
 				} else {
 					$js .= $j->pack($jj)."\n";
-				}			
+				}
 			}
 			/**
 			 * On les compresse
 			 */
-			
-			
-			
+				
+				
+				 	
 			/**
 			 * Ajout des déjà compressés
 			 */
-			//$js .= "\n".$jsEnd;			
-			
+			//$js .= "\n".$jsEnd;
+				
 			/**
 			 * Et on sauvegarde
 			 */
 			$jsCache->saveCache($js);
 		}
-		
-		return BU.'/'.$this->fCacheFolder.'/'.$jsCacheName;
+
+		return $_Gconfig['CDN'].BU.'/'.$this->fCacheFolder.'/'.$jsCacheName;
 			
 	}
-	
-	
-	
+
+
+
 	public function getCssPath($fichiers) {
-		
+
+		global $_Gconfig;
+
 		if(!is_array($fichiers)) {
 			$fichiers = array($fichiers);
 		}
 
 		/**
-		 * Chemin du cache des CSS 
+		 * Chemin du cache des CSS
 		 */
 		if(count($fichiers) == 1) {
 			$cssCacheName = nicename($fichiers[0]).'.css';
@@ -214,12 +254,12 @@ class genHeaders {
 			$cssCacheName = ''.md5(implode('_',$fichiers)).'.css';
 		}
 		$cssCache = new genCache($cssCacheName,(time() - ($this->fCacheTime) ),$_SERVER['DOCUMENT_ROOT'].BU.'/'.$this->fCacheFolder.'/');
-					
+			
 		if(!$cssCache->cacheExists()) {
 			/**
 			 * Si le cache est expiré ou inexistant
 			 * On récupère le contenu de toutes les CSS
-			 */				
+			 */
 			foreach($fichiers as $v) {
 				if($csT = file_get_contents('.'.$v)) {
 					$css .= $csT."\n";
@@ -231,38 +271,39 @@ class genHeaders {
 			 * On les compresse
 			 */
 			$css = compressCss($css);
-			
+			$css = str_replace('../img/',$_Gconfig['CDN'].$this->addFolder.'/img/',$css);
+			$css = str_replace('(/','('.$_Gconfig['CDN'].$this->addFolder.BU.'/img/',$css);
+				
 			/**
 			 * Et on sauvegarde
 			 */
 			$cssCache->saveCache($css);
+			//$a = new tsmartsprite($cssCache->cache_path);
+			//$cssCacheName = str_replace('.css','-sprite.css',$cssCacheName);
 		}
-		
-		return BU.'/'.$this->fCacheFolder.'/'.$cssCacheName;
-		
+
+		return $_Gconfig['CDN'].BU.'/'.$this->fCacheFolder.'/'.$cssCacheName;
+
 	}
 
 	/**
 	 * Adds a link to a javascript FILE in the JS folder
 	 *
 	 * @param string $name
-	 * @param bool $addBase if FALSE you have to set the FULL path to the file in $name 
+	 * @param bool $addBase if FALSE you have to set the FULL path to the file in $name
 	 * @param string $tag additional parameters to add in the script tag
 	 */
 	public function addScript($name,$addBase=true,$group='page') {
 
 		if($addBase) {
-			$name =  '/js/'.$name;
+			$name =  BU.'/js/'.$name;
 			//$this->addHtmlHeaders('<script '.$tag.' type="text/javascript" src="'.BU.'/js/'.$name.'" ></script>');
-		} 
+		}
 		if($group) {
 			$this->jsFiles[$group][] = $name;
 		}
 		else {
-			if($addBase) {
-				$name = BU.$name;
-			}
-			$this->addHtmlHeaders('<script  type="text/javascript" src="'.$name.'" ></script>');
+			$this->addHtmlHeaders('<script type="text/javascript" src="'.$name.'" ></script>');
 		}
 	}
 
@@ -283,15 +324,15 @@ class genHeaders {
 	public function addCss($name,$group='page') {
 
 		if(strpos($name,'/') === false) {
-			$name = BU.'/css/'.$name;
-			//$this->addHtmlHeaders('<style type="text/css" media="screen"> @import "'.$name.'"; </style>');			
-		} 
-		
+			$name = $_Gconfig['CDN'].BU.'/css/'.$name;
+			//$this->addHtmlHeaders('<style type="text/css" media="screen"> @import "'.$name.'"; </style>');
+		}
+
 		if($group) {
 			$this->cssFiles[$group][] = $name;
-		} 
+		}
 		else {
-			$this->addHtmlHeaders('<style type="text/css" media="screen"> @import "'.$this->getCssPath($name).'"; </style>');	
+			$this->addHtmlHeaders('<style type="text/css" media="screen"> @import "'.$this->getCssPath($name).'"; </style>');
 		}
 	}
 
@@ -301,17 +342,17 @@ class genHeaders {
 	 * @param string $value
 	 */
 	public function addCssText($value) {
-		$this->cssTexts .= $value."\n\n";		
+		$this->cssTexts .= $value."\n\n";
 	}
-	
-	
+
+
 	/**
 	 * Fully replace the "title" of the page
 	 *
 	 * @param string $str
 	 */
 	public function setTitle($str) {
-		
+
 		if($str) {
 			$str = ucfirst($str);
 			$this->title = $str.$this->titleSep.t('base_title');
@@ -320,7 +361,7 @@ class genHeaders {
 		}
 
 	}
-	
+
 	/**
 	 * Adds a new "level" to the current title
 	 *
@@ -338,7 +379,7 @@ class genHeaders {
 	 * @return unknown
 	 */
 	public function getTitle() {
-		
+
 		return $this->title;
 	}
 

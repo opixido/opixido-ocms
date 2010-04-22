@@ -98,7 +98,7 @@ function autoConfig($table) {
 	 */
 	$label = next($fields);
 	$tabForms[$table]['titre'] = array(fieldWithoutLg($label->name));
-	
+	return;
 	
 	/**
 	 * Prefixe de la table (s_, i_ , blabla_ ...)
@@ -587,6 +587,7 @@ function niceTime($d) {
  * @return string Ex : 24 Octobre 1980
  */
 function niceTextDate( $date , $jour = false) {
+    
 	global $lg;
 	$d = explode(" ",$date);
 	$d = $d[0];
@@ -601,9 +602,9 @@ function niceTextDate( $date , $jour = false) {
 	}
 	@setlocale($GLOBALS['CURLOCALE']);
 	if($lg == 'uk')
-		$s = strftime($type,mktime(0,0,0,$d[1],$d[2],$d[0]));		
+		$s = strftimeloc($type,mktime(0,0,0,$d[1],$d[2],$d[0]));
 	else 
-		$s = strftime($type,mktime(0,0,0,$d[1],$d[2],$d[0]));
+		$s = strftimeloc($type,mktime(0,0,0,$d[1],$d[2],$d[0]));
 		
 	if($GLOBALS['isWindows']) {
 		$s = utf8_encode($s);
@@ -851,10 +852,16 @@ function debugEnd() {
 	global $_Gconfig;
 
 	if($_Gconfig['debugSql']) {
-		global $h_sqls;
-		$h_sqls[] = array('sql'=>$GLOBALS['curSQL'],'time'=>(getmicrotime()-$GLOBALS['curSQLStart']),'profile'=>$GLOBALS['curProfile']);
+		global $h_sqls,$h_sqlsI;
+		$t = getmicrotime()-$GLOBALS['curSQLStart'];
+		$h_sqls[] = array('sql'=>$GLOBALS['curSQL'],'time'=>($t),'profile'=>$GLOBALS['curProfile']);
+		$t = str_replace('0,0','',$t);
+		$t = (int)substr($t,0,8);
+		$h_sqlsI[$t] = $GLOBALS['curSQL'];
 	}
 }
+
+
 /**
  * Retourne une taille formatee proprement
  * ex: 15911859 bytes devient 1,5Mo
@@ -1218,7 +1225,11 @@ function loadTrads($lge) {
 	
 	$GLOBALS['lgLoaded'][$lg] = true;
 	
-    $sql = 'SELECT trad_id,trad_'.LG_DEF.',trad_'.LG.' FROM s_trad ';
+    $sql = 'SELECT trad_id,trad_'.LG.'';
+	if(LG != LG_DEF) {
+		$sql .= ' ,trad_'.LG_DEF.'';
+	}
+    $sql .= ' FROM s_trad ';
  
     $res = GetAll($sql);
 	
@@ -1404,7 +1415,7 @@ function arraySplit($array_with_elements, $key_name) {
 
 function arrayInWord($arr,$word) {
         while(list(,$v) = @each($arr)) {
-                if(ereg($v,$word))
+                if(strstr($word,$v) !== false)
                         return true;
         }
         return false;
@@ -1498,7 +1509,7 @@ function getFlash($url,$w=290,$h=240,$alt="Flash",$tag='',$params=array()) {
 		$_flashTestPrinted = True;
 	}
 	if(!$tag) {
-		$tag = 'flash'.str_replace(',','',getmicrotime());
+		$tag = 'flash'.str_replace(',','',getmicrotime()).rand(0,1000);
 	}
 
 	$html .= ('<object id="'.$tag.'" type="application/x-shockwave-flash" data="'.$url.'" width="'.$w.'" height="'.$h.'">');
@@ -1508,6 +1519,7 @@ function getFlash($url,$w=290,$h=240,$alt="Flash",$tag='',$params=array()) {
 	$html .= ('<param name="wmode" value="transparent" />');
 	$html .= ('<param name="quality" value="high" />');
 	$html .= ('<param name="allowFullScreen" value="true" />');
+	$html .= ('<param name="allowScriptAccess" value="always" />');
 	$html .= ('<param name="scalemode" value="showall" />');
 
 	if(is_array($params)) {
@@ -1536,7 +1548,7 @@ function getFlashSo ( $url , $w = 290 , $h = 240 , $alt = "Flash" , $id_tag = ''
 
 	$html .= '<script type="text/javascript">' ;
 	$html .= '// <![CDATA[' . "\n" ;
-   	$html .= 'var so = new SWFObject("' . $url . '", "' . $id_tag . '", "' . $w . '", "' . $h . '" , "6", "#FCFCFC") ;' ;
+   	$html .= 'var so = new SWFObject("' . $url . '", "' . $id_tag . '", "' . $w . '", "' . $h . '" , "9", "#FCFCFC") ;' ;
    	if ( $wmode ) $html .= 'so.addParam( "wmode" , "transparent" ) ;' ;
    	$html .= 'so.addParam( "scale" , "noscale" ) ;' ;
    	
@@ -2318,15 +2330,22 @@ function printDebugs() {
 		DEBUG DES REQUETES SQL
 		util uniquement en préprod
 	 ***/
-	global $_Gconfig,$profileSTR,$h_sqls;
+	global $_Gconfig,$profileSTR,$h_sqls,$h_sqlsI;
 	
 	if($_Gconfig['debugSql']) {
 		
 		p('<div id="debugsql" style="border:1px solid;background:#fff;color:#000;position:fixed;bottom:0;left:0;width:800px;height:500px;overflow:auto;text-align:left;padding:5px;font-family:Courier new;monospace;font-size:1.3em;">');
 		p('<a href="#" onclick="javascript:gid(\'debugsql\').style.height= gid(\'debugsql\').style.height == \'20px\' ? \'500px\' : \'20px\' ;" style="float:right;">CLOSE</a>');
+		ksort($h_sqlsI);
+			foreach($h_sqlsI as $k=>$sql) {
+				print('<div style="padding:5px;">'.$k.' - '.$sql.'</div>');				
+			}
+			
+			print('<hr/>');
+			
 			foreach($h_sqls as $k=>$sql) {
 				$bg = $k%2?'white':'lightgray';
-				if(round($sql['time'],2) >= 0.01) {
+				if(round($sql['time'],2) >= 0.009) {
 					$bg = 'red;color:white';
 				}
 				$info = '';
@@ -2416,19 +2435,22 @@ function GetTitleFromTable($table,$separator=" ") {
  * @param array $tags
  * @return string
  */
-function strip_selected_tags($text, $tags = array())
+function strip_selected_tags($str, $tags = "", $stripContent = false)
 {
-    $args = func_get_args();
-    $text = array_shift($args);
-    $tags = func_num_args() > 2 ? array_diff($args,array($text))  : (array)$tags;
-    foreach ($tags as $tag){
-        while(preg_match('/<'.$tag.'(|\W[^>]*)>(.*)<\/'. $tag .'>/iusU', $text, $found)){
-            $text = str_replace($found[0],$found[2],$text);
+    preg_match_all("/<([^>]+)>/i", $tags, $allTags, PREG_PATTERN_ORDER);
+    foreach ($allTags[1] as $tag) {
+        $replace = "%(<$tag.*?>)(.*?)(<\/$tag.*?>)%is";
+        $replace2 = "%(<$tag.*?>)%is";
+        echo $replace;
+        if ($stripContent) {
+            $str = preg_replace($replace,'',$str);
+            $str = preg_replace($replace2,'',$str);
         }
+            $str = preg_replace($replace,'${2}',$str);
+            $str = preg_replace($replace2,'${2}',$str);
     }
-
-    return preg_replace('/(<('.join('|',$tags).')(|\W.*)\/>)/iusU', '', $text);
-}
+    return $str;
+} 
 
 
 function isNull($str) {
@@ -2581,4 +2603,12 @@ function myStripTags($str,$allow='') {
 	$str = br2nl($str);
 	$str = strip_tags($str,$allow);
 	return $str;
+}
+
+
+function xmlencode($str) {
+	$str = str_replace('&amp;','[ETAMP]',$str);	
+	$str = str_replace(array('&','[ETAMP]'),'&amp;',$str);
+	return $str;	
+
 }

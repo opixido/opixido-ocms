@@ -182,8 +182,69 @@ class GenOrder {
 
     }
 
+    
+    function orderAfterInsert() {
+    	
+    	
+          if(!$this->DoIt)
+            return;
+            
+            if(strlen($this->fk_champ)) {
+	            $sql =('UPDATE '.$this->table.' SET '.$this->orderField.' = '.$this->orderField.' + 1 
+	            				WHERE '.$this->fk_champ.' =  "'.$this->fk_id.'" 		
+	            ');
+	             $sql .= $this->specialClause();
+	            
+	             DoSql($sql);
+	             
+	             $sql =('UPDATE '.$this->table.' SET '.$this->orderField.' = 1 
+	            				WHERE '.GetPrimaryKey($this->table).' =  "'.$this->id.'" 		
+	            ');
+	             
+	            
+	             doSql($sql);
+	             
+            	
+            }
+            
+            
+            $sql = 'SELECT MAX('.$this->orderField.') AS MAXI FROM '.$this->table.' WHERE 1 ';
 
-    function OrderAfterInsert() {
+            if(strlen($this->fk_champ)) {
+
+                $sql .= ' AND '.$this->fk_champ.' = "'.$this->fk_id.'"';
+            }
+
+            $sql .= $this->specialClause();
+
+            $sql .= 'LIMIT 0,1';
+
+            $max = GetSingle($sql);
+            $max = $max['MAXI']+1;
+
+
+            $sql = 'SELECT * FROM '.$this->table.' WHERE '.$this->orderField.' = 0';
+
+            if(strlen($this->fk_champ)) {
+
+                $sql .= ' AND '.$this->fk_champ.' = "'.$this->fk_id.'"';
+            }
+
+
+	    $sql .= $this->specialClause();
+
+
+            $sql .= ' ORDER BY '.GetPrimaryKey($this->table);
+
+
+
+            $res = GetAll($sql);
+
+
+            $this->reorderRes($res,$max);
+    }
+
+    function OrderAfterInsertLastAtBottom() {
 
 
           if(!$this->DoIt)

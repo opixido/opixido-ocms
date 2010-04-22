@@ -197,7 +197,7 @@ class genTemplate {
 	public function setGFImg($nom,$table,$champ,$row,$alt='') {
 		
 		$this->imgs[$nom] = array();
-		$gf = new genFile($table,$champ,$row[getPrimaryKey($table)],$row,true,!ake($row,$champ));
+		$gf = new genFile($table,$champ,$row,$row,true,!ake($row,$champ));
 		
 		$this->imgs[$nom]['src'] = $gf->getWebUrl();
 		if(!strlen($alt))

@@ -99,7 +99,7 @@ class genSite {
 		myLocale (LG_DEF);
 		define("LGDEF",false);
 		
-		$GLOBALS['gb_obj']->includeFile($_Gconfig['URL_MANAGER'].'.php','global/ondemand');
+		//$GLOBALS['gb_obj']->includeFile($_Gconfig['URL_MANAGER'].'.php','global/ondemand');
 		$this->g_url = new $_Gconfig['URL_MANAGER'](LG);
 
 	}
@@ -151,7 +151,6 @@ class genSite {
 
 		$this->menus = array();
 		foreach($res as $row) {
-
 			$this->menus[$row['rubrique_url_'.LG_DEF]] = new genMenu($this,$row['rubrique_url_'.LG_DEF],$row['rubrique_id'],$row);
 		}
 
@@ -322,7 +321,8 @@ class genSite {
 
 			ob_end_flush();
 		}
-
+		if(!$download)
+		saveAgCache($contenu);
 		die();
 	}
 

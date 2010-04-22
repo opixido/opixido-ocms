@@ -75,8 +75,9 @@ class simpleForm {
 
 			} else {
 
-			$s .= '<div id="div_'.$field['id'].'" class="div_'.$field['type'].' '.($field['needed'] ? 'needed' : '').'">';
-
+            if($field['type'] != 'html') {
+                $s .= '<div id="div_'.$field['id'].'" class="div_'.$field['type'].' '.($field['needed'] ? 'needed' : '').'">';
+            }
 			switch ($field['type']) {
 
 
@@ -194,7 +195,7 @@ class simpleForm {
 			}
 
 
-			
+			if($field['type'] != 'html')
 			$s .= '</div>';
 
 			}
@@ -218,12 +219,9 @@ class simpleForm {
 		//$s .= '</fieldset>'."\n";
 		$s .= '</form>'."\n";
 //<script type="text/javascript" src="'.BU.'/js/jquery.validate.pack.js" ></script>
+//<script type="text/javascript" src="'.BU.'/js/jquery-ui-cal.js" ></script>
 		$s .= '
-				
-				<script type="text/javascript" src="'.BU.'/js/jquery-ui-cal.js" ></script>
-
-				<script type="text/javascript">
-		
+				<script type="text/javascript">		
 				$("#'.$this->id.'").submit(function(){
 				
 					var neededFields  = new Array(0	';
@@ -241,6 +239,7 @@ class simpleForm {
 				var validRegExp = /^[^@]+@[^@]+.[a-z]{2,}$/i;
 				for(p=0;p<=len;p++) {
 					ob = $("#"+neededFields[p]);
+					
 					if(ob.val() == "") {
 						$("#div_"+neededFields[p]).addClass("formError");
 						errorFound = true;
@@ -253,17 +252,12 @@ class simpleForm {
 						$("#div_"+neededFields[p]).removeClass("formError");
 						$("#div_"+neededFields[p]+" label").removeClass("formError");
 					}
-				}
-				
+				}				
 				if(errorFound) {
 					alert(message);
 					return false;
 				}
-				
-				
 				});
-					
-				
 				</script>
 ';
 
@@ -450,14 +444,15 @@ class simpleForm {
 
 		if(is_array($field['value'])) {
 			foreach($field['value'] as $k=>$value) {
+				
 				if(!is_array($value)) {
 					$val = $value;
 					$value = array();
 					$value['label'] = $val;
-					$value['value'] = $val;							
+					$value['value'] = $k;							
 				}
 				
-				if(!$value['value']) {
+				if(!$value['value'] && $value[1]) {
 					$value['value'] = $value[0];
 					$value['label'] = $value[1];
 				}

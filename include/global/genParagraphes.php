@@ -155,22 +155,30 @@ class genParagraphes {
 	
 	function gen() {
 		
-		$this->getHtmlParagraphes();
+		$c = new genCache('para_'.$this->site->getCurId(),strtotime($this->rubrique->rubrique['rubrique_date_publi']));
 		
-		$html = '';
-		
-		foreach($this->paragraphes as $para) {
-			if($_REQUEST['para']) {
-					if($para['paragraphe_id'] == $_REQUEST['para']){
+		if(!$c->cacheExists()) {
+					
+			$this->getHtmlParagraphes();			
+			$html = '';			
+			foreach($this->paragraphes as $para) {
+				if($_REQUEST['para']) {
+						if($para['paragraphe_id'] == $_REQUEST['para']){
+							$html .= $para['html'];
+						}
+				} else {
 						$html .= $para['html'];
-					}
-			} else {
-					$html .= $para['html'];
-			}
+				}
+					
 				
-			
+			}
+			$h = '<div id="'.$this->id.'" class="paragraphe">'.$html.'</div>';
+			$c->saveCache($h);
+			return $h;
 		}
-		return '<div id="'.$this->id.'" class="paragraphe">'.$html.'</div>';
+		
+		return $c->getCache();
+		
 	}
 	
 }			
