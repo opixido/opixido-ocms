@@ -51,7 +51,7 @@ class genMenu{
 		global $_Gconfig;
 
 		$this->site = $site;
-
+		
 		/**
 		 * Concats menus
 		 */
@@ -61,6 +61,7 @@ class genMenu{
 			$this->conf = $_Gconfig['menus']['__default__'];
 		}
 		
+
 				
 		/**
 		 * If no $row, selecting it in database
@@ -113,7 +114,7 @@ class genMenu{
 		if(!count($this->tabPrincipal))
 			$this->tabPrincipal = $this->site->g_url->recursRub($this->id_menu,1,$this->conf['max_levels']);
 			
-
+		return $this->tabPrincipal;
 
 	}
 
@@ -164,7 +165,6 @@ class genMenu{
 			$tpl = new genTemplate();
 			$tpl->loadTemplate('menu.item');
 
-
 			if(!empty($rootId)) {
 				if($this->conf['use_images']) {				
 					$value['titre'] = $this->genImageMenu($value['titre'],$this->nom_menu,$cpt,$value['selected']).'';
@@ -173,11 +173,7 @@ class genMenu{
                                 } else {
 					$value['titre'] = $value['titre'].'';					
 				}
-			}
-			
-		
-			
-			
+			}	
 
 			$style = ' class="';
 			$style .= $value['selected'] ? 'selected ' : '';

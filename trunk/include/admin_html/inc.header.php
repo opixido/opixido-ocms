@@ -12,7 +12,8 @@
   				'/css/arbo.css',
   				'/genform/css/genform.css',
   				'/jq/css/cupertino/jquery-ui-1.7.1.custom.css',
-  				'/jq/css/tipsy.css'
+  				'/jq/css/tipsy.css',
+  				'/jq/css/fg.menu.css'
   );
   $js = array(
   	'/genform/js/tjmlib.js',
@@ -31,6 +32,8 @@
 
   $g = new genHeaders(false);
   $g->fCacheFolder = 'admin/c';
+  $g->addFolder = '/admin/';
+
   $css = $g->getCssPath($css);
   $js = $g->getJsPath($js);
 
@@ -74,6 +77,7 @@
         echo $tab;
         ?>
 </script>
+
 <?php   
     if(strstr($_SERVER["HTTP_USER_AGENT"],'MSIE')) {
     	p('<link rel="StyleSheet" href="css/ie.css" />');
@@ -95,17 +99,49 @@
 	    <div id="bandeau">
 	
 	        <div id="logo">
-	
-				
+	        				
 			<? if($GLOBALS['gs_obj']->isLogged() ) { ?>
-			<a href="index.php?logout=1" class="abutton" id="logout" ><img src="<?=t('src_logout')?>" alt="" class="inputimage" /> <?=t('logout')?></a>
+			<a href="index.php?logout=1" class="bloc2" id="logout" ><img src="<?=t('src_logout')?>" alt="" class="inputimage" /> <?=t('logout')?></a>
 			<? } ?>
-	
-            <a class="logoa" href="index.php?home=1"><h1><?php echo ta('base_title') ?></h1></a>
-
-	        </div>
-	
+			
+		<? if($GLOBALS['gs_obj']->isLogged() && $_REQUEST['curTable'] ) { ?>
+	    <div id="rmenu" class="menu4 bloc2">
+	    	<ul >
+		    <?php 
+		    	$tables = getTables();
+		    	$nb = 1;
+		    	foreach ($_Gconfig['bigMenus'] as $k=>$menus ) {
+		    		
+		    		$t = '<li ><a href="#" id="menu_'.$k.'" ><img src="'.getPicto($menus[0],'16x16').'" alt=""/> '.ta($k).'</a><ul class="bloc2 menu_'.$nb.'" id="content_'.$k.'" class="" >';
+		    		$h = '';
+					foreach($menus as $menu) {
+						if($GLOBALS[gs_obj]->can('edit', $menu)){		
+							$url = in_array($menu,$tables) ? 'index.php?curTable='.$menu : ta('cp_link_'.$menu);							
+							$h .= '<li><a href="'.$url.'" ><img src="'.getPicto($menu,'16x16').'" alt=""/> <span>'.ta('cp_txt_'.$menu).'</span></a></li>';
+						}
+					}
+					if($h) {
+						$nb++;
+						echo $t.$h.'</ul>';
+					}		    		
+		    	}		    
+		    ?>
+	   	 </ul>
 	    </div>
+	    <style type="text/css">
+		<?php
+		$nb--;
+		echo '.menu_'.$nb.' , .menu_'.($nb-1).' {left:auto!important;right:-5px!important;} ';
+		?>
+		</style>
+	    <div class="clearer"></div>
+	    <?php  } ?>		
+	        <a class="logoa" href="index.php?home=1"><h1><?php echo ta('base_title') ?></h1></a>
+	        </div>	
+	    </div>
+	    
+	    
+	   
 <?php } ?>
 
 <div id="bas">

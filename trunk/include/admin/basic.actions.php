@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with oCMS. If not, see <http://www.gnu.org/licenses/>.
 #
-# @author Celio Conort / Opixido 
+# @author Celio Conort / Opixido
 # @copyright opixido 2009
 # @link http://code.google.com/p/opixido-ocms/
 # @package ocms
@@ -24,7 +24,7 @@
 
 function s_admin_update ($id,$row=array()) {
 
-	
+
 	if(!count($row))
 	{
 		$row = getRowFromId('s_admin',$id);
@@ -48,23 +48,23 @@ function s_admin_update ($id,$row=array()) {
 
 
 function executeSql() {
-	
-		
+
+
 	$f = new simpleForm('','post','executeSql');
-	
+
 	$f->add('fieldset','Executer une requête SQL');
 	$f->add('textarea','SELECT * FROM s_rubrique','Requête : ','sqlQ','',true);
 	$f->add('submit','QUERY');
 	$f->add('endfieldset');
-	
+
 	if($f->isSubmited() && $f->isValid()) {
-		
+
 		$res = GetAll($_POST['sqlQ']);
-		
+
 		echo '<h3>'.count($res).' Résultats</h3>';
 		echo '<h3>'.Affected_Rows().' enregistrements affectés</h3>';
 		echo '<h3>Identifiant : '.InsertId().' inséré</h3>';
-		
+
 		if(count($res)) {
 			p('<table >');
 			foreach($res as $j => $row) {
@@ -82,15 +82,15 @@ function executeSql() {
 				p('</tr>');
 			}
 			p('</table>');
-			
-			
+				
+				
 		}
-		
+
 	}
-	
+
 	echo $f->gen();
-	
-	
+
+
 }
 
 
@@ -119,35 +119,35 @@ function changeTranslations() {
 
 
 function doTranslations($lg,$action='add') {
-	 $_SESSION['cache'] = array();
-	
-		$tables = GetTables();
-		foreach($tables as $table) {
-			$chps = getTabField($table);
-			foreach($chps as $chp) {
+	$_SESSION['cache'] = array();
 
-				if(isDefaultLgField($chp->name)) {
+	$tables = GetTables();
+	foreach($tables as $table) {
+		$chps = getTabField($table);
+		foreach($chps as $chp) {
 
-					$chpnu = fieldWithoutLg($chp->name);
-					$newName = $chpnu.'_'.$lg;
+			if(isDefaultLgField($chp->name)) {
 
-					if($chps[$newName]) {
-						if($action == 'del') {
+				$chpnu = fieldWithoutLg($chp->name);
+				$newName = $chpnu.'_'.$lg;
 
-							print('<br/>DROPPING : '.$table.'.'.$newName);
-							DoSql('ALTER TABLE '.$table.' DROP '.$newName.'');
+				if($chps[$newName]) {
+					if($action == 'del') {
 
-						} else {
-							//p('<br/>CAN\'T ADD EXISTENT FIELD : '.$table.'.'.$newName);
-						}
+						print('<br/>DROPPING : '.$table.'.'.$newName);
+						DoSql('ALTER TABLE '.$table.' DROP '.$newName.'');
+
 					} else {
-						if($action == 'del') {
-							p('<br/>CAN\'T DROP INEXISTENT FIELD : '.$table.'.'.$newName);
+						//p('<br/>CAN\'T ADD EXISTENT FIELD : '.$table.'.'.$newName);
+					}
+				} else {
+					if($action == 'del') {
+						p('<br/>CAN\'T DROP INEXISTENT FIELD : '.$table.'.'.$newName);
 
-						} else {
-							print('<br/>ADDING => '.$table.'.'.$newName);
+					} else {
+						print('<br/>ADDING => '.$table.'.'.$newName);
 
-							$sql = 'ALTER TABLE
+						$sql = 'ALTER TABLE
 									'.$table.'
 									ADD
 									'.$newName.'
@@ -159,14 +159,14 @@ function doTranslations($lg,$action='add') {
 
 									AFTER '.$chp->name.'
 									';
-							DoSql($sql);
-						}
+						DoSql($sql);
 					}
 				}
 			}
 		}
-		
-		 $_SESSION['cache'] = array();
+	}
+
+	$_SESSION['cache'] = array();
 }
 
 
@@ -174,7 +174,7 @@ function recheckTranslations() {
 	global $_Gconfig;
 	$ar = array_reverse($_Gconfig['LANGUAGES']);
 	foreach($ar as $v) {
-		
+
 		doTranslations($v,'add');
 	}
 }
@@ -203,16 +203,16 @@ function encodePasswords() {
 
 function showPhpInfo() {
 
- ob_start();
- phpinfo();
+	ob_start();
+	phpinfo();
 
- $s = ob_get_contents();
- ob_end_clean();
- $s = substr($s,strpos($s,'<body>')+6);
- $s = substr($s,0,strrpos($s,'<h2>PHP License'));
- $s .= '</div>';
- p('<style type="text/css">');
- p('
+	$s = ob_get_contents();
+	ob_end_clean();
+	$s = substr($s,strpos($s,'<body>')+6);
+	$s = substr($s,0,strrpos($s,'<h2>PHP License'));
+	$s .= '</div>';
+	p('<style type="text/css">');
+	p('
 
  #phpinfo {
  overflow:auto;
@@ -238,18 +238,18 @@ function showPhpInfo() {
   }
 
  ');
- p('</style>');
- p('<div id="phpinfo">');
- print($s);
- p('</div>');
-/*
-phpinfo(INFO_CREDITS);
-phpinfo(INFO_CONFIGURATION);
-phpinfo(INFO_MODULES);
-phpinfo(INFO_ENVIRONMENT);
-phpinfo(INFO_VARIABLES);
+	p('</style>');
+	p('<div id="phpinfo">');
+	print($s);
+	p('</div>');
+	/*
+	 phpinfo(INFO_CREDITS);
+	 phpinfo(INFO_CONFIGURATION);
+	 phpinfo(INFO_MODULES);
+	 phpinfo(INFO_ENVIRONMENT);
+	 phpinfo(INFO_VARIABLES);
 
-*/
+	 */
 
 }
 
@@ -261,7 +261,7 @@ function mostUsedWords() {
 	//implode('<br/>',$res);
 	//print_r($res);
 	foreach($res as $row)
-		p($row['SOMME']."\t".$row['word']."\n");
+	p($row['SOMME']."\t".$row['word']."\n");
 	p('</pre>');
 
 }
@@ -277,11 +277,11 @@ function s_rubrique_createAll($id,$row=array(),$obj='') {
 	/*
 		La rubrique vient d'être créée !
 		On créé une seconde rubrique à modifier
-	*/
+		*/
 
 	if(is_object($obj)) {
 		$obj->recordData();
-		
+
 	}
 
 	global $gs_obj;
@@ -290,26 +290,26 @@ function s_rubrique_createAll($id,$row=array(),$obj='') {
 	$sql = 'INSERT INTO s_rubrique  ( fk_rubrique_id,rubrique_ordre )
 		 ( SELECT fk_rubrique_id,rubrique_ordre
 		 	 FROM s_rubrique WHERE rubrique_id = "'.$id.'" ) ';
-	
+
 	$res = DoSql($sql);
 
 	$newId = InsertId();
 	if(is_object($obj)) {
 		$obj->id = $newId;
-		
+
 		//debug('before record');
 		//$obj->recordData();debug('after record');
 	}
 
-	$sql = 'UPDATE s_rubrique SET 
+	$sql = 'UPDATE s_rubrique SET
 							fk_rubrique_version_id = "'.$id.'" , 
 							rubrique_date_crea = NOW() , 
 							fk_creator_id = "'.$gs_obj->adminid.'"  
 							WHERE rubrique_id = "'.$newId.'"';
-	
+
 	$res = DoSql($sql);
-	
-	
+
+
 	return $newId;
 
 }
@@ -342,72 +342,76 @@ function t_document_update($id,$row=array()) {
 
 
 function emptyCache() {
-	global $gb_obj;
+	global $_Gconfig;
 
-	$cachepath = $gb_obj->include_path.'/'.GetParam('cache_path').'/';
+	foreach($_Gconfig['cachePaths'] as $k=>$v ) {
+		echo '<li><a href="?globalAction=emptyCache&empty='.$k.'">'.t($k).' ('.(iterator_count(new DirectoryIterator($v))-2).')</a>';
+		if($_REQUEST['empty'] == $k) {
+			emptyDir($v);
+		}
+		echo '</li>';
 
+	}
 
-	p('<a href="?globalAction=emptyCache&amp;deleteThumbs=1">&raquo; <u>'.ta('cache_delete_thumbs_too').'</u></a><br/>');
-
-	emptyDir($cachepath,$_REQUEST['deleteThumbs']);
-	emptyDir($gb_obj->include_path.'/../imgc/');
-	emptyDir($gb_obj->include_path.'/cache_agr/');
-
+	/*emptyDir($cachepath,$_REQUEST['deleteThumbs']);
+	 emptyDir($gb_obj->include_path.'/../imgc/');
+	 emptyDir($gb_obj->include_path.'/cache_agr/');
+	 */
 
 }
 
 function emptyDir($cachepath,$dirsToo=false) {
-		if(!is_dir($cachepath)) {
-			return;
+	if(!is_dir($cachepath)) {
+		return;
+	}
+	if ($handle = opendir($cachepath)) {
+		$nbok = 0;
+		$nbfiles = 0;
+		/* This is the correct way to loop over the directory. */
+		while (false !== ($file = readdir($handle))) {
+
+			if($file != '.' && $file != '..' && ( !is_dir($cachepath.$file) || $dirsToo) ) { //
+				$nbfiles++;
+				$nbok += rm($cachepath.$file);
+			}
 		}
-		if ($handle = opendir($cachepath)) {
-			$nbok = 0;
-			$nbfiles = 0;
-		   /* This is the correct way to loop over the directory. */
-		   while (false !== ($file = readdir($handle))) {
-	
-		   	if($file != '.' && $file != '..' && ( !is_dir($cachepath.$file) || $dirsToo) ) { // 
-		   		$nbfiles++;
-		    	$nbok += rm($cachepath.$file);
-	   	}
-	   }
-	   closedir($handle);
-	   p('<br/>'.$cachepath.' : '.$nbok.' '.t('files_on').' '.$nbfiles.' '.t('have_been_removed'));
+		closedir($handle);
+		p('<br/>'.$cachepath.' : '.$nbok.' '.t('files_on').' '.$nbfiles.' '.t('have_been_removed'));
 	}
 }
 function rm($fileglob)
 {
-    if (is_string($fileglob)) {
-        if (is_file($fileglob)) {
-            return unlink($fileglob);
-        } else if (is_dir($fileglob)) {
-            $ok = rm("$fileglob/*");
-            if (! $ok) {
-                return false;
-            }
-            return rmdir($fileglob);
-        } else {
-            $matching = glob($fileglob);
-            if ($matching === false) {
-                trigger_error(sprintf('No files match supplied glob %s', $fileglob), E_USER_WARNING);
-                return false;
-            }      
-            $rcs = array_map('rm', $matching);
-            if (in_array(false, $rcs)) {
-                return false;
-            }
-        }      
-    } else if (is_array($fileglob)) {
-        $rcs = array_map('rm', $fileglob);
-        if (in_array(false, $rcs)) {
-            return false;
-        }
-    } else {
-        trigger_error('Param #1 must be filename or glob pattern, or array of filenames or glob patterns', E_USER_ERROR);
-        return false;
-    }
+	if (is_string($fileglob)) {
+		if (is_file($fileglob)) {
+			return unlink($fileglob);
+		} else if (is_dir($fileglob)) {
+			$ok = rm("$fileglob/*");
+			if (! $ok) {
+				return false;
+			}
+			return rmdir($fileglob);
+		} else {
+			$matching = glob($fileglob);
+			if ($matching === false) {
+				trigger_error(sprintf('No files match supplied glob %s', $fileglob), E_USER_WARNING);
+				return false;
+			}
+			$rcs = array_map('rm', $matching);
+			if (in_array(false, $rcs)) {
+				return false;
+			}
+		}
+	} else if (is_array($fileglob)) {
+		$rcs = array_map('rm', $fileglob);
+		if (in_array(false, $rcs)) {
+			return false;
+		}
+	} else {
+		trigger_error('Param #1 must be filename or glob pattern, or array of filenames or glob patterns', E_USER_ERROR);
+		return false;
+	}
 
-    return true;
+	return true;
 }
 
 

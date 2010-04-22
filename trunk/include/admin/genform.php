@@ -245,7 +245,7 @@ class GenForm {
 
         }
             while(list($k,$v) = each($_REQUEST)) {
-                if(ereg('genform_default__',$k)) {
+                if(strstr($k,'genform_default__')) {
                         //debug($k);
                         $this->tab_default_field[str_replace('genform_default__','',$k)] = $_REQUEST[$k];
                 }
@@ -910,7 +910,7 @@ class GenForm {
 		
 		include($gb_obj->getIncludePath('genform.upload.php' , 'admin/genform_modules'));
 		
-		} else if ( in_array($this->tab_field[$name]->type,array('int','smallint','tinyint','bigint','float','double','mediumint')) ) {
+		} else if ( in_array($this->tab_field[$name]->type,array('int','smallint','tinyint','bigint','float')) ) {
 	
 			/**
 			* INTEGER
@@ -935,7 +935,8 @@ class GenForm {
 			
 			/**
 			* TEXTAREA
-			*/	
+			*/
+	
 			include($gb_obj->getIncludePath('genform.text.php' , 'admin/genform_modules'));
 	
 	
@@ -947,7 +948,7 @@ class GenForm {
 			include($gb_obj->getIncludePath('genform.date.php' , 'admin/genform_modules'));
 	
 		}
-		else if ( $this->tab_field[$name]->type == 'datetime' || $this->tab_field[$name]->type == 'timestamp' ) {
+		else if ( $this->tab_field[$name]->type == 'datetime' ) {
 	
 			/**
 			* DATE
@@ -1486,6 +1487,37 @@ class GenForm {
 		//if($this->editMode)
 			$this->genFooterForm();
 
+	}
+
+	
+	function startFieldset($nom,$open=true) {
+		
+		if($this->editMode) {
+			return;
+		}
+		echo '<fieldset  id="fieldset_'.$nom.'" class="'.($open ?'fieldopen':'fieldclosed').'" ><legend>
+				<a href="#" title='.alt(t('deplier').' '.t('fieldset_'.$nom)).' onclick="return toggleFieldset(this);" class="abutton" >
+				<span></span>'.t('fieldset_'.$nom).getEditTrad('fieldset_'.$nom).'</a></legend>';
+		
+		$this->fieldsetOpen = $open;
+		$this->fieldsetId = $nom;
+		
+		echo '<div id="fieldsetd_'.$nom.'" >';
+
+	}
+
+
+	function endFieldset() {
+		if($this->editMode) {
+			return;
+		}
+		echo '</div>';
+
+		if(!$this->fieldsetOpen) {
+			echo '<script>$("#fieldsetd_'.$this->fieldsetId.'").hide();</script>';
+		}
+
+		echo '</fieldset><br/>';	
 	}
 
 }

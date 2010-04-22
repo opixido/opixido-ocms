@@ -59,6 +59,7 @@ class genCache {
 		} else {
 			$cache_path .= '/'.$cache_id;		
 		}
+		
 		/**
 		 * When was the content modified
 		 */
@@ -112,15 +113,14 @@ class genCache {
 	 */
 	function saveCachePlain($str) {
 
-			
+		$this->cacheChecked = true;
+		$this->strCache = $str;
+		
 		if(!file_exists(dirname($this->cache_path))) {
 			devbug('Cache directory missing : '.$this->cache_path);
 			return;
 		}
 		
-		$this->cacheChecked = true;
-		$this->strCache = $str;
-	
 		$a = file_put_contents($this->cache_path, $str);
 		chgrp($this->cache_path,'www-data');
 		return $a;

@@ -48,8 +48,13 @@
                             /*
                              * On parcourt les resultats pour la liste de la table externe
                              * */
-
-                            $thisValue = $this->trad('enum_'.$enum);
+							if(tradExists('enum_'.$enum)) {
+                            	$thisValue = $this->trad('enum_'.$enum);
+							} else if(tradExists($name.'_'.$enum)) {								
+								$thisValue = $this->trad($name.'_'.$enum);
+							} else {
+								$thisValue = $enum;
+							}
 
 
 

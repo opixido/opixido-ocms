@@ -168,6 +168,8 @@ class genSecurity {
             Connexion et verification
 
            */
+
+      
         
         if(!$this->checkedAuth) {
 
@@ -257,7 +259,7 @@ class genSecurity {
     			$row['role_table_champs'] = str_replace("\r","\n",$row['role_table_champs']);
     			$row['role_table_champs'] = str_replace("\n\n","\n",$row['role_table_champs']);
     			$champs = $row['role_table_champs'] ? explode("\n",$row['role_table_champs']) : 'all';
-    			
+   			
     		}
     		
     		$acs = array_values(explode(',',$row['role_table_actions']));

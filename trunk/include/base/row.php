@@ -13,11 +13,12 @@ class row {
 			$this->row = $roworid;
 			$this->id = $this->row[getPrimaryKey($table)];
 		} else {
-			$this->id = $roworid;
+			$this->id = $roworid;			
 			$this->row = getRowAndRelFromId($table,$this->id);			
 		}
 		
 		$this->tabField = getTabField($this->table);		
+		$this->site = $GLOBALS['site'];
 		
 	}
 	
@@ -41,7 +42,7 @@ class row {
 		/**
 		 * Check field types
 		 */
-		global $uploadFields,$relations;
+		global $uploadFields,$relations,$relinv,$tablerel,$orderFields;
 		
 		/**
 		 * Upload => genfile
@@ -87,7 +88,7 @@ class row {
 			 */
 			
 			$found = false;
-			
+			reset($tablerel[$field]);
 			while ( list( $k, $v ) = each( $tablerel[$field] ) ) {
 				
 				if ( $v == $this->table && !$found) {
@@ -96,22 +97,23 @@ class row {
 				} else {
 					$pk2 = $k;
 					$fk_table = $v;
-				}
-			
+				}		
 			}		
-			
+
 			if ($found) {
 				
 				$sql = 'SELECT T.*
 						FROM '.$fk_table.' AS T, '.$field.' AS R
 						WHERE '.getPrimaryKey($fk_table).' = '.$pk2.'
-						AND '.$pk1.' = '.$this->id.')';
+						AND '.$pk1.' = '.sql($this->id).'';
 				
 				if ($orderFields[$field]) {					
 					$sql .= ' ORDER BY '.$orderFields[$field][0];					
 				}
 				
 				return GetAll($sql);
+				
+			} else {
 				
 			}
 			
@@ -121,6 +123,7 @@ class row {
 		 */
 		} else if ($relinv[$this->table][$field]) {
 		
+			
 			$foreignTable = $relinv[$this->table][$field][0];
 			
 			$sql = 'SELECT *

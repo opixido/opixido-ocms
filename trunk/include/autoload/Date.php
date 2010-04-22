@@ -89,6 +89,10 @@ class Date
 	}
 	
 	function __tostring() {
+
+		if($this->ts <= 0) {
+			return false;
+		}
 		return $this->input;
 	}
 	

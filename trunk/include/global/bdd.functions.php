@@ -203,14 +203,17 @@ function getRowAndRelFromId($table,$id) {
         
        // debug($where);
         if(is_array($relations[$table])) {
-        foreach($relations[$table] as $k=>$v) {
-        	$sql .= ' LEFT JOIN '.$v.' AS T'.$k.' ON MT.'.$k.' = T'.$k.'.'.getPrimaryKey($v);
-        	//$where .= ' AND '.$table.'.'.$k.' = '.$v.'.'.getPrimaryKey($v);
+	        foreach($relations[$table] as $k=>$v) {
+	        	if($v != $table) {
+	        		$sql .= ' LEFT JOIN '.$v.' AS T'.$k.' ON T'.$k.'.'.getPrimaryKey($v).' = MT.'.$k.'  ';
+	        	}
+	        	//$where .= ' AND '.$table.'.'.$k.' = '.$v.'.'.getPrimaryKey($v);
+	        }
         }
-        }
-        
+
+
         $row = GetSingle($sql.$where);
-   
+
         //debug($sql.$where);
 	
         $getRowFromId_cacheRow[$table."_-REL_".$id] = $row;

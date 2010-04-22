@@ -37,6 +37,8 @@ class genFile {
 	var $forceBaseFormat = true;
 	
 	var $baseFormat = 'png';
+	
+	var $bg = 'FFFFFF';
 
 	/**
 	*
@@ -55,11 +57,14 @@ class genFile {
 	* @param addLg bool on definit le champ automatiquement, $valeur doit etre un array
 	*
 	*/
-	function genFile($table,$champ,$id,$valeur="",$actuel=true,$addlg=false) {
+	function genFile($table=false,$champ=false,$id=false,$valeur="",$actuel=true,$addlg=false) {
 
 
-		global $specialUpload,$uploadRep;
+		global $specialUpload,$uploadRep,$_Gconfig;
 
+		if(!$table) {
+			return;
+		}
 		$this->table = $table;
 
 		$this->champ = $champ;
@@ -142,8 +147,8 @@ class genFile {
 		
 
 		if(is_array($this->valeur)) {
-			debug($this->valeur);
-			debug($champ);
+			/*debug($this->valeur);
+			debug($champ);*/
 			return;
 		}
 
@@ -198,7 +203,7 @@ class genFile {
 
 		$this->systemPath = $this->realCode($this->rules['system']);
 		
-		$this->webPath = $this->realCode($this->rules['web']);		
+		$this->webPath =  $_Gconfig['CDN'].$this->realCode($this->rules['web']);		
 		
 		$this->systemPath = $this->addSlashPath($this->systemPath);
 		
@@ -222,10 +227,26 @@ class genFile {
 	*
 	*/
 	function realCode($string) {
-		return str_replace(array("*TABLE*","*FIELD*","*ID*","*EXT*",'*NAME*'),array($this->table,$this->champ,$this->id,$this->fileExtension,$this->fileBase),$string);
+		$str = str_replace(array("*TABLE*","*FIELD*","*ID*","*EXT*",'*NAME*'),array($this->table,$this->champ,$this->id,$this->fileExtension,$this->fileBase),$string);
+		$strs = explode('*',$str);
+		
+		foreach($strs as $k=>$v) {
+			if($k%2 == 0) {
+				$stringa .= $v;
+			} else {
+				$stringa .= $this->getVal($v);
+			}
+		}
+		return $stringa;
 	}
 
-
+	
+	function getVal($v) {
+		if(!$this->row) {
+			$this->row = getRowFromId($this->table,$this->id);
+		} 
+		return $this->row[$v];
+	}
 	/**
 	*
 	*	@desc Nettoie le nom de fichier pour l'adapter au web
@@ -251,9 +272,14 @@ class genFile {
 			/*$ext = $this->getExtension();
 			$ext = $ext == 'jpg' ? $this->baseFormat : $ext;*/
 		//	$ext = $ext == 'png' ? $this->baseFormat : $ext;
-			$s .= '&amp;f='.$this->baseFormat.'&amp;bg=FFFFFF';
+			$s .= '&amp;f='.$this->baseFormat.'&amp;bg='.$this->bg;
 		}
 		//}
+		
+		if($this->mask) {
+			$fltr[] = 'mask|'.$this->mask;
+		}
+		
 		if(count($fltr)) {
 			if(!is_array($fltr)) {
 				$fltr = array($fltr);
@@ -266,14 +292,16 @@ class genFile {
 	}
 	
 	function getCacheFile($src) {
+		global $_Gconfig;
+		$src = str_replace($_Gconfig['CDN'],'',$src);
 		
 		$src = urldecode(str_replace('&amp;','&',$src));
-		$fCname = (dirname($_SERVER['SCRIPT_FILENAME']).substr(THUMBPATH,strlen(BU)).'cache').'/'.md5($src);	
+		$fCname = $GLOBALS['ImgCacheFolder'].md5($src);	
 		/*debugOpix($src);
 		debugOpix($fCname);*/
 		
 		if(file_exists($fCname)) {		
-			
+		
 			if(filemtime($fCname) >= filemtime($this->getSystemPath())) {		
 				return THUMBPATH.'cache'.'/'.md5($src);
 			}
@@ -923,7 +951,7 @@ class genFile {
 		}
 		
 		if($front) 
-				return FRONT_PICTOS_FOLDER.$doss.$icons[$iconList[$ext]];
+				return $_Gconfig['CDN'].FRONT_PICTOS_FOLDER.$doss.$icons[$iconList[$ext]];
  
 		return ADMIN_PICTOS_FOLDER.ADMIN_PICTOS_FRONT_SIZE.$doss.$icons[$iconList[$ext]];
 
@@ -976,6 +1004,6 @@ class genFile {
 	}
 
 }
+global $_Gconfig;
 
-
-?>
+$GLOBALS['ImgCacheFolder'] = (dirname($_SERVER['SCRIPT_FILENAME']).substr(str_replace($_Gconfig['CDN'],'',THUMBPATH),strlen(BU)).'cache').'/';
