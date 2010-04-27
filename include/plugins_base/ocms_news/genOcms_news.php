@@ -27,7 +27,7 @@ class genOcms_news extends baseGen {
 					ORDER BY news_date DESC';
 		
 		$this->mois = GetAll($sql);
-		
+		debug($_GET);
 		if($_REQUEST['m'] && in_array(array('MOIS'=>$_REQUEST['m']),$this->mois)) {
 			$this->month = $_REQUEST['m'];
 		} else {
@@ -36,7 +36,7 @@ class genOcms_news extends baseGen {
 		
 		global $_locale;
 
-		$html .= '<h2>'.getImgText(t('news_archives'),'titre_jaune').'</h2><ul class="mois">';
+		$html .= '<h2>'.(t('news_archives')).'</h2><ul class="mois">';
 		foreach($this->mois as $v) {
 			$html .= '<li><a  '.($v['MOIS'] == $this->month ? 'class="selected"' :'').' href="'.getUrlWithParams(array('y'=>$this->year,'m'=>$v['MOIS'])).'">'.$_locale['fr']['months_long'][$v['MOIS']-1].' '.$this->year.'</a></li>';
 		}
@@ -48,9 +48,9 @@ class genOcms_news extends baseGen {
 		}
 		$html .= '</ul>';
 		
+		debug(getUrlWithParams(array('actu'=>1,'toto'=>'')));
 		
-		
-		$this->site->plugins['o_blocs']->blocs['jaune']->add('archives',$html);
+	//	$this->site->plugins['o_blocs']->blocs['jaune']->add('archives',$html);
 		
 	}
 	
@@ -77,7 +77,7 @@ class genOcms_news extends baseGen {
 			$t->row = $k%2;
 			$t->titre = $n->news_titre;
 			$t->desc = $n->news_desc;
-			$t->date = nicedate($n->news_date);
+			$t->date = nicedate($n->row['news_date']);
 			
 			$t->media = '<a href="'.$n->news_img->getWebUrl().'" rel="prettyPhoto[paras]">'.$n->news_img->getThumbImgTag(170,80,$n->news_img_alt,'',array(ARRONDI)).'</a>';
 		}
