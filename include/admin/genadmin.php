@@ -1233,6 +1233,7 @@ class genAdmin {
 		 
 		if($table) {
 			$src = $tabForms[$table]['picto'] ? str_replace(ADMIN_PICTOS_BIG_SIZE,ADMIN_PICTOS_FORM_SIZE,$tabForms[$table]['picto']) : t('src_desktop');
+			$src = getPicto($table,ADMIN_PICTOS_FORM_SIZE);
 			p('<a class="titreListe" title='.alt(t('retour').' '.t($table)).' href="?curTable='.$table.'&amp" ><img class="inputimage" src="'.$src.'"  alt="" /> ');
 			p(' &nbsp;'.t($this->table).'</a>');
 		}
