@@ -408,7 +408,9 @@ REPLACE INTO `s_trad` (trad_id,trad_[LG])  VALUES ('mail_from_name', 'Ne pas rep
 
 REPLACE INTO `s_param` VALUES ('cache_path', 'cache', '', '');
 REPLACE INTO `s_param` VALUES ('date_update_arbo', '1178101994', '', '');
-REPLACE INTO `s_param` VALUES ('fake_folder_param', 'bdd', '', '');
+REPLACE INTO `s_param` VALUES ('fake_folder_param', 'p_', '', '');
+REPLACE INTO `s_param` VALUES ('param_val_sep', '-', '', '');
+REPLACE INTO `s_param` VALUES ('param_key_sep', '/', '', '');
 REPLACE INTO `s_param` VALUES ('nb_rows_before_search', '100', '', '');
 REPLACE INTO `s_param` VALUES ('mail_type', 'mail', '', '');
 REPLACE INTO `s_param` VALUES ('mail_host', 'localhost', '', '');
