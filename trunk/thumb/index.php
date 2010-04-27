@@ -63,8 +63,10 @@ if(!$_GET['src']) {
 $fCname = realpath('./cache').'/'.md5($_SERVER['REQUEST_URI']);
 
 if(file_exists($fCname)) {
-
-	if(filemtime($fCname) >= filemtime($_REQUEST['src'])) {		
+	if(!file_exists($_REQUEST['src'])) {
+		$_REQUEST['src'] = realpath('..'.$_REQUEST['src']);
+	}
+	if(filemtime($fCname) >= @filemtime($_REQUEST['src'])) {		
 		
 		header('Content-Disposition: inline; filename="'.basename($_REQUEST['src']).'"');
 		header('Content-type:image/jpeg');
