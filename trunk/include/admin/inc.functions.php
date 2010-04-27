@@ -1000,6 +1000,7 @@ function setAllUrls() {
 
 function getPicto($nom,$taille="32x32") {
 	global $tabForms;
+	
 	if($tabForms[$nom]['picto']) {
 		$p = $tabForms[$nom]['picto'];
 	} else if(tradExists($nom)) {
@@ -1010,7 +1011,8 @@ function getPicto($nom,$taille="32x32") {
 		$p = substr($p,$pos+strlen(ADMIN_PICTOS_FOLDER)+5);
 	}
 
-	$a =  ADMIN_PICTOS_FOLDER.$taille.$p;
+
+	$a =  path_concat(ADMIN_PICTOS_FOLDER,$taille,$p);
 //	debug($a);
 	return $a;
 
@@ -1031,6 +1033,8 @@ function cleanFiles() {
 		}
 		return;
 	}
+	
+	$tbs = getTables();
 
 	echo  '<form id="todels" method="post" action="index.php" >
 			<input type="hidden" name="globalAction" value="cleanFiles" />';
@@ -1038,7 +1042,7 @@ function cleanFiles() {
 
 		 while (false !== ($table = readdir($tables))) {
 
-			if($table != '.' && $table != '..' && is_dir('../'.$uploadRep.'/'.$table) && !$specialUpload[$table]) {
+			if($table != '.' && $table != '..' && is_dir('../'.$uploadRep.'/'.$table) && !$specialUpload[$table] && in_array($table,$tbs)) {
 
 				$handle = opendir('../'.$uploadRep.'/'.$table);
 				while (false !== ($file = readdir($handle))) {
