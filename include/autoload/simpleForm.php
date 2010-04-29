@@ -7,6 +7,8 @@ class simpleForm {
 	public $form_attr = '';
 	private $fieldsetStarted = false;
 	
+	public $maxFileSize = 9000000;
+	
 	public $postLabel = ' : ';
 	
 	public $radioBeforeLabel = false;
@@ -622,7 +624,7 @@ class simpleForm {
 	
 	function getFile ($field) {
 	
-		$s = '<input type="hidden" name="MAX_FILE_SIZE" value="3000000" />
+		$s = '<input type="hidden" name="MAX_FILE_SIZE" value="'.$this->maxFileSize.'" />
 		<input '.$this->classError($field).' type="file" name="'.$field['name'].'" id="'.$field['id'].'" />'."\n";
 		
 		return $s;
