@@ -3,36 +3,36 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
 <head>
   <title>Administration :: <?php echo ta('base_title') ?> :: </title>
-  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   
   <?php 
 
-  $css = array('/css/style.css',
-  				'/css/style_suite.css',
-  				'/css/arbo.css',
-  				'/genform/css/genform.css',
-  				'/jq/css/cupertino/jquery-ui-1.7.1.custom.css',
-  				'/jq/css/tipsy.css',
-  				'/jq/css/fg.menu.css'
+  $prePath = BU.'/admin';
+  $css = array($prePath.'/css/style.css',
+  				$prePath.'/css/style_suite.css',
+  				$prePath.'/css/arbo.css',
+  				$prePath.'/genform/css/genform.css',
+  				$prePath.'/jq/css/cupertino/jquery-ui-1.7.1.custom.css',
+  				$prePath.'/jq/css/tipsy.css',
+  				$prePath.'/jq/css/fg.menu.css'
   );
   $js = array(
-  	'/genform/js/tjmlib.js',
-  	'/js/script.js',
-  	'/js/xhr.js',  	
-  	'/js/ajaxForm.js',
-  	'/jq/js/jquery.js',
-  	'/jq/js/jquery-ui.js',
-  	'/jq/js/jquery.textarearesizer.compressed.js',
-  	'/jq/js/jquery.tablednd_0_5.js',
-  	'/jq/js/jquery.autocomplete-min.js',
-  	'/jq/js/jquery.tipsy.js'
+  	$prePath.'/genform/js/tjmlib.js',
+  	$prePath.'/js/script.js',
+  	$prePath.'/js/xhr.js',  	
+  	$prePath.'/js/ajaxForm.js',
+  	$prePath.'/jq/js/jquery.js',
+  	$prePath.'/jq/js/jquery-ui.js',
+  	$prePath.'/jq/js/jquery.textarearesizer.compressed.js',
+  	$prePath.'/jq/js/jquery.tablednd_0_5.js',
+  	$prePath.'/jq/js/jquery.autocomplete-min.js',
+  	$prePath.'/jq/js/jquery.tipsy.js'
   );
 
-  //'/js/tooltip.js',
 
   $g = new genHeaders(false);
   $g->fCacheFolder = 'admin/c';
-  $g->addFolder = '../';
+  $g->addFolder = '/admin';
 
   $css = $g->getCssPath($css);
   $js = $g->getJsPath($js);
@@ -41,33 +41,10 @@
   echo '<script type="text/javascript" src="'.$js.'"></script>	';  
   
   ?>
-  <!-- 
-  <link rel="stylesheet" type="text/css" href="css/style.css" />
-  <link rel="stylesheet" type="text/css" href="css/style_suite.css" />
-  <link rel="stylesheet" type="text/css" href="css/arbo.css" />
-  <link rel="StyleSheet" type="text/css" href="genform/css/genform.css" />  
-  <link type="text/css" href="jq/css/cupertino/jquery-ui-1.7.1.custom.css" rel="stylesheet" />	
-	<script type="text/javascript" src="genform/js/tjmlib.js"></script>
-	<script type="text/javascript" src="js/script.js"></script>
-	<script type="text/javascript" src="js/xhr.js"></script>
-	<script type="text/javascript" src="js/tooltip.js"></script>
-	<script type="text/javascript" src="js/ajaxForm.js"></script>  
-		<script type="text/javascript" src="jq/js/jquery-1.3.2.min.js"></script>
-		<script type="text/javascript" src="jq/js/jquery-ui-1.7.1.custom.min.js"></script>
-		<script type="text/javascript" src="jq/js/jquery.textarearesizer.compressed.js"></script>
-		<script type="text/javascript" src="jq/js/jquery.tablednd_0_5.js"></script>	
- -->
 
-
-
-<!--JQUERY-->
-
-
-<!--/JQUERY-->
 
 <script type="text/javascript">
-<? 
-        
+<?        
         global $_Gconfig;        
         foreach($_Gconfig['LANGUAGES'] as $lg) {
             $lgs[] = '"'.$lg.'"';
@@ -75,14 +52,8 @@
         
         $tab = 'var lgs = ['.implode(', ',$lgs).'];';        
         echo $tab;
-        ?>
+?>
 </script>
-
-<?php   
-    if(strstr($_SERVER["HTTP_USER_AGENT"],'MSIE')) {
-    	p('<link rel="StyleSheet" href="css/ie.css" />');
-    }
-?>   
 </head>
 
 <body onbeforeunload="showLoader()">
