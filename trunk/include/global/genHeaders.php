@@ -324,7 +324,7 @@ class genHeaders {
 	public function addCss($name,$group='page') {
 
 		if(strpos($name,'/') === false) {
-			$name = $_Gconfig['CDN'].BU.'/css/'.$name;
+			$name = '/css/'.$name;
 			//$this->addHtmlHeaders('<style type="text/css" media="screen"> @import "'.$name.'"; </style>');
 		}
 
