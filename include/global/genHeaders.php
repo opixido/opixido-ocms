@@ -72,8 +72,8 @@ class genHeaders {
 	 */
 	public function __construct($site) {
 		$this->site = $site;
-		$this->cssFiles['global'][] = '/css/base.css';
-		$this->jsFiles['global'][] = '/js/base.js';
+		$this->addCss('base.css','global');
+		$this->addScript('base.js','global');		
 	}
 
 
@@ -111,7 +111,7 @@ class genHeaders {
 		}
 
         
-		if($this->getAllCss) {
+		if($this->getAllCss && false ) { /* Pose des problèmes de gestion d'ordre des CSS chargées */
 			$this->cssFiles = array();
 			
 			$files =	$GLOBALS['gb_obj']->getFileListing('../www/css/');
@@ -198,36 +198,31 @@ class genHeaders {
 			 */
 			$j = new ECMAScriptPacker();
 			foreach($fichiers as $v) {
-				$jj = @file_get_contents('.'.$v);
+				
+				$jj = @file_get_contents($_SERVER['DOCUMENT_ROOT'].$v);
+				
 				if(!$jj) {
 					devbug('Missing JS : '.$v);
 				}
+				
+				/**
+				 * On ajoute une ligne pour séparer chaque fichier
+				 */
+				$js .= "\n//".$v."\n";
+
 				/**
 				 * Si déjà compressé on ne touche pas
 				 */
-
-				$js .= "\n//".$v."\n";
-
 				if(substr($jj,0,10) == '/*packed*/') {
 					$js .= $jj."\n";
 				} else {
+					/**
+					 * Sinon on compresse
+					 */
 					$js .= $j->pack($jj)."\n";
 				}
 			}
-			/**
-			 * On les compresse
-			 */
-				
-				
-				 	
-			/**
-			 * Ajout des déjà compressés
-			 */
-			//$js .= "\n".$jsEnd;
-				
-			/**
-			 * Et on sauvegarde
-			 */
+			
 			$jsCache->saveCache($js);
 		}
 
@@ -249,10 +244,17 @@ class genHeaders {
 		 * Chemin du cache des CSS
 		 */
 		if(count($fichiers) == 1) {
+			/**
+			 * Si un seul fichier CSS on ne renomme pas
+			 */
 			$cssCacheName = nicename($fichiers[0]).'.css';
 		} else {
+			/**
+			 * Sinon md5 
+			 */
 			$cssCacheName = ''.md5(implode('_',$fichiers)).'.css';
 		}
+				
 		$cssCache = new genCache($cssCacheName,(time() - ($this->fCacheTime) ),$_SERVER['DOCUMENT_ROOT'].BU.'/'.$this->fCacheFolder.'/');
 			
 		if(!$cssCache->cacheExists()) {
@@ -260,8 +262,8 @@ class genHeaders {
 			 * Si le cache est expiré ou inexistant
 			 * On récupère le contenu de toutes les CSS
 			 */
-			foreach($fichiers as $v) {
-				if($csT = file_get_contents('.'.$v)) {
+			foreach($fichiers as $v) {				
+				if($csT = file_get_contents($_SERVER['DOCUMENT_ROOT'].$v)) {
 					$css .= $csT."\n";
 				} else {
 					devbug('Cant load CSS : '.$v);
@@ -271,9 +273,20 @@ class genHeaders {
 			 * On les compresse
 			 */
 			$css = compressCss($css);
-			$css = str_replace('../img/',$_Gconfig['CDN'].$this->addFolder.BU.'/img/',$css);
-			$css = str_replace('(/','('.$_Gconfig['CDN'].$this->addFolder.BU.'/img/',$css);
+
+			$css = str_replace('(/','('.$_Gconfig['CDN'].BU.$this->addFolder.'/img/',$css);
+			$css = str_replace('../img/',$_Gconfig['CDN'].BU.$this->addFolder.'/img/',$css);		
 				
+
+			/**
+			 * Si on utilise un CDN on passe les URLs des images des CSS
+			 */
+			/*
+			if($_Gconfig['CDN']) {
+				$css = str_replace('(/','('.$_Gconfig['CDN'].$this->addFolder.BU.'/img/',$css);
+				$css = str_replace('../img/',$_Gconfig['CDN'].$this->addFolder.BU.'/img/',$css);
+			}
+			*/
 			/**
 			 * Et on sauvegarde
 			 */
@@ -294,12 +307,12 @@ class genHeaders {
 	 * @param string $tag additional parameters to add in the script tag
 	 */
 	public function addScript($name,$addBase=true,$group='page') {
-
+		global $_Gconfig;
 		if($addBase) {
-			$name =  BU.'/js/'.$name;
-			//$this->addHtmlHeaders('<script '.$tag.' type="text/javascript" src="'.BU.'/js/'.$name.'" ></script>');
+			$name =  BU.'/js/'.$name;			
 		}
-		if($group) {
+		
+		if($group && $_Gconfig['compressJsFiles']) {
 			$this->jsFiles[$group][] = $name;
 		}
 		else {
@@ -322,17 +335,18 @@ class genHeaders {
 	 * @param string $name
 	 */
 	public function addCss($name,$group='page') {
-
+		global $_Gconfig;
+		
 		if(strpos($name,'/') === false) {
-			$name = '/css/'.$name;
+			$name = BU.'/css/'.$name;
 			//$this->addHtmlHeaders('<style type="text/css" media="screen"> @import "'.$name.'"; </style>');
 		}
 
-		if($group) {
+		if($group && $_Gconfig['compressCssFiles']) {
 			$this->cssFiles[$group][] = $name;
 		}
 		else {
-			$this->addHtmlHeaders('<style type="text/css" media="screen"> @import "'.$this->getCssPath($name).'"; </style>');
+			$this->addHtmlHeaders('<style type="text/css" media="screen"> @import "'.($name).'"; </style>');
 		}
 	}
 
