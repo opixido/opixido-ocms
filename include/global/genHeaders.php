@@ -271,7 +271,7 @@ class genHeaders {
 			 * On les compresse
 			 */
 			$css = compressCss($css);
-			$css = str_replace('../img/',$_Gconfig['CDN'].$this->addFolder.'/img/',$css);
+			$css = str_replace('../img/',$_Gconfig['CDN'].$this->addFolder.BU.'/img/',$css);
 			$css = str_replace('(/','('.$_Gconfig['CDN'].$this->addFolder.BU.'/img/',$css);
 				
 			/**
