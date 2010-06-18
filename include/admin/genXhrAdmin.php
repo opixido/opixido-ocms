@@ -476,6 +476,9 @@ class genXhrAdmin {
     
 
 	private function recursLinks($array, $level='1', $rootRub='1') {
+		if(!is_array($array)) {
+			return;
+		}
 		foreach($array as $page) {
 			
 				$page['url'] = '';	
