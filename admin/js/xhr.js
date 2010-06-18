@@ -13,7 +13,7 @@ function update_links(champ,id) {
 
 function handler_links(champ) {
 	//gid(champ+'_links').style.display = 'block';
-showHide(champ+'_links');
+	showHide(champ+'_links');
 }
 
 function XHR_menuArbo(url,obj) {
@@ -104,8 +104,8 @@ jsevents = "";
 
 function addJsEvent(event,value) {
 	//var d = new Date();
-	jsevents = '<b>'+event+'</b><br/><pre>'+replace(replace(value,'<',('&lt;')),'>',('&gt;'))+'</pre><hr/>' + jsevents;
-	gid('jsevents').innerHTML = jsevents;
+	//jsevents = '<b>'+event+'</b><br/><pre>'+replace(replace(value,'<',('&lt;')),'>',('&gt;'))+'</pre><hr/>' + jsevents;
+	//$('#jsevents').innerHTML = jsevents;
 }
 
 
