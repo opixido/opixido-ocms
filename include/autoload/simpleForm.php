@@ -7,13 +7,13 @@ class simpleForm {
 	public $form_attr = '';
 	private $fieldsetStarted = false;
 	
-	public $maxFileSize = 9000000;
-	
 	public $postLabel = ' : ';
 	
 	public $radioBeforeLabel = false;
 
 	public $submitAsImage = false;
+	
+	public $maxFileSize = 3000000;
 	
 	function __construct($action='',$method='get',$id='') {
 
@@ -38,8 +38,7 @@ class simpleForm {
 	function gen( $needEnd = false ) {
 
 		$s = '<form id="'.$this->id.'" '.$this->form_attr.' enctype="multipart/form-data" method="'.strtolower($this->method).'" action="'.$this->action.'">'."\n";
-		//$s .= '<fieldset>'."\n";
-		//$s .= '<div>';
+
 
 		reset($this->fields);
 		$atLeastOneNeeded = false;
@@ -216,12 +215,8 @@ class simpleForm {
 				$this->fieldsetStarted = false;
 		}
 
-		
-		//$s .= '</div>'."\n";
-		//$s .= '</fieldset>'."\n";
 		$s .= '</form>'."\n";
-//<script type="text/javascript" src="'.BU.'/js/jquery.validate.pack.js" ></script>
-//<script type="text/javascript" src="'.BU.'/js/jquery-ui-cal.js" ></script>
+
 		$s .= '
 				<script type="text/javascript">		
 				$("#'.$this->id.'").submit(function(){
@@ -271,7 +266,7 @@ class simpleForm {
 
 	function getDate($field) {
 		
-		$s = '<input class="date"'.$this->classError($field).' type="text" name="'.$field['name'].'" id="'.$field['id'].'" />'."\n";
+		$s = '<input '.$field['tag'].' class="date"'.$this->classError($field).' type="text" name="'.$field['name'].'" id="'.$field['id'].'" />'."\n";
 		
 		$s .= '
 		<script type="text/javascript">
@@ -295,27 +290,7 @@ class simpleForm {
 		';
 		
 		return $s;
-		/*
-		$this->add('fieldset',$field['label'],'','',$field['id']);
-		
-		global $_locale;
-		$mm = array('');
-		for($p=0;$p<=11;$p++) {
-			$mm[] = array('value'=>($p+1),'label'=>$_locale[LG]['months_long'][$p]);
-		}
-		
-		
-		if($field['value']) {
-			$v = explode('-',$field['value']);
-			
-		}
-		
-		$this->add('select',array_merge(array(''),range(1,31)),t('sf_day'),$field['name'].'_d',$field['id'].'_d',$field['needed'],array($v[2]));
-		$this->add('select',$mm,t('sf_month'),$field['name'].'_m',$field['id'].'_m',$field['needed'],array($v[1]));
-		$this->add('select',array_merge(array(''),range(1900,date('Y'))),t('sf_year'),$field['name'].'_y',$field['id'].'_y',$field['needed'],array($v[0]));			
-		
-		$this->add('endfieldset');
-		*/
+
 		
 	}
 	
@@ -490,7 +465,7 @@ class simpleForm {
 						<img style="float:left;" id="captcha" src="'.$GLOBALS['site']->plugins['captcha']->getImg().'" alt="" /> 
 					 '.t('simpleform_captcha').' 
 					 <br/>
-					 <input type="text" name="'.$field['name'].'" value="" maxlength="6" size="6" />
+					 <input  '.$field['tag'].' type="text" name="'.$field['name'].'" value="" maxlength="6" size="6" />
 					 <a class="reload_captcha" href="javascript:;" onclick="javasript:gid(\'captcha\').src = gid(\'captcha\').src+\'r\'">'.t('simpleform_reload_captcha').'</a>
 					 </div> 
 					 <div class="clearer">&nbsp;</div>
@@ -520,7 +495,7 @@ class simpleForm {
 		
 		$html .= '<span class="captcha_q">'.t('simpleform_captchaq').' 
 					<strong>'.$chiffre1.' + '.$chiffre2.' = </strong>
-					<input id="'.$field['id'].'" type="text" name="captchaq" class="text captchaq" value="" size="2" />
+					<input  '.$field['tag'].' id="'.$field['id'].'" type="text" name="captchaq" class="text captchaq" value="" size="2" />
 					<input type="hidden" name="captchaq_uniq" class="hidden" value="'.$unique.'"/>
 					</span>
 					
@@ -560,7 +535,7 @@ class simpleForm {
 	function getInputText ($field) {
 
 		$r = $field['type'] == 'email' ? 'rel="email"' : '';
-		$s = '<input  '.$r.' '.($field['disabled'] ? 'disabled="disabled"' : '' ).' class="text" '.$this->classError($field).' type="text" name="'.$field['name'].'" id="'.$field['id'].'" value='.alt($field['value']).' />'."\n";
+		$s = '<input  '.$field['tag'].' '.$r.' '.($field['disabled'] ? 'disabled="disabled"' : '' ).' class="text" '.$this->classError($field).' type="text" name="'.$field['name'].'" id="'.$field['id'].'" value='.alt($field['value']).' />'."\n";
 
 		return $s;
 
@@ -612,7 +587,6 @@ class simpleForm {
 			$sel = @in_array(trim($value['value']) , $field['selected']) ? 'checked="checked"' : '';
 			$s .= '<input type="checkbox" id="'.$field['name'].'_'.$value['value'].'" name="'.$field['name'].'[]" '.$sel.' value="'.$value['value'].'"><label id="label_'.$field['name'].'_'.$value['value'].'" for="'.$field['name'].'_'.$value['value'].'">'.$value['label'].'</label>'."\n";
 		}		
-		//debug($field['selected']);
 		
 		$s .=$end;
 		
@@ -625,7 +599,7 @@ class simpleForm {
 	function getFile ($field) {
 	
 		$s = '<input type="hidden" name="MAX_FILE_SIZE" value="'.$this->maxFileSize.'" />
-		<input '.$this->classError($field).' type="file" name="'.$field['name'].'" id="'.$field['id'].'" />'."\n";
+		<input  '.$field['tag'].'  '.$this->classError($field).' type="file" name="'.$field['name'].'" id="'.$field['id'].'" />'."\n";
 		
 		return $s;
 		
@@ -643,7 +617,7 @@ class simpleForm {
 
 		$checked = ( $field [ 'selected' ] === array ( 'checked' ) ) ? 'checked="checked"' : '' ;
 
-		$s = '<input class="radio_input" '.$this->classError($field).' type="radio" name="'.$field['name'].'" id="'.$field['id'].'" value='.alt($field['value']).' ' . $disabled . ' ' .$checked . ' />'."\n";
+		$s = '<input '.$field['tag'].' class="radio_input" '.$this->classError($field).' type="radio" name="'.$field['name'].'" id="'.$field['id'].'" value='.alt($field['value']).' ' . $disabled . ' ' .$checked . ' />'."\n";
 
 		return $s;
 
@@ -658,7 +632,7 @@ class simpleForm {
 	 */
 	function getPassword ($field) {
 
-		$s = '<input class="password" autocomplete="off" '.$this->classError($field).' type="password" name="'.$field['name'].'" id="'.$field['id'].'" />'."\n";
+		$s = '<input  '.$field['tag'].' class="password" autocomplete="off" '.$this->classError($field).' type="password" name="'.$field['name'].'" id="'.$field['id'].'" />'."\n";
 
 		return $s;
 
@@ -674,7 +648,7 @@ class simpleForm {
 	 */
 	function getTextArea($field) {
 
-		$s = '<textarea  rows="5" cols="20" '.$this->classError($field).' name="'.$field['name'].'" id="'.$field['id'].'" >'.$field['value'].'</textarea>'."\n";
+		$s = '<textarea   '.$field['tag'].' rows="5" cols="20" '.$this->classError($field).' name="'.$field['name'].'" id="'.$field['id'].'" >'.$field['value'].'</textarea>'."\n";
 
 		return $s;
 	}
@@ -686,7 +660,7 @@ class simpleForm {
 	 */
 	function getWysiwyg($field) {
 
-		$s = '<textarea  rows="5" cols="60" '.$this->classError($field).' name="'.$field['name'].'" id="'.$field['id'].'" >'.$field['value'].'</textarea>'."\n";
+		$s = '<textarea   '.$field['tag'].' rows="5" cols="60" '.$this->classError($field).' name="'.$field['name'].'" id="'.$field['id'].'" >'.$field['value'].'</textarea>'."\n";
 		//$s .= '<script type="text/javascript" src="'.BU.'/wyzz/wyzz.js"></script>';
 		$s .= '<script type="text/javascript" src="'.BU.'/nicedit/nicEdit.js"></script>';
 		//$s .= '<script type="text/javascript">make_wyzz("'.$field['id'].'");</script>';
@@ -703,11 +677,11 @@ class simpleForm {
 	function getSubmit($field) {
 
 		if($this->submitAsImage && function_exists('getImgText')) {
-			$s = '<input class="submitimg" src="'.getImgTextSrc($field['value'],'submit').'" type="image" name="'.$field['name'].'" id="'.$field['id'].'" alt='.alt($field['value']).' />'."\n";
+			$s = '<input  '.$field['tag'].' class="submitimg" src="'.getImgTextSrc($field['value'],'submit').'" type="image" name="'.$field['name'].'" id="'.$field['id'].'" alt='.alt($field['value']).' />'."\n";
 		} else if($field['image']) {
-			$s = '<input class="submit" type="image" name="'.$field['name'].'" id="'.$field['id'].'" value='.alt($field['value']).' src='.alt($field['image']).'/>'."\n";
+			$s = '<input  '.$field['tag'].' class="submit" type="image" name="'.$field['name'].'" id="'.$field['id'].'" value='.alt($field['value']).' src='.alt($field['image']).'/>'."\n";
 		} else {
-			$s = '<input class="submit" type="submit" name="'.$field['name'].'" id="'.$field['id'].'" value='.alt($field['value']).' />'."\n";
+			$s = '<input  '.$field['tag'].' class="submit" type="submit" name="'.$field['name'].'" id="'.$field['id'].'" value='.alt($field['value']).' />'."\n";
 		}
 		return $s;
 	}
@@ -722,7 +696,7 @@ class simpleForm {
 	 */
 	function getSubmitImage($field) {
 
-		$s = '<input class="submitimage" type="image" name="'.$field['name'].'" id="'.$field['id'].'" value='.alt($field['label']).' src='.alt($field['value']).' />'."\n";
+		$s = '<input  '.$field['tag'].' class="submitimage" type="image" name="'.$field['name'].'" id="'.$field['id'].'" value='.alt($field['label']).' src='.alt($field['value']).' />'."\n";
 
 		return $s;
 	}
@@ -737,7 +711,7 @@ class simpleForm {
 	function getHidden($field)
 	{
 
-		$s = '<input class="hidden" type="hidden" name="'.$field['name'].'" id="'.$field['id'].'" value='.alt($field['value']).' />'."\n";
+		$s = '<input  '.$field['tag'].' class="hidden" type="hidden" name="'.$field['name'].'" id="'.$field['id'].'" value='.alt($field['value']).' />'."\n";
 		return $s;
 	}
 
@@ -753,7 +727,7 @@ class simpleForm {
 
 		if(strlen($field['label'])) {
 			$needed = $field['needed'] ? $this->neededSymbol : '';
-			$s = '<label  '.$this->classError($field).' id="label_'.$field['id'].'" for="'.$field['id'].'"><span>'.$field['label'].'</span> '.$needed.''.$this->postLabel.'</label>'."\n";
+			$s = '<label   '.$field['tag'].'  '.$this->classError($field).' id="label_'.$field['id'].'" for="'.$field['id'].'"><span>'.$field['label'].'</span> '.$needed.''.$this->postLabel.'</label>'."\n";
 
 		}
 		return $s;
@@ -792,7 +766,7 @@ class simpleForm {
 		if(!$id || !strlen($id)) {
 			$id = $this->getNextId();
 		}
-		if(!is_array($value) && $this->isSubmited() && $_REQUEST[$name]) {
+		if(!is_array($value)  && $_REQUEST[$name] && $name) {
 			$value = $_REQUEST[$name];
 		}
 		if($type == 'captcha')
@@ -801,17 +775,11 @@ class simpleForm {
 			$name = 'captcha_code';
 		}
 		
-		if(is_array($value) && $this->isSubmited() && $_REQUEST[$name] && !is_array($_REQUEST[$name])) {
+		if(is_array($value)  && $_REQUEST[$name] && !is_array($_REQUEST[$name]) && !$selected) {
 			$selected = array($_REQUEST[$name]);
 		}
-		/**
-		//debug($selected);
-		if($type == 'date') {
-			$this->addDate($field);
-			//return;
-		}
-		*/
-		$this->fields[$id] = array('type'=>$type,'value'=>$value,'label'=>$label,'name'=>$name,'id'=>$id,'needed'=>$needed,'selected'=>$selected,'disabled'=>$disabled);
+
+		$this->fields[$id] = array('type'=>$type,'value'=>$value,'label'=>$label,'name'=>$name,'id'=>$id,'needed'=>$needed,'selected'=>$selected,'disabled'=>$disabled,'tag'=>'');
 		return $this->fields[$id];
 	}
 
