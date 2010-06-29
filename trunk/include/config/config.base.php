@@ -22,6 +22,7 @@ define('ONLINE_FIELD','en_ligne');
 define('crypto_cipher','rijndael-256');
 define('crypto_mode','cbc');
 
+define('SEP',DIRECTORY_SEPARATOR);
 
 /**
  * Quel champs pour la date de mise a jour
@@ -49,6 +50,7 @@ $_Gconfig['cachePaths']['cms'] = INCLUDE_PATH.'/cache/';
 $_Gconfig['cachePaths']['pages'] = INCLUDE_PATH.'/cache_agr/';
 $_Gconfig['cachePaths']['thumbs'] = $_Gconfig['basePath'].'/thumb/cache/';
 $_Gconfig['cachePaths']['css'] = $_Gconfig['basePath'].'/c/';
+$_Gconfig['cachePaths']['admincss'] = $_Gconfig['basePath'].'/admin/c/';
 
 
 /**
