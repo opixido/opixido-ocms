@@ -72,6 +72,7 @@ class genHeaders {
 	 */
 	public function __construct($site) {
 		$this->site = $site;
+		
 		$this->addCss('base.css','global');
 		$this->addScript('base.js','global');		
 	}
@@ -111,53 +112,28 @@ class genHeaders {
 		}
 
         
-		if($this->getAllCss && false ) { /* Pose des problèmes de gestion d'ordre des CSS chargées */
-			$this->cssFiles = array();
+	
+		/**
+		 * Compression et Cache des CSS
+		 */
+		if(count($this->cssFiles)) {
+				
+			$preHeaders = $this->html_headers;
+			$this->html_headers = '';
+				
+			foreach($this->cssFiles as $k => $v) {
+
+				$pathCss = $this->getCssPath($v);
 			
-			$files =	$GLOBALS['gb_obj']->getFileListing('../www/css/');
-			foreach($files as $v) {
-				if(strstr($v,'.css')) {
-					$this->cssFiles['global'][] = '/css/'.$v;
-				}
+				/**
+				 * Un seul CSS mis en cache
+				 */
+				$this->html_headers .= "\n".'<style type="text/css" media="screen"> /*'.$k.'-'.implode('-',$v).'*/ @import "'.$pathCss.'"; </style>'."\n";
+
 			}
-			if(count($this->cssFiles)) {
-					
-				$preHeaders = $this->html_headers;
-				$this->html_headers = '';
-					
-				foreach($this->cssFiles as $k => $v) {
-	
-					$pathCss = $this->getCssPath($v);
-					/**
-					 * Un seul CSS mis en cache
-					 */
-					$this->html_headers .= "\n".'<style type="text/css" media="screen"> /*'.$k.'-'.implode('-',$v).'*/ @import "'.$pathCss.'"; </style>'."\n";
-	
-				}
-				$this->html_headers .= $preHeaders;
-			}
-			
-		} else {
-			/**
-			 * Compression et Cache des CSS
-			 */
-			if(count($this->cssFiles)) {
-					
-				$preHeaders = $this->html_headers;
-				$this->html_headers = '';
-					
-				foreach($this->cssFiles as $k => $v) {
-	
-					$pathCss = $this->getCssPath($v);
-					/**
-					 * Un seul CSS mis en cache
-					 */
-					$this->html_headers .= "\n".'<style type="text/css" media="screen"> /*'.$k.'-'.implode('-',$v).'*/ @import "'.$pathCss.'"; </style>'."\n";
-	
-				}
-				$this->html_headers .= $preHeaders;
-			}
+			$this->html_headers .= $preHeaders;
 		}
+		
 
 
 		/**
@@ -199,10 +175,10 @@ class genHeaders {
 			$j = new ECMAScriptPacker();
 			foreach($fichiers as $v) {
 				
-				$jj = @file_get_contents($_SERVER['DOCUMENT_ROOT'].$v);
+				$jj = @file_get_contents($_SERVER['DOCUMENT_ROOT'].BU.SEP.$v);
 				
 				if(!$jj) {
-					devbug('Missing JS : '.$v);
+					devbug('Missing JS : '.$_SERVER['DOCUMENT_ROOT'].BU.SEP.$v);
 				}
 				
 				/**
@@ -240,6 +216,7 @@ class genHeaders {
 			$fichiers = array($fichiers);
 		}
 
+		
 		/**
 		 * Chemin du cache des CSS
 		 */
@@ -263,10 +240,10 @@ class genHeaders {
 			 * On récupère le contenu de toutes les CSS
 			 */
 			foreach($fichiers as $v) {				
-				if($csT = file_get_contents($_SERVER['DOCUMENT_ROOT'].$v)) {
+				if($csT = file_get_contents($_SERVER['DOCUMENT_ROOT'].BU.SEP.$v)) {
 					$css .= $csT."\n";
 				} else {
-					devbug('Cant load CSS : '.$v);
+					devbug('Cant load CSS : '.$_SERVER['DOCUMENT_ROOT'].BU.SEP.$v);
 				}
 			}
 			/**
@@ -274,19 +251,10 @@ class genHeaders {
 			 */
 			$css = compressCss($css);
 
-			$css = str_replace('(/','('.$_Gconfig['CDN'].BU.$this->addFolder.'/img/',$css);
-			$css = str_replace('../img/',$_Gconfig['CDN'].BU.$this->addFolder.'/img/',$css);		
-				
+			$css = str_replace('(/','('.$_Gconfig['CDN'].BU.'/'.$this->addFolder.'/img/',$css);
+			$css = str_replace('../img/',$_Gconfig['CDN'].BU.'/'.$this->addFolder.'/img/',$css);
+			
 
-			/**
-			 * Si on utilise un CDN on passe les URLs des images des CSS
-			 */
-			/*
-			if($_Gconfig['CDN']) {
-				$css = str_replace('(/','('.$_Gconfig['CDN'].$this->addFolder.BU.'/img/',$css);
-				$css = str_replace('../img/',$_Gconfig['CDN'].$this->addFolder.BU.'/img/',$css);
-			}
-			*/
 			/**
 			 * Et on sauvegarde
 			 */
@@ -309,7 +277,7 @@ class genHeaders {
 	public function addScript($name,$addBase=true,$group='page') {
 		global $_Gconfig;
 		if($addBase) {
-			$name =  BU.'/js/'.$name;			
+			$name =  'js/'.$name;			
 		}
 		
 		if($group && $_Gconfig['compressJsFiles']) {
@@ -338,7 +306,7 @@ class genHeaders {
 		global $_Gconfig;
 		
 		if(strpos($name,'/') === false) {
-			$name = BU.'/css/'.$name;
+			$name = 'css/'.$name;
 			//$this->addHtmlHeaders('<style type="text/css" media="screen"> @import "'.$name.'"; </style>');
 		}
 
