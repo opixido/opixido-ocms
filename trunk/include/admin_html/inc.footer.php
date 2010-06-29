@@ -66,6 +66,20 @@ $('#arbo_1').sortable();
 
 
 
+/**
+ * Pour la limitation de certains serveurs à un nombre de champ d'upload restreint
+ */
+$("#genform_formulaire").submit(function() {
+	$("#genform_formulaire input[type=file]").each(function() {
+		if($(this).val() == "") {
+			$(this).remove();			
+		}
+	});
+});
+
+
+
+
 <?php if($GLOBALS['rteElements']) { ?>
 if(tinyMCE_GZ) {
 tinyMCE_GZ.init({				   
