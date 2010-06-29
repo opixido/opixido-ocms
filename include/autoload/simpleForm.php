@@ -26,6 +26,7 @@ class simpleForm {
 		$this->defaultField = array('type'=>'text','value'=>'','label'=>'Champ Inconnu','needed'=>false);
 
 		$_REQUEST['fromSimpleForm'] = akev($_REQUEST,'fromSimpleForm') ?  $_REQUEST['fromSimpleForm'] : '';
+		
 	}
 
 
@@ -53,7 +54,10 @@ class simpleForm {
 			
 			$s .= '<div class="important need '.(count($this->badFields) && $this->isSubmited() ? 'formError' : '').'">'.t('simpleform_info_needed').'</div>';
 		}
+		
 		$this->add('hidden',$this->id,'','simpleform_submitted');
+		
+
 		if(akev($_REQUEST,'oID')) {
 			$this->add('hidden',$_REQUEST['oID'],'','oID');
 		}
@@ -711,6 +715,7 @@ class simpleForm {
 	function getHidden($field)
 	{
 
+	
 		$s = '<input  '.$field['tag'].' class="hidden" type="hidden" name="'.$field['name'].'" id="'.$field['id'].'" value='.alt($field['value']).' />'."\n";
 		return $s;
 	}
@@ -766,7 +771,7 @@ class simpleForm {
 		if(!$id || !strlen($id)) {
 			$id = $this->getNextId();
 		}
-		if(!is_array($value)  && $_REQUEST[$name] && $name) {
+		if(!is_array($value)  &&   $_REQUEST[$name]  && $name && $this->isSubmited() ) {
 			$value = $_REQUEST[$name];
 		}
 		if($type == 'captcha')
