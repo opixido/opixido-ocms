@@ -3,8 +3,8 @@
 global $relinv,$orderFields,$tabForms,$_Gconfig,$uploadFields,$rteFields,$neededFields,$relations,$urlFields,$emailFields,$admin_trads,$relinv,$tablerel;
 
 $tabForms["p_download"]["titre"] = array (
-  0 => 'download_titre_fr',
-  1 => 'download_fichier_fr',
+  0 => 'download_titre',
+  1 => 'download_fichier',
 );
 
 $tabForms["p_download"]["pages"] = array (
