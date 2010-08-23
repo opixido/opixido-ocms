@@ -35,13 +35,29 @@ class genSearchV2 {
 
 		$sql = 'SELECT '.getPrimaryKey($this->table).',
 					'.GetTitleFromTable($this->table," , ").' 
-						FROM '.$this->table.' 
-						WHERE 1 '.GetOnlyEditableVersion($this->table).' 
-						'.$GLOBALS['gs_obj']->sqlCanRow($this->table).' 
-						ORDER BY '.GetTitleFromTable($this->table," , ");
-
+				FROM '.$this->table.' AS T
+				WHERE 1 '.GetOnlyEditableVersion($this->table).' 
+				'.$GLOBALS['gs_obj']->sqlCanRow($this->table);
+		
+		$sql .= ' ORDER BY ';
+        
+        if($_REQUEST['order'] && array_key_exists($_REQUEST['order'],getTabField($this->table))) {
+        	
+        	$sql .= 'T.'.$_REQUEST['order'].' ';
+        	
+        	if($_GET['to'] == 'asc') {
+        		$sql .= ' ASC , ';
+        	} else {
+        		$sql .= ' DESC , ';
+        	}
+        }
+						
+        //ORDER BY '.GetTitleFromTable($this->table," , ");
+        
+         $sql .= " T.".GetTitleFromTable($this->table," , ");
+         
 		$this->res = GetAll($sql);
-
+		
 
 		if($this->table != 's_rubrique') {
 				
@@ -125,8 +141,6 @@ class genSearchV2 {
 
 
 	function getSelect() {
-
-
 
 		$res = $this->res;
 
@@ -356,9 +370,9 @@ class genSearchV2 {
 
 		print('<div class="clearer">&nbsp;</div></div>');
 
-		global $searchField,$relations,$tabForms,$tables,$Gconfig;
+		global $searchField,$relations,$tabForms,$tables,$Gconfig, $tablerel;
 
-
+		
 		$r= "";
 
 		$table = $this->table;
@@ -421,10 +435,29 @@ class genSearchV2 {
 
 
 		/**
+		 * Paramètres de tri
+		 */
+		if ($_REQUEST['order']) {
+			
+			$triParams = '&amp;order='.$_REQUEST['order'];
+			
+			if ($_REQUEST['to']) {
+				
+				$triParams .= '&amp;to='.$_REQUEST['to'];
+				
+			}
+			
+		}
+		
+		/**
 		 * Bouton précédent
 		 */
 		if($lstart > 0) {
-			$r .= '<a style="display:block" href="?fromList=1&amp;curTable='.$this->table.'&amp;lstart='.($lstart-$this->nbperpage).'"><img src="'.ADMIN_PICTOS_FOLDER.ADMIN_PICTOS_FORM_SIZE.'/actions/go-previous.png" alt="" /><br/> '.t('page_precedente').'</a>';
+						
+			$r .= '<a style="display:block" href="?fromList=1&amp;curTable='.$this->table.'&amp;lstart='.($lstart-$this->nbperpage).$triParams.'">
+						<img src="'.ADMIN_PICTOS_FOLDER.ADMIN_PICTOS_FORM_SIZE.'/actions/go-previous.png" alt="" /><br/> '.t('page_precedente').'
+				   </a>';
+			
 		}
 
 		$r .= '</td>';
@@ -432,9 +465,21 @@ class genSearchV2 {
 
 		$r .= '<td style="text-align:center" width="80%" colspan="'.count($tablo).'">';
 
-		//$r .= '<form action="index.php" id="formpages" method="get">';
+		/**
+		 * Liste de sélection de la page
+		 */
 		$r .= '<input type="hidden" name="curTable" value="'.$this->table.'" />';
 		$r .= '<input type="hidden" name="fromList" value="1" />';
+		
+		/**
+		 * Ajout des paramètres de tri
+		 */
+		if ($_REQUEST['order'])
+			$r .= '<input type="hidden" name="order" value="'.$_REQUEST['order'].'" />';
+			
+		if ($_REQUEST['to'])
+			$r .= '<input type="hidden" name="to" value="'.$_REQUEST['to'].'" />';
+		
 		$r .= t('page').' ';
 		$r .= '<select name="lstart" onchange="gid(\'formpages\').submit();">';
 		for($p=0;$p<$pageTot;$p++) {
@@ -465,8 +510,13 @@ class genSearchV2 {
 		 * Bouton suivant
 		 */
 		$r .= '<td style="text-align:center;display:block;width:100px;" width="100"  class="fond1" >';
+		
 		if($totRes > $lend) {
-			$r .= '<a style="display:block" href="?fromList=1&amp;curTable='.$this->table.'&amp;lstart='.($lend).'"><img src="'.ADMIN_PICTOS_FOLDER.ADMIN_PICTOS_FORM_SIZE.'/actions/go-next.png" alt="" /><br/>'.t('page_suivante').'</a>';
+			
+			$r .= '<a style="display:block" href="?fromList=1&amp;curTable='.$this->table.'&amp;lstart='.($lend).$triParams.'">
+						<img src="'.ADMIN_PICTOS_FOLDER.ADMIN_PICTOS_FORM_SIZE.'/actions/go-next.png" alt="" /><br/>'.t('page_suivante').'
+				   </a>';
+			
 		}
 
 		$r .= '</td>
@@ -563,50 +613,73 @@ class genSearchV2 {
 			$t = getTabField($this->table);
 			$r .= ('<th style="width:20px;"  scope="col">Id</th>');
 			//while(list($k,$v) = each($tables[$table])) {
-
+			
+			/**
+			 * Entêtes du tableau des résultats
+			 */
 			while(list(,$k) = each($tablo)) {
 
+				/**
+				 * Champs de type boolean
+				 */
 				if($t[$k]->type == 'tinyint') {
 					$r .=('<th style="width:20px" scope="col">');
 				} else {
 					$r .=('<th scope="col">');
 				}
 				$r .= t($k)."";
-				$r .=('</th>');
-
-
+				
+				/**
+				 * Boutons de tri des résultats - Sur tous type de champs sauf les tables de relations
+				 */
+				if (!($tablerel[$k])) {
+					
+					$r .=('<br/><a href="?fromList=1&amp;curTable='.$_REQUEST['curTable'].'&order='.$k.'&to=asc&lstart=0">
+									<img src="img/sort_down.jpg" alt="Tri croissant" title="Tri croissant" />
+								</a>&nbsp;
+								<a href="?fromList=1&amp;curTable='.$_REQUEST['curTable'].'&order='.$k.'&to=desc&lstart=0">
+									<img src="img/sort_up.jpg" alt="Tri décroissant" title="Tri décroissant" />
+								</a>');
+					
+					$r .=('</th>');
+				
+				}
 			}
 			 
 			$r .= ('<th style="width:20px;">&nbsp;</th>');
 
 			$r .=('</tr>');
 			$r .= "\n";
-			//reset($tables);
+			
+			
 	   
-
-			 
+			/**
+			 * Liste des résultats
+			 */
 			for($k = $lstart; $k< $lend; $k++) {
 				 
 				$row = $res[$k];
-				 
-				//reset($tables[$table]);
-				 
+				 				 
 				$r .=('<tr class="'.($k%2 ? 'odd':'even').'">');
 					
 				$id=$row[$thisPk];
 				$t1 = getmicrotime();
-				$form = new GenForm($_REQUEST['curTable'],'post',$id,$row);
+				
+				$form = new GenForm($_REQUEST['curTable'], 'post', $id, $row);
+				
 				$tempsConstruct += (getmicrotime()-$t1);
 				 
 				$form->editMode=true;
 				$form->onlyData=true;
 					
 				reset($tablo);
-				//$r .= '<input type="checkbox" name="massiveActions[]" value="1" checked="checked"/>';
-				 
+				
 				$r .= '<th style="width:20px;"><input type="checkbox"  name="massiveActions[]" value="'.$id.'" /> '.$row[$thisPk].''."&nbsp;</th>";
+				
 				$t1 = getmicrotime();
+				
 				while(list($kk,$vv) = each( $tablo)) {
+					
 					$form->bufferPrint = "";
 					$form->genFields($vv);
 					$valeur = $form->getBuffer();
@@ -616,15 +689,10 @@ class genSearchV2 {
 					$r .= '<td>'.$valeur.''."&nbsp;</td>";
 
 				}
+				
 				$tempsGen += (getmicrotime()-$t1);
 				$r .= '<td style="width:60px;">';
-				/*
-				 if($this->gs->can('edit',$table,$row,$row[$thisPk]))
-				 $r .= '<a href="?curTable='.$table.'&curId='.$row[$thisPk].'&resume=1"><img src="'.t('src_editer').'" border="0" alt="'.t('edit').'"/></a>';
-					else
-					$r .= '<img src="'.t('src_locked').'" border="0" alt="'.t('locked').'"/>';
-					*/
-				 
+								 
 				$t1 = getmicrotime();
 
 				$tempsConstructAction += (getmicrotime()-$t1);
@@ -632,7 +700,6 @@ class genSearchV2 {
 				$r .= '<div style="width:150px;">';//style="width:'.(23*count($actions)).'px"
 				$t1 = getmicrotime();
 				 
-
 				$r .= $this->getActions($row);
 				$tempsGenAction += (getmicrotime()-$t1);
 				 
@@ -776,9 +843,9 @@ class genSearchV2 {
 	 */
 
 	function doFullSearch($searchTxt = '',$clauseSql='',$onlyEditable=true) {
-		 
-		global $searchField,$relations,$tablerel,$_Gconfig;
-		 
+		
+		global $searchField,$relations,$tablerel,$_Gconfig, $tabForms;
+		
 		/*
 		 * Create query for full relational search
 		 */
@@ -786,11 +853,86 @@ class genSearchV2 {
 
 		$table = $this->table;
 		$curkey = GetPrimaryKey($table);
+		$tabfield = getTabField($table);
+		
+		/**
+		 * Paramètres supplémentaires si un champ de tri est demandé
+		 */
+		if ($_REQUEST['order'] &&   (array_key_exists($_REQUEST['order'], getTabField($this->table)))
+								  || array_key_exists($_REQUEST['order'].'_'.ADMIN_LG_DEF, getTabField($this->table))) {
+			
+			/**
+			 * Si le champ de tri est une clé étrangère
+			 */
+			if ($relations[$this->table][$_REQUEST['order']]) {
+				
+				$tableEtrangere = $relations[$this->table][$_REQUEST['order']];
+				
+				$addToFROM = ', '.$tableEtrangere.' AS Z '; 
+				$addToWHERE = ' AND Z.'.getPrimaryKey($tableEtrangere).' = T.'.$_REQUEST['order'].' '; 
+				
+				$labelTableEtrangere = $tabForms[$tableEtrangere]['titre'][0];
+				
+				/**
+				 * On vérifie si c'est un champ de langue mis en version de base (ex. table_titre pour table_titre_fr)
+				 */
+				$fkTabFields = getTabField($tableEtrangere);
+				
+				if (!$fkTabFields[$labelTableEtrangere] && $fkTabFields[$labelTableEtrangere.'_'.ADMIN_LG_DEF]) {
+				
+					$labelTableEtrangere .= '_'.ADMIN_LG_DEF;
+					
+				}
+				
+				$addToORDER = ' Z.'.$labelTableEtrangere;
+			
+			}
+			
+			/**
+			 * Si c'est un champ de la table
+			 */
+			else {
+				
+				$addToFROM = '';
+				$addToWHERE = '';
+				
+				/**
+				 * On vérifie si c'est un champ de langue mis en version de base (ex. table_titre pour table_titre_fr)
+				 */
+				if (!$tabfield[$_REQUEST['order']] && $tabfield[$_REQUEST['order'].'_'.ADMIN_LG_DEF]) {
+					
+					$addToORDER = ' T.'.$_REQUEST['order'].'_'.ADMIN_LG_DEF;
+					
+				}
+				
+				else {
+					
+					$addToORDER = ' T.'.$_REQUEST['order'];
+					
+				}
+        					
+			}
+			
+			/**
+			 * Dans tous les cas on ajoute le sens de tri
+			 */
+			if($_GET['to'] == 'asc') {
+				
+        		$addToORDER .= ' ASC , ';
+        		
+        	} 
+        	
+        	else {
+        		
+        		$addToORDER .= ' DESC , ';
+        		
+        	}
+		}
 
 		/**
 		 * SQL start
 		 */
-		$presql = 'SELECT DISTINCT(T.'.$curkey.') , T.* FROM '.$table.' AS T ';
+		$presql = 'SELECT DISTINCT(T.'.$curkey.') , T.* FROM '.$table.' AS T '.$addToFROM;
 		 
 		/**
 		 * Default where clause
@@ -970,7 +1112,12 @@ class genSearchV2 {
 
 		}
 
-
+		/**
+		 * Condition additionnelle
+		 */
+		$wheresql .= $addToWHERE;
+			
+		
 		if($_REQUEST['champ'] && $_REQUEST['curId'] && $_Gconfig['specialListingWhere'][$_REQUEST['champ']]) {
 			$wheresql .= $_Gconfig['specialListingWhere'][$_REQUEST['champ']]($_REQUEST['curId']);
 		}
@@ -978,11 +1125,15 @@ class genSearchV2 {
 		$label = GetTitleFromTable($table," , ");
 
 		if(in_array($table,$_Gconfig['multiVersionTable'])) {
-			$wheresql .= " GROUP BY T.".MULTIVERSION_FIELD." ORDER BY T.".MULTIVERSION_FIELD.",  T.".$label;
+			$wheresql .= " GROUP BY T.".MULTIVERSION_FIELD." ORDER BY T.".MULTIVERSION_FIELD.",  ";
 		} else {
-			$wheresql .= " ORDER BY T.".$label;
+			$wheresql .= " ORDER BY ";
 		}
-
+		
+		$wheresql .= $addToORDER;
+		
+		$wheresql .= "T.".$label;
+		 
 		$res = GetAll($presql.$wheresql);
 		 
 
@@ -1000,60 +1151,157 @@ class genSearchV2 {
 	 */
 	 
 	function doSimpleSearch() {
-
-		global $tabForms,$_Gconfig;
-
+		
+		global $searchField, $relations, $tablerel, $_Gconfig, $tabForms;
 
 		$id = getPrimaryKey($this->table);
 		$tabfield = getTabField($this->table);
 
-		//".getPrimaryKey($this->table).", ".GetTitleFromTable($this->table,' , ')."
+		/**
+		 * Paramètres supplémentaires si un champ de tri est demandé
+		 */
+		if ($_REQUEST['order'] &&   (array_key_exists($_REQUEST['order'], getTabField($this->table)))
+								  || array_key_exists($_REQUEST['order'].'_'.ADMIN_LG_DEF, getTabField($this->table))) {
+			
+			/**
+			 * Si le champ de tri est une clé étrangère
+			 */
+			if ($relations[$this->table][$_REQUEST['order']]) {
+				
+				$tableEtrangere = $relations[$this->table][$_REQUEST['order']];
+				
+				$addToFROM = ', '.$tableEtrangere.' AS Z '; 
+				$addToWHERE = ' AND Z.'.getPrimaryKey($tableEtrangere).' = T.'.$_REQUEST['order'].' '; 
+				
+				$labelTableEtrangere = $tabForms[$tableEtrangere]['titre'][0];
+				
+				/**
+				 * On vérifie si c'est un champ de langue mis en version de base (ex. table_titre pour table_titre_fr)
+				 */
+				$fkTabFields = getTabField($tableEtrangere);
+				
+				if (!$fkTabFields[$labelTableEtrangere] && $fkTabFields[$labelTableEtrangere.'_'.ADMIN_LG_DEF]) {
+				
+					$labelTableEtrangere .= '_'.ADMIN_LG_DEF;
+					
+				}
+				
+				$addToORDER = ' Z.'.$labelTableEtrangere;
+			
+			}
+			
+			/**
+			 * Si c'est un champ de la table
+			 */
+			else {
+				
+				$addToFROM = '';
+				$addToWHERE = '';
+				
+				/**
+				 * On vérifie si c'est un champ de langue mis en version de base (ex. table_titre pour table_titre_fr)
+				 */
+				if (!$tabfield[$_REQUEST['order']] && $tabfield[$_REQUEST['order'].'_'.ADMIN_LG_DEF]) {
+					
+					$addToORDER = ' T.'.$_REQUEST['order'].'_'.ADMIN_LG_DEF;
+					
+				}
+				
+				else {
+		
+					$addToORDER = ' T.'.$_REQUEST['order'];
+					
+				}
+        					
+			}
+			
+			/**
+			 * Dans tous les cas on ajoute le sens de tri
+			 */
+			if($_GET['to'] == 'asc') {
+				
+        		$addToORDER .= ' ASC , ';
+        		
+        	} 
+        	
+        	else {
+        		
+        		$addToORDER .= ' DESC , ';
+        		
+        	}
+			
+		}
 		 
-
-		$sql = "SELECT *
-        			 FROM ".$this->table.' AS T ';
+		
+		
+		/**
+		 * Construction de la requête
+		 */
+		$sql = "SELECT DISTINCT(T.".GetPrimaryKey($this->table)."), T.*
+        		FROM ".$this->table.' AS T ';
+		
+		$sql .= $addToFROM;
 
 		if(in_array($this->table,$_Gconfig['multiVersionTable'])) {
 			$sql .= ' WHERE 1 ';
 		} else {
 			$sql .= ' WHERE 1 '.GetOnlyEditableVersion($this->table,"T").' ';
 		}
-
+		
 		$sql .= $GLOBALS['gs_obj']->sqlCanRow($this->table).' AND ( ';
 
 		$mots = split(" ",$_REQUEST['searchTxt']);
 
 		$sql .= " 0 ";
 
-
-
-
-
+		/**
+		 * Recherche des mots du champ libre dans les champs de la table de type texte
+		 */
 		while(list($k,$v) = each($tabfield)) {
+			
 			if($v->type == "varchar" || $v->type == "text") {
+				
 				reset($mots);
+				
 				$sql .= " OR ( 1 ";
-				while(list(,$mot) = each($mots))
-				$sql .= " AND ".$k.' LIKE '.sql('%'.$mot.'%').' ';
+				
+				while(list(,$mot) = each($mots)){
+				
+					$sql .= " AND T.".$k.' LIKE '.sql('%'.$mot.'%').' ';
+					
+				}
+				
 				$sql .=  " ) ";
 			}
 		}
 
 		if($_REQUEST['searchId'])
+			$sql .= " ) ";
+			
 		$sql .= " ) ";
+			
+		$sql .= $addToWHERE;
 
 		$label = GetTitleFromTable($this->table," , ");
 
 		if(in_array($this->table,$_Gconfig['multiVersionTable'])) {
-			$sql .= " ) GROUP BY ".MULTIVERSION_FIELD." ORDER BY ".MULTIVERSION_FIELD.",  ".$label;
-		} else {
-			$sql .= " ) ORDER BY ".$label;
+			
+			$sql .= " GROUP BY ".MULTIVERSION_FIELD." ORDER BY ".MULTIVERSION_FIELD.",  ";
+			
 		}
 
-		//$sql .= " ) ORDER BY ".$label;
+		else {
+			
+			$sql .= " ORDER BY ";
+			
+		}
 
+		$sql .= $addToORDER;
 
+        $sql .= $label;
+        
 		$res = GetAll($sql);
+		
 
 		$this->printRes($res);
 
