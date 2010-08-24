@@ -1414,3 +1414,40 @@ tr.myDragClass {
 .toolsright form {
 	display:inline;
 	}
+	
+/*************************************/
+/** Liste de résultats de recherche **/
+/*************************************/
+.colonne_booleen {
+
+	width : 60px;
+	text-align : center;
+
+}
+
+.colonne_date {
+
+	width : 120px;
+	padding-left : 5px;
+
+}
+
+.colonne_actions {
+
+	padding-left : 10px;
+	
+}
+
+.btn_action, .small_form_action {
+
+	text-align : center;
+	padding-right : 5px;
+	float : left;
+
+}
+
+.tr_selected td {
+
+	background : #F5B85A !important;
+
+}
