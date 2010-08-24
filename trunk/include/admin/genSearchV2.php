@@ -623,7 +623,7 @@ class genSearchV2 {
 				 * Champs de type boolean
 				 */
 				if($t[$k]->type == 'tinyint') {
-					$r .=('<th style="width:20px" scope="col">');
+					$r .=('<th class="colonne_booleen" scope="col">');
 				} else {
 					$r .=('<th scope="col">');
 				}
@@ -685,43 +685,54 @@ class genSearchV2 {
 					$valeur = $form->getBuffer();
 
 					$valeur = truncate($valeur,$maxLength);
+					
+					/**
+					 * Class en fonction du type de champ
+					 */
+					if($t[$vv]->type == 'tinyint') {
+						
+						/** Booléen **/
+						$class = 'class="colonne_booleen"';
+												
+					} elseif($t[$vv]->type == 'date' || $t[$vv]->type == 'datetime') {
+						
+						/** Date **/
+						$class = 'class="colonne_date"';
+						
+					} else $class = '';
 
-					$r .= '<td>'.$valeur.''."&nbsp;</td>";
+					$r .= '<td '.$class.'>'.$valeur.''."&nbsp;</td>";
 
 				}
 				
 				$tempsGen += (getmicrotime()-$t1);
-				$r .= '<td style="width:60px;">';
-								 
+				
+				$r .= '<td class="colonne_actions">';
+							 
 				$t1 = getmicrotime();
 
 				$tempsConstructAction += (getmicrotime()-$t1);
-				 
-				$r .= '<div style="width:150px;">';//style="width:'.(23*count($actions)).'px"
+				 		
 				$t1 = getmicrotime();
 				 
+				/**
+				 * Boutons d'actions
+				 */
 				$r .= $this->getActions($row);
+				
 				$tempsGenAction += (getmicrotime()-$t1);
-				 
-				$r.= '</div>';
-				 
+				
+				
 				$r .='</td>';
 				$r .=('</tr>');
 				$r .= "\n";
 			}
 
-
-			//p('<div style="clear:both;">');
-
-
 			if(count($res) > 0) {
 
-
 				p($r);
-
 				 
 			}
-			 
 			 
 			p('</table>');
 
@@ -731,21 +742,28 @@ class genSearchV2 {
 		}
 
 
-		$actions = $GLOBALS['gs_obj']->getActions($this->table);
-
 	  
-		global $_Gconfig;
-	  
+		/**
+		 * Code javascript qui coche la checkbox en début de ligne lorsqu'on clique sur une ligne
+		 */
 		p('
 	   	<script type="text/javascript">
 	   	$(".genform_table tr").click(function() {
+	   		
 	   		if($(this).find("input[type=checkbox]").is(":checked")) {
+	   		
 	   			$(this).find("input[type=checkbox]").attr("checked",false);
+	   			$(this).removeClass("tr_selected");
+	   			
 	   		} else {
+	   		
 	   			$(this).find("input[type=checkbox]").attr("checked",true);
+	   			$(this).addClass("tr_selected");
+	   			
 	   		}
 	   	});
 	   	</script>
+	   	
 	   	<div style="clear:both;text-align:right"  class="fond1">');
 	  
 		$html .= '<a href="#" onclick="searchSelectMass(true);return false;">'.t('select_all').'</a> / ';
@@ -753,6 +771,11 @@ class genSearchV2 {
 	  
 		$html .= '<select name="mass_action">';
 		$html .= '<option value="">-----------------</option>';
+		
+		$actions = $GLOBALS['gs_obj']->getActions($this->table);
+		
+		global $_Gconfig;
+		
 		foreach($actions as $action) {
 				
 			if(!in_array($action,$_Gconfig['nonMassAction'])) {
@@ -787,11 +810,11 @@ class genSearchV2 {
 		$thisPk = getPrimaryKey($table);
 		$id=$row[$thisPk];
 		$actions = $GLOBALS['gs_obj']->getActions($table,$id,$row);
+		$nbActions = 0;
 		 
 		foreach($actions as $action) {
 			 
 			$ga = new genAction($action,$table,$id,$row);
-			 
 			 
 			if($ga->checkCondition()) {
 
@@ -800,22 +823,35 @@ class genSearchV2 {
 				} else {
 					$srcBtn = ADMIN_PICTOS_FOLDER.ADMIN_PICTOS_FORM_SIZE.'/emblems/emblem-system.png';
 				}
-				//debug($action. ' - '.$srcBtn);
-
+				
 				if($action ==  'del') {
-					$r .= '<a href="?genform_action%5B'.$action.'%5D=1&amp;curTable='.$table.'&amp;curId='.$id.'&amp;action='.$action.'&amp;fromList=1" onclick="return confirm(\''.t('confirm_suppr').'\')"><img src="'.$srcBtn.'" alt="'.t($action).'"/></a>';
-				} else {
+					
+					$r .= '<a class="btn_action" title="'.t($action).'" href="?genform_action%5B'.$action.'%5D=1&amp;curTable='.$table.'&amp;curId='.$id.'&amp;action='.$action.'&amp;fromList=1" onclick="return confirm(\''.t('confirm_suppr').'\')">
+							<img src="'.$srcBtn.'" alt="'.t($action).'" title="'.t($action).'" />
+						   </a>';
+				
+				} 
+				
+				else {
+					
 					if(method_exists($ga->obj,'getSmallForm')) {
-						$r .= $ga->obj->getSmallForm();
+						
+						$r .= '<div class="small_form_action">'.$ga->obj->getSmallForm().'</div>';
+						
 					} else {
-						$r .= '<a href="?genform_action%5B'.$action.'%5D=1&amp;curTable='.$table.'&amp;curId='.$id.'&amp;action='.$action.'&amp;fromList=1"><img src="'.$srcBtn.'" alt="'.t($action).'"/></a>';
-						//$r .= '<a href="?genform_action%5B'.$action.'%5D=1&amp;curTable='.$table.'&amp;curId='.$id.'&amp;action='.$action.'&amp;fromList=1"><img src="'.$srcBtn.'" alt="'.t($action).'"/></a>';
+						
+						$r .= '<a class="btn_action" href="?genform_action%5B'.$action.'%5D=1&amp;curTable='.$table.'&amp;curId='.$id.'&amp;action='.$action.'&amp;fromList=1" title="'.t($action).'">
+								<img src="'.$srcBtn.'" alt="'.t($action).'" title="'.t($action).'" />
+							   </a>';
+						
 					}
 				}
+				
+				$nbActions++;
 			}
 		}
 
-
+		$r = '<div style="width:'.(28*$nbActions).'px;">'.$r.'</div>';
 
 		return $r;
 
