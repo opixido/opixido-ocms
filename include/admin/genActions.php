@@ -744,14 +744,18 @@ class genActionValidateVersion {
 	
 	public function checkCondition() {
 		global $_Gconfig;
+		
 		if(ake($this->row,$_Gconfig['field_date_maj'])) {
+			
 			$r = getRowFromId($this->table,$this->row[VERSION_FIELD]);
+			
 			if(strtotime($this->row[$_Gconfig['field_date_maj']]) > strtotime($r[$_Gconfig['field_date_maj']])) {
 				return true;
 			} else {
 				return false;
 			}
 		}
+		
 		return true;
 
 	}	
@@ -778,9 +782,11 @@ class genActionValidateVersion {
 		$record[ONLINE_FIELD] = 0;
 		($co->AutoExecute($this->table,$record,'UPDATE',' '.getPrimaryKey($this->table).' = '.sql($this->id)));
 		
+		if(ake($this->row,$_Gconfig['field_date_maj'])) {
 		
-		DoSql('UPDATE '.$this->table.' SET '.$_Gconfig['field_date_maj'].' = NOW() WHERE '.getPrimaryKey($this->table).' = '.sql($this->row[VERSION_FIELD]));
+			DoSql('UPDATE '.$this->table.' SET '.$_Gconfig['field_date_maj'].' = NOW() WHERE '.getPrimaryKey($this->table).' = '.sql($this->row[VERSION_FIELD]));
 		
+		}
 		
 		dinfo(t('modifications_en_ligne'));			
 		return;
