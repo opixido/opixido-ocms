@@ -108,24 +108,16 @@
 
 							
                             /* Edition via l'ImageManager */
-                            //$ssch = str_replace(BU,'',$gf->getWebUrl(),$count);
-                            $ssch = substr($gf->getWebUrl(),strlen(BU));
-                            //echo $ssch;
+                            //$ssch = substr($gf->getWebUrl(),strlen(BU));
+                             
+                            $ssch = str_replace('http://', '', $gf->getWebUrl());
+                            $ssch = str_replace($_SERVER['HTTP_HOST'], '', $ssch);
                            
-                            // $ssch = $gf->getWebUrl();
                             if($this->isImage($chemin) && $this->useImageEditor) {
                                 $this->addBuffer('<a href="ImageManager/editor.php?img='.$ssch.'&update=imgprev_'.$name.'" onclick="window.open(this.href);return false" >'.$this->trad('edis_image').'</a>' );
                             }
-                            /* Pour supprimer le fichier !
-                            $this->addBuffer( '<input type="checkbox" ');
-                            $this->addBuffer( ' onclick="if(this.checked) {if(!confirm(\''.t('supprimer_fichier').'\')) this.checked = false; }" ');
-
-                            $this->addBuffer(' name="genform_' . $name . '_del" id="genform_' . $name . '_del" value="" />');
-
-                            $this->addBuffer(' <label for="genform_' . $name . '_del">' . $this->trad( 'supprimer' ) . '</label><br/><br/>' );
-
-			*/
-
+                           
+                            
 							$this->addBuffer('<label class="abutton"  style="float:none;width:120px;"
 							><input onclick="return  confirm(\''.t('supprimer_fichier').'\')" class="inputimage" type="image" 
 							value="" src="'.t('src_delete').'"  name="genform_' . $name . '_del" 
@@ -136,6 +128,7 @@
                             $_SESSION[gfuid()]['curFields'][] = $name . "_del";
                             
                         }
+                        
                     } else {
                         /* Si only Data : on retourne juste l'url */
 
