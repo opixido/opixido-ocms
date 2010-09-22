@@ -2547,6 +2547,11 @@ function getGabaritClass($gab,$param='',$instanciate=true) {
 	if(class_exists($className)) {
 		
 		if($instanciate) {
+			
+			if ($gab['gabarit_classe_param']) {
+				$param .= ','.$gab['gabarit_classe_param'];
+			}
+			
 			$bddClasse = new $className($GLOBALS['site'],$param. ','.$gab['gabarit_classe_param'], $this);
 		} else {
 			return $className;
