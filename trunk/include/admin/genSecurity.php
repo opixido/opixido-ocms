@@ -449,6 +449,7 @@ class genSecurity {
 		    			'edit'=>true,
 		    			'del'=>false,
 		    			'champs'=>'all',
+		    			'type'=>'all',
 		    			'condition'=>'none',
 		    			'actions'=>array()	    		
 	    			);	
@@ -496,6 +497,7 @@ class genSecurity {
 	    			'edit'=>true,
 	    			'del'=>true,
 	    			'champs'=>'all',
+	    			'type'=>'all',
 	    			'condition'=>array('arbo','proprio'),
 	    			'actions'=>array(),
 	    			'rows'=>array()
@@ -1140,7 +1142,11 @@ class genSecurity {
     		return '';
     		
     	if($this->myroles[$table]['view']) {
-    		if(is_array($this->myroles[$table]['rows']) ) {
+    		
+    		/**
+    		 * Ajout de Olivier le 24/11/2010 && count($this->myroles[$table]['rows'])
+    		 */
+    		if(is_array($this->myroles[$table]['rows']) && count($this->myroles[$table]['rows'])) {
     			
     			$v = implode($this->myroles[$table]['rows'],'","');
 				//debug($this->myroles[$table]);
