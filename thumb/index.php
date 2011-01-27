@@ -56,6 +56,8 @@ if(!$_GET['src']) {
 	} else {
 		$_GET['src'] = $_REQUEST['src'] = $_SESSION['cimg_'.md5($_SERVER['REQUEST_URI'])];
 	}
+	
+	session_write_close();
 }
 
 
