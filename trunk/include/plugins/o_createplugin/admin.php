@@ -319,7 +319,7 @@ function o_createPlugin() {
 			}
 		}
 		
-		$f .= "\n\n".'?>';
+		$f .= "\n\n".'';
 		echo '<pre style="">'.htmlentities($f).'</pre>';
 		
 		if($DOITFORREAL) {
@@ -329,7 +329,7 @@ function o_createPlugin() {
 		echo '<h3>Création des formulaires</h3>';
 		
 		foreach($formS as $k=>$v) {
-			$v = '<?php'."\n\n".$v."\n?>";
+			$v = '<?php'."\n\n".$v."\n";
 			echo '<h4>Fichier : plugins/'.$nom.'/forms/form.'.$k.'.php</h4>';
 			echo '<pre>'.htmlentities($v).'</pre>';
 			if($DOITFORREAL) {
@@ -369,7 +369,7 @@ class gen'.(ucfirst($nom)).' extends baseGen {
 
 }
 
-?>
+
 		';
 		echo '<pre>'.htmlentities($fG).'</pre>';
 		if($DOITFORREAL) {
