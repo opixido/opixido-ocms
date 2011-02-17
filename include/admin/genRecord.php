@@ -728,19 +728,34 @@ class genRecord {
                             $value = "";
                         }
 
+						if(substr($name, -11) == "_fromfolder") {
+							/**
+							 * gestion des fichiers en lien vers un dossier
+							 */
+                        	if($value) {
+                        		if($value =="-1") {
+                        			$value ='';
+                        		} else {
+                        			$value= '**'.$value;	
+                        		}
+                        		$name = substr($name, 0, -11);                        		
+                        	} else {
+                        		$name = '';
+                        		$value = '';
+                        	}
+                        	
+                        }
+						
+						/**
+						 * Gestion des fichiers à copier depuis le dossier upload
+						 */
                         if ((substr($name, -10) == "_importftp") && $value != "0" && $value != "NULL") {
                             $name = substr($name, 0, -10);
-
-                            /**
-                             *
-                             * @unlink ($uploadRep.$myobj->tab_default_field[$name]);
-                             */
 
                             $gf = new GenFile($this->table, $name, $this->id, $value, false);
                             if ($gf->uploadFile(path($_Gconfig['ftpUpload_path'], $value))) {
                                 $value = $gf->getRealName();
                             }
-                            // $value="";
                         } else if (substr($name, -10) == "_importftp") {
                             $name = '';
                             $value = '';
