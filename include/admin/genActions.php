@@ -1805,3 +1805,149 @@ class genActionDeleteMv extends baseAction {
 	
 }
 
+
+class genActionMoveTableRowUp extends baseAction {
+	
+	public $canReturnToList = true;
+	
+	function checkCondition () {
+		global $_Gconfig;		
+		if($this->row[$_Gconfig['arboredTable'][$this->table]] > 0) {
+			return false;
+		}
+		if($this->row[$_Gconfig['orderedTable'][$this->table]] == 1) {
+			return false;
+		}
+		return true;
+	}
+	
+	function doIt() {
+		global $_Gconfig;
+		$chp = $_Gconfig['orderedTable'][$this->table];
+		$pk = getPrimaryKey($this->table);
+		$sql = 'SELECT '.$pk.','.$chp.'
+						FROM '.$this->table.'
+						WHERE '.$chp.' < '.$this->row[$chp].' ';
+		
+		if($fk = $_Gconfig['arboredTable'][$this->table])	{
+			$sql .= ' AND ( '.$fk.' = 0 OR '.$fk.' IS NULL ) ';
+		}
+		
+		$sql .= '		ORDER BY '.$chp.' DESC
+						LIMIT 0,1
+						';
+		
+		$row = GetSingle($sql);
+		
+		DoSql('UPDATE '.$this->table.' SET '.$chp.' = '.($row[$chp]).' WHERE '.$pk.' = '.$this->id);
+		
+		DoSql('UPDATE '.$this->table.' SET '.$chp.' = '.($this->row[$chp]).' WHERE '.$pk.' = '.$row[$pk]);
+		
+	}
+	
+	function getForm() {
+		
+	}
+}
+
+
+class genActionMoveTableRowDown extends baseAction {
+	
+	public $canReturnToList = true;
+	
+	function checkCondition () {
+		global $_Gconfig;		
+		if($this->row[$_Gconfig['arboredTable'][$this->table]] > 0) {
+			return false;
+		}
+		if(!$GLOBALS['currentOrderedMax']) {
+			$sql = 'SELECT MAX('.$_Gconfig['orderedTable'][$this->table].') AS MAXI FROM '.$this->table.' ';
+			if($fk = $_Gconfig['arboredTable'][$this->table])	{
+				$sql .= ' WHERE ( '.$fk.' = 0 OR '.$fk.' IS NULL ) ';
+			}
+			$sql .= ' LIMIT 0,1';
+			$row = GetSingle($sql);
+			$GLOBALS['currentOrderedMax'] = $row['MAXI'];
+		}
+		if($this->row[$_Gconfig['orderedTable'][$this->table]] == $GLOBALS['currentOrderedMax']) {
+			return false;
+		}
+		return true;
+	}
+	
+	function doIt() {
+		global $_Gconfig;
+		$chp = $_Gconfig['orderedTable'][$this->table];
+		$pk = getPrimaryKey($this->table);
+		$sql = 'SELECT '.$pk.','.$chp.'
+						FROM '.$this->table.'
+						WHERE '.$chp.' > '.$this->row[$chp].' ';
+		
+		if($fk = $_Gconfig['arboredTable'][$this->table])	{
+			$sql .= ' AND ( '.$fk.' = 0 OR '.$fk.' IS NULL ) ';
+		}
+		
+		$sql .= '		ORDER BY '.$chp.' ASC
+						LIMIT 0,1
+						';
+		$row = GetSingle($sql);
+		
+		DoSql('UPDATE '.$this->table.' SET '.$chp.' = '.($row[$chp]).' WHERE '.$pk.' = '.$this->id);
+		
+		DoSql('UPDATE '.$this->table.' SET '.$chp.' = '.($this->row[$chp]).' WHERE '.$pk.' = '.$row[$pk]);
+		
+	}
+	
+	function getForm() {
+		
+	}
+	
+}
+
+
+
+function insertTableRowOrder($id,$quoi,$gr,$table) {
+	global $_Gconfig;
+	
+	$r = getRowFromId($table,$id);
+
+	
+	$sql = 'SELECT MAX('.$_Gconfig['orderedTable'][$table].') AS MAXI FROM '.$table;
+	if($fk = $_Gconfig['arboredTable'][$table])	{
+		if($r[$fk] > 0) {
+			return false;
+		}
+		$sql .= ' WHERE ( '.$fk.' = 0 OR '.$fk.' IS NULL ) ';
+	}
+	$sql .= ' LIMIT 0,1';
+	
+	$row = GetSingle($sql);
+	
+	DoSql('UPDATE '.$table.' SET '.$_Gconfig['orderedTable'][$table].' = '.($row['MAXI']+1).' 
+				WHERE '.getPrimaryKey($table).' = '.$id);
+	
+}
+
+
+
+
+function deleteTableRowOrder($id,$quoi,$gr,$table) {
+	global $_Gconfig;
+	
+	$row = getRowFromId($table,$id);
+	
+	$sql = 'UPDATE '.$table.' SET '.$_Gconfig['orderedTable'][$table].' = ('.$_Gconfig['orderedTable'][$table].' - 1) 
+				WHERE '.$_Gconfig['orderedTable'][$table].' > '.$row[$_Gconfig['orderedTable'][$table]];
+	
+	if($fk = $_Gconfig['arboredTable'][$table])	{
+		if($r[$fk] > 0) {
+			return false;
+		}
+		$sql .= ' AND ( '.$fk.' = '.sql($row[$fk]).' OR '.$fk.' IS NULL ) ';
+	}
+	
+	//$sql .= ' LIMIT 0,1';
+	
+	doSql($sql);
+}
+
