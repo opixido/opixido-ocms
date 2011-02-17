@@ -374,16 +374,18 @@ class GenForm {
             
             foreach($page as $p ) {
 	            if(!file_exists($formsRep.$p) || !is_file($formsRep.$p)) {
-                    while(list($k,$v) = each($this->tab_field)) {
-                        if(strlen($k) > 2 && $k != $this->pk && $k != $_Gconfig['field_date_maj']) {
-                        	//debug($k.' : '.isBaseLgField($k,$this->table).' : '.getBaseLgField($k));
-                        	if(isLgField($k) && isDefaultLgField($k,$this->table)) {	                        		
-                        		$this->genlg(getBaseLgField($k));
-                        	} else if(!isLgField($k)) {	                        	
-                        	    $this->gen($k);
-                        	} 
-                        }	                            
-                    }
+	            	if(count($page) == 1) {
+	                    while(list($k,$v) = each($this->tab_field)) {
+	                        if(strlen($k) > 2 && $k != $this->pk && $k != $_Gconfig['field_date_maj']) {
+	                        	//debug($k.' : '.isBaseLgField($k,$this->table).' : '.getBaseLgField($k));
+	                        	if(isLgField($k) && isDefaultLgField($k,$this->table)) {	                        		
+	                        		$this->genlg(getBaseLgField($k));
+	                        	} else if(!isLgField($k)) {	                        	
+	                        	    $this->gen($k);
+	                        	} 
+	                        }	                            
+	                    }
+	            	}
 	            } else {
 	            	include($formsRep.$p) ;
 	            }
