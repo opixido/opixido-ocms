@@ -835,7 +835,7 @@ class genRecord {
                 $ord = new GenOrder($this->table, $this->id, $fk_id);
 
                 if ($this->JustInserted) {
-                    $ord->OrderAfterInsert();
+                    $ord->OrderAfterInsertLastAtBottom();
                 }
 
                 $ord->ReOrder();
