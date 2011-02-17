@@ -262,9 +262,11 @@ class genXhrAdmin {
     		
     		if($GLOBALS['gs_obj']->can('edit', $_REQUEST['table'],$_REQUEST['id'],$_REQUEST['champ'])) {
     		
-	    		echo DoSql('UPDATE '.$_REQUEST['table'].' 
+	    		DoSql('UPDATE '.$_REQUEST['table'].' 
 	    						SET '.$_REQUEST['champ']. ' = '.sql($_REQUEST['save']).' 
-	    					WHERE '.getPrimaryKey($_REQUEST['table']).' = '.$_REQUEST['id']);	    	
+	    					WHERE '.getPrimaryKey($_REQUEST['table']).' = '.sql($_REQUEST['id']));	  
+	    		
+	    		echo Affected_Rows();  	
 	    		
     		}
     		
