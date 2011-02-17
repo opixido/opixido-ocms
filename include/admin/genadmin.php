@@ -80,6 +80,15 @@ class genAdmin {
 
 		$this->firstId = $id;
 
+		global $_Gconfig;
+		global $gr_on;
+		foreach($_Gconfig['orderedTable'] as $tableO=>$champO) {
+			$_Gconfig['rowActions'][$tableO]['moveTableRowUp'] = true;
+			$_Gconfig['rowActions'][$tableO]['moveTableRowDown'] = true;
+			$gr_on['insert'][$tableO][] = 'insertTableRowOrder';
+			$gr_on['beforeDelete'][$tableO][] = 'deleteTableRowOrder';
+		}
+		
 		$this->loadPlugins();
 		 
 		$this->checkActions();
@@ -1379,7 +1388,7 @@ class genAdmin {
 
 					/* On rï¿½rganise / rï¿½rdone */
 					$ord = new GenOrder($_REQUEST['curTable'],$_REQUEST['curId'],$_REQUEST['curId']);
-					$ord->OrderAfterInsert();
+					$ord->OrderAfterInsertLastAtBottom();
 
 				}
 
