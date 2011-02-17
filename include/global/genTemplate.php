@@ -71,7 +71,7 @@ class genTemplate {
 	 *
 	 * @var array
 	 */
-	private $blocks = array();
+	public $blocks = array();
 	
 	
 	/**
@@ -448,13 +448,9 @@ class genTemplate {
  				if(strpos($nom,'!') === false) {
  					//devbug('Template : '.$this->tplnom.' : BLOC inexistant : '.$nom);
  				}
- 			}
-					
-			
-		}
-		//return $this->blocks[$nom]['template'];
-		
-		
+ 			}			
+		}	
+		//return $this->blocks[$nom]['template'];	
 	}
 	
 	/**
