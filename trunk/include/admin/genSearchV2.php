@@ -25,7 +25,7 @@ class genSearchV2 {
 	 */
 	function printAll() {
 
-		global $searchField,$tabForms;
+		global $searchField,$tabForms,$_Gconfig;
 
 
 
@@ -39,6 +39,10 @@ class genSearchV2 {
 				WHERE 1 '.GetOnlyEditableVersion($this->table).' 
 				'.$GLOBALS['gs_obj']->sqlCanRow($this->table);
 		
+		if($_Gconfig['arboredTable'][$this->table]) {
+			$sql .= ' AND ( '.$_Gconfig['arboredTable'][$this->table].' = 0 OR '.$_Gconfig['arboredTable'][$this->table].' IS NULL )';
+		}
+		
 		$sql .= ' ORDER BY ';
         
         if($_REQUEST['order'] && array_key_exists($_REQUEST['order'],getTabField($this->table))) {
@@ -51,11 +55,16 @@ class genSearchV2 {
         		$sql .= ' DESC , ';
         	}
         }
+        
+        if($_Gconfig['orderedTable'][$this->table]) {
+        	$sql .= ' T.'.$_Gconfig['orderedTable'][$this->table].' ASC , ';
+        	
+        }       
 						
         //ORDER BY '.GetTitleFromTable($this->table," , ");
         
          $sql .= " T.".GetTitleFromTable($this->table," , ");
-         
+        
 		$this->res = GetAll($sql);
 		
 
@@ -965,6 +974,15 @@ class genSearchV2 {
         	}
 		}
 
+		if($_Gconfig['arboredTable'][$this->table]) {
+			$addToWHERE .= ' AND ( '.$_Gconfig['arboredTable'][$this->table].' = 0 OR '.$_Gconfig['arboredTable'][$this->table].' IS NULL )';		
+		}
+		        
+        if($_Gconfig['orderedTable'][$this->table]) {
+        	$addToORDER .= ' T.'.$_Gconfig['orderedTable'][$this->table].' ASC , ';        	
+        }
+		 
+		
 		/**
 		 * SQL start
 		 */
@@ -1266,10 +1284,16 @@ class genSearchV2 {
         		
         	}
 			
+		}	
+		
+		if($_Gconfig['arboredTable'][$this->table]) {
+			$addToWHERE .= ' AND ( '.$_Gconfig['arboredTable'][$this->table].' = 0 OR '.$_Gconfig['arboredTable'][$this->table].' IS NULL )';
 		}
-		 
 		
-		
+        if($_Gconfig['orderedTable'][$this->table]) {
+        	$addToORDER .= ' T.'.$_Gconfig['orderedTable'][$this->table].' ASC , ';        	
+        }
+        
 		/**
 		 * Construction de la requête
 		 */
