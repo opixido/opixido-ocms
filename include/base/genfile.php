@@ -201,25 +201,46 @@ class genFile {
 
 		$this->fileName = $this->realCode($this->rules['name']);
 
-		$this->systemPath = $this->realCode($this->rules['system']);
+		if($this->fileIsLinkedToFolder()) {
+			/**
+			 * Sélection directe d'un fichier dans un dossier existant
+			 */
+			$this->fileName = substr($this->realName,2);
+			
+			$s = $_Gconfig['fileListingFromFolder'][$this->table][getBaseLgField($champ)];
+			$s = explode('{',$s);
+			$this->systemPath = $s[0];
+			
+			$this->webPath = str_replace($_SERVER['DOCUMENT_ROOT'],'',$this->systemPath);		
+			
+		} else {
 		
-		$this->webPath =  $this->realCode($this->rules['web']);		
-		
-		$this->systemPath = $this->addSlashPath($this->systemPath);
-		
-		
-		/*
-		// Peut charger le serveur .. a voir
-		if(!file_exists($this->getSystemPath())) {
-			$this->imageExists = false;
+			/**
+			 * Fichier uploadé normalement
+			 */		
+			$this->systemPath = $this->realCode($this->rules['system']);
+			
+			$this->webPath =  $_Gconfig['CDN'].$this->realCode($this->rules['web']);		
+			
+			$this->systemPath = $this->addSlashPath($this->systemPath);
+			
+			$this->webPath = path_concat(BU,$this->addSlashPath($this->webPath));
 		}
-		*/
-		$this->webPath = path_concat($_Gconfig['CDN'],BU,$this->addSlashPath($this->webPath));
 			
 		
 	}
 
 
+	/**
+	 * Est-ce que le fichier actuel est juste un lien vers un fichier
+	 * existant dans un dossier ou pas ?
+	 *
+	 * @return bool
+	 */
+	function fileIsLinkedToFolder() {
+		return substr($this->realName,0,2) == '**';
+	}
+	
 	/**
 	*
 	*  @desc Determine le chemin en fonction du code d'upload dans le fichier de config
@@ -501,8 +522,14 @@ class genFile {
 		if(strlen($this->fileName) && strlen($this->valeur)) {
 			$dir = dirname($this->systemPath.$this->fileName);
 			$dir = realpath($dir);
-			$res = @unlink($this->systemPath.$this->fileName);
-			
+			if(!$this->fileIsLinkedToFolder()) {
+				/**
+				 * On ne supprime pas les fichiers du dossier partagé
+				 */				 
+				$res = @unlink($this->systemPath.$this->fileName);
+			} else {
+				return true;
+			}
 			return $res;
 			
 		}
