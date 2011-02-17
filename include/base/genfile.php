@@ -203,7 +203,7 @@ class genFile {
 
 		$this->systemPath = $this->realCode($this->rules['system']);
 		
-		$this->webPath =  $_Gconfig['CDN'].$this->realCode($this->rules['web']);		
+		$this->webPath =  $this->realCode($this->rules['web']);		
 		
 		$this->systemPath = $this->addSlashPath($this->systemPath);
 		
@@ -214,7 +214,7 @@ class genFile {
 			$this->imageExists = false;
 		}
 		*/
-		$this->webPath = path_concat(BU,$this->addSlashPath($this->webPath));
+		$this->webPath = path_concat($_Gconfig['CDN'],BU,$this->addSlashPath($this->webPath));
 			
 		
 	}
