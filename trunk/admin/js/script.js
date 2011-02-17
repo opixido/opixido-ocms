@@ -308,53 +308,15 @@ function insertPassword(obj) {
 }
 
 function moveMultiBox(fbox, tbox, ordered) {
-	var arrFbox = new Array();
-	var arrTbox = new Array();
-	var arrLookup = new Array();
-	var i;
-	for (i = 0; i < tbox.options.length; i++) {
-		arrLookup[tbox.options[i].text] = tbox.options[i].value;
-		arrTbox[i] = tbox.options[i].text;
+	$(fbox).find('option:selected').remove().appendTo(tbox);
+			
+	if(!ordered ) {
+		$(tbox).html($.makeArray($("#"+tbox.id+" option")).sort(function (a, b) {
+		  return a.text == b.text ? 0 : a.text < b.text ? -1 : 1;
+		}));
 	}
-	var fLength = 0;
-	var tLength = arrTbox.length;
-	for (i = 0; i < fbox.options.length; i++) {
-		arrLookup[fbox.options[i].text] = fbox.options[i].value;
-		if (fbox.options[i].selected && fbox.options[i].value != "") {
-			arrTbox[tLength] = fbox.options[i].text;
-			tLength++;
-		} else {
-			arrFbox[fLength] = fbox.options[i].text;
-			fLength++;
-		}
-	}
-	if (!ordered) {
-		arrFbox.sort();
-		arrTbox.sort();
-	}
-	fbox.length = 0;
-	tbox.length = 0;
-	var c;
-	for (c = 0; c < arrFbox.length; c++) {
-		var no = new Option();
-		no.value = arrLookup[arrFbox[c]];
-		if (no.value == "") {
-			no.disabled = "disabled";
-		}
-		no.text = arrFbox[c];
-		fbox[c] = no;
-	}
-
-	for (c = 0; c < arrTbox.length; c++) {
-		var no = new Option();
-
-		no.value = arrLookup[arrTbox[c]];
-		if (no.value == "") {
-			no.disabled = "disabled";
-		}
-		no.text = arrTbox[c];
-		tbox[c] = no;
-	}
+	
+	return false;
 }
 
 function moveInsideMulti(tbox, direct) {
