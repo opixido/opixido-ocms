@@ -262,6 +262,35 @@ $_Gconfig;
 
 
 
+/**
+ * Images a retailler automatiquement
+ * RETAILLAGE EXACT !
+ * Ne conserve pas les proportions
+ *
+ * $_Gconfig['imageAutoResize']['CHAMP'] = array(LARGEUR,HAUTEUR);
+ */
+$_Gconfig;
+
+/**
+ * Tables en arborescence sur elles même
+ * Donc avec uen clef externe poitant vers elle même ou un relinv sur elle meme ...
+ * $_Gconfig['arboredTable']['TABLE'] = 'CLEF_EXTERNE';
+ * Si cette table doit gérer un ordre, penser à la mettre dans "orderedTable" ci-dessous
+ */
+$_Gconfig;
+
+
+/**
+ * Table avec gestion de l'ordre global sur cette table
+ * $_Gconfig['orderedTable']['TABLE'] = 'CHAMP_ORDRE';
+ */
+$_Gconfig;
+
+/**
+ * Widget de selection de couleur sur un champ
+ * $_Gconfig['colorFields'][] = 'CHAMP_COULEUR';
+ */
+$_Gconfig['colorFields'] = array();
 
 
 /**
@@ -282,8 +311,6 @@ $_Gconfig['menus'] = array();
 		'imgW'=>array(81,81,81,85),
 		'caps'=>true
 	);
-
-
 */
 
 $_Gconfig['menus']['__default__'] = array(
