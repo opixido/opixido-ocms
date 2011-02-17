@@ -299,6 +299,14 @@ $_Gconfig['colorFields'] = array();
 
 $_Gconfig['menus'] = array();
 
+
+/**
+ * Liaison simple depuis un champ upload vers les fichiers d'un dossier existant sans copie
+ * $_Gconfig['fileListingFromFolder']['TABLE']['CHAMP'] = '/CHEMIN/VERS/LE/DOSSSIER/{*.ext1,*.ext2,...}';
+ */
+$_Gconfig['fileListingFromFolder'] = array();
+
+
 /**
 	@example
 		$_Gconfig['menus']['haut_gauche'] = array(
