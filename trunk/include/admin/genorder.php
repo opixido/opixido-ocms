@@ -183,7 +183,7 @@ class GenOrder {
     }
 
     
-    function orderAfterInsert() {
+    function orderAfterInsertLastAtTop() {
     	
     	
           if(!$this->DoIt)
@@ -231,7 +231,7 @@ class GenOrder {
             }
 
 
-	    $sql .= $this->specialClause();
+	  		  $sql .= $this->specialClause();
 
 
             $sql .= ' ORDER BY '.GetPrimaryKey($this->table);
