@@ -42,7 +42,7 @@ $("table.sortable").each( function() {
 		
 		$(this).find("tbody tr").prepend('<td class="dragHandle" title=<?=alt(t('relinv_move'));?>></td>');
 		$(this).find('td.dragHandle').tipsy({html: true ,gravity:  'e'});
-		$(this).find("thead th:first").after("<th ></th>");
+		$(this).find("thead th:first").after("<th width='20'></th>");
 		
 		$(this).tableDnD({
 	        onDrop: function(table, row) {
