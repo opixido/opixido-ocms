@@ -179,7 +179,7 @@ function o_createPlugin() {
 		$imgs = getAllPictos(ADMIN_PICTOS_BIG_SIZE);
 		foreach($imgs as $v) {
 			
-			$tosave = str_replace(str_replace(ADMIN_URL,'',ADMIN_PICTOS_FOLDER),'[ADMIN_PICTOS_FOLDER]',$v);
+			$tosave = str_replace(str_replace(ADMIN_URL,'',ADMIN_PICTOS_FOLDER),'',$v);
 			echo '<img onclick="gid(\'picto_tosave\').value=this.title"  src="'.$v.'" title="'.$tosave.'" />';
 		}
 		
@@ -236,7 +236,7 @@ function o_createPlugin() {
 		$f .= '$tabForms["'.$table.'"]["titre"] = '.var_export($tabForms[$table]['titre'],true).';'."\n\n";
 		$f .= '$tabForms["'.$table.'"]["pages"] = '.var_export($tabForms[$table]['pages'],true).';'."\n\n";
 		if($_POST['picto_tosave']) {
-			$f .= '$tabForms["'.$table.'"]["picto"] = '.sql($_POST['picto_tosave']).';'."\n\n";	
+			$f .= '$tabForms["'.$table.'"]["picto"] = ADMIN_PICTOS_FOLDER.'.sql($_POST['picto_tosave']).';'."\n\n";	
 		}
 		
 		
