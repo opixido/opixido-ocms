@@ -120,7 +120,7 @@ class genOcmsSearch {
 
 				$xhtml .= '<h4 class="titre">Recherche</h4>' ;
 
-				$xhtml .= '<p class="mots-clefs">Résultat(s) de recherche pour&nbsp;: "<span>' . $_GET [ 'q' ] . '</span>"</p>' ;
+				$xhtml .= '<p class="mots-clefs">Résultat(s) de recherche pour&nbsp;: "<span>' . htmlentities($_GET [ 'q' ],ENT_QUOTES,'utf-8') . '</span>"</p>' ;
 
 				$xhtml .= '<ul id="resultListe" class="liste liste_grande">'."\n" . $html ;
 
