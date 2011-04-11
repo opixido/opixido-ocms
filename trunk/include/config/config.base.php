@@ -531,6 +531,11 @@ $_Gconfig['imageExtensions']=array('jpg','jpeg','gif','png','bmp');
 
 
 /**
+ * Tables dont on peut gérer l'ordre directement au niveau 0
+ */
+$_Gconfig['orderedTable'] = array();
+
+/**
  * A voir ...
  */
 $adminTypesToMail = array('valideur','administrateur');
