@@ -317,7 +317,8 @@ class genInstall {
 		}
 		$_POST['CRYPTO_KEY'] = md5(time().'.'.microtime().'.'.rand(0,10000000)).rand(0,10000000);
 		$_POST['current_ip'] = $_SERVER['SERVER_ADDR'];
-		$vars = array('bdd_bdd','bdd_user','bdd_pwd','bdd_type','bdd_host','CRYPTO_KEY','ADMIN_URL','WEB_URL','session_cookie_server','current_ip');
+		$_POST['UNIQUE_SITE'] = uniqid();
+		$vars = array('bdd_bdd','bdd_user','bdd_pwd','bdd_type','bdd_host','CRYPTO_KEY','ADMIN_URL','WEB_URL','session_cookie_server','current_ip','UNIQUE_SITE');
 		foreach($vars as $var) {
 			$contenu = str_replace('**'.$var.'**',$_POST[$var],$contenu);
 		
