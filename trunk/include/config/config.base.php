@@ -486,9 +486,9 @@ $_Gconfig['genform']['nonEmptyForeignKey'] = array(
   */
 
 $_Gconfig['iSearches']['s_rubrique']['relations'] = array(
-											'fk_paragraphe_id'=>array('paragraphe_titre_'.LG_DEF, 'paragraphe_contenu_'.LG_DEF),
-											'fk_mecenat_id'=>array('mecenat_titre','mecenat_titre_en', 'mecenat_texte','mecenat_texte_en','mecenat_stitre','mecenat_stitre_en')
-										);
+	'fk_paragraphe_id'=>array('paragraphe_titre_'.LG_DEF, 'paragraphe_contenu_'.LG_DEF),
+	'fk_mecenat_id'=>array('mecenat_titre','mecenat_titre_en', 'mecenat_texte','mecenat_texte_en','mecenat_stitre','mecenat_stitre_en')
+);
 
 
 

@@ -40,6 +40,11 @@ setlocale(LC_ALL,'fr_FR');
  */
 define('crypto_key','**CRYPTO_KEY**');
 
+/**
+ * Clef unique pour ce site
+ */
+define('UNIQUE_SITE','**UNIQUE_SITE**');
+
 
 /**
  * Le site est à la racine
