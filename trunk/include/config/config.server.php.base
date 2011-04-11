@@ -157,6 +157,11 @@ $_Gconfig['chgrpFiles'] = false;
 $_Gconfig['chmodFiles'] = false;
 
 
+/**
+ * Si les fichiers / CSS / etc doivent êtres chargés d'un CDN
+ */
+$_Gconfig['CDN'] = '';
+
 	
 /**
  * On pourait définir des variables ci-dessus dans les blocs ci-dessous 
