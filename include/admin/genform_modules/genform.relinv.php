@@ -7,8 +7,15 @@
 *
 * */
 $fname = $name;
+
+$field = $relinv[$this->table_name][$name];
+$limit = $relinv[$this->table_name][$name][2];
+if(!$limit){$limit = 0;}
+
 $fk_table = $relinv[$this->table_name][$name][0];
 $name = $relinv[$this->table_name][$name][1];
+
+
 
 if ( $_REQUEST['curId'] != 'new' ) {
     /**
@@ -67,11 +74,15 @@ if(count($res) <= 4000 ) {
 	        $this->addBuffer('<table rel="'.$fk_table.'__'.$orderFields[$fk_table][0].'" border="0" width="'.($this->larg-25).'" class="genform_table '.($sortable?'sortable':'').' relinv" ><thead>');
 	        $ml = 1;
 	        $this->addBuffer('<tr><th width="20">');
-	
-	        $this->addBuffer( '<input class="inputimage" type="image" src="'.t('src_new').'" title="' . $this->trad('ajouter').$this->trad($fk_table) . '" name="genform_addfk__' . $fk_table . '__'.$name.'" /> ' );
-
-
- 			$this->addBuffer('</th>');
+	           
+	        /**
+ 			 * Case TH vide si il y a une limite.
+ 			 */
+ 			if ((!array_key_exists(2, $field)) || (count($res) < $limit)) {
+ 				$this->addBuffer( '<input class="inputimage" type="image" src="'.t('src_new').'" title="' . $this->trad('ajouter').$this->trad($fk_table) . '" name="genform_addfk__' . $fk_table . '__'.$name.'" /> ' );
+ 			}	        
+	        
+	        $this->addBuffer('</th>');
  			$this->addBuffer('<th width="20">&nbsp;</th>');
 
  			/**
