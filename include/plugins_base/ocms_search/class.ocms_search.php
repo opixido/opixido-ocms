@@ -90,10 +90,9 @@ class indexSearch {
 				}
 				if(is_array($relinv[$obj])) {
 					foreach($relinv[$obj] as $k=>$v) {
-
-
 						$this->tab['relations'][$k] = array_keys(getTabField($v[0]));
-					}
+						$this->getSubRelinv($v[0]);
+					}					
 				}
 			}
 			
@@ -110,12 +109,30 @@ class indexSearch {
 				
 			}
 
-
 			$this->pk = getPrimaryKey($obj);
 		}
 
 	}
-
+	
+	/**
+	 * Selectionne les sous relinb
+	 *
+	 * @param unknown_type $table
+	 */
+	function getSubRelinv($table){
+		global $_Gconfig,$relations,$relinv;
+		if(is_array($relations[$table])) {
+			foreach($relations[$table] as $k=>$v) {
+				$this->tab['relations'][$k] = array_keys(getTabField($v));
+			}
+		}
+		if(is_array($relinv[$table])) {
+			foreach($relinv[$table] as $k=>$v) {
+				$this->tab['relations'][$k] = array_keys(getTabField($v[0]));
+				$this->getSubRelinv($v[0]);
+			}
+		}
+	}
 
 	/**
 	 * Selectionne l'ensemble du texte et des relations de l'objet concerné
@@ -185,10 +202,8 @@ class indexSearch {
 			
 		}
 
-
 		foreach($this->tab['relations'] as $k=>$v) {
-
-
+				
 				if(ake($relations[$this->obj],$k) && $v && $res[$k]) {
 					$sql = 'SELECT * FROM 
 								'.$relations[$this->obj][$k].' 
@@ -218,14 +233,45 @@ class indexSearch {
 								$txtToIndex .= ' '.implode(' ',getLgsValues($ch,$rv,$relinv[$this->obj][$k][0])).' ';
 							}
 						}
+						
+						$txtToIndex .= ' '.$this->getTextToIndexSubRelinv($relinv[$this->obj][$k][0],$rv).' ';
+						
 					}
+					
 				}
 			}
-
 			return $this->cleanText($txtToIndex);
 
 	}
 
+	function getTextToIndexSubRelinv($table,$rv){
+		
+		
+		global $tablerel,$relinv,$relations,$tabForms,$uploadFields,$_Gconfig;
+		$txtToIndex = '';
+		foreach ($this->tab['relations'] as $k=>$v){
+			
+			if(ake($relinv[$table],$k)){
+				$sql = 'SELECT * FROM '.$relinv[$table][$k][0].' WHERE '.$relinv[$table][$k][1].' = '.$rv[getPrimaryKey($table)];
+				$r = GetAll($sql);
+				foreach($r as $rv ) {
+					foreach($v as $ch) {
+						if(arrayInWord( $uploadFields, $ch ) || arrayInWord($_Gconfig['urlFields'],$ch)) {
+						
+						} else {
+							$txtToIndex .= ' '.implode(' ',getLgsValues($ch,$rv,$relinv[$table][$k][0])).' ';
+						}
+					}
+					
+					$txtToIndex .= ' '.$this->getTextToIndexSubRelinv($relinv[$table][$k][0],$rv).' ';
+					
+				}
+				
+			}
+			
+		}
+		return $txtToIndex;
+	}
 
 	/**
 	 * Nettoie le texte de toute impurtée HTML, des mots inutiles, ...
