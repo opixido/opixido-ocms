@@ -137,7 +137,6 @@ class ajaxForm {
 			$this->addBuffer($f->gen());
 			
 		}
-		
 		else if( $this->tab_field[$champ]->type == 'tinyint' && $this->tab_field[$champ]->size < 2 ) {
 			
 			$GLOBALS['gb_obj']->includeFile('ajax.bool.php','admin/af_modules');
@@ -152,6 +151,15 @@ class ajaxForm {
 			$GLOBALS['gb_obj']->includeFile('ajax.datetime.php','admin/af_modules');
 			
 			$f = new ajaxDateTime($this,$champ);
+			
+			$this->addBuffer($f->gen());
+			
+		}
+		else if( $this->tab_field[$champ]->type == 'date' ) {
+			
+			$GLOBALS['gb_obj']->includeFile('ajax.date.php','admin/af_modules');
+			
+			$f = new ajaxDate($this,$champ);
 			
 			$this->addBuffer($f->gen());
 			
