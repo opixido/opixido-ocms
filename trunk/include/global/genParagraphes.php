@@ -1,4 +1,5 @@
 <?php
+
 #
 # This file is part of oCMS.
 #
@@ -21,166 +22,151 @@
 # @package ocms
 #
 
-
 /**
  * Generates the Paragraphes of the page
  *
  */
 class genParagraphes {
-	
-	
-	var $paragraphes;
-	var $site;
-	var $rubrique;
-	var $id = 'paragraphes';
-	
-	function __construct($site,$paragraphes) {
-		$this->site = $site;
-		$this->rubrique = $this->site->g_rubrique;		
-		$this->paragraphes = $paragraphes;		
-	}
-	
 
-	
-	function getHtmlParagraphes() {
-	
-	    $curpara = 0;
-		$nbpara = count($this->paragraphes);
-		foreach($this->paragraphes as $nbparaK=>$para) {
-						
-			$curpara++;
-			
-			$html = '';
+    var $paragraphes;
+    var $site;
+    var $rubrique;
+    var $id = 'paragraphes';
 
-			/**
-			 *  Creation du template
-			 **/
-			$tpl = new genTemplate(true);
+    function __construct($site, $paragraphes) {
+	$this->site = $site;
+	$this->rubrique = $this->site->g_rubrique;
+	$this->paragraphes = $paragraphes;
+    }
 
-			if(ake($_REQUEST,'ocms_mode') && $para['para_type_template_'.$_REQUEST['ocms_mode']])
-				$tpl->setTemplate($para['para_type_template_'.$_REQUEST['ocms_mode']]);
-			else
-				$tpl->setTemplate(''.$para['para_type_template']);
+    function getHtmlParagraphes() {
 
+	$curpara = 0;
+	$nbpara = count($this->paragraphes);
+	foreach ($this->paragraphes as $nbparaK => $para) {
 
-            
-            if($para['para_type_gabarit']) {
-               
-                if($para['para_type_plugin']) {
-                    $GLOBALS['gb_obj']->includeFile($para['para_type_gabarit'].'.php','plugins/'.$para['para_type_plugin']);
-                }
-                else {
-                    $GLOBALS['gb_obj']->includeFile($para['para_type_gabarit'].'.php','bdd');
-                }
+	    $curpara++;
 
-                $paraObj = new $para['para_type_gabarit']($para,$tpl);
-                
-            }
+	    $html = '';
 
+	    /**
+	     *  Creation du template
+	     * */
+	    $tpl = new genTemplate(true);
 
-			/**
-			 * Contenu
-			 */
-			$conte = GetLgValue('paragraphe_contenu', $para);		
+	    if (ake($_REQUEST, 'ocms_mode') && $para['para_type_template_' . $_REQUEST['ocms_mode']])
+		$tpl->setTemplate($para['para_type_template_' . $_REQUEST['ocms_mode']]);
+	    else
+		$tpl->setTemplate('' . $para['para_type_template']);
 
 
 
-			$tpl->setVar('titre', GetLgValue('paragraphe_titre', $para));
-			$tpl->setVar('texte', ($conte));
+	    if ($para['para_type_gabarit']) {
 
-			/**
-			 *  Images associees 
-			 **/
-	
-			$img = new GenFile('s_paragraphe', 'paragraphe_img_1', $para['paragraphe_id'], $para,true,true);
-	
-
-
-			$img2 = new GenFile('s_paragraphe', 'paragraphe_img_2', $para['paragraphe_id'], $para,true,true);
-
-			
-			$tpl->setImg(1, $img->getWebUrl(), GetLgValue('paragraphe_img_1_alt', $para,false));
-			$tpl->setImg(2, $img2->getWebUrl(), GetLgValue('paragraphe_img_2_alt', $para,false));
-			
-			$tpl->setGFImg('img1','s_paragraphe', 'paragraphe_img_1', $para);
-			
-			$tpl->setVar('legend_1' , GetLgValue('paragraphe_img_1_legend' , $para ) ) ;
-			$tpl->setVar('copyright_1' , $para['paragraphe_img_1_copyright'] ) ;
-			$tpl->setVar('legend_2' , GetLgValue('paragraphe_img_2_legend' , $para ) ) ;
-			$tpl->setVar('copyright_2' , $para['paragraphe_img_2_copyright'] ) ;
-
-			/**
-			 * Fichier joint
-			 */
-		
-			$fichier = new GenFile('s_paragraphe', 'paragraphe_file_1', $para['paragraphe_id'], $para,true,true);
-
-			
-			$tpl->setVar('file1',$fichier);
-			$tpl->setVar('file1_url',$fichier->getWebUrl());
-			$tpl->setVar('file1_size',$fichier->getNiceSize());
-			$tpl->setVar('file1_type',mb_strtoupper($fichier->getExtension()));
-			$tpl->setVar('file1_name',$fichier->getRealName());
-			$tpl->setVar('file1_legend',getLgValue('paragraphe_file_1_legend',$para));
-			$tpl->setVar('link1',getLgValue('paragraphe_link_1',$para));
-
-				
-			if(akev($_REQUEST,'pdf')) {
-				$tpl->setVar('img', $img->getWebUrl());
-			}
-
-			$tpl->setVar('lien_swf', GetLgValue('paragraphe_params', $para,false));
-
-			$tpl->setVar('lien_popup', $this->site->g_url->getUrlWithParams(array('ocms_mode'=>'popup','para'=>$para['paragraphe_id'])));
-			
-			$html .= '<a class="cacher" name="para_'.nicename(GetLgValue('paragraphe_titre', $para)).'"></a>';
-			
-			
-			$html .= '<div id="para_nb_'.$curpara.'" class="paragraphe_simple">';
-
-			$html .= $tpl->gen();
-
-			$html .= '</div>';			
-
-			
-			$this->paragraphes[$nbparaK]['html'] = $html;
-			$this->paragraphes[$nbparaK]['titre'] = getLgValue('paragraphe_titre',$para);
-					
-					
-					
-			}
-				
-		return $this->paragraphes;
-	}
-	
-	function gen() {
-		
-		$c = new genCache('para_'.$this->site->getCurId(),strtotime($this->rubrique->rubrique['rubrique_date_publi']));
-		
-		if(!$c->cacheExists()) {
-					
-			$this->getHtmlParagraphes();			
-			$html = '';			
-			foreach($this->paragraphes as $para) {
-				if($_REQUEST['para']) {
-						if($para['paragraphe_id'] == $_REQUEST['para']){
-							$html .= $para['html'];
-						}
-				} else {
-						$html .= $para['html'];
-				}
-					
-				
-			}
-			$h = '<div id="'.$this->id.'" class="paragraphe">'.$html.'</div>';
-			$c->saveCache($h);
-			return $h;
+		if ($para['para_type_plugin']) {
+		    $GLOBALS['gb_obj']->includeFile($para['para_type_gabarit'] . '.php', 'plugins/' . $para['para_type_plugin']);
+		} else {
+		    $GLOBALS['gb_obj']->includeFile($para['para_type_gabarit'] . '.php', 'bdd');
 		}
-		
-		return $c->getCache();
-		
+
+		$paraObj = new $para['para_type_gabarit']($para, $tpl);
+	    }
+
+
+	    /**
+	     * Contenu
+	     */
+	    $conte = GetLgValue('paragraphe_contenu', $para);
+
+
+
+	    $tpl->setVar('titre', GetLgValue('paragraphe_titre', $para));
+	    $tpl->setVar('texte', ($conte));
+
+	    /**
+	     *  Images associees 
+	     * */
+	    $img = new GenFile('s_paragraphe', 'paragraphe_img_1', $para['paragraphe_id'], $para, true, true);
+
+
+
+	    $img2 = new GenFile('s_paragraphe', 'paragraphe_img_2', $para['paragraphe_id'], $para, true, true);
+
+
+	    $tpl->setImg(1, $img->getWebUrl(), GetLgValue('paragraphe_img_1_alt', $para, false));
+	    $tpl->setImg(2, $img2->getWebUrl(), GetLgValue('paragraphe_img_2_alt', $para, false));
+
+	    $tpl->setGFImg('img1', 's_paragraphe', 'paragraphe_img_1', $para);
+
+	    $tpl->setVar('legend_1', GetLgValue('paragraphe_img_1_legend', $para));
+	    $tpl->setVar('copyright_1', $para['paragraphe_img_1_copyright']);
+	    $tpl->setVar('legend_2', GetLgValue('paragraphe_img_2_legend', $para));
+	    $tpl->setVar('copyright_2', $para['paragraphe_img_2_copyright']);
+
+	    /**
+	     * Fichier joint
+	     */
+	    $fichier = new GenFile('s_paragraphe', 'paragraphe_file_1', $para['paragraphe_id'], $para, true, true);
+
+
+	    $tpl->setVar('file1', $fichier);
+	    $tpl->setVar('file1_url', $fichier->getWebUrl());
+	    $tpl->setVar('file1_size', $fichier->getNiceSize());
+	    $tpl->setVar('file1_type', mb_strtoupper($fichier->getExtension()));
+	    $tpl->setVar('file1_name', $fichier->getRealName());
+	    $tpl->setVar('file1_legend', getLgValue('paragraphe_file_1_legend', $para));
+	    $tpl->setVar('link1', getLgValue('paragraphe_link_1', $para));
+
+
+	    if (akev($_REQUEST, 'pdf')) {
+		$tpl->setVar('img', $img->getWebUrl());
+	    }
+
+	    $tpl->setVar('lien_swf', GetLgValue('paragraphe_params', $para, false));
+
+	    $tpl->setVar('lien_popup', $this->site->g_url->getUrlWithParams(array('ocms_mode' => 'popup', 'para' => $para['paragraphe_id'])));
+
+	    $html .= '<a class="cacher" name="para_' . nicename(GetLgValue('paragraphe_titre', $para)) . '"></a>';
+
+
+	    $html .= '<div id="para_nb_' . $curpara . '" class="paragraphe_simple">';
+
+	    $html .= $tpl->gen();
+
+	    $html .= '</div>';
+
+
+	    $this->paragraphes[$nbparaK]['html'] = $html;
+	    $this->paragraphes[$nbparaK]['titre'] = getLgValue('paragraphe_titre', $para);
 	}
-	
-}			
-	
+
+	return $this->paragraphes;
+    }
+
+    function gen() {
+
+	$c = new genCache('para_' . $this->site->getCurId(), strtotime($this->rubrique->rubrique['rubrique_date_publi']));
+
+	if (!$c->cacheExists()) {
+
+	    $this->getHtmlParagraphes();
+	    $html = '';
+	    foreach ($this->paragraphes as $para) {
+		if ($_REQUEST['para']) {
+		    if ($para['paragraphe_id'] == $_REQUEST['para']) {
+			$html .= $para['html'];
+		    }
+		} else {
+		    $html .= $para['html'];
+		}
+	    }
+	    $h = '<div id="' . $this->id . '" class="paragraphe">' . $html . '</div>';
+	    $c->saveCache($h);
+	    return $h;
+	}
+
+	return $c->getCache();
+    }
+
+}
 

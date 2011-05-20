@@ -100,7 +100,7 @@ class genTemplate {
 	$this->imgs = array();
 	$this->template = '';
 	$this->doreplace = $doreplace;
-	
+
 	return $this;
     }
 
@@ -331,7 +331,7 @@ class genTemplate {
 	if (!$this->imgs[$nom]['src']) {
 	    return '';
 	}
-	return THUMBPATH . '?src=' . $this->imgs[$nom]['src'] . '&amp;w=' . $w . '&amp;h=' . $h . '&amp;f=' . substr($this->imgs[$nom]['src'], -3) . '&amp;q=' . $this->q . '' . $add;
+	return getThumbCacheFile(THUMBPATH . '?src=' . $this->imgs[$nom]['src'] . '&amp;w=' . $w . '&amp;h=' . $h . '&amp;f=' . substr($this->imgs[$nom]['src'], -3) . '&amp;q=' . $this->q . '' . $add);
     }
 
     /**
