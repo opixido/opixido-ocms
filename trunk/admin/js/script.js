@@ -110,11 +110,11 @@ function showLgField(field, lg) {
 	if (lg == lgfieldcur[field])
 		return;
 
-	showHide("lgfield_" + field + "_" + lg);
+	$("#lgfield_" + field + "_" + lg).show();
 	gid("lgbtn_" + field + "_" + lg).className = "lgbtn_on";
 
 	if (lgfieldcur[field]) {
-		showHide("lgfield_" + field + "_" + lgfieldcur[field]);
+		$("#lgfield_" + field + "_" + lgfieldcur[field]).hide();
 		gid("lgbtn_" + field + "_" + lgfieldcur[field]).className = "lgbtn";
 	}
 	lgfieldcur[field] = lg;
@@ -582,4 +582,9 @@ function FitToContent(id, maxHeight) {
 	} else {
 
 	}
+}
+
+
+function searchSelectMass(co) {
+    $('table.genform_table input[type=checkbox]').attr('checked',co);
 }

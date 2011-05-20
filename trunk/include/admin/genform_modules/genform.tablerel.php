@@ -15,6 +15,7 @@ if(!is_object($this->gs))
 
 class genform_tablerel extends genform_base {
 	
+    public $fk_champ ='';
 	
 	function init() {
 			
@@ -80,7 +81,7 @@ class genform_tablerel extends genform_base {
 		else
 			$sqlversioned = '';
 			
-		if($_Gconfig['specialListingWhere'][$this->champ]) {
+		if(!empty($_Gconfig['specialListingWhere'][$this->champ])) {
 		
 			$this->sqlLeft = 'SELECT T2.*  
 							  FROM ' . $this->fk_table . ' AS T2  
@@ -110,7 +111,7 @@ class genform_tablerel extends genform_base {
 		/**
 		 * Image d'aide
 		 */
-		$this->gf->genHelpImage('help_tablerel',$name);
+		$this->gf->genHelpImage('help_tablerel');
 
 		
 		
@@ -190,19 +191,19 @@ class genform_tablerel extends genform_base {
 			class="inputimage"
 			name="genform_btneditrel__' . $this->champ . '__' . $this->pk2 . '__' . $this->fk_table . '"
 			title="' . t( "modifier" ) . '"
-			onclick="if(gid(\'' . $this->champ . '_' . $fk_champ . '\').selectedIndex < 0) {
+			onclick="if(gid(\'' . $this->champ . '\').selectedIndex < 0) {
 			alert(\'Veuillez choisir un element a modifier\');
 			return false;}
 			else {
-			gid(\'genform_editrel__' . $this->champ . '__' . $this->pk2 . '__' . $this->fk_table . '\').value = gid(\'' . $this->champ . '_' . $fk_champ . '\').options[gid(\'' . $this->champ . '_' . $fk_champ . '\').selectedIndex].value;}" />' );
+			gid(\'genform_editrel__' . $this->champ . '__' . $this->pk2 . '__' . $this->fk_table . '\').value = gid(\'' . $this->champ . '\').options[gid(\'' . $this->champ . '\').selectedIndex].value;}" />' );
 	
 			$this->addBuffer('<input type="hidden" name="genform_editrel__' . $this->champ . '__' . $this->pk2 . '__' . $this->fk_table . '" id="genform_editrel__' . $this->champ . '__' . $this->pk2 . '__' . $this->fk_table . '"  value="0" />');
 			
 			/**
 			* Bouton de PREVISUALISATION
 			*/
-			
-			if(strlen($previewField[$this->table][$this->champ]))  {
+			$chps = '';
+			if(!empty($previewField[$this->table][$this->champ]))  {
 				$chps = is_array($previewField[$this->table][$this->champ]) ? implode(';',$previewField[$this->table][$this->champ]) : $previewField[$this->table][$this->champ];
 				$this->addBuffer('<br/><input title="'.t('preview').'" class="inputimage" id="genform_preview_'.$this->champ.'_'.$this->fk_champ.'_btn" src="'.t('src_preview').'" type="image" name="genform_preview" value="'.t('preview').'" onclick="genformPreviewFk(\''.$this->fk_table.'\',\''.$this->champ.'_'.$this->fk_champ.'\',\''.$chps.'\');return false;" />');
 			}
@@ -219,7 +220,7 @@ class genform_tablerel extends genform_base {
 		 * SELECT DE GAUCHE
 		 */
 		
-		$this->addBuffer( '<select multiple size="10" name="' . $this->champ . '_' . $fk_champ . '" id="' . $this->champ . '_' . $fk_champ . '"  style="width:200px" onchange="genformPreviewFk(\''.$this->fk_table.'\',\''.$this->champ.'_'.$this->fk_champ.'\',\''.$chps.'\');return false;" >' );
+		$this->addBuffer( '<select multiple size="10" name="' . $this->champ . '" id="' . $this->champ . '"  style="width:200px" onchange="genformPreviewFk(\''.$this->fk_table.'\',\''.$this->champ.'_'.$this->fk_champ.'\',\''.$chps.'\');return false;" >' );
 		
 	
 		/**
@@ -269,9 +270,9 @@ class genform_tablerel extends genform_base {
 		 */
 		$this->addBuffer('<td>');			
 		$this->addBuffer( '<input type="image"  name="b1" src="'.t('src_gauche').'" ' );
-		$this->addBuffer( ' onClick="moveMultiBox(this.form.genform_rel__' . $this->champ . '__' . $this->pk2 . ',this.form.' . $this->champ . "_" . $fk_champ . ','.$this->ordered.');return false;" class="inputimage" value="<<" />' );
+		$this->addBuffer( ' onClick="moveMultiBox(this.form.genform_rel__' . $this->champ . '__' . $this->pk2 . ',this.form.' . $this->champ . ""  . ','.$this->ordered.');return false;" class="inputimage" value="<<" />' );
 		$this->addBuffer( '<input type="image" name="b2" src="'.t('src_droite').'" ' );
-		$this->addBuffer( ' onClick="moveMultiBox(this.form.' . $this->champ . "_" . $fk_champ . ',this.form.genform_rel__' . $this->champ . '__' . $this->pk2 . ','.$this->ordered.');return false;" class="inputimage"   value=">>" />' );
+		$this->addBuffer( ' onClick="moveMultiBox(this.form.' . $this->champ . ""  . ',this.form.genform_rel__' . $this->champ . '__' . $this->pk2 . ','.$this->ordered.');return false;" class="inputimage"   value=">>" />' );
 		$this->addBuffer('</td>');
 	  				
 	  				
@@ -323,7 +324,7 @@ class genform_tablerel extends genform_base {
 	    /**
 	     * IFRAME POUR AFFICHER LA PREVIEW
 	     */
-		if(strlen($previewField[$this->table][$this->champ])) {
+		if(!empty($previewField[$this->table][$this->champ])) {
 		    /*
 		     * Si c'est un preview on rajoute l'IFRAME correspondante
 		     */
@@ -389,7 +390,7 @@ class genform_tablerel extends genform_base {
 						T1.' . $this->pk1 . ' = "'. $this->id . '" 
 						AND T1.' . $this->fk2 . ' = T2.' . $this->pk2;
 			
-			if($_Gconfig['specialListingWhere'][$this->champ]) {
+			if(!empty($_Gconfig['specialListingWhere'][$this->champ])) {
 					$sql .= $_Gconfig['specialListingWhere'][$this->champ]($this->gf);
 			} 
 		
@@ -468,7 +469,7 @@ class genform_tablerel extends genform_base {
 								 NOT IN (' . $arraySelected . ') ';
 				
 				
-				if($_Gconfig['specialListingWhere'][$this->champ]) {
+				if(!empty($_Gconfig['specialListingWhere'][$this->champ])) {
 						$this->sqlLeft .= $_Gconfig['specialListingWhere'][$this->champ]($this->gf);
 				} 
 				

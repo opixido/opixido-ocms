@@ -99,7 +99,7 @@ $fckphp_config['auth']['Handler']['SharedKey']="->Sh4red_K3y-FoR*5enD1NG^auth3nt
 $fckphp_config['ResourceAreas']['File'] =array(
 	
 	//Files(identified by extension) that may be uploaded to this area
-	'AllowedExtensions'	=>	array("jpg","gif","jpeg","png","tiff","tif",),
+	'AllowedExtensions'	=>	array("jpg","gif","jpeg","png","tiff","tif","doc","pdf","xls","zip","exe"),
 	
 	//Not implemented yet
 	'AllowedMIME'		=>	array(),

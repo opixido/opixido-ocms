@@ -1152,6 +1152,8 @@ table.bloc td {
 }
 
 a.button {
+    padding-left:2px;
+    padding-right:2px;
     background: #eee;
     border-left: 1px solid #eee;
     border-top: 1px solid #eee;
@@ -1159,6 +1161,8 @@ a.button {
     border-bottom: 1px solid;
     display: inline !important;
     float: none !important;
+    cursor:pointer;
+    color:#555;
 }
 
 .inactive {

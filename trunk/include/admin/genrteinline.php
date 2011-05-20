@@ -23,7 +23,7 @@ class genRteInline{
 		$formFooters = '';
 		$GLOBALS['rteElements'] .= $this->champ.', ';
 		
-		$html .= $this->instanceRte();
+		$html = $this->instanceRte();
 
 		
 	
@@ -122,7 +122,7 @@ class genRteInline{
 
 	function instanceRte(){
 
-		$html .= ('<textarea  name="'.$this->champ.'" id="'.$this->champ.'" 
+		$html = ('<textarea  name="'.$this->champ.'" id="'.$this->champ.'" 
 						style="height:300px;width:500px" > '.$this->valeur .' </textarea >
 						
 						<script type="text/javascript">

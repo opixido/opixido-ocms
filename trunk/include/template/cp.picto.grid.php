@@ -12,7 +12,7 @@ foreach ($_Gconfig['bigMenus'] as $k=>$menus ) {
 
 	foreach ($menus as $menu) {
 		
-		if($GLOBALS[gs_obj]->can('edit', $menu)){ 
+		if($GLOBALS['gs_obj']->can('edit', $menu)){ 
 		
 			$url = in_array($menu,$tables) ? 'index.php?curTable='.$menu : ta('cp_link_'.$menu);
 			
@@ -47,7 +47,7 @@ foreach ($_Gconfig['adminMenus'] as $k=>$menus ) {
 	foreach ($menus as $menu) {
 	?>
 
-	<?php  if($GLOBALS[gs_obj]->can('edit', $menu)){ 
+	<?php  if($GLOBALS['gs_obj']->can('edit', $menu)){ 
 		
 		$dones++;
 		
@@ -58,7 +58,7 @@ foreach ($_Gconfig['adminMenus'] as $k=>$menus ) {
 		<a class="fond2" style="display:block;float:none;" href="<?=$url?>"   >
 		<?php
 		global $tabForms;
-		if($tabForms[$menu]['picto']) {
+		if(isset($tabForms[$menu]) && isset($tabForms[$menu]['picto'])) {
 			$src = $tabForms[$menu]['picto'];
 		} else 
 		if(file_exists('./img/picto_'.$menu.'.gif')) {

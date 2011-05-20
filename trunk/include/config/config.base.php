@@ -226,8 +226,8 @@ $previewField  = array();
  */
 
 $orderFields  = array();
-$orderFields['s_rubrique'] = array('rubrique_ordre','fk_rubrique_id');
-$orderFields['s_paragraphe'] = array('paragraphe_ordre','fk_rubrique_id');
+$orderFields['s_rubrique'] = array('rubrique_ordre','fk_rubrique_id','bottom');
+$orderFields['s_paragraphe'] = array('paragraphe_ordre','fk_rubrique_id','bottom');
 
 
 
@@ -524,6 +524,11 @@ $_Gconfig['versionedTable'] = array('t_publication');
 $_Gconfig['hideableTable'] = array('t_breve');
 
 
+/**
+ * Relinv en arborescence
+ */
+ $_Gconfig['fullArbo'] = array();
+ 
 /**
  * Liste des extensions de fichiers de type images
  */

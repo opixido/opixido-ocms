@@ -53,7 +53,7 @@ class baseObj {
 	/**
 	 * gensite
 	 *
-	 * @var  gensite
+	 * @var gensite
 	 */
 	public $site;
 	
@@ -78,6 +78,9 @@ class baseObj {
 	 */
 	public $clef = 'id';
 	
+	
+	public $row = array();
+	
 	function __construct($roworid=false) {
 		
 		/**
@@ -91,7 +94,7 @@ class baseObj {
 			$this->id = $roworid;
 			$this->row = getRowAndRelFromId($this->table,$this->id);	
 		} else 
-		if($_REQUEST[$this->clef]) {
+		if(!empty($_REQUEST[$this->clef])) {
 			$this->id = $_REQUEST[$this->clef];
 			$this->row = getRowAndRelFromId($this->table,$this->id);			
 		}

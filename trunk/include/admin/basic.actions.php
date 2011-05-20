@@ -346,7 +346,7 @@ function emptyCache() {
 
 	foreach($_Gconfig['cachePaths'] as $k=>$v ) {
 		echo '<li><a href="?globalAction=emptyCache&empty='.$k.'">'.t($k).' ('.(iterator_count(new DirectoryIterator($v))-2).')</a>';
-		if($_REQUEST['empty'] == $k) {
+		if(akev($_REQUEST,'empty') == $k) {
 			emptyDir($v);
 		}
 		echo '</li>';

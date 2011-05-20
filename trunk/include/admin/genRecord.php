@@ -8,206 +8,206 @@
  */
 
 class genRecord {
-	
 
     /**
      * On force l'autorisation de suppression ?
      * @var bool
      */
     public $forceDeletionPrivilege = false;
+    public $deleted = false;
+    public $id;
+    public $table;
+    public $row;
 
+    function __construct($table, $id, $fromGenAdmin=0) {
+	$this->JustInserted = false;
+	$this->table = $table;
+	$this->id = $id;
+	$this->$fromGenAdmin = $fromGenAdmin;
+	global $gs_obj;
 
-	
-    function genRecord($table, $id,$fromGenAdmin=0)
-    {
-        $this->JustInserted = false;
-        $this->table = $table;
-        $this->id = $id;
-		$this->$fromGenAdmin = $fromGenAdmin;
-        global $gs_obj;
+	$this->gs = &$gs_obj;
 
-        $this->gs = &$gs_obj;
-      
-        $this->pk = $_REQUEST['curTableKey'] = GetPrimaryKey($this->table);
-       
-    //    $this->checkActions();
-        
+	$this->pk = $_REQUEST['curTableKey'] = GetPrimaryKey($this->table);
     }
 
-    function doRecord()
-    {
-        /*
-        *
-        *
-        *  Insert DElete, .... */
+    function doRecord() {
+	/**
+	 * Insert / Delete actions
+	 */
+	/*
+	  Si on vient d'un formulaire ou qu'on veut supprimer quelquechose
+	  On doit aussi avoir une table, et ne pas avoir annuler
+	 */
 
-        /*
-            Si on vient d'un formulaire ou qu'on veut supprimer quelquechose
-            On doit aussi avoir une table, et ne pas avoir annuler
-            */
+	$fk_id = false;
+	if ((ake('genform_fromForm', $_POST) || isset($_REQUEST['delId'])) && $this->table && !ake('genform_cancel', $_POST) && !ake('genform_cancel_x', $_POST)) {
+	    /*
+	      On  a pas encore d'identifiant
+	     */
+	    if ($this->id == "new") {
+		/*  $sql ='SELECT '.$_REQUEST['curTableKey'].' FROM '.$this->table.' LIMIT 0,1';
+		  $res = mquery($sql);
+		 */
 
-       
-        if ((ake('genform_fromForm', $_POST) || $_REQUEST['delId']) && $this->table && !ake('genform_cancel', $_POST) && !ake('genform_cancel_x', $_POST)) {
-            /*
-                    On  a pas encore d'identifiant
-                    */
-            if ($this->id == "new") {
-                /*  $sql ='SELECT '.$_REQUEST['curTableKey'].' FROM '.$this->table.' LIMIT 0,1';
-                        $res = mquery($sql);
-                        */
+		$this->JustInserted = true;
+		$chp = '';
+		if (isset($_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]) && isset($_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['insertOtherField']) || isset($_SESSION[gfuid()]['genform__add_sub_table'])) {
+		    global $relinv;
+		    reset($relinv);
 
-                $this->JustInserted = true;
+		    $otherTable = !empty($_SESSION[gfuid()]['genform__add_sub_table']) ? $_SESSION[gfuid()]['genform__add_sub_table'] : $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['curTable'];
+		    $fk_id = !empty($_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['curId']) ?
+			    $fk_id = $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['curId'] :
+			    $_SESSION[gfuid()]['genform__add_sub_id'];
 
-                if ($_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['insertOtherField'] || $_SESSION[gfuid()]['genform__add_sub_table']) {
-                    global $relinv;
-                    reset($relinv);
 
-                    $otherTable = $_SESSION[gfuid()]['genform__add_sub_table'] ? $_SESSION[gfuid()]['genform__add_sub_table'] : $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['curTable'];
-                    $fk_id = $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['curId'] ? $fk_id = $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['curId'] : $_SESSION[gfuid()]['genform__add_sub_id'];
+		    if(!empty($relinv[$otherTable])) {
+			foreach ($relinv[$otherTable] as $v) {
+			    if ($v[0] == $this->table) {
+				$chp = $v[1];
+			    }
+			}
+		    }
+		    if (!empty($_SESSION[gfuid()]['newTableFk'])) {
+			$chp = $_SESSION[gfuid()]['newTableFk'];
+			$_SESSION[gfuid()]['newTableFk'] = '';
+		    }
+		}
 
-                    foreach($relinv[$otherTable] as $v) {
-                        if ($v[0] == $this->table) {
-                            $chp = $v[1];
-                        }
-                    }
-                    if( $_SESSION[gfuid()]['newTableFk']) {
-                    	$chp = $_SESSION[gfuid()]['newTableFk'];
-                    	$_SESSION[gfuid()]['newTableFk'] = '';
-                    }
-                }
+		if (!$this->gs->can('add', $this->table, '', $this->id, $chp, $fk_id)) {
+		    $this->gs->showError();
+		    die();
+		}
 
-                if (!$this->gs->can('add', $this->table, '' , $this->id, $chp , $fk_id)) {
-                    $this->gs->showError();
-                    die();
-                }
+		/* Est-ce que cette table est en auto-increment ? */
+		$auto = false;
+		$tableInfo = MetaColumns($this->table);
 
-                /* Est-ce que cette table est en auto-increment ? */
-                $auto = false;
-                $tableInfo = MetaColumns($this->table);
+		if ($tableInfo[strtoupper($_REQUEST['curTableKey'])]->auto_increment > 0)
+		    $auto = true;
 
-                if ($tableInfo[strtoupper($_REQUEST['curTableKey'])]->auto_increment > 0)
-                    $auto = true;
+		/* La table est elle en auto_increment */
 
-                /* La table est elle en auto_increment */
+		/* $fe = mysql_field_flags($res,$_REQUEST['curTableKey']);
 
-                /*$fe = mysql_field_flags($res,$_REQUEST['curTableKey']);
+		  if(strstr($fe,'auto_increment'))
+		  $auto = true;
+		 */
 
-                        if(strstr($fe,'auto_increment'))
-                                $auto = true;
-                            */
+		/* On fait confiance a l'auto_increment */
+		if ($auto || $_REQUEST['genform_' . $_REQUEST['curTableKey']] != '') {
+		    if (empty($_REQUEST['genform_' . $_REQUEST['curTableKey']])) {
+			$_REQUEST['genform_' . $_REQUEST['curTableKey']] = '';
+		    }
+		    $sql = "INSERT INTO " . $this->table . " (" . $_REQUEST['curTableKey'] . ") VALUES ('" . $_REQUEST['genform_' . $_REQUEST['curTableKey']] . "')";
 
-                /* On fait confiance a l'auto_increment*/
-                if ($auto || $_REQUEST['genform_' . $_REQUEST['curTableKey']] != '') {
-                    $sql = "INSERT INTO " . $this->table . " (" . $_REQUEST['curTableKey'] . ") VALUES ('" . $_REQUEST['genform_' . $_REQUEST['curTableKey']] . "')";
-                   // debug($sql);
-                   
-                    $oldId = InsertId(); 
-                    DoSql($sql);
-                    
-                    $iid = InsertId();
-                   
-                    $this->id = $iid && $iid != $oldId ? $iid : $_REQUEST['genform_' . $_REQUEST['curTableKey']];
-                } else {
-                    /* Sinon on se base sur le microtime pour generer un id (bah oui pkoi pas ?) */
-                    $nbWhile = 0;
-                    while (true) {
-                        if ($nbWhile > 100)
-                            trigger_error("Plus assez de place dans la table, et pas auto_increment", E_USER_ERROR);
-                        $nbWhile++;
-                        $this->id = str_replace(".", "", getmicrotime());
-                        $sql = "INSERT INTO " . $this->table . " (" . $_REQUEST['curTableKey'] . ") VALUES ('" . $this->id . "')";
-                        if (DoSql($sql))
-                            break;
-                    }
-                }
 
-                $_REQUEST['curId'] = $this->id;
-                
-                if($_SESSION[gfuid()]['sqlWaitingForInsert']) {
-                	foreach($_SESSION[gfuid()]['sqlWaitingForInsert'] as $v) {                		
-                		doSql(str_replace('[INSERTID]',$this->id,$v));
-                	}
-                }
-                $_SESSION[gfuid()]['sqlWaitingForInsert'] = array();
+		    $oldId = InsertId();
+		    $res = DoSql($sql);
+		    if ($res) {
+			$iid = $_REQUEST['genform_' . $_REQUEST['curTableKey']] ? $_REQUEST['genform_' . $_REQUEST['curTableKey']] : InsertId();
+		    }
 
-                /* Si on vient de rajouter un element qui pointe vers le nbLevel precedent */
+		    $this->id = $iid;
+		} else {
+		    /* Sinon on se base sur le microtime pour generer un id (bah oui pkoi pas ?) */
+		    $nbWhile = 0;
+		    while (true) {
+			if ($nbWhile > 100)
+			    trigger_error("Plus assez de place dans la table, et pas auto_increment", E_USER_ERROR);
+			$nbWhile++;
+			$this->id = str_replace(".", "", getmicrotime());
+			$sql = "INSERT INTO " . $this->table . " (" . $_REQUEST['curTableKey'] . ") VALUES ('" . $this->id . "')";
+			if (DoSql($sql))
+			    break;
+		    }
+		}
 
-                
-                if ($otherTable && $fk_id && $chp) {
-                    if (!$this->gs->can('edit', $this->table, '', $this->id, $chp, $fk_id) && !$this->JustInserted) {
-                        $this->gs->showError();
-                        die();
-                    }
+		$_GET['curId'] = $_POST['curId'] = $_REQUEST['curId'] = $this->id;
 
-                    $query = ' UPDATE ' . $this->table . ' SET ' . $chp . ' =  "' . $fk_id . '" WHERE ' . $this->pk . ' = ' . sql($this->id);
-                    DoSql($query);
+		if (!empty($_SESSION[gfuid()]['sqlWaitingForInsert'])) {
+		    foreach ($_SESSION[gfuid()]['sqlWaitingForInsert'] as $v) {
+			doSql(str_replace('[INSERTID]', $this->id, $v));
+		    }
+		}
+		$_SESSION[gfuid()]['sqlWaitingForInsert'] = array();
 
-                    $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['insertOtherField'] = "";
-                    $_SESSION[gfuid()]['genform__add_sub_id'] = $_SESSION[gfuid()]['genform__add_sub_table'] = "";
-                }
+		/* Si on vient de rajouter un element qui pointe vers le nbLevel precedent */
 
-                global $genMessages;
 
-                $genMessages->add(t($this->table) . ' ' . t('ajout_ok'), 'info');
+		if (!empty($otherTable) && $fk_id && $chp) {
+		    if (!$this->gs->can('edit', $this->table, '', $this->id, $chp, $fk_id) && !$this->JustInserted) {
+			$this->gs->showError();
+			die();
+		    }
 
-                $ret = $this->onInsert();
+		    $query = ' UPDATE ' . $this->table . ' SET ' . $chp . ' =  "' . $fk_id . '" WHERE ' . $this->pk . ' = ' . sql($this->id);
+		    DoSql($query);
 
-                if ($ret > 0) {
-                    $_REQUEST['curId'] = $this->id = $ret;
-                }
+		    $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['insertOtherField'] = "";
+		    $_SESSION[gfuid()]['genform__add_sub_id'] = $_SESSION[gfuid()]['genform__add_sub_table'] = "";
+		}
 
-                $this->gs->notifyAdd($this->table, $this->id);
-            } else if ($_REQUEST['delId'] && $_REQUEST['delId'] != "new") {
-            	
-                $this->id = $_REQUEST['delId'];
-                $this->DeleteRow($_REQUEST['delId']);
-            }
+		global $genMessages;
 
-            $res = $this->recordData();
+		$genMessages->add(t($this->table) . ' ' . t('ajout_ok'), 'info');
 
-            if (is_array($res)) {
-                global $fieldError;
-                $fieldError = $res;
-            }
+		$ret = $this->onInsert();
 
-            $this->onSave();
+		if ($ret > 0) {
+		    $_REQUEST['curId'] = $this->id = $ret;
+		}
 
-        }
+		$this->gs->notifyAdd($this->table, $this->id);
+	    } else if (isset($_REQUEST['delId']) && $_REQUEST['delId'] != "new") {
 
-        if ($_REQUEST['genform_downfk']) {
-            $t = split("__", $_REQUEST['genform_downfk']);
-            $ord = new GenOrder($t[0], $t[1],0,$t[2]);
-            $ord->GetDown();
+		$this->id = $_REQUEST['delId'];
+		$this->DeleteRow($_REQUEST['delId']);
+	    }
 
-            $ord->ReOrder();
-        } else if ($_REQUEST['genform_upfk']) {
-            $t = explode("__", $_REQUEST['genform_upfk']);
-            $ord = new GenOrder($t[0], $t[1],0,$t[2]);
+	    $res = $this->recordData();
 
-            $ord->GetUp();
+	    if (is_array($res)) {
+		global $fieldError;
+		$fieldError = $res;
+	    }
 
-            $ord->ReOrder();
-        }
+	    $this->onSave();
+	}
 
-       
-        $_SESSION[gfuid()]['curFields'] = array();
-        // mail('conort@gmail.com','clean',gfuid());
-        
-        return $this->id;
+	if (isset($_REQUEST['genform_downfk'])) {
+	    $t = split("__", $_REQUEST['genform_downfk']);
+	    $ord = new GenOrder($t[0], $t[1], 0, $t[2]);
+	    $ord->GetDown();
+
+	    $ord->ReOrder();
+	} else if (isset($_REQUEST['genform_upfk'])) {
+	    $t = explode("__", $_REQUEST['genform_upfk']);
+	    $ord = new GenOrder($t[0], $t[1], 0, $t[2]);
+
+	    $ord->GetUp();
+
+	    $ord->ReOrder();
+	}
+
+
+	$_SESSION[gfuid()]['curFields'] = array();
+	// mail('conort@gmail.com','clean',gfuid());
+
+	return $this->id;
     }
-
 
     /**
      * Que faire lorsque l'on sauvegarde
      *
      * @return unknown
      */
-    function onSave()
-    {
-    	
-        $res = $this->checkDoOn('save');
-        
-        return $res;
+    function onSave() {
+
+	$res = $this->checkDoOn('save');
+
+	return $res;
     }
 
     /**
@@ -215,71 +215,62 @@ class genRecord {
      *
      * @return unknown
      */
-    function onInsert()
-    {
-    	
-    	global $_Gconfig;
-    	
-        $chps = getTabField($this->table);
-        
-        
-        if ($chps[ $_Gconfig['field_date_crea']]) {
-            DoSql('UPDATE ' . $this->table . ' SET '.$_Gconfig['field_date_crea'].' = NOW() 
+    function onInsert() {
+
+	global $_Gconfig;
+
+	$chps = getTabField($this->table);
+
+
+	if (!empty($chps[$_Gconfig['field_date_crea']])) {
+	    DoSql('UPDATE ' . $this->table . ' SET ' . $_Gconfig['field_date_crea'] . ' = NOW() 
             		WHERE ' . $this->pk . ' = "' . $this->id . '"');
-        }
+	}
 
-        if ($chps[$_Gconfig['field_creator']]) {
-            DoSql('UPDATE ' . $this->table . ' SET '.$_Gconfig['field_creator'].' = ' . sql($this->gs->adminid) . '
+	if (!empty($chps[$_Gconfig['field_creator']])) {
+	    DoSql('UPDATE ' . $this->table . ' SET ' . $_Gconfig['field_creator'] . ' = ' . sql($this->gs->adminid) . '
             		 WHERE ' . $this->pk . ' = "' . $this->id . '"');
-        }
+	}
 
-        
-        /**
-         * If it's a versioned Object we insert the base object and like this one to the base with VERSION_FIELD
-         */
-        if(in_array($this->table,$_Gconfig['versionedTable'])) {
-        	DoSql('INSERT INTO '.$this->table.' ('.$this->pk.') VALUES ("")','FAILED TO INSERT VERSIONED OBJECT');
-        	
-        	$onlineId = InsertId(); 
-        	       	
-        	DoSql('UPDATE '.$this->table.' SET '.VERSION_FIELD.' = "'.$onlineId.'" WHERE '.$this->pk .' = "'.$this->id.'"'
-        				,'FAILED TO UPDATE VERSION FIELD WITH : '.$onlineId);
-        }
-        else if(isMultiVersion($this->table)) {
-        	
-        	/*
-        	
-        	DoSql('INSERT INTO '.$this->table.' ('.$this->pk.') VALUES ("")','FAILED TO INSERT FIRST VERSIONED OBJECT');
-        	
-        	$onlineId = InsertId(); 
-        	
-        	DoSql('UPDATE '.$this->table.' SET '.MULTIVERSION_FIELD.' = "'.$onlineId.'" 
-        				WHERE '.$this->pk .' = "'.$this->id.'"'
-        				,'FAILED TO UPDATE VERSION FIELD WITH : '.$onlineId);
-        				
-        	*/
-        	
-        	DoSql('UPDATE '.$this->table.' SET '.MULTIVERSION_FIELD.' = '.$this->id.' WHERE '.getPrimaryKey($this->table).' = '.$this->id);
-        }
-        
-        return $this->checkDoOn('insert');
-        
+
+	/**
+	 * If it's a versioned Object we insert the base object and like this one to the base with VERSION_FIELD
+	 */
+	if (in_array($this->table, $_Gconfig['versionedTable'])) {
+	    DoSql('INSERT INTO ' . $this->table . ' (' . $this->pk . ') VALUES ("")', 'FAILED TO INSERT VERSIONED OBJECT');
+
+	    $onlineId = InsertId();
+
+	    DoSql('UPDATE ' . $this->table . ' SET ' . VERSION_FIELD . ' = "' . $onlineId . '" WHERE ' . $this->pk . ' = "' . $this->id . '"'
+		    , 'FAILED TO UPDATE VERSION FIELD WITH : ' . $onlineId);
+	} else if (isMultiVersion($this->table)) {
+
+	    /*
+
+	      DoSql('INSERT INTO '.$this->table.' ('.$this->pk.') VALUES ("")','FAILED TO INSERT FIRST VERSIONED OBJECT');
+
+	      $onlineId = InsertId();
+
+	      DoSql('UPDATE '.$this->table.' SET '.MULTIVERSION_FIELD.' = "'.$onlineId.'"
+	      WHERE '.$this->pk .' = "'.$this->id.'"'
+	      ,'FAILED TO UPDATE VERSION FIELD WITH : '.$onlineId);
+
+	     */
+
+	    DoSql('UPDATE ' . $this->table . ' SET ' . MULTIVERSION_FIELD . ' = ' . $this->id . ' WHERE ' . getPrimaryKey($this->table) . ' = ' . $this->id);
+	}
+
+	$this->checkDoOn('insert');
     }
-    
 
     /**
      * Que faire lorsque l'on supprime
      *
      * @return unknown
      */
-    function onDelete()
-    {
-    	global $_Gconfig;
-        return $this->checkDoOn('delete');
-        
-        
-
-	
+    function onDelete() {
+	global $_Gconfig;
+	return $this->checkDoOn('delete');
     }
 
     /**
@@ -287,20 +278,19 @@ class genRecord {
      *
      * @return unknown
      */
-    function onBeforeDelete()
-    {
-    	global $_Gconfig;
+    function onBeforeDelete() {
+	global $_Gconfig;
 
-    	if(in_array($this->table,$_Gconfig['versionedTable'])) {
-			$sql = 'SELECT '.VERSION_FIELD.' FROM '.$this->table.' WHERE '.$this->pk.' = "'.mes($this->id).'"';
-			$row = GetSingle($sql);
-			
-			$gr = new GenRecord($this->table,$row[VERSION_FIELD]);
-			$gr->DeleteRow($row[VERSION_FIELD]);
-         }
-         
-         
-        return $this->checkDoOn('beforeDelete');
+	if (in_array($this->table, $_Gconfig['versionedTable'])) {
+	    $sql = 'SELECT ' . VERSION_FIELD . ' FROM ' . $this->table . ' WHERE ' . $this->pk . ' = "' . mes($this->id) . '"';
+	    $row = GetSingle($sql);
+
+	    $gr = new GenRecord($this->table, $row[VERSION_FIELD]);
+	    $gr->DeleteRow($row[VERSION_FIELD]);
+	}
+
+
+	return $this->checkDoOn('beforeDelete');
     }
 
     /**
@@ -308,17 +298,17 @@ class genRecord {
      *
      * @return unknown
      */
-    function onUpdate()
-    {
-        $chps = getTabField($this->table);
-        if ($chps['date_modif']) {
-            DoSql('UPDATE ' . $this->table . ' SET date_modif = NOW() WHERE ' . $this->pk . ' = "' . $this->id . '"');
-        }
+    function onUpdate() {
+	global $_Gconfig;
+	$chps = getTabField($this->table);
+	if (isset($chps[$_Gconfig['field_date_maj']])) {
+	    DoSql('UPDATE ' . $this->table . ' SET date_modif = NOW() WHERE ' . $this->pk . ' = "' . $this->id . '"');
+	}
 
 
-        updateParam('date_update_' . $this->table, time());
+	updateParam('date_update_' . $this->table, time());
 
-        return $this->checkDoOn('update');
+	return $this->checkDoOn('update');
     }
 
     /**
@@ -327,556 +317,544 @@ class genRecord {
      * @param unknown_type $action
      * @return unknown
      */
+    function checkDoOn($action) {
+	global $gr_on;
+	//if ($action != 'save')
 
-    function checkDoOn($action)
-    {
-        global $gr_on;
-        //if ($action != 'save')
+	$status = true;
+	logAction($action, $this->table, $this->id);
 
-        logAction($action, $this->table, $this->id);
-		
-        if (is_array($gr_on)) {
-        	
-        	
-            if (array_key_exists($action, $gr_on) && array_key_exists($this->table, $gr_on[$action])) {
-            	
-            	if(!is_array($gr_on[$action][$this->table])) {
-            		$gr_on[$action][$this->table] = array($gr_on[$action][$this->table]);
-            	}
-            	
-            	foreach($gr_on[$action][$this->table] as $v ) {
-            		
-	                if (function_exists($v)) {
-	                    $status =  call_user_func($v, $this->id, $this->row, $this,$this->table);
-	                } else {
-	                    error('Fonction non definie pour l\'action : ' . $action . ' sur ' . $this->table);
-	                }
-            	}
-            }
-          
-            if (array_key_exists($action, $gr_on) && array_key_exists('ANY_TABLE', $gr_on[$action])) {
-            	
-            	if(!is_array($gr_on[$action]['ANY_TABLE'])) {
-            		$gr_on[$action]['ANY_TABLE'] = array($gr_on[$action]['ANY_TABLE']);
-            	}
-            	foreach($gr_on[$action]['ANY_TABLE'] as $v ) {
-	                if (function_exists($v)) {
-	                	
-	                    $status =  call_user_func($v, $this->id, $this->row, $this, $this->table);
-	                   
-	                } else {
-	                    error('Fonction non definie pour l\'action : ' . $action . ' sur ' . $this->table);
-	                }
-            	}
-            }
-        }
-        
-        return $status;
-        
+	if (is_array($gr_on)) {
+
+
+	    if (array_key_exists($action, $gr_on) && array_key_exists($this->table, $gr_on[$action])) {
+
+		if (!is_array($gr_on[$action][$this->table])) {
+		    $gr_on[$action][$this->table] = array($gr_on[$action][$this->table]);
+		}
+
+		foreach ($gr_on[$action][$this->table] as $v) {
+
+		    if (function_exists($v)) {
+			$status = call_user_func($v, $this->id, $this->row, $this, $this->table);
+		    } else {
+			error('Fonction non definie pour l\'action : ' . $action . ' sur ' . $this->table);
+		    }
+		}
+	    }
+
+	    if (array_key_exists($action, $gr_on) && array_key_exists('ANY_TABLE', $gr_on[$action])) {
+
+		if (!is_array($gr_on[$action]['ANY_TABLE'])) {
+		    $gr_on[$action]['ANY_TABLE'] = array($gr_on[$action]['ANY_TABLE']);
+		}
+		foreach ($gr_on[$action]['ANY_TABLE'] as $v) {
+		    if (function_exists($v)) {
+
+			$status = call_user_func($v, $this->id, $this->row, $this, $this->table);
+		    } else {
+			error('Fonction non definie pour l\'action : ' . $action . ' sur ' . $this->table);
+		    }
+		}
+	    }
+	}
+
+	return $status;
     }
 
-    function DeleteRow($id)
-    {
-        /*
-         * Supprime un enregistrement, ses liaisons, et ses fichiers
-         */
+    function DeleteRow($id) {
+	/*
+	 * Supprime un enregistrement, ses liaisons, et ses fichiers
+	 */
 
-        global $uploadFields, $uploadRep, $orderFields;
+	global $uploadFields, $uploadRep, $orderFields;
 
-        if (($id > 0 || $id != '') && $id != 'new') {
+	if (($id > 0 || $id != '') && $id != 'new') {
 
-            if (!$this->forceDeletionPrivilege && !$this->gs->can('del', $this->table, '', $id) ) {
-                $this->gs->showError();
-            }
+	    if (!$this->forceDeletionPrivilege && !$this->gs->can('del', $this->table, '', $id)) {
+		$this->gs->showError();
+	    }
 
-            $this->onBeforeDelete();
+	    $this->onBeforeDelete();
 
-            $obj = new GenForm($this->table, '', $id);
+	    $obj = new GenForm($this->table, '', $id);
 
-            while (list($champ, $v) = @each($obj->tab_default_field)) {
-                if (arrayInWord($uploadFields, $champ) && strlen($obj->tab_default_field[$champ])) {
-                    /**
-                     *
-                     * @unlink ($uploadRep.$obj->tab_default_field[$champ])
-                     */
-                    $gf = new GenFile($this->table, $champ, $id);
-                    $gf->deleteFile();
-                }
-            }
-            if (is_dir($uploadRep . "/" . $this->table . '/' . $id))
-                rmdir($uploadRep . "/" . $this->table . '/' . $id) or derror(t('impossible_supprimer_repertoire'));
+	    while (list($champ, $v) = @each($obj->tab_default_field)) {
+		if (arrayInWord($uploadFields, $champ) && strlen($obj->tab_default_field[$champ])) {
+		    /**
+		     *
+		     * @unlink ($uploadRep.$obj->tab_default_field[$champ])
+		     */
+		    $gf = new GenFile($this->table, $champ, $id);
+		    $gf->deleteFile();
+		}
+	    }
+	    if (is_dir($uploadRep . "/" . $this->table . '/' . $id)) 
+		rmdir($uploadRep . "/" . $this->table . '/' . $id) or derror(t('impossible_supprimer_repertoire'));
 
-                
-            /**
-             * Suppression des relations inverses (RELINV)
-             * A faire AVANT la suppression definitive
-             */
-            global $relinv;
-            reset($relinv);
-            if (is_array($relinv[$this->table])) {
-                foreach($relinv[$this->table] as $v) {
-                    $sql = 'SELECT * FROM ' . $v[0] . ' WHERE ' . $v[1] . ' = "' . $id . '"';
-                    $res = GetAll($sql);
-                    $tpk = getPrimaryKey($v[0]);
-                    foreach($res as $row) {
-                        $gr = new genRecord($v[0], $row[$tpk]);
-                        $gr->DeleteRow($row[$tpk]);
-                    }
-                }
-                reset($relinv);
-            }
-            
-            /**
-             * Suppresion definitive
-             */
-            $sql = "DELETE FROM " . $this->table . " WHERE " . getPrimaryKey($this->table) . " = " . sql($id) . "";            
-            DoSql($sql);
 
-            $_REQUEST["curId"] = $this->id = "";
+	    /**
+	     * Suppression des relations inverses (RELINV)
+	     * A faire AVANT la suppression definitive
+	     */
+	    global $relinv;
+	    reset($relinv);
+	    if (!empty($relinv[$this->table])) {
+		foreach ($relinv[$this->table] as $v) {
+		    $sql = 'SELECT * FROM ' . $v[0] . ' WHERE ' . $v[1] . ' = "' . $id . '"';
+		    $res = GetAll($sql);
+		    $tpk = getPrimaryKey($v[0]);
+		    foreach ($res as $row) {
+			$gr = new genRecord($v[0], $row[$tpk]);
+			$gr->DeleteRow($row[$tpk]);
+		    }
+		}
+		reset($relinv);
+	    }
 
-            if ($orderFields[$this->table]) {
-                $fk_id = $obj->tab_default_field[$orderFields[$this->table][1]];
-                $ord = new GenOrder($this->table, 0, $fk_id);
-                $ord->reOrder();
-            }
+	    /**
+	     * Suppresion definitive
+	     */
+	    $sql = "DELETE FROM " . $this->table . " WHERE " . getPrimaryKey($this->table) . " = " . sql($id) . "";
+	    DoSql($sql);
 
-            
-            /**
-             * Suppresion des tables de relation (TABLEREL)
-             */
-            global $tablerel;
-            reset($tablerel);
-            foreach($tablerel as $k => $v) {
-                if (in_array($this->table, $v)) {
-                    $v_inv = array_flip($v);
-                    $fkch = $v_inv[$this->table];
-                    $sql = 'DELETE FROM ' . $k . ' WHERE ' . $fkch . ' = "' . $id . '"';
-                    DoSql($sql);
-                   
-                }
-            }
+	    $_REQUEST["curId"] = $this->id = "";
 
-            /**
-             * Suppression des traductions
-             */
-            DoSql('DELETE FROM s_traduction WHERE fk_id = "' . $id . '" AND fk_table = "' . $this->table . '"');
+	    if (!empty($orderFields[$this->table]) && !empty($orderFields[$this->table][1])) {
+		$fk_id = $obj->tab_default_field[$orderFields[$this->table][1]];
+		$ord = new GenOrder($this->table, 0, $fk_id);
+		$ord->reOrder();
+	    }
 
-            reset($tablerel);
-            $this->deleted = true;
-        }
-        // dinfo(t('suppression_ok').t($this->table).' /  '.$id);
-        $this->onDelete();
+
+	    /**
+	     * Suppresion des tables de relation (TABLEREL)
+	     */
+	    global $tablerel;
+	    reset($tablerel);
+	    foreach ($tablerel as $k => $v) {
+		if (in_array($this->table, $v)) {
+		    $v_inv = array_flip($v);
+		    $fkch = $v_inv[$this->table];
+		    $sql = 'DELETE FROM ' . $k . ' WHERE ' . $fkch . ' = "' . $id . '"';
+		    DoSql($sql);
+		}
+	    }
+
+	    /**
+	     * Suppression des traductions
+	     */
+	    DoSql('DELETE FROM s_traduction WHERE fk_id = "' . $id . '" AND fk_table = "' . $this->table . '"');
+
+	    reset($tablerel);
+	    $this->deleted = true;
+	}
+	// dinfo(t('suppression_ok').t($this->table).' /  '.$id);
+	$this->onDelete();
     }
 
-    function recordData()
-    {
-        global $neededFields,
-        $uploadRep, $mailFields,
-        $uploadFields, $relinv,
-        $tablerel, $orderFields,
-        $specialUpload, $functionField,$rteFields;
+    function recordData() {
+	global $neededFields,
+	$uploadRep, $mailFields,
+	$uploadFields, $relinv,
+	$tablerel, $orderFields,
+	$specialUpload, $functionField, $rteFields;
 
-        global $genMessages, $_Gconfig;
+	global $genMessages, $_Gconfig;
 
-        if ($this->deleted) {
-            return;
-        }
+	if ($this->deleted) {
+	    return;
+	}
 
-        $this->onUpdate();
+	$this->onUpdate();
 
-        $pre_query = "UPDATE " . $this->table . " SET ";
-        $query = "";
-        $this->tab_field = $tab_field = getTabField($this->table);
-        reset($_POST);
+	$pre_query = "UPDATE " . $this->table . " SET ";
+	$query = "";
+	$this->tab_field = $tab_field = getTabField($this->table);
+	reset($_POST);
 
-        if (!$this->gs->can('edit', $this->table, array(), $this->id) && !$this->JustInserted) {
-            $this->gs->showError();
-            die();
-        }
-        
-        
+	if (!$this->gs->can('edit', $this->table, array(), $this->id) && !$this->JustInserted) {
+	    $this->gs->showError();
+	    die();
+	}
 
-        /* Boucle sur le tableau POST */
-        // debug($_POST);
-        reset($_POST);
-        // debug('New Record');
-        
-        while (list($key_name, $value) = each($_POST)) {
-        	
-        	
-            /* Est - ce un champ valable ? */
-            if (substr($key_name, 0, 8) == "genform_" && !$_POST['genform_cancel'] && !$_POST['genform_cancel_x']) {
-                /* Nom du champ */
-                $name = str_replace("genform_", "", $key_name);
+	$fk_id = false;
 
-                if ($tab_field[$name] && !$tab_field[$name]->not_null && !strlen($value)) {
-                    $value = 'NULL';
-                }
+	$isError = false;
+	/* Boucle sur le tableau POST */
+	// debug($_POST);
+	reset($_POST);
+	// debug('New Record');
 
-                if (array_key_exists($name, $functionField)) {
-                    if (array_key_exists('after', $functionField[$name])) {
-                        $value = call_user_func($functionField[$name]['after'] , $value);
-                    }
-                }
+	while (list($key_name, $value) = each($_POST)) {
 
-                /*
-                            On enregistre tout ca, et on va ins?er quelquechose ...
-                    */
-                if (strstr($key_name,"genform_modfk_") !== false && !strstr($key_name,"_value" ) !== false && $value != "") {
-                    /* FK SIMPLE */
-                    $tab = explode("__", $key_name);
-                    // if($this->table != $tab[1]) {
-                    $_REQUEST['newTable'] = $tab[1];
-                    if ($_POST[$key_name . "_value"]) {
-                        $_REQUEST['newId'] = $_POST[$key_name . "_value"];
-                    } else {
-                        $_REQUEST['newId'] = $_POST["genform_" . $tab[2]];
-                    }
-                    // }
-                } else
-                if (strstr($key_name,"genform_delfk_") !== false && !strstr($key_name,"_value" ) !== false && $value != "") {
-                	
-                    $tab = explode("__", $key_name);
-                    // if($this->table != $tab[1]) {
-                    $table_to_del = $tab[1];
-                    $table_to_del_pk = GetPrimaryKey($table_to_del);
-                    if ($_POST[$key_name . "_value"]) {
-                        $id_to_del = $_POST[$key_name . "_value"];
-                    } else {
-                        $id_to_del = $_POST["genform_" . $tab[2]];
-                    }
-                     //debug('DELETE  : '.$id_to_del.' from '.$table_to_del);
-                    if (($id_to_del > 0 || $id_to_del != "" )&& $this->gs->can('del', $table_to_del, $id_to_del) ) {
-                        $del_sql = 'DELETE FROM ' . $table_to_del . ' WHERE ' . $table_to_del_pk . ' = "' . $id_to_del . '"';
-                        DoSql($del_sql);
 
-                        $genMessages->add(t('suppression_ok') . ' ' . t($table_to_del), 'info');
-                    }
-                    // }
-                } else
-                if (strstr($key_name,"genform_add_") !== false) {
-                    /* FK SIMPLE */
-                    $tab = explode("_-_", $key_name);
-                    if ($this->table != $tab[1]) {
-                        $_REQUEST['newTable'] = $tab[1];
-                        $_REQUEST['fieldToUpdate'] = $tab[2];
-                        $_REQUEST['newId'] = "new";
-                    }
-                } else
-                if (strstr($key_name,"genform_addfk_") !== false) {
-                    /* TABLE FK DISTANTE */
-                    $tab = explode("__", $key_name);
-                    // if($this->table != $tab[1]) {
-                    $_REQUEST['newTable'] = $tab[1];
-                    $_SESSION[gfuid()]['newTableFk'] = $tab[2];
-                    $_REQUEST['insertOtherField'] = "1";
-                    $_REQUEST['newId'] = "new";
-                    // }
-                } else
-                if (strstr($key_name, "genform_addrel_" ) !== false) {
-                    /* TABLE DE RELATION */
-                    $tab = explode("__", $key_name);
-                    if ($this->table != $tab[1]) {
-                        $_REQUEST['newTable'] = $tab[3];
-                        $_REQUEST['fieldToUpdate'] = $tab[2];
-                        $_REQUEST['tableToUpdate'] = $tab[1];
-                        $_REQUEST['newId'] = "new";
-                    }
-                } else
-                if (strstr($key_name,"genform_editrel_") !== false && $value > 0) {
-                    /* TABLE DE RELATION */
-                    $tab = explode("__", $key_name);
-                    if ($this->table != $tab[1]) {
-                        $_REQUEST['newTable'] = $tab[3];
-                        /* $_REQUEST['fieldToUpdate'] = $tab[2];
-                                    $_REQUEST['tableToUpdate'] = $tab[1];*/
-                        /* debug($key_name);
-                                    debug('edit : '.$value);*/
-                        $_REQUEST['newId'] = $value;
-                    }
-                } else
-                if (strstr($key_name,"genform_rel") !== false   && strstr($key_name,"_temoin") !== false ) {
-                    $key_name = str_replace("_temoin", "", $key_name);
-                    $value = $_POST[$key_name];
+	    /* Est - ce un champ valable ? */
+	    if (substr($key_name, 0, 8) == "genform_" && !isset($_POST['genform_cancel_x'])) {
+		/* Nom du champ */
+		$name = str_replace("genform_", "", $key_name);
 
-                    $tab = explode("__", $key_name);
-                    $found = false;
-                    reset($tablerel[$tab[1]]);
-                    while (list($k, $v) = each($tablerel[$tab[1]])) {
-                        if ($v == $this->table && !$found) {
-                            $fk1 = $k;
-                            $found = true;
-                        } else {
-                            $fk2 = $k;
-                            $fk_table = $v;
-                        }
-                    }
-                    reset($tablerel[$tab[1]]);
+		if (isset($tab_field[$name]) && !$tab_field[$name]->not_null && !strlen($value)) {
+		    $value = 'NULL';
+		}
 
-                    if (!$_REQUEST['genform_cancel'] && !$_REQUEST['genform_cancel_x']) {
-                        $sql = "DELETE FROM " . $tab[1] . " WHERE " . $fk1 . " = " . $this->id;
-                        DoSql($sql);
+		if (array_key_exists($name, $functionField)) {
+		    if (array_key_exists('after', $functionField[$name])) {
+			$value = call_user_func($functionField[$name]['after'], $value);
+		    }
+		}
 
-                        $order = 1;
-                        while (list($k, $v) = @each($value)) {
-                            if ($v) {
-                                $orderField = '';
-                                $orderValue = '';
-                                if (array_key_exists($tab[1], $orderFields)) {
-                                    $orderField = ',' . $orderFields[$tab[1]][0];
-                                    $orderValue = ',' . $order;
-                                }
-                                $sql = 'INSERT INTO ' . $tab[1] . ' ( ' . $fk1 . ' , ' . $fk2 . '' . $orderField . ')  VALUES (' . $this->id . ',' . $v . '' . $orderValue . ') ';
-                                DoSql($sql);
-                                $order++;
-                            }
-                        }
-                    }
-                } else
+		/*
+		  On enregistre tout ca, et on va ins?er quelquechose ...
+		 */
+		if (strstr($key_name, "genform_modfk_") !== false && !strstr($key_name, "_value") !== false && $value != "") {
+		    /* FK SIMPLE */
+		    $tab = explode("__", $key_name);
+		    // if($this->table != $tab[1]) {
+		    $_REQUEST['newTable'] = $tab[1];
+		    if (isset($_POST[$key_name . "_value"])) {
+			$_REQUEST['newId'] = $_POST[$key_name . "_value"];
+		    } else {
+			$_REQUEST['newId'] = akev($_POST, "genform_" . akev($tab, 2));
+		    }
+		    // }
+		} else
+		if (strstr($key_name, "genform_delfk_") !== false && !strstr($key_name, "_value") !== false && $value != "") {
 
-                    /* Est-il dans la liste des champs que j'ai le droit de modifier */
-              
-                    if (in_array($name, $_SESSION[gfuid()]['curFields'])) {
-                    	 
-                        /* Nombre r?l */
-                        if ($tab_field[$name]->type == "real") {
-                            $val1 = (real)$value;
-                            if (preg_match("/[A-Z,a-z]/", $value)) {
-                                // echo "Found letters";
-                                $isError = 1;
-                                $fieldError[$name] = 1;
-                            }
-                        }
+		    $tab = explode("__", $key_name);
+		    // if($this->table != $tab[1]) {
+		    $table_to_del = $tab[1];
+		    $table_to_del_pk = GetPrimaryKey($table_to_del);
+		    $id_to_del = false;
+		    if (!empty($_POST[$key_name . "_value"])) {
+			$id_to_del = $_POST[$key_name . "_value"];
+		    } else if (!empty($tab[2])) {
+			$id_to_del = $_POST["genform_" . $tab[2]];
+		    }
+		    //debug('DELETE  : '.$id_to_del.' from '.$table_to_del);
+		    if (($id_to_del > 0 || $id_to_del != "" ) && $this->gs->can('del', $table_to_del, $id_to_del)) {
+			$del_sql = 'DELETE FROM ' . $table_to_del . ' WHERE ' . $table_to_del_pk . ' = "' . $id_to_del . '"';
+			DoSql($del_sql);
 
-                        /* Entier non FK */
-                        else if ($tab_field[$name]->type == "int" && !strstr($name,"fk") !== false && $value != "") {
-                            $val1 = (int)$value;
-                            $value = str_replace(" ", "", $value);
-                            $value = str_replace(".", "", $value);
-                            $value = str_replace(",", "", $value);
-                            if (preg_match("/[A-Z,a-z]/", $value)) {
-                                // echo "Found letters";
-                                $isError = 1;
-                                $fieldError[$name] = 1;
-                            }
+			$genMessages->add(t('suppression_ok') . ' ' . t($table_to_del), 'info');
+		    }
+		    // }
+		} else
+		if (strstr($key_name, "genform_add_") !== false) {
+		    /* FK SIMPLE */
+		    $tab = explode("_-_", $key_name);
+		    if ($this->table != $tab[1]) {
+			$_REQUEST['newTable'] = $tab[1];
+			$_REQUEST['fieldToUpdate'] = $tab[2];
+			$_REQUEST['newId'] = "new";
+		    }
+		} else
+		if (strstr($key_name, "genform_addfk_") !== false) {
+		    /* TABLE FK DISTANTE */
+		    $tab = explode("__", $key_name);
+		    // if($this->table != $tab[1]) {
+		    $_REQUEST['newTable'] = $tab[1];
+		    $_SESSION[gfuid()]['newTableFk'] = $tab[2];
+		    $_REQUEST['insertOtherField'] = "1";
+		    $_REQUEST['newId'] = "new";
+		    // }
+		} else
+		if (strstr($key_name, "genform_addrel_") !== false) {
+		    /* TABLE DE RELATION */
+		    $tab = explode("__", $key_name);
+		    if ($this->table != $tab[1]) {
+			$_REQUEST['newTable'] = $tab[3];
+			$_REQUEST['fieldToUpdate'] = $tab[2];
+			$_REQUEST['tableToUpdate'] = $tab[1];
+			$_REQUEST['newId'] = "new";
+		    }
+		} else
+		if (strstr($key_name, "genform_editrel_") !== false && $value > 0) {
+		    /* TABLE DE RELATION */
+		    $tab = explode("__", $key_name);
+		    if ($this->table != $tab[1]) {
+			$_REQUEST['newTable'] = $tab[3];
+			/* $_REQUEST['fieldToUpdate'] = $tab[2];
+			  $_REQUEST['tableToUpdate'] = $tab[1]; */
+			/* debug($key_name);
+			  debug('edit : '.$value); */
+			$_REQUEST['newId'] = $value;
+		    }
+		} else
+		if (strstr($key_name, "genform_rel") !== false && strstr($key_name, "_temoin") !== false) {
+		    $key_name = str_replace("_temoin", "", $key_name);
+		    $value = akev($_POST, $key_name);
 
-                            /* DATE */
-                        } else if ($tab_field[$name]->type == "date" && false) {
-                            $value = $_POST['genform_' . $name . '_year'] . '-' . $_POST['genform_' . $name . '_month'] . '-' . $_POST['genform_' . $name . '_day'];
-                            $dates = split("-", $value);
+		    $tab = explode("__", $key_name);
+		    $found = false;
+		    reset($tablerel[$tab[1]]);
+		    while (list($k, $v) = each($tablerel[$tab[1]])) {
+			if ($v == $this->table && !$found) {
+			    $fk1 = $k;
+			    $found = true;
+			} else {
+			    $fk2 = $k;
+			    $fk_table = $v;
+			}
+		    }
+		    reset($tablerel[$tab[1]]);
 
-                            /* TIME */
+		    if (empty($_REQUEST['genform_cancel_x'])) {
+			$sql = "DELETE FROM " . $tab[1] . " WHERE " . $fk1 . " = " . $this->id;
+			DoSql($sql);
 
-                        } else if ($tab_field[$name]->type == "time") {
-                        	$_POST['genform_' . $name . '_min'] = $_POST['genform_' . $name . '_min'] != '' ? $_POST['genform_' . $name . '_min'] : '00';
-                        	$_POST['genform_' . $name . '_sec'] = $_POST['genform_' . $name . '_sec'] != '' ? $_POST['genform_' . $name . '_sec'] : '00';
-                        	$_POST['genform_' . $name . '_hour'] = $_POST['genform_' . $name . '_hour'] != '' ? $_POST['genform_' . $name . '_hour'] : '00';
-                        	
-                        	
-                            $value = $_POST['genform_' . $name . '_hour'] . ':' . $_POST['genform_' . $name . '_min'] . ':' . $_POST['genform_' . $name . '_sec'];
-                          
-                        } else if ($tab_field[$name]->type == "datetime") {
-                        	 
-                        	/*$_POST['genform_' . $name . '_hh'] = $_POST['genform_' . $name . '_hh'] != '' ? $_POST['genform_' . $name . '_hh'] : '00';
-                        	$_POST['genform_' . $name . '_mm'] = $_POST['genform_' . $name . '_mm'] != '' ? $_POST['genform_' . $name . '_mm'] : '00';
-                        	$_POST['genform_' . $name . '_ss'] = $_POST['genform_' . $name . '_ss'] != '' ? $_POST['genform_' . $name . '_ss'] : '00';
-                        	*/
-                        	
-                            $value = $_POST['genform_' . $name ].' '.$_POST['genform_' . $name . '_hh'].':'.$_POST['genform_' . $name . '_mm'].':'.$_POST['genform_' . $name . '_ss'];
-                            
-                            $dates = split("-", $value);
+			$order = 1;
+			while (list($k, $v) = @each($value)) {
+			    if ($v) {
+				$orderField = '';
+				$orderValue = '';
+				if (array_key_exists($tab[1], $orderFields)) {
+				    $orderField = ',' . $orderFields[$tab[1]][0];
+				    $orderValue = ',' . $order;
+				}
+				$sql = 'INSERT INTO ' . $tab[1] . ' ( ' . $fk1 . ' , ' . $fk2 . '' . $orderField . ')  VALUES (' . $this->id . ',' . $v . '' . $orderValue . ') ';
+				DoSql($sql);
+				$order++;
+			    }
+			}
+		    }
+		} else
 
-                           
-                        	
-                        	
-                        } else if (arrayInWord($mailFields, $name) && 0) {
-                            if ($_POST['genform_' . $name . '_beforeat'] && $_POST['genform_' . $name . '_afterat']) {
-                                $value = $_POST['genform_' . $name . '_beforeat'] . "@" . $_POST['genform_' . $name . '_afterat'];
-                            } else {
-                                $value = "";
-                            }
-                        } else if(is_array($value)) { 
-                        	$value = implode(",",$value);	
-                        }
-						   /**
-						          * Fout la merde
-							*/
-                           // $value = addmyslashes($value);
-                        
-                        if ($value == DEFAULT_URL_VALUE)
-                            $value = "";
+		/* Est-il dans la liste des champs que j'ai le droit de modifier */
 
-                        if (($value == "" || $value == "0" || $value == "0.0") && @in_array($name, $neededFields)) {
-                            $isError = 1;
-                            $fieldError[$name] = 1;
-                        }
+		if (in_array($name, $_SESSION[gfuid()]['curFields'])) {
 
-                        /*
-	                     * On supprime un fichier
-	                     */
+		    
+		    if (isset($tab_field[$name])) {
+			
+			if(is_array($value)) {
+			    $value = implode(',',$value);
+			}
+			
+			/* Nombre reel */
+			if ($tab_field[$name]->type == "real") {
+			    $val1 = (real) $value;
+			    if (preg_match("/[A-Z,a-z]/", $value)) {
+				// echo "Found letters";
+				$isError = 1;
+				$fieldError[$name] = 1;
+			    }
+			}
 
-                        if (substr($name, -4) == "_del" || substr($name, -4) == "_del_x") {
-                            $name = substr($name, 0, -4);
-							$_REQUEST['genform_stay'] = 1;
-							
-                            /**
-                             *
-                             * @unlink ($uploadRep.$myobj->tab_default_field[$name]);
-                             */
-                            $gf = new GenFile($this->table, $name, $this->id);
-                            $gf->deleteFile();
-                            $value = "";
-                        }
+			/* Entier non FK */ else if ($tab_field[$name]->type == "int" && !strstr($name, "fk") !== false && $value != "") {
+			    $val1 = (int) $value;
+			    $value = str_replace(" ", "", $value);
+			    $value = str_replace(".", "", $value);
+			    $value = str_replace(",", "", $value);
+			    if (preg_match("/[A-Z,a-z]/", $value)) {
+				// echo "Found letters";
+				$isError = 1;
+				$fieldError[$name] = 1;
+			    }
 
-						if(substr($name, -11) == "_fromfolder") {
-							/**
-							 * gestion des fichiers en lien vers un dossier
-							 */
-                        	if($value) {
-                        		if($value =="-1") {
-                        			$value ='';
-                        		} else {
-                        			$value= '**'.$value;	
-                        		}
-                        		$name = substr($name, 0, -11);                        		
-                        	} else {
-                        		$name = '';
-                        		$value = '';
-                        	}
-                        	
-                        }
-						
-						/**
-						 * Gestion des fichiers à copier depuis le dossier upload
-						 */
-                        if ((substr($name, -10) == "_importftp") && $value != "0" && $value != "NULL") {
-                            $name = substr($name, 0, -10);
+			    /* DATE */
+			} else if ($tab_field[$name]->type == "date" && false) {
+			    $value = $_POST['genform_' . $name . '_year'] . '-' . $_POST['genform_' . $name . '_month'] . '-' . $_POST['genform_' . $name . '_day'];
+			    $dates = split("-", $value);
 
-                            $gf = new GenFile($this->table, $name, $this->id, $value, false);
-                            if ($gf->uploadFile(path($_Gconfig['ftpUpload_path'], $value))) {
-                                $value = $gf->getRealName();
-                            }
-                        } else if (substr($name, -10) == "_importftp") {
-                            $name = '';
-                            $value = '';
-                        }
-                        
-                        
-                        /**
-                         * CHAMPS RTE
-                         */
-                        if ( @in_array( $name, $rteFields )  ) {
-                       			if(strlen(trim(strip_tags($value))) > 1 && strpos($value,'<p>') === false) {
-									$value = '<p>'.$value.'</p>';
-								}
-								
-								$value = str_replace(
-									array('<b>','</b>','<u>','</u>','<i>','</i>'),
-									array('<strong>','</strong>','<span style="text-decoration:underline">','</span>','<em>','</em>'),$value);
-								$value = strip_tags($value,'<p><a><abbr><accronym><sup><sub><ul><li><ol><br><br/><strong><em><span>');
-                        }
+			    /* TIME */
+			} else if ($tab_field[$name]->type == "time") {
+			    $_POST['genform_' . $name . '_min'] = $_POST['genform_' . $name . '_min'] != '' ? $_POST['genform_' . $name . '_min'] : '00';
+			    $_POST['genform_' . $name . '_sec'] = $_POST['genform_' . $name . '_sec'] != '' ? $_POST['genform_' . $name . '_sec'] : '00';
+			    $_POST['genform_' . $name . '_hour'] = $_POST['genform_' . $name . '_hour'] != '' ? $_POST['genform_' . $name . '_hour'] : '00';
 
-                        $aid = $this->JustInserted ? 'new' : $this->id;
-                        if (!$this->gs->can('edit', $this->table, '', $aid, $name, $value) && !$this->gs->can('edit', $this->table, '', $aid, getBaseLgField($name), $value)) {
-                            $this->gs->showError();
-                            die();
-                        }
 
-                       
-                        if (strlen($name)) {
-                            $this->curValues[$name] = $value;
+			    $value = $_POST['genform_' . $name . '_hour'] . ':' . $_POST['genform_' . $name . '_min'] . ':' . $_POST['genform_' . $name . '_sec'];
+			} else if ($tab_field[$name]->type == "datetime") {
 
-                            $query .= $this->updateQuery($name, $value);
-                        }
-                    }
-                     
-                }
-               
-            }
+			    /* $_POST['genform_' . $name . '_hh'] = $_POST['genform_' . $name . '_hh'] != '' ? $_POST['genform_' . $name . '_hh'] : '00';
+			      $_POST['genform_' . $name . '_mm'] = $_POST['genform_' . $name . '_mm'] != '' ? $_POST['genform_' . $name . '_mm'] : '00';
+			      $_POST['genform_' . $name . '_ss'] = $_POST['genform_' . $name . '_ss'] != '' ? $_POST['genform_' . $name . '_ss'] : '00';
+			     */
 
-            
-            if ($_FILES) {
-                reset($_FILES);
-                while (list($k, $v) = each($_FILES)) {
-                    if (!$v['error'] && $v['name']) {
-                        $name = str_replace("genform_", "", $k);
+			    $value = $_POST['genform_' . $name] . ' ' . $_POST['genform_' . $name . '_hh'] . ':' . $_POST['genform_' . $name . '_mm'] . ':' . $_POST['genform_' . $name . '_ss'];
 
-                        $gf = new GenFile($this->table, $name, $this->id, $v['name'], false);
+			    $dates = split("-", $value);
+			}
+		    } else if (arrayInWord($mailFields, $name) && 0) {
+			if ($_POST['genform_' . $name . '_beforeat'] && $_POST['genform_' . $name . '_afterat']) {
+			    $value = $_POST['genform_' . $name . '_beforeat'] . "@" . $_POST['genform_' . $name . '_afterat'];
+			} else {
+			    $value = "";
+			}
+		    } else if (is_array($value)) {
+			$value = implode(",", $value);
+		    }
+		    /**
+		     * Fout la merde
+		     */
+		    // $value = addmyslashes($value);
 
-                        if ($gf->uploadFile($v['tmp_name'])) {
-                            $nameToRecord = $gf->getRealName();
+		    if ($value == DEFAULT_URL_VALUE)
+			$value = "";
 
-                            $query .= $this->updateQuery($name, $nameToRecord); //." = '".$nameToRecord."', ";
+		    if (($value == "" || $value == "0" || $value == "0.0") && @in_array($name, $neededFields)) {
+			$isError = 1;
+			$fieldError[$name] = 1;
+		    }
 
-                        } else {
-                            derror('Probleme lors de la copie du fichier '.$v['tmp_name']);
-                        }
-                    }
-                }
-            }
+		    /*
+		     * On supprime un fichier
+		     */
 
-            /* SI c'est un champ en RTE */
-            if ($_SESSION["genform_" . $this->table] && !$_POST['genform_cancel']) {
-                while (list($k, $v) = each($_SESSION["genform_" . $this->table])) {
-                    if (!$this->gs->can('edit', $this->table, '', $this->id, $k, $v) && !$this->JustInserted) {
-                        $this->gs->showError();
-                        die();
-                    }
-                    // $query .=  $k.' = "'.addmyslashes($v).'" , ';
-                    $query .= $this->updateQuery($k, ((($v)))); //
-                }
+		    if (substr($name, -4) == "_del" || substr($name, -4) == "_del_x") {
+			$name = substr($name, 0, -4);
+			$_REQUEST['genform_stay'] = 1;
 
-                $_SESSION["genform_" . $this->table] = "";
-            }
+			/**
+			 *
+			 * @unlink ($uploadRep.$myobj->tab_default_field[$name]);
+			 */
+			$gf = new GenFile($this->table, $name, $this->id);
+			$gf->deleteFile();
+			$value = "";
+		    }
 
-            if ($tab_field[$_Gconfig['field_date_maj']]) {
-                $query .= ' ' . $_Gconfig['field_date_maj'] . ' = NOW() , ';
-            }
+		    if (substr($name, -11) == "_fromfolder") {
+			/**
+			 * gestion des fichiers en lien vers un dossier
+			 */
+			if ($value) {
+			    if ($value == "-1") {
+				$value = '';
+			    } else {
+				$value = '**' . $value;
+			    }
+			    $name = substr($name, 0, -11);
+			} else {
+			    $name = '';
+			    $value = '';
+			}
+		    }
 
-            if ($query && $this->id != "new" && $this->id != "") {
-                $query = $pre_query . substr($query, 0, strlen($query)-2);
-                $query .= " WHERE " . $_REQUEST['curTableKey'] . ' = "' . $this->id . '"';
+		    /**
+		     * Gestion des fichiers ï¿½ copier depuis le dossier upload
+		     */
+		    if ((substr($name, -10) == "_importftp") && $value != "0" && $value != "NULL") {
+			$name = substr($name, 0, -10);
 
-                $res = DoSql($query);
-                              
-            }
+			$gf = new GenFile($this->table, $name, $this->id, $value, false);
+			if ($gf->uploadFile(path($_Gconfig['ftpUpload_path'], $value))) {
+			    $value = $gf->getRealName();
+			}
+		    } else if (substr($name, -10) == "_importftp") {
+			$name = '';
+			$value = '';
+		    }
 
-            if ($orderFields[$this->table]) {
-                if (!$fk_id) {
-                    // $myobj = new GenForm($this->table,"",$this->id);
-                    $myobj = getRowFromId($this->table, $this->id);
-                    $fk_id = $myobj[$orderFields[$this->table][1]];
-                }
-                $ord = new GenOrder($this->table, $this->id, $fk_id);
 
-                if ($this->JustInserted) {
-                    $ord->OrderAfterInsertLastAtBottom();
-                }
+		    /**
+		     * CHAMPS RTE
+		     */
+		    if (@in_array($name, $rteFields)) {
+			if (strlen(trim(strip_tags($value))) > 1 && strpos($value, '<p>') === false) {
+			    $value = '<p>' . $value . '</p>';
+			}
 
-                $ord->ReOrder();
-            }
+			$value = str_replace(
+				array('<b>', '</b>', '<u>', '</u>', '<i>', '</i>'), array('<strong>', '</strong>', '<span style="text-decoration:underline">', '</span>', '<em>', '</em>'), $value);
+			$value = strip_tags($value, '<p><a><abbr><accronym><sup><sub><ul><li><ol><br><br/><strong><em><span>');
+		    }
 
-            if ($isError)
-                return $fieldError;
-            else
-                return $res;
-        }
+		    $aid = $this->JustInserted ? 'new' : $this->id;
+		    if (!$this->gs->can('edit', $this->table, '', $aid, $name, $value) && !$this->gs->can('edit', $this->table, '', $aid, getBaseLgField($name), $value)) {
+			$this->gs->showError();
+			die();
+		    }
 
-        function updateQuery($name, $valeur)
-        {
-            $tab_field = $this->tab_field;
 
-            if (false && updateLgField($this->table, $this->id, $name, $valeur)) {
-            } else
+		    if (strlen($name)) {
+			$this->curValues[$name] = $value;
 
-            if ($valeur == "BLEU") {
-                file_put_contents('debug.txt', 'ok2' . "\r\n", FILE_APPEND);
-                return ' ' . $name . ' = ' . sql($valeur) . ' , ';
-            } else {
-                return ' ' . $name . ' = ' . sql($valeur) . ' , ';
-            }
-        }
+			$query .= $this->updateQuery($name, $value);
+		    }
+		}
+	    }
+	}
+
+
+	if ($_FILES) {
+	    reset($_FILES);
+	    while (list($k, $v) = each($_FILES)) {
+		if (!$v['error'] && $v['name']) {
+		    $name = str_replace("genform_", "", $k);
+
+		    $gf = new GenFile($this->table, $name, $this->id, $v['name'], false);
+
+		    if ($gf->uploadFile($v['tmp_name'])) {
+			$nameToRecord = $gf->getRealName();
+
+			$query .= $this->updateQuery($name, $nameToRecord); //." = '".$nameToRecord."', ";
+		    } else {
+			derror('Probleme lors de la copie du fichier ' . $v['tmp_name']);
+		    }
+		}
+	    }
+	}
+
+	/* SI c'est un champ en RTE */
+	if (isset($_SESSION["genform_" . $this->table]) && !isset($_POST['genform_cancel_x'])) {
+	    while (list($k, $v) = each($_SESSION["genform_" . $this->table])) {
+		if (!$this->gs->can('edit', $this->table, '', $this->id, $k, $v) && !$this->JustInserted) {
+		    $this->gs->showError();
+		    die();
+		}
+		// $query .=  $k.' = "'.addmyslashes($v).'" , ';
+		$query .= $this->updateQuery($k, ((($v)))); //
+	    }
+
+	    $_SESSION["genform_" . $this->table] = "";
+	}
+
+	$res = false;
+	if ($query && $this->id != "new" && $this->id != "") {
+	    $query = $pre_query . substr($query, 0, strlen($query) - 2);
+	    $query .= " WHERE " . $_REQUEST['curTableKey'] . ' = "' . $this->id . '"';
+
+	    $res = DoSql($query);
+	}
+
+	if (!empty($orderFields[$this->table])) {
+	    if (!$fk_id) {
+		// $myobj = new GenForm($this->table,"",$this->id);
+		$myobj = getRowFromId($this->table, $this->id);
+		$fk_id = akev($myobj,akev($orderFields[$this->table],1));
+	    }
+	    $ord = new GenOrder($this->table, $this->id, $fk_id);
+
+	    if ($this->JustInserted) {
+		$ord->OrderAfterInsertLastAtBottom();
+	    }
+
+	    $ord->ReOrder();
+	}
+
+	if ($isError)
+	    return $fieldError;
+	else
+	    return $res;
     }
 
+    function updateQuery($name, $valeur) {
+	$tab_field = $this->tab_field;
+
+	if (false && updateLgField($this->table, $this->id, $name, $valeur)) {
+	    
+	} else
+
+	if ($valeur == "BLEU") {
+	    file_put_contents('debug.txt', 'ok2' . "\r\n", FILE_APPEND);
+	    return ' ' . $name . ' = ' . sql($valeur) . ' , ';
+	} else {
+	    return ' ' . $name . ' = ' . sql($valeur) . ' , ';
+	}
+    }
+
+}
 
 ?>

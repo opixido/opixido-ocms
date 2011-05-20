@@ -31,7 +31,7 @@ if(rubriqueIsAPage($form) || true ) {
 	foreach($plugs as $v) {
 		if(class_exists($v.'Admin') && method_exists($v.'Admin','ocms_getParams')) {
 			$className = $v.'Admin';
-			$res = call_user_method('ocms_getParams',$className);
+			$res = call_user_func(array($className,'ocms_getParams'));
 
 			$rPlugin = array_merge($rPlugin,$res);
 		}
@@ -47,8 +47,8 @@ if(rubriqueIsAPage($form) || true ) {
 		 * Quel gabarit
 		 */
 		$gab = getGabarit($form->tab_default_field['fk_gabarit_id']);
-		$gabNom = $gab['gabarit_classe'];
-		$gabFold =  $gab['gabarit_plugin'] ? PLUGINS_FOLDER.'/'.$gab['gabarit_plugin'] : 'bdd';
+		$gabNom = akev($gab,'gabarit_classe');
+		$gabFold =  !empty($gab['gabarit_plugin']) ? PLUGINS_FOLDER.'/'.$gab['gabarit_plugin'] : 'bdd';
 		
 		/**
 		 * On l'inclu
@@ -59,7 +59,7 @@ if(rubriqueIsAPage($form) || true ) {
 		 * Si il a une methode pour connaitre ses paramètres
 		 */		
 		if(method_exists($gabNom,'ocms_getParams')) {
-			$r = call_user_method('ocms_getParams',$gabNom);
+			$r = call_user_func(array($gabNom,'ocms_getParams'));
 			$r = array_merge($r, $rPlugin);
 		} else {
 			$r = $rPlugin;
@@ -92,8 +92,8 @@ if(rubriqueIsAPage($form) || true ) {
 				echo getEditTrad($nom);	
 				
 				if(is_array($type)) {
-					$vals = $type[1];
-					$type = $type[0];
+					$vals = akev($type,1);
+					$type = akev($type,0);
 				}
 				
 				
@@ -102,10 +102,10 @@ if(rubriqueIsAPage($form) || true ) {
 				} else
 				if($type == 'select') {
 					
-					echo $sf->getSelect(array('id'=>$nom,'value'=>$vals,'selected'=>$defV[$nom]));
+					echo $sf->getSelect(array('id'=>$nom,'value'=>$vals,'selected'=>akev($defV,$nom)));
 					
 				} else {
-					echo $sf->getInputText(array('id'=>$nom,"value"=>$defV[$nom]));
+					echo $sf->getInputText(array('id'=>$nom,"value"=>akev($defV,$nom)));
 				}
 				
 				echo '<br/>';

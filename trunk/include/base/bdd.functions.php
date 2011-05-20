@@ -202,6 +202,7 @@ function sqlOnlyOnline($table, $alias = '') {
     if (IN_ADMIN) {
         return '';
     }
+    $sql = '';
 
     $t = getTabField($table);
 
@@ -210,7 +211,7 @@ function sqlOnlyOnline($table, $alias = '') {
         //$sql .= $alias;
     }
 
-    if ($t['date_online'] && $t['date_offline']) {
+    if (ake('date_online',$t) && ake('date_offline',$t) && $t['date_online'] && $t['date_offline']) {
         $sql .= ' AND ( date_online <= NOW() OR date_online = "0000-00-00" )
 		AND (date_offline >= NOW() OR date_offline = "0000-00-00"  ) ';
     }
@@ -437,7 +438,10 @@ function TrySql($sql) {
  */
 function getTables() {
     global $co;
-    if (!$_SESSION['cache'][UNIQUE_SITE]['tables']) {
+    if(empty($_SESSION['cache'][UNIQUE_SITE])) {
+	$_SESSION['cache'][UNIQUE_SITE] = array();
+    }
+    if (!ake($_SESSION['cache'][UNIQUE_SITE],'tables')) {
         $_SESSION['cache'][UNIQUE_SITE]['tables'] = $co->MetaTables('TABLES');
     }
     return $_SESSION['cache'][UNIQUE_SITE]['tables'];
@@ -449,6 +453,7 @@ function getTables() {
  */
 function clearCache() {
     $_SESSION['cache'] = array();
+    $_SESSION['cache'][UNIQUE_SITE] = array();
 }
 
 /**
@@ -474,7 +479,7 @@ function getTabField($table) {
     global $co;
 
     //return $co->MetaColumns($table,false);
-    if (!akev($_SESSION['cache'][UNIQUE_SITE]['tabfield'], $table)) {
+    if (!akev($_SESSION['cache'][UNIQUE_SITE], 'tabField_'.$table)) {
 
         $t = MetaColumns($table);
         if (!is_array($t)) {
@@ -486,13 +491,13 @@ function getTabField($table) {
         }
 
         //reset($t);
-        $_SESSION['cache'][UNIQUE_SITE]['tabfield'][$table] = $t2;
+        $_SESSION['cache'][UNIQUE_SITE]['tabfield_'.$table] = $t2;
         return $t2;
 
 
     }
 
-    return $_SESSION['cache'][UNIQUE_SITE]['tabfield'][$table];
+    return $_SESSION['cache'][UNIQUE_SITE]['tabfield_'.$table];
 }
 
 
@@ -516,15 +521,19 @@ function sql($param, $type = 'string') {
     return '"' . $param . '"';
 }
 
+if(empty($_SESSION['cache'][UNIQUE_SITE])) {
+    $_SESSION['cache'][UNIQUE_SITE] = array();
+}
 
-$_SESSION['cache']['pks'] = choose(akev($_SESSION['cache'], 'pks'), array(''));
+$_SESSION['cache'][UNIQUE_SITE]['pks'] = choose(akev($_SESSION['cache'][UNIQUE_SITE], 'pks'), array(''));
 
 if (!function_exists('getPrimaryKey')) {
     function getPrimaryKey($table) {
         global $co;
 
         if (strlen($table)) {
-            if (!akev($_SESSION['cache'][UNIQUE_SITE]['pks'], $table)) {
+            if (!akev($_SESSION['cache'][UNIQUE_SITE],'pks') 
+		    || !akev($_SESSION['cache'][UNIQUE_SITE]['pks'], $table)) {
                 $t = $co->MetaPrimaryKeys($table);
                 if (count($t) == 1)
                     $_SESSION['cache'][UNIQUE_SITE]['pks'][$table] = $t[0];
@@ -532,9 +541,7 @@ if (!function_exists('getPrimaryKey')) {
                     $_SESSION['cache'][UNIQUE_SITE]['pks'][$table] = false;
             }
         }
-
         return $_SESSION['cache'][UNIQUE_SITE]['pks'][$table];
-
     }
 }
 

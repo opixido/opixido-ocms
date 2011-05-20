@@ -53,7 +53,7 @@ $("table.sortable").each( function() {
 	           }
 	           var t = $(table).attr('rel');
 	           t = t.split('__');
-	           ajaxAction("reorderRelinv", t[0],"<?=$_REQUEST['curId']?>",{relinv:t[1],order:arr});	        },
+	           ajaxAction("reorderRelinv", t[0],"<?=akev($_REQUEST,'curId')?>",{relinv:t[1],order:arr});	        },
 	        dragHandle: "dragHandle",
 	        onDragClass: "myDragClass"		
    		 });
