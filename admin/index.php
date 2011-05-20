@@ -46,9 +46,15 @@ $genMessages = new genMessages();
 
 $gb_obj->includeAdmin();
 
-$lg = $_SESSION['lg'] = $_REQUEST['lg'] ? $_REQUEST['lg'] :(  $_SESSION['lg']  ? $_SESSION['lg'] : getBrowserLang() );
-define('LG',$lg);
-   		
+if(ake($_REQUEST,'lg') && $_REQUEST['lg']) {
+    $lg = $_SESSION['lg'] = $_REQUEST['lg'];
+} else if(ake($_SESSION,'lg') && $_SESSION['lg']) {
+    $lg = $_SESSION['lg'];
+} else {
+    $lg = getBrowserLang();
+}
+
+define('LG',$lg);   		
    		
 initPlugins();
 
@@ -70,17 +76,17 @@ if(isset($_REQUEST['popup'])){
 
 }else if(isset($_REQUEST['gfa'])) {
 
-	$gpopup = new genPopupAdmin($_REQUEST['curTable'],$_REQUEST['curId']);
+	$gpopup = new genPopupAdmin(akev($_REQUEST,'curTable'),akev($_REQUEST,'curId'));
 	$gpopup->gen();
 	
 } else  if(isset($_REQUEST['xhr'])) {
 	
-	$gpopup = new genXhrAdmin($_REQUEST['curTable'],$_REQUEST['curId']);
+	$gpopup = new genXhrAdmin(akev($_REQUEST,'curTable'),akev($_REQUEST,'curId'));
 	$gpopup->gen();
 	
 } else {
 
-	$gadmin = new genAdmin($_REQUEST['curTable'],$_REQUEST['curId']);	
+	$gadmin = new genAdmin(akev($_REQUEST,'curTable'),akev($_REQUEST,'curId'));	
 	
 	$gadmin->gen();    
 
@@ -91,9 +97,9 @@ if(isset($_REQUEST['popup'])){
 $genMessages->gen();
 
 
-if(strstr($_SERVER['REMOTE_ADDR'],'192.168.1.') || strstr($_SERVER['REMOTE_ADDR'],'82.67.200.175') || $_REQUEST['debug']) {
-
+if(isset($profileSTR) && (strstr($_SERVER['REMOTE_ADDR'],'192.168.1.') || strstr($_SERVER['REMOTE_ADDR'],'82.67.200.175') || $_REQUEST['debug'] )) {
 	print($profileSTR);
-
 }
 
+
+echo getStats();

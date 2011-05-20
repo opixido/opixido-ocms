@@ -117,7 +117,7 @@ class ECMAScriptPacker
 		$this->encodingLookup = $this->analyze($script, $regex, $encode);
 
 		// encode
-		$parser->Add(($this->encoding == PACKER_ENCODING.HIGHASCII) ? "\\w\\w+" : "\\w+", array(&$this, 'encodeWithLookup'));
+		$parser->Add(($this->encoding == PACKER_ENCODING_HIGHASCII) ? "\\w\\w+" : "\\w+", array(&$this, 'encodeWithLookup'));
 
 		// if encoded, wrap the script in a decoding function
 		return ($script == '') ? "" : $this->bootStrap($parser->Exec($script), $this->encodingLookup);

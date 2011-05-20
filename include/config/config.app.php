@@ -1,6 +1,6 @@
 <?php
 
-global $isTopNavRub, $noCopyTable, $tab_noCopyField,$tabForms,$uploadRep,$relations,$relinv,$tablerel,$searchField,$specialUpload,$previewField,$orderFields,$adminMenus,$rteFields,$neededFields,$neededSymbol,$uploadFields,$mailFields,$validateFields,$adminInfos,$gs_roles,$gs_actions,$formsRep,$frontAdminTrads,$gr_on, $rootId, $homeId, $headRootId, $footRootId,$basePath,$baseWebPath, $lexiqueId,$languages,$google_key,$_Gconfig,$adminTypesToMail,$functionField,$multiVersionField,$_Gconfig;
+global $isTopNavRub, $noCopyTable, $tab_noCopyField, $tabForms, $uploadRep, $relations, $relinv, $tablerel, $searchField, $specialUpload, $previewField, $orderFields, $adminMenus, $rteFields, $neededFields, $neededSymbol, $uploadFields, $mailFields, $validateFields, $adminInfos, $gs_roles, $gs_actions, $formsRep, $frontAdminTrads, $gr_on, $rootId, $homeId, $headRootId, $footRootId, $basePath, $baseWebPath, $lexiqueId, $languages, $google_key, $_Gconfig, $adminTypesToMail, $functionField, $multiVersionField, $_Gconfig;
 
 
 
@@ -8,11 +8,10 @@ global $isTopNavRub, $noCopyTable, $tab_noCopyField,$tabForms,$uploadRep,$relati
  * On utilise le cache ?
  *
  */
-
-if($_GET['nocache']) {
-	define('CACHE_IS_ON',false);	
+if ($_GET['nocache']) {
+    define('CACHE_IS_ON', false);
 } else {
-	define('CACHE_IS_ON',true);
+    define('CACHE_IS_ON', false);
 }
 
 /**
@@ -36,8 +35,8 @@ $_Gconfig['debugSql'] = $_GET['debugSql'] ? true : $_Gconfig['debugSql'];
 $_Gconfig['URL_MANAGER'] = 'genUrl';
 
 
-define('THUMBPATH',BU.'/thumb');
-define('IMG_GENERATOR',BU.'/imgps.php');
+define('THUMBPATH', BU . '/thumb');
+define('IMG_GENERATOR', BU . '/imgps.php');
 
 
 /**
@@ -53,13 +52,13 @@ $_Gconfig['ADMIN_LANGUAGES'] = array('fr');
 
 $_Gconfig['onlyOneLgForever'] = true;
 
-define('ADMIN_LG_DEF','fr');
+define('ADMIN_LG_DEF', 'fr');
 
 /**
  * Gabarit de page par défaut pour surclasser des informations
  *
  */
-define('GABARIT_DEF',false);
+define('GABARIT_DEF', false);
 
 
 /**
@@ -111,7 +110,6 @@ $_Gconfig['searchRatio'];
  * Liste des tables avec Afficher/Masquer
  * $_Gconfig['hideableTable'][] = 'table';
  */
-
 $_Gconfig['hideableTable'];
 
 
@@ -119,7 +117,6 @@ $_Gconfig['hideableTable'];
  * Liste des tables avec plusieurs versions possibles
  * $_Gconfig['multiVersionTable'][] = 'table';
  */
-
 $_Gconfig['multiVersionTable'];
 
 
@@ -198,8 +195,8 @@ $previewField;
  *      On definit la liste des champs
  *       qui gerent l'ordre
  *       On ajoute et regenere l'ordre directement
- *
- *  $orderFields['TABLE'] = array('CHAMP_ORDRE','EVENTUELLEMENT LE CHAMP DE SELECTION (seulement pour le fk = ....');
+ * 	Définit si on ajoute au debut ou a la fin les nouveaux enregistrements
+ *  $orderFields['TABLE'] = array('CHAMP_ORDRE','EVENTUELLEMENT LE CHAMP DE SELECTION (seulement pour le fk = ....','bottom|top');
  */
 $orderFields;
 
@@ -212,14 +209,13 @@ $orderFields;
  * $_Gconfig['imageAutoResize'] = array('FIELD_NAME'=>array(MAXWIDTH,MAXHEIGHT));
  *
  */
-
 $_Gconfig['imageAutoResize'];
 
 
 /**
  *  Liste des champs qui doivent etre en RTE (Wysiwyg)
  *  $rteFields[] = CHAMP;;
- **/
+ * */
 $rteFields;
 
 
@@ -228,7 +224,7 @@ $rteFields;
  *  Liste des champs obligatoires
  *
  * $neededFields[] = CHAMP;;
- **/
+ * */
 $neededFields;
 
 
@@ -237,15 +233,12 @@ $neededFields;
  *  Liste des champs de type UPLOAD
  *
  *  $uploadFields[] = CHAMP;
- **/
-
-
-
+ * */
 /**
  *  Liste des champs de type MAIL
  *
  * $mailFields[] = CHAMP;
- **/
+ * */
 $mailFields;
 
 
@@ -296,7 +289,6 @@ $_Gconfig['colorFields'] = array();
 /**
  * Definition des MENUS de navigation
  */
-
 $_Gconfig['menus'] = array();
 
 
@@ -308,46 +300,45 @@ $_Gconfig['fileListingFromFolder'] = array();
 
 
 /**
-	@example
-		$_Gconfig['menus']['haut_gauche'] = array(
-		'max_levels'=>2,
-		'use_images'=>false,
-		'open_selected'=>false,
-		'profile'=>'menu_haut',
-		'rollover'=>'menu_haut',
-		'width'=>array(81,81,81,85),
-		'imgW'=>array(81,81,81,85),
-		'caps'=>true
-	);
-*/
-
+  @example
+  $_Gconfig['menus']['haut_gauche'] = array(
+  'max_levels'=>2,
+  'use_images'=>false,
+  'open_selected'=>false,
+  'profile'=>'menu_haut',
+  'rollover'=>'menu_haut',
+  'width'=>array(81,81,81,85),
+  'imgW'=>array(81,81,81,85),
+  'caps'=>true
+  );
+ */
 $_Gconfig['menus']['__default__'] = array(
-		'max_levels'=>1,
-		'use_images'=>false,
-		'open_selected'=>false,
-		'profile'=>'menu_gauche',
-		'rollover'=>'menu_gauche_hover',
-		'rollovers'=>array(),
-		'width'=>array(),
-		'imgW'=>array(),
-		'caps'=>false
+    'max_levels' => 1,
+    'use_images' => false,
+    'use_premade_images' => false,
+    'open_selected' => false,
+    'max_open_selected' => 3,
+    'tpl_name'=>'menu.item',
+    'tpl_folder'=>'template',
+    'profile' => 'menu_gauche',
+    'rollover' => 'menu_gauche_hover',
+    'rollovers' => array(),
+    'width' => array(),
+    'imgW' => array(),
+    'caps' => false
 );
 
 /**
  * Pour la sécurité si malgré les relations certaines tables sont interdites
  * $_Gconfig['gsNoFollowRel'] = array('TABLE.SECONDETABLE');
  */
-
 $_Gconfig['gsNoFollowRel'];
 
 
 
-
-
-
-$tabForms["s_rubrique"]["picto"] = ADMIN_PICTOS_FOLDER.ADMIN_PICTOS_BIG_SIZE."/apps/system-file-manager.png";
-$tabForms["s_admin"]["picto"] = ADMIN_PICTOS_FOLDER.ADMIN_PICTOS_BIG_SIZE."/apps/preferences-desktop-theme.png";
-$tabForms["s_trad"]["picto"] = ADMIN_PICTOS_FOLDER.ADMIN_PICTOS_BIG_SIZE."/mimetypes/font-x-generic.png";
-$tabForms["s_plugin"]["picto"] = ADMIN_PICTOS_FOLDER.ADMIN_PICTOS_BIG_SIZE."/mimetypes/package-x-generic.png";
-$tabForms["s_param"]["picto"] = ADMIN_PICTOS_FOLDER.ADMIN_PICTOS_BIG_SIZE."/categories/preferences-system.png";
-$tabForms["s_admin_trad"]["picto"] = ADMIN_PICTOS_FOLDER.ADMIN_PICTOS_BIG_SIZE."/apps/preferences-desktop-font.png";
+$tabForms["s_rubrique"]["picto"] = ADMIN_PICTOS_FOLDER . ADMIN_PICTOS_BIG_SIZE . "/apps/system-file-manager.png";
+$tabForms["s_admin"]["picto"] = ADMIN_PICTOS_FOLDER . ADMIN_PICTOS_BIG_SIZE . "/apps/preferences-desktop-theme.png";
+$tabForms["s_trad"]["picto"] = ADMIN_PICTOS_FOLDER . ADMIN_PICTOS_BIG_SIZE . "/mimetypes/font-x-generic.png";
+$tabForms["s_plugin"]["picto"] = ADMIN_PICTOS_FOLDER . ADMIN_PICTOS_BIG_SIZE . "/mimetypes/package-x-generic.png";
+$tabForms["s_param"]["picto"] = ADMIN_PICTOS_FOLDER . ADMIN_PICTOS_BIG_SIZE . "/categories/preferences-system.png";
+$tabForms["s_admin_trad"]["picto"] = ADMIN_PICTOS_FOLDER . ADMIN_PICTOS_BIG_SIZE . "/apps/preferences-desktop-font.png";

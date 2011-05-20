@@ -1,3 +1,39 @@
+function showLoadObj(o) {    
+//    o.css('background','#ccc');    
+}
+
+function hideLoadObj(o) {
+  //  o.css('background','transparent');
+}
+
+
+
+jQuery.fn.mload = function(url, data, complete) {
+    var o = $(this[0]);
+    if(!data) {
+    	data = {};
+    }    
+        
+    showLoadObj(o);
+    
+    /**
+     * Chargement Ajax
+     */ 
+    o.load(url, data ,function() {  
+			/**
+			 * Repositionnement au cas où la div de destination aie changée
+			 * Puis disparition			 
+			 */	
+			hideLoadObj(o);
+    		
+    		/**
+    		 * Et appel de la fonction du callback
+    		 */
+    		if(complete) {complete();}
+    });
+};
+
+
 
 
 function XHR_links(champ) {
@@ -17,13 +53,8 @@ function handler_links(champ) {
 }
 
 function XHR_menuArbo(url,obj) {
-	XHR(url+'&xhr=arbo','','','handler_menuArbo(http.responseText)',obj);
-
-}
-
-function handler_menuArbo(html) {
-	//alert(html);
-	gid('arbo').innerHTML = html;	
+    $(".tipsy").hide();
+    $('#arbo_rubs').mload(url+'&xhr=arbo');
 }
 
 function XHR_editTrad(obj) {

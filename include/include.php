@@ -231,7 +231,7 @@ class genBase {
 		
 		if(is_dir($folder)) {
 			$list = scandir($folder) or die('Wrong configuration can\'t include anything : '.$folder);
-			$nlist = array();
+			$nList = array();
 			foreach($list as $file)
 			{
 				if(substr($file,0,1) != '.') {
@@ -240,7 +240,7 @@ class genBase {
 					}
 				}
 			}
-			$_SESSION['cache_'.UNIQUE_SITE]['gb_folderList'][$folder] = $nList;
+			$_SESSION['cache'][UNIQUE_SITE]['gb_folderList'][$folder] = $nList;
 			return $nlist;
 		} else {
 			debug('no such directory : '.$folder);

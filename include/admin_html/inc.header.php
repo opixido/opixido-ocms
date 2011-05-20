@@ -16,11 +16,11 @@
   				'admin/jq/css/fg.menu.css'
   );
   $js = array(
+        'admin/jq/js/jquery.js',
   	'admin/genform/js/tjmlib.js',
   	'admin/js/script.js',
   	'admin/js/xhr.js',  	
-  	'admin/js/ajaxForm.js',
-  	'admin/jq/js/jquery.js',
+  	'admin/js/ajaxForm.js',  	
   	'admin/jq/js/jquery-ui.js',
   	'admin/jq/js/jquery.textarearesizer.compressed.js',
   	'admin/jq/js/jquery.tablednd_0_5.js',
@@ -95,7 +95,7 @@
 
 <div id="contenant">
 	
-<?php if(!$_GET['simple'] ) { ?>
+<?php if(!isset($_GET['simple']) ) { ?>
 	    <div id="bandeau">
 	
 	        <div id="logo">
@@ -104,7 +104,7 @@
 			<a href="index.php?logout=1" class="bloc2" id="logout" ><img src="<?=t('src_logout')?>" alt="" class="inputimage" /> <?=t('logout')?></a>
 			<? } ?>
 			
-		<? if($GLOBALS['gs_obj']->isLogged() && $_REQUEST['curTable'] ) { ?>
+		<? if($GLOBALS['gs_obj']->isLogged() && !empty($_REQUEST['curTable']) ) { ?>
 	    <div id="rmenu" class="menu4 bloc2">
 	    	<ul >
 		    <?php 
@@ -115,7 +115,7 @@
 		    		$t = '<li ><a href="#" id="menu_'.$k.'" ><img src="'.getPicto($menus[0],'16x16').'" alt=""/> '.ta($k).'</a><ul class="bloc2 menu_'.$nb.'" id="content_'.$k.'" class="" >';
 		    		$h = '';
 					foreach($menus as $menu) {
-						if($GLOBALS[gs_obj]->can('edit', $menu)){		
+						if($GLOBALS['gs_obj']->can('edit', $menu)){		
 							$url = in_array($menu,$tables) ? 'index.php?curTable='.$menu : ta('cp_link_'.$menu);							
 							$h .= '<li><a href="'.$url.'" ><img src="'.getPicto($menu,'16x16').'" alt=""/> <span>'.ta('cp_txt_'.$menu).'</span></a></li>';
 						}

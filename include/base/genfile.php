@@ -40,6 +40,7 @@ class genFile {
 	
 	var $bg = 'FFFFFF';
 
+	public $mask = '';
 	/**
 	*
 	* Instanciation, avec en parametre $table, $champ, $id,
@@ -152,10 +153,9 @@ class genFile {
 			return;
 		}
 
-		if(!strlen($this->valeur) && $id && !is_array($this->valeurInit)) {
-			
+		if(!strlen($this->valeur) && $id && !is_array($this->valeurInit)) {			
 			$row = GetRowFromId($this->table,$this->id);//getSingle($sql);
-			$this->valeur = $row[$champ];
+			$this->valeur = akev($row,$champ);
 		}
 
 
@@ -250,7 +250,7 @@ class genFile {
 	function realCode($string) {
 		$str = str_replace(array("*TABLE*","*FIELD*","*ID*","*EXT*",'*NAME*'),array($this->table,$this->champ,$this->id,$this->fileExtension,$this->fileBase),$string);
 		$strs = explode('*',$str);
-		
+		$stringa = '';
 		foreach($strs as $k=>$v) {
 			if($k%2 == 0) {
 				$stringa .= $v;
@@ -646,13 +646,13 @@ class genFile {
 		}		
 		
 		
-		if(isImage($fullpath) && is_array($_Gconfig['imageAutoResizeExact'][getBaseLgField($this->champ)]))  {
+		if(isImage($fullpath) && isset($_Gconfig['imageAutoResizeExact'][getBaseLgField($this->champ)]))  {
 			$maxw = $_Gconfig['imageAutoResizeExact'][getBaseLgField($this->champ)][0];
 			$maxh = $_Gconfig['imageAutoResizeExact'][getBaseLgField($this->champ)][1];			
 			$this->easyResize($fullpath,$fullpath,95,$maxw,$maxh);
 			
 		}
-		if(isImage($fullpath) && is_array($_Gconfig['imageAutoResize'][$this->champ]))  {
+		if(isImage($fullpath) && isset($_Gconfig['imageAutoResize'][$this->champ]))  {
 			
 			$maxw = $_Gconfig['imageAutoResize'][getBaseLgField($this->champ)][0];
 			$maxh = $_Gconfig['imageAutoResize'][getBaseLgField($this->champ)][1];

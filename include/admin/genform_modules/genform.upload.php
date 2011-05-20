@@ -8,9 +8,9 @@ $chemin = $gf->GetWebUrl();
 $systemCh = $gf->GetSystemPath();
 
 
+$doCloseDiv = false;
 
-
-if(( $fileListing = $_Gconfig['fileListingFromFolder'][$this->table_name][getBaseLgField($name)] ) && !$this->editMode) {
+if(isset($_Gconfig['fileListingFromFolder'][$this->table_name]) && ( $fileListing = akev($_Gconfig['fileListingFromFolder'][$this->table_name],getBaseLgField($name)) ) && !$this->editMode) {
 	
 	$files = glob($fileListing,GLOB_BRACE);
 	
@@ -92,7 +92,7 @@ if ( $this->tab_default_field[$name] ) {
             $this->addBuffer( '<span style="font-weight:bold;"><img style="vertical-align:middle" src="'.$gf->getIcon().'" alt="'.strtoupper($gf->getExtension()).'"/> [ '.$gf->getNiceSize() .' ]</span>' );
 
             /* Lien vers le fichier */
-            $this->addBuffer( ' <a href="' .$chemin . '" target="_blank" style="width:'.$this->thumWidth.'px">');
+            $this->addBuffer( ' <a href="' .$chemin . '" target="_blank" style="width:'.$this->thumbWidth.'px">');
 
             $this->addBuffer(str_replace($name."_","",basename($chemin)));
 

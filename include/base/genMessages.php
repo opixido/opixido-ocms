@@ -190,5 +190,4 @@ class genMessages {
 
 }
 
-
-?>
+$GLOBALS['genMessageCss'] = false;

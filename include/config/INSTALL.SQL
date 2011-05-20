@@ -742,3 +742,11 @@ INSERT INTO `s_rubrique` (`rubrique_id`, `fk_rubrique_id`, `fk_rubrique_version_
 (7, 3, NULL, 2, 'en_ligne', '', NULL, 1, 'page-2', 'Page 2', '', '', '', '', '2009-03-30 18:55:09', '2009-03-30 19:07:43', '2009-03-30 19:07:45', 'page', '', 0, 0, ''),
 (8, 3, 7, 2, 'redaction', '', NULL, 1, 'page-2', 'Page 2', '', '', '', '', '2009-03-30 18:55:09', '2009-03-30 19:07:43', '0000-00-00 00:00:00', 'page', '', 0, 0, '');
 
+CREATE TABLE `s_bloc` (
+`bloc_nom` VARCHAR( 32 ) NOT NULL ,
+`bloc_afterinit` TEXT NOT NULL ,
+`bloc_classe` VARCHAR( 64 ) NOT NULL ,
+`bloc_visible` TINYINT( 1 ) NOT NULL DEFAULT '1',
+PRIMARY KEY ( `bloc_nom` )
+) ;
+

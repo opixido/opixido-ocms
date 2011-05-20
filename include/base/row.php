@@ -17,8 +17,19 @@ class row {
 			$this->row = getRowAndRelFromId($table,$this->id);			
 		}
 		
+		if(!$this->row) {
+		    $this->id = 0;
+		    return false;
+		}
+		$this->id = $this->row[getPrimaryKey($table)];
+
 		$this->tabField = getTabField($this->table);		
 		$this->site = $GLOBALS['site'];
+		
+		if(!$this->id) {
+		    $this->id = 0;
+		    return false;
+		}
 		
 	}
 	
@@ -63,11 +74,11 @@ class row {
 		/**
 		 * Foreign key
 		 */
-		else if($relations[$this->table][$field] ) {
+		else if(!empty($relations[$this->table][$field] )) {
 			
 			$fk_table = $relations[$this->table][$field];
 			$coup = mb_substr($fk_table,strpos($this->table,'_')+1);
-			
+			$classe = false;
 			if(class_exists($fk_table)) {
 				$classe = $this->table;
 			}
@@ -81,7 +92,7 @@ class row {
 			
 			return new row($fk_table,$this->row[$field]);
 			
-		} else if ($tablerel[$field]) {
+		} else if (!empty($tablerel[$field])) {
 			
 			/**
 			 * Table de relation
@@ -121,7 +132,7 @@ class row {
 		/**
 		 * Relation inverse
 		 */
-		} else if ($relinv[$this->table][$field]) {
+		} else if (!empty($relinv[$this->table][$field])) {
 		
 			
 			$foreignTable = $relinv[$this->table][$field][0];

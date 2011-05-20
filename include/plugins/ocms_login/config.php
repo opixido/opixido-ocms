@@ -16,8 +16,8 @@ $tabForms['e_utilisateur']['pages'][] = '../plugins/ocms_login/form.utilisateur.
 $tabForms['e_groupe']['titre'] = array('groupe_nom');
 
 
-//$_Gconfig['adminMenus']['utilisateur'][] = 'e_utilisateur';
-//$_Gconfig['adminMenus']['utilisateur'][] = 'e_groupe';
+$_Gconfig['adminMenus']['utilisateur'][] = 'e_utilisateur';
+$_Gconfig['adminMenus']['utilisateur'][] = 'e_groupe';
 
 
 
@@ -35,18 +35,13 @@ $tabForms['e_utilisateur']['titre'] = array('utilisateur_login'/*, 'utilisateur_
 $_Gconfig['rowActions']['e_storage_user']['movePath'] = 1;
 
 
-//$tablerel['r_rubrique_groupe'] = array('fk_rubrique_id'=>'t_rubrique','fk_groupe_id'=>'s_groupe');
+$tablerel['r_rubrique_groupe'] = array('fk_rubrique_id'=>'t_rubrique','fk_groupe_id'=>'s_groupe');
 
 $relations['e_groupe']['fk_groupe_id'] = 'e_groupe';
 $relations['e_storage_user']['fk_path_id'] = 'e_path';
 
-/**
- * Ajout Olivier 08 12 2008
- */
-$relations['e_storage_user']['fk_utilisateur_id'] = 'e_utilisateur';
-/**/
 
-define('crypto_key_ocms_login','LauVeMiT3ndEr');
+define('crypto_key_ocms_login','10Fz418fd E9847sfzzF');
 
 
 
@@ -63,16 +58,17 @@ function encodePasswordLA($str) {
 	$crypto = new crypto(crypto_cipher,crypto_mode,crypto_key_ocms_login);
 	return $crypto->encrypt($str);
 }
-
+ 
 
 $_Gconfig['reloadOnChange'][] = 'privee';
 
 $_Gconfig['passwordFields'] = array('utilisateur_pwd');
-$uploadFields[] = 'utilisateur_photo';
 
 global $gr_on;
 
 $gr_on['save']['s_rubrique'][] = 'laSaveForm';
+$gr_on['save']['e_utilisateur'][] = 'laSaveForm';
+$gr_on['save']['o_spectacle'][] = 'laSaveForm';
 $gr_on['validate']['s_rubrique'][] = 'laSaveFormRub';
 
 
