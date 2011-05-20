@@ -62,7 +62,7 @@ if(!$_GET['src']) {
 
 
 
-$fCname = realpath('./cache').'/'.md5($_SERVER['REQUEST_URI']);
+$fCname = realpath('./cache').'/'.preg_replace('/[^a-zA-Z0-9]/','',$_REQUEST['hash']);
 
 if(file_exists($fCname)) {
 	if(!file_exists($_REQUEST['src'])) {
@@ -160,7 +160,7 @@ if (preg_match('/^([0-9]*)x?([0-9]*)$/i', @$args[count($args) - 2], $matches)) {
 		}
 	}
 }
-/*
+
 if ($PHPTHUMB_CONFIG['high_security_enabled']) {
 	if (!$_GET['hash']) {
 		$phpThumb->ErrorImage('ERROR: missing hash');
@@ -170,7 +170,7 @@ if ($PHPTHUMB_CONFIG['high_security_enabled']) {
 		$phpThumb->ErrorImage('ERROR: invalid hash');
 	}
 }
-*/
+
 
 ////////////////////////////////////////////////////////////////
 // Debug output, to try and help me diagnose problems

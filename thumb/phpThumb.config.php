@@ -17,6 +17,8 @@ if (!file_exists(dirname(__FILE__).'/phpthumb.functions.php') || !include_once(d
 }
 ob_end_clean();
 
+require_once('../include/config/config.server.php');
+error_reporting(E_ALL & ~E_NOTICE);
 // START USER CONFIGURATION SECTION:
 
 // * DocumentRoot configuration
@@ -191,8 +193,8 @@ $PHPTHUMB_CONFIG['mysql_database'] = '';
 
 
 // * Security configuration
-$PHPTHUMB_CONFIG['high_security_enabled']    = false;  // if enabled, requires 'high_security_password' set to at least 5 characters, and requires the use of phpThumbURL() function (at the bottom of phpThumb.config.php) to generate hashed URLs
-$PHPTHUMB_CONFIG['high_security_password']   = '';     // required if 'high_security_enabled' is true, must be at least 5 characters long
+$PHPTHUMB_CONFIG['high_security_enabled']    = true;  // if enabled, requires 'high_security_password' set to at least 5 characters, and requires the use of phpThumbURL() function (at the bottom of phpThumb.config.php) to generate hashed URLs
+$PHPTHUMB_CONFIG['high_security_password']   = crypto_key;     // required if 'high_security_enabled' is true, must be at least 5 characters long
 $PHPTHUMB_CONFIG['disable_debug']            = true;  // prevent phpThumb from displaying any information about your system. If true, phpThumbDebug and error messages will be disabled
 $PHPTHUMB_CONFIG['allow_src_above_docroot']  = false;  // if true, allow src to be anywhere in filesystem; if false (default) only allow src within document_root
 $PHPTHUMB_CONFIG['allow_src_above_phpthumb'] = true;   // if true (default), allow src to be anywhere in filesystem; if false only allow src within sub-directory of phpThumb installation
@@ -252,5 +254,3 @@ function phpThumbURL($ParameterString) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-
-?>

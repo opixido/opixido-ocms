@@ -2438,3 +2438,34 @@ function xmlencode($str) {
     $str = str_replace(array('&', '[ETAMP]'), '&amp;', $str);
     return $str;
 }
+
+
+
+/**
+ * Pour une requete d'image donnée, retourne le fichier de cache si déjà existant
+ * sinon la même requete avec le hash de verification
+ */
+function getThumbCacheFile($src) {
+    global $_Gconfig;
+    $src = str_replace($_Gconfig['CDN'], '', $src);
+
+    $src = urldecode(str_replace('&amp;', '&', $src));
+    
+    /* debugOpix($src);
+      debugOpix($fCname); */
+
+    $s = explode('?', $src);
+    $hash = md5($s[1] . crypto_key);
+    $fCname = $GLOBALS['ImgCacheFolder'] . $hash;
+    
+    if (file_exists($fCname)) {
+	//if (filemtime($fCname) >= filemtime($this->getSystemPath())) {
+	    return THUMBPATH . 'cache' . '/' . $hash;
+	//}
+    } else {
+	//debugOpix($fCname.' - '.$src);
+    }
+
+
+    return $src . '&hash=' . $hash;
+}
