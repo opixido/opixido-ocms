@@ -15,7 +15,7 @@ $restrictedMode = false;
 
 function checkContactPara() {
 
-    if( $('#genform_fk_para_type_id').val() == <?=$rowContact['para_type_id']?> ) {
+    if( $('#genform_fk_para_type_id').val() == <?=akev($rowContact,'para_type_id')?> ) {
         $('#genform_div_fk_contact_id').slideDown();
        
     }
