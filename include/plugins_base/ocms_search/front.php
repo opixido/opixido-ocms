@@ -1,51 +1,50 @@
 <?php
 
+if (isset($_REQUEST['ajax_q']) && isset($_REQUEST['q'])) {
 
+    $GLOBALS['gb_obj']->includeFile('class.ocms_search.php', 'plugins/ocms_search');
+    $c = new indexSearch();
+    $c->useWildCards();
+    $res = $c->search($_REQUEST['q']);
+
+    foreach ($res as $row) {
+	$r = getRowFromId($row['obj'], $row['fkid']);
+	echo '<a href="'.getUrlFromSearch($row, $r).'">'.GetTitleFromRow($row['obj'], $r).'</a>';
+    }
+
+    die();
+    
+}
 
 class ocms_searchFront {
 
+    /**
+     * Gensite
+     *
+     * @var Gensite
+     */
+    public $site;
 
-	/**
-	 * Gensite
-	 *
-	 * @var Gensite
-	 */
-	public $site;
+    function __construct($site) {
 
-	function __construct($site) {
+	$this->site = $site;
+	
+    }
+    
+    function afterInit( ) {
+	$this->site->g_headers->addCssText('#autocomplete a:hover, #autocomplete a.selected {background:'.COULEUR_2.'}');
+    }
 
-		$this->site = $site;
+    function genRechercheForm() {
 
-	}
+	$t = new genTemplate();
+	return $t->loadTemplate('recherche_form', 'plugins/ocms_search/tpl')->gen();
+    }
 
-
-	function genRechercheForm() {
-
-		return '
-			<form id="recherche_small" action="'.(getUrlFromId(getRubFromGabarit('genOcmsSearch'))).'" method="get">
-				<div>
-					<label for="recherche_input">Rechercher</label>			
-
-					<input type="text" name="q" class="text" id="recherche_input" value="' . geta($_GET,'q') . '" />
-
-					<input type="submit" class="submit" value="Ok" />
-
-				</div>
-			</form>
-
-		';
-
-	}
-
-
-	function gen() {
-
-
-
-	}
-
+    function gen() {
+	
+    }
 
 }
-
 
 ?>

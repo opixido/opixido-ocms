@@ -65,7 +65,7 @@ $_Gconfig['duplicateWithRubrique'][] = 'plug_contact_field';
 
 $relations['s_paragraphe']['fk_contact_id'] = "plug_contact";
 
-$tabForms['s_paragraphe']['pages'][0] = array($tabForms['s_paragraphe']['pages'][0],'../plugins/ocms_contact/form.paracontact.php');
+//$tabForms['s_paragraphe']['pages'][0] = array($tabForms['s_paragraphe']['pages'][0],'../plugins/ocms_contact/form.paracontact.php');
 //$tabForms['s_paragraphe']['pages']['contact'] = array('../plugins/ocms_contact/form.contact.php');
 
 $_Gconfig['specialListing']['plug_contact']['s_paragraphe'] = 'listContacts';
