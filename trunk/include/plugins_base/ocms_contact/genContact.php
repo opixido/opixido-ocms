@@ -1,6 +1,6 @@
 <?php
 
-class genContact {
+class genContact extends ocmsGen {
 
     /**
      * Gensite
@@ -19,36 +19,18 @@ class genContact {
 
     public function __construct($site, $params) {
 
-
-	/**
-	 * Object GenSite
-	 */
-	$this->site = $site;
+	parent::__construct($site,$params);
 
 	/**
 	 * Default CSS
 	 */
 	$this->site->g_headers->addCss('contact.css');
-	//$this->site->g_headers->addCss(BU . '/css/overcast/jquery-ui-1.7.2.custom.css');
-
-
-	/**
-	 * No longer used
-	 * Everything is in sub tables
-	 */
-	$this->params = SplitParams($params, ";", "=");
-	
-	
-	$t = $this->site->plugins['ocms_title']->genBeforePara();
-	$this->site->plugins['o_blocs']->gauche->add('titre',$t);
-	$this->site->plugins['ocms_title']->visible = false;
 	
 	/**
 	 * New Form
 	 */
 	$this->form = new simpleForm('./', 'post', 'contact_form');
-	$this->form->postLabel = '';
-	// $this->form->submitAsImage = BU.'/img/envoyer_'.LG.'.gif';
+	
 	/**
 	 * On selectionne les champs supplémentaires à afficher
 	 */
@@ -110,11 +92,12 @@ class genContact {
 	/**
 	 * Boutons Submit 
 	 */
-	//$this->form->add('submit',t('c_submit'),'','contact_submit','contact_submit');
-	$s = $this->form->add('submit', t('c_submit'), '', 'contact_submit', 'contact_submit');
-	// debug( $this->form->fields['contact_submit']);
-	//$this->form->fields['contact_submit']['image'] = BU . '/img/envoyer_' . LG . '.gif';
 
+	$s = $this->form->add('submit', t('c_submit'), '', 'contact_submit', 'contact_submit');
+	/**
+	 * Pour un submit image : 
+         * $this->form->fields['contact_submit']['image'] = BU . '/img/envoyer_' . LG . '.gif';
+	 */
 
 
 
