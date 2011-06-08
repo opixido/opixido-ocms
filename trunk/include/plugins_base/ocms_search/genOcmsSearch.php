@@ -24,46 +24,17 @@ class genOcmsSearch extends ocmsGen {
 	 */
 	$this->site->g_headers->addCss('recherche.css');
 	
-	$s = 'SELECT '.sqlLgValue('saison_titre').' AS label , saison_id AS value FROM o_saison ORDER BY date_online ASC ';
-	$saisons = getAll($s);
 
-		
-	$s = 'SELECT '.sqlLgValue('genre_titre').' AS label , genre_id AS value FROM o_genre ORDER BY genre_titre_'.LG.' ASC ';
-	$genres = getAll($s);
-	
-	/**
-	 * Formulaire 
-	 */
-	$f = new simpleForm();
-	$f->add('text', akev($_REQUEST,'q'), t('recherche_q'), 'q', 'q')
-	  ->add('select', $saisons, t('recherche_saison'), 'recherche_saison', 'recherche_saison')
-	  ->add('select', $genres, t('recherche_genre'), 'recherche_genre', 'recherche_genre')
-	  ->add('submit', t('recherche_submit'))
-	  ->id = 'form_recherche';
-
-	$this->site->plugins['o_blocs']->gauche->add('title',$this->site->plugins['ocms_title']->genBeforePara());
-	$this->site->plugins['o_blocs']->gauche->add('form',$f->gen());
-	$this->site->plugins['ocms_title']->visible = false;
-	
 	/**
 	 * Recherche restreinte ?
 	 */
 	$this->type = '';
 
 	/**
-	 * Clauses spéciales pour les spectacles
+	 * Clauses spéciales pour les objets
 	 */
 	$select = $from = $where = '';
-	if(!empty($_REQUEST['recherche_saison']) || !empty($_REQUEST['recherche_genre']) ) {
-	    $this->type = "o_spectacle";
-	    if(!empty($_REQUEST['recherche_saison']) ) {
-		$where .= ' AND fk_saison_id = ' .sql($_REQUEST['recherche_saison']);
-	    }
-	    
-	    if(!empty($_REQUEST['recherche_genre']) ) {
-		$where .= ' AND fk_genre_id = ' .sql($_REQUEST['recherche_genre']);
-	    }
-	}
+
 	
 	/**
 	 * Template général
