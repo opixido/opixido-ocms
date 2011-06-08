@@ -32,7 +32,7 @@ class genFile {
      *
      * @var int
      */
-    var $quality = 75;
+    var $quality = 90;
     var $forceBaseFormat = true;
     var $baseFormat = 'png';
     var $bg = 'FFFFFF';

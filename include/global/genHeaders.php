@@ -72,7 +72,7 @@ class genHeaders {
 	$this->site = $site;
 
 	$this->addCss('base.css', 'global');
-	$this->addScript('base.js', 'global');
+	$this->addScript('base.js',true, 'global');
     }
 
     /**
@@ -275,7 +275,7 @@ class genHeaders {
 	if ($group && $_Gconfig['compressJsFiles']) {
 	    $this->jsFiles[$group][] = $name;
 	} else {
-	    $this->addHtmlHeaders('<script type="text/javascript" src="' . $name . '" ></script>');
+	    $this->addHtmlHeaders('<script type="text/javascript" src="' . path_concat(BU,$name) . '" ></script>');
 	}
     }
 
@@ -304,6 +304,7 @@ class genHeaders {
 	if ($group && $_Gconfig['compressCssFiles']) {
 	    $this->cssFiles[$group][] = $name;
 	} else {
+	    $name = path_concat(BU,$name);
 	    $this->addHtmlHeaders('<style type="text/css" media="screen"> @import "' . ($name) . '"; </style>');
 	}
     }

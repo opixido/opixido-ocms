@@ -220,33 +220,34 @@ class simpleForm {
 	    }
 	}
 	$s .= ' );
-				var errorFields = new Array();
-				var len = neededFields.length;
-				var message = window.Trads["simpleform_check"]+"\n\n";
-				var errorFound = false;
-				var validRegExp = /^[^@]+@[^@]+.[a-z]{2,}$/i;
-				for(p=0;p<=len;p++) {
-					ob = $("#"+neededFields[p]);
-					
-					if(ob.val() == "") {
-						$("#div_"+neededFields[p]).addClass("formError");
-						errorFound = true;
-						message += "- "+$("#div_"+neededFields[p]+" label:first span:first").text()+"\n";
-					}
-					else if(ob.attr("rel") == "email" && ob.val().search(validRegExp) == -1) {
-							errorFound = true;
-							message += "- "+$("#div_"+neededFields[p]+" label:first span:first").text()+"\n";
-					} else {
-						$("#div_"+neededFields[p]).removeClass("formError");
-						$("#div_"+neededFields[p]+" label").removeClass("formError");
-					}
-				}				
-				if(errorFound) {
-					alert(message);
-					return false;
-				}
-				});
-				</script>
+	    
+	    var errorFields = new Array();
+	    var len = neededFields.length;
+	    var message = '.alt(t('simpleform_check')).' +"\n\n";
+	    var errorFound = false;
+	    var validRegExp = /^[^@]+@[^@]+.[a-z]{2,}$/i;
+	    for(p=0;p<=len;p++) {
+		    ob = $("#"+neededFields[p]);
+
+		    if(ob.val() == "") {
+			    $("#div_"+neededFields[p]).addClass("formError");
+			    errorFound = true;
+			    message += "- "+$("#div_"+neededFields[p]+" label:first span:first").text()+"\n";
+		    }
+		    else if(ob.attr("rel") == "email" && ob.val().search(validRegExp) == -1) {
+				    errorFound = true;
+				    message += "- "+$("#div_"+neededFields[p]+" label:first span:first").text()+"\n";
+		    } else {
+			    $("#div_"+neededFields[p]).removeClass("formError");
+			    $("#div_"+neededFields[p]+" label").removeClass("formError");
+		    }
+	    }				
+	    if(errorFound) {
+		    alert(message);
+		    return false;
+	    }
+	    });
+	    </script>
 ';
 
 

@@ -17,8 +17,8 @@ if ($_GET['nocache']) {
 /**
  * Compression et union des JS et CSS ?
  */
-$_Gconfig['compressCssFiles'] = true;
-$_Gconfig['compressJsFiles'] = true;
+$_Gconfig['compressCssFiles'] = false;
+$_Gconfig['compressJsFiles'] = false;
 
 
 /**

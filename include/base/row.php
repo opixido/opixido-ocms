@@ -24,7 +24,7 @@ class row {
 		$this->id = $this->row[getPrimaryKey($table)];
 
 		$this->tabField = getTabField($this->table);		
-		$this->site = $GLOBALS['site'];
+		$this->site = akev($GLOBALS,'site');
 		
 		if(!$this->id) {
 		    $this->id = 0;

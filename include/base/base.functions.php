@@ -702,7 +702,9 @@ function derror($txt) {
  */
 function debug() {
     global $genMessages;
-
+    if($_SERVER['REMOTE_ADDR'] != "192.168.1.199" && !isset($_REQUEST['debug'])) {
+	return;
+    }
     $vars = func_get_args();
 
     if (count($vars) == 1) {
@@ -910,11 +912,9 @@ function ucSentence($sentence_split, $impexpA = array(". ", "! ", "? ")) {
  *
  */
 function GetStats() {
-    //return;
+    
 
-    if (strstr($_SERVER['REMOTE_ADDR'], '192.168.1.') ||
-	    strstr($_SERVER['REMOTE_ADDR'], '82.67.200.175')
-	    || $_REQUEST['debugmode']) {
+    if ($_REQUEST['debug']) {
 	global $sqlTime, $startTime, $nbRSql, $nbRetSql;
 
 	p('<div onclick="this.style.display=\'none\'" style="z-index:0;_display:none;position:fixed;bottom:0px;right:0px;width:200px;text-align:right;background-color:#fff;opacity:0.8;font-family:arial;font-size:11px;">'); //onclick="this.style.zIndex=50;">');
@@ -944,6 +944,11 @@ function GetStats() {
 	p('Memoire : ' . pretty_bytes(memory_get_usage()) . '<br/>');
 	p('</div>');
     }
+}
+
+if (!empty($_REQUEST['debug'])) {
+    
+	register_shutdown_function('getStats');
 }
 
 /**
@@ -2444,8 +2449,9 @@ function xmlencode($str) {
 /**
  * Pour une requete d'image donnée, retourne le fichier de cache si déjà existant
  * sinon la même requete avec le hash de verification
+ * @param $src Chemin complet
  */
-function getThumbCacheFile($src) {
+function getThumbCacheFile($src,$u) {
     global $_Gconfig;
     $src = str_replace($_Gconfig['CDN'], '', $src);
 
@@ -2453,15 +2459,24 @@ function getThumbCacheFile($src) {
     
     /* debugOpix($src);
       debugOpix($fCname); */
+    $u = parse_url($src);
+    parse_str($u['query'],$u);    
+    $u = akev($u,'src');
+    if($u && !file_exists($u)) {
+	$u = path_concat($_SERVER['DOCUMENT_ROOT'],$u);
+    }
 
     $s = explode('?', $src);
     $hash = md5($s[1] . crypto_key);
     $fCname = $GLOBALS['ImgCacheFolder'] . $hash;
     
+    /**
+     * Si le fichier de cache existe
+     */
     if (file_exists($fCname)) {
-	//if (filemtime($fCname) >= filemtime($this->getSystemPath())) {
+	if ($u && filemtime($fCname) >= filemtime($u)) {
 	    return THUMBPATH . 'cache' . '/' . $hash;
-	//}
+	}
     } else {
 	//debugOpix($fCname.' - '.$src);
     }
