@@ -135,7 +135,7 @@ if ( $this->tab_default_field[$name] ) {
            
             // $ssch = $gf->getWebUrl();
             if($this->isImage($chemin) && $this->useImageEditor) {
-                $this->addBuffer('<a href="ImageManager/editor.php?img='.$ssch.'&update=imgprev_'.$name.'" onclick="window.open(this.href);return false" >'.$this->trad('edis_image').'</a>' );
+                $this->addBuffer('<a href="ImageManager/editor.php?img='.$ssch.'&update=imgprev_'.$name.'" onclick="window.open(this.href,\'\',\'width=900,height=700\');return false" >'.$this->trad('edis_image').'</a>' );
             }
             /* Pour supprimer le fichier !
             $this->addBuffer( '<input type="checkbox" ');

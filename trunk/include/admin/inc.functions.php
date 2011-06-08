@@ -31,7 +31,7 @@ function updateParam($nom, $val) {
 }
 
 if (array_key_exists('editTrads', $_GET)) {
-    if($_GET['editTrads'])
+    if ($_GET['editTrads'])
 	$_SESSION['editTrads'] = true;
     else
 	unset($_SESSION['editTrads']);
@@ -316,7 +316,7 @@ if (!function_exists("ta")) {
 		}
 		return $text;
 	    } else {
-		return  ucfirst($nom);
+		return ucfirst($nom);
 	    }
 	} else {
 	    return $nom;
@@ -345,7 +345,7 @@ function importSqlFile($FILENAME) {
     // Works only if JavaScript is activated. Use to reduce server overrun
     // Allowed comment delimiters: lines starting with these strings will be dropped by BigDump
 
-    $comment[] = '#';	   // Standard comment lines are dropped by default
+    $comment[] = '#';    // Standard comment lines are dropped by default
     $comment[] = '-- ';
     // $comment[]='---';      // Uncomment this line if using proprietary dump created by outdated mysqldump
     // $comment[]='/*!';         // Or add your own string to leave out other proprietary things
@@ -362,7 +362,7 @@ function importSqlFile($FILENAME) {
     define('VERSION', '0.27b');
     define('DATA_CHUNK_LENGTH', 16384);  // How many chars are read per time
     define('MAX_QUERY_LINES', 300);      // How many lines may be considered to be one query (except text lines)
-    define('TESTMODE', false);	   // Set to true to process the file without actually accessing the database
+    define('TESTMODE', false);    // Set to true to process the file without actually accessing the database
 
     $file = fopen($FILENAME, 'r');
 
@@ -513,7 +513,7 @@ function getArboOrdered($start='NULL', $maxlevel=99999, $curlevel=0, $tab=array(
 
     if ($curlevel == 0) {
 	$r = getRowFromId('s_rubrique', $start);
-	
+
 	if (!empty($r) && isRealRubrique($r)) {
 	    $tab[] = addRowToTab($r, $curlevel);
 	    $curlevel++;
@@ -909,7 +909,9 @@ function setAllUrls() {
 
 function getPicto($nom, $taille="32x32") {
     global $tabForms;
-
+    if (!$nom) {
+	return;
+    }
     if ($tabForms[$nom]['picto']) {
 	$p = $tabForms[$nom]['picto'];
     } else if (tradExists($nom)) {

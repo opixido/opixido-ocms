@@ -266,7 +266,7 @@ class genSearchV2 {
 		    } else {
 			//print_r($v);
 			//debug($v);
-			if (isset($v['type']) &&  ( ($v['type']== "int" && $v->max_length < 2 ) || $v['type']== "tinyint" )) {
+			if (isset($v->type) &&  ( ($v->type== "int" && $v->max_length < 2 ) || $v->type== "tinyint" )) {
 			    $sel = $_POST[$k] == "" ? 'selected="selected"' : '';
 			    $sel0 = $_POST[$k] == "0" ? 'selected="selected"' : '';
 			    $sel1 = $_POST[$k] == 1 ? 'selected="selected"' : '';
@@ -277,7 +277,7 @@ class genSearchV2 {
                                 <option ' . $sel1 . ' value="1">' . t('oui') . '</option>
                             </select>
                         ');
-			} else if ($v['type'] == "datetime" || $v['type']== "date") {
+			} else if ($v->type == "datetime" || $v->type== "date") {
 
 			    $sel = $_POST[$k . '_type'] == "" ? 'selected="selected"' : '';
 			    $sel0 = $_POST[$k . '_type'] == "inf" ? 'selected="selected"' : '';
@@ -292,7 +292,7 @@ class genSearchV2 {
                             </select>
                             <input style="float:left;width:50px" type="text" name="' . $k . '" value="' . $_REQUEST[$k] . '" />
                         ');
-			} else if ($v['type']== 'enum') {
+			} else if ($v->type== 'enum') {
 			    $values = getEnumValues($this->table, $v->name);
 			    p('<select  style="height:70px;float:left;" name="' . $k . '[]" multiple="multiple" >');
 
@@ -954,7 +954,7 @@ class genSearchV2 {
 	    $mots = explode(" ", $searchTxt);
 
 	    while (list($k, $v) = each($tabfield)) {
-		if ($v['type']== "varchar" || $v['type']== "text") {
+		if ($v->type== "varchar" || $v->type== "text") {
 		    reset($mots);
 		    $wheresql .= " OR ( 1 ";
 		    while (list(, $mot) = each($mots)) {
