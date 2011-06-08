@@ -63,7 +63,7 @@ class ajaxRelinv {
 		
 		<a href="" onclick="';
 
-	$html .= 'arAddValue(this,\'' . $this->cur_table . '\',\'' . $this->fake_name . '\',\'' . $this->cur_id . '\');return false;">
+	$html .= 'arAddValue(this,\'' . $this->cur_table . '\',\'' . $this->fake_name . '\',$(\'#curId\').val());return false;">
 		<img src="' . ADMIN_PICTOS_FOLDER . ADMIN_PICTOS_FORM_SIZE . '/actions/list-add.png" alt="' . t('ajouter') . '" /></a>
 		
 		<table class="genform_table ajax_table" id="ar_' . $this->cur_table . '-' . '' . $this->fake_name . '">';
