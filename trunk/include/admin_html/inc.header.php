@@ -111,8 +111,8 @@
 		    	$tables = getTables();
 		    	$nb = 1;
 		    	foreach ($_Gconfig['bigMenus'] as $k=>$menus ) {
-		    		
-		    		$t = '<li ><a href="#" id="menu_'.$k.'" ><img src="'.getPicto($menus[0],'16x16').'" alt=""/> '.ta($k).'</a><ul class="bloc2 menu_'.$nb.'" id="content_'.$k.'" class="" >';
+		    		$men = current($menus);
+		    		$t = '<li ><a href="#" id="menu_'.$k.'" ><img src="'.getPicto($men,'16x16').'" alt=""/> '.ta($k).'</a><ul class="bloc2 menu_'.$nb.'" id="content_'.$k.'" class="" >';
 		    		$h = '';
 					foreach($menus as $menu) {
 						if($GLOBALS['gs_obj']->can('edit', $menu)){		

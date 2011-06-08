@@ -6,10 +6,14 @@ $tables = getTables();
 global $_Gconfig;
 
 p('<div class="bigmenus">');
-p('<h2>'.t('main').'</h2>');
+//p('<h2>'.t('main').'</h2>');
 ksort($_Gconfig['bigMenus']);
 foreach ($_Gconfig['bigMenus'] as $k=>$menus ) {
 
+    if(!count($menus)) {
+	continue;
+    }
+   p('<div style="float:left"><h2>'.t($k).'</h2>');
 	foreach ($menus as $menu) {
 		
 		if($GLOBALS['gs_obj']->can('edit', $menu)){ 
@@ -26,6 +30,7 @@ foreach ($_Gconfig['bigMenus'] as $k=>$menus ) {
 		}
 		
 	}
+	p('</div>');
 	
 }
 

@@ -151,18 +151,22 @@ class genUrl {
 	    return $row;
 	} else {
 
+	    $this->homeId = $this->rootHomeId = $this->root_id = $cRes[0]['rubrique_id'];
 	    $rId = $this->getRubId();
 	    $this->reversRecursRub($rId);
 
 
 	    while ($rId) {
+		
 		$R = $GLOBALS['tabUrl'][$rId];
 
 		if ($R['template']) {
+
 		    $this->homeId = $this->rootHomeId = $this->root_id = $rId;
 		    $this->curWebRoot = $this->getDefWebRoot($R['url' . LG_DEF]);
 		    $this->TEMPLATE = $R['template'];
-		    return $R;
+
+		    return getRowFromId('s_rubrique',$rId);
 		}
 		$rId = $R['fkRub'];
 	    }
@@ -170,6 +174,7 @@ class genUrl {
 	    $sql = 'SELECT * FROM s_rubrique WHERE rubrique_type LIKE "' . RTYPE_SITEROOT . '" 
 						' . sqlRubriqueOnlyOnline() . ' LIMIT 0,1';
 	    $row = GetSingle($sql);
+
 
 	    if (count($row)) {
 		$this->homeId = $this->rootHomeId = $this->root_id = $row['rubrique_id'];

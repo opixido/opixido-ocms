@@ -102,8 +102,9 @@ class genSite {
 	global $_Gconfig;
 
 	$this->g_url = new $_Gconfig['URL_MANAGER']();
-
+	
 	$this->rubrique_id = $this->g_url->getRubId();
+
 
 	$this->lg = $this->g_url->getLg();
 
@@ -122,10 +123,9 @@ class genSite {
 
 	loadTrads($this->lg);
 
-
 	$this->pluginLoadConf();
 
-
+	
 	/**
 	 * Liste des menus
 	 */
@@ -135,6 +135,7 @@ class genSite {
 			' . sqlMenuOnlyOnline() . ' 
 			AND fk_rubrique_id = "' . $this->g_url->rootHomeId . '"
 			ORDER BY rubrique_ordre ASC';
+
 
 	$res = GetAll($sql);
 

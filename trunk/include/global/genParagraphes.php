@@ -145,7 +145,7 @@ class genParagraphes {
 
     function gen() {
 
-	$c = new genCache('para_' . $this->site->getCurId(), strtotime($this->rubrique->rubrique['rubrique_date_publi']));
+	$c = new genCache('para_'.$this->id.'_' . $this->site->getCurId(), strtotime($this->rubrique->rubrique['rubrique_date_publi']));
 
 	if (!$c->cacheExists()) {
 
