@@ -47,10 +47,10 @@ $_Gconfig['titre'] = '';
 /**
  * Liste des langues par defaut du site
  */
-$_Gconfig['LANGUAGES'] = array('fr');
+$_Gconfig['LANGUAGES'] = array('fr','en');
 $_Gconfig['ADMIN_LANGUAGES'] = array('fr');
 
-$_Gconfig['onlyOneLgForever'] = true;
+$_Gconfig['onlyOneLgForever'] = false;
 
 define('ADMIN_LG_DEF', 'fr');
 
