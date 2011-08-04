@@ -563,7 +563,7 @@ $_Gconfig['ajaxRelinv']['TABLE']['NOM_DU_FAUX_CHAMP'] = array('SOUS_TABLE','CLEF
  */
 $_Gconfig['adminMenus'] = array();
 //$_Gconfig['adminMenus'][] = array( 's_rubrique');
-$_Gconfig['bigMenus'][10] = array('s_rubrique');
+$_Gconfig['bigMenus']['contenu'] = array('s_rubrique');
 
 
 
