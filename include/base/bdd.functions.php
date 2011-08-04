@@ -479,7 +479,7 @@ function getTabField($table) {
     global $co;
 
     //return $co->MetaColumns($table,false);
-    if (!akev($_SESSION['cache'][UNIQUE_SITE], 'tabField_'.$table)) {
+    if (empty($_SESSION['cache'][UNIQUE_SITE]['tabField_'.$table])) {
 
         $t = MetaColumns($table);
         if (!is_array($t)) {
@@ -491,13 +491,13 @@ function getTabField($table) {
         }
 
         //reset($t);
-        $_SESSION['cache'][UNIQUE_SITE]['tabfield_'.$table] = $t2;
+        $_SESSION['cache'][UNIQUE_SITE]['tabField_'.$table] = $t2;
         return $t2;
 
 
     }
 
-    return $_SESSION['cache'][UNIQUE_SITE]['tabfield_'.$table];
+    return $_SESSION['cache'][UNIQUE_SITE]['tabField_'.$table];
 }
 
 

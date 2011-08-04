@@ -326,7 +326,7 @@ class genSite {
 
 	    ob_end_flush();
 	}
-	if (!$download)
+	if (!$download && function_exists('saveAgCache'))
 	    saveAgCache($contenu);
 	die();
     }

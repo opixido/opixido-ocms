@@ -26,7 +26,7 @@ img {
      
      left:50%;
      -margin-left:-475px;
-     */
+    */
     border: 0px;
     margin: 0px;
     padding: 0px;
@@ -51,8 +51,8 @@ img {
 }
 
 #rmenu {
-	top:33px;
-	right:10px;
+    top:33px;
+    right:10px;
 }
 
 #logo {
@@ -73,14 +73,14 @@ img {
 }
 
 .logoa:hover h1 {
-	color:black!important;	
+    color:black!important;	
 }
 .logoa {
     width: 420px;
     height: 60px;
-	position:absolute;
-	top:0;
-	left:0;
+    position:absolute;
+    top:0;
+    left:0;
     display: block;
 }
 
@@ -276,7 +276,7 @@ label {
     font-weight: bold;
 }
 
-#genform_header_btn {
+.genform_header_btn {
     margin-top: -4px;
     position: absolute;
     right: 0px;
@@ -286,9 +286,6 @@ label {
     border: 0;
     border-bottom: 1px solid #555;
     border-right: 1px solid #555;
-}
-
-#genform_header_btn input {
 }
 
 #genform_navi {
@@ -315,6 +312,10 @@ label {
 .genform_onglet a:hover {
     color: #000;
     /*text-decoration:underline;*/
+}
+
+label.disabled {
+    color:#999;
 }
 
 .btnOngletOn {
@@ -496,7 +497,7 @@ textarea {
      border:1px solid #dddddd;
      border-bottom:3px solid #999999;
      border-right:1px solid #999999;
-     */
+    */
 }
 
 /*
@@ -509,7 +510,7 @@ textarea {
  border-right:1px solid #999999;
  
  }
- */
+*/
 .img_move {
     visibility: hidden;
     /*
@@ -517,7 +518,7 @@ textarea {
      border:1px solid #dddddd;
      border-bottom:1px solid #999999;
      border-right:1px solid #999999;
-     */
+    */
 }
 
 .img_move a img {
@@ -786,7 +787,7 @@ fieldset {
     /*
      width: 88px;
      height: 75px;
-     */
+    */
 }
 
 .picto_section img {
@@ -1404,54 +1405,54 @@ tr.myDragClass {
 }
 
 .toolsright {
-	float:right;
+    float:right;
 }
 
 .toolsright input {
-	vertical-align:middle;
+    vertical-align:middle;
 }
 
 .toolsright a.bloc2 img{ 
-	vertical-align:middle;
+    vertical-align:middle;
 }
 
 .toolsright form {
-	display:inline;
-	}
-	
+    display:inline;
+}
+
 /*************************************/
 /** Liste de résultats de recherche **/
 /*************************************/
 .colonne_booleen {
 
-	width : 60px;
-	text-align : center;
+    width : 60px;
+    text-align : center;
 
 }
 
 .colonne_date {
 
-	width : 120px;
-	padding-left : 5px;
+    width : 120px;
+    padding-left : 5px;
 
 }
 
 .colonne_actions {
 
-	padding-left : 10px;
-	
+    padding-left : 10px;
+
 }
 
 .btn_action, .small_form_action {
 
-	text-align : center;
-	padding-right : 5px;
-	float : left;
+    text-align : center;
+    padding-right : 5px;
+    float : left;
 
 }
 
 .tr_selected td {
 
-	background : #F5B85A !important;
+    background : #F5B85A !important;
 
 }

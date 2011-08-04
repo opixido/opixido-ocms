@@ -596,3 +596,80 @@ function FitToContent(id, maxHeight) {
 function searchSelectMass(co) {
     $('table.genform_table input[type=checkbox]').attr('checked',co);
 }
+
+
+/**
+ * Verifie les tableaux de langue pour les champs URL
+ * lors de la creation d'une rubrique
+ */
+function updateChampUrl(champ,valeur) {
+
+    var champ = gid(champ);
+    valeur = valeur.toLowerCase();
+    var re = /\$|,|@|#|~|`|\%|\*|\^|\&|\(|\)|\+|\=|\[|\-|\_|\]|\[|\}|\{|\;|\:|\'|\"|\<|\>|\?|\||\\|\!|\$|\.\£\°\§\//g;
+    valeur = valeur.replace(re,"-");
+    re = /é|è|ê|ë|€/g;
+    valeur = valeur.replace(re,"e");
+    re = /à|â|ä/g;
+    valeur = valeur.replace(re,"a");
+    re = /ò|ô|ö/g;
+    valeur = valeur.replace(re,"o");
+    re = /û|ü|ù|µ/g;
+    valeur = valeur.replace(re,"u");
+    re = /ç/g;
+    valeur = valeur.replace(re,"c");
+    valeur = valeur.replace(/ /g,"-");
+    valeur = valeur.replace('.',"-");
+    valeur = valeur.replace("/","-");
+    var i=0;
+    valeur = valeur.replace(/[^A-Za-z0-9]/g,"-");
+    while( valeur.search("--") >= 0 && i<20) {
+        valeur = valeur.replace(/__/g,"-");
+        i++;
+    }
+    if(valeur.charAt(valeur.length-1) == "-") {
+        valeur = valeur.substring(0,valeur.length-1);
+    }
+    var checkTab = false;
+    for(p in LGs) {
+        if(champ.name == "genform_rubrique_url_"+LGs[p]) {
+            checkTab = notUrl[LGs[p]];
+        }
+    }
+    incRe = 1;
+    newvaleur = valeur;
+    if(checkTab) {
+        while(checkTab[newvaleur]) {
+            newvaleur = valeur+"-"+incRe;
+            incRe++;
+        }
+    }
+    valeur = newvaleur;
+
+    champ.value = valeur;
+    checkFields();
+}
+
+
+/**
+ * Verifie que tous les champs de langue ont bien été remplis
+ * lors de la creation d'une rubrique
+ */
+function checkFields() {                  
+                                    		
+    ml = mfields.length;
+
+    isok = 0;
+    for(p=0;p<ml;p++) {
+        fi = mfields[p];
+        if(gid(fi).value.length > 1) {
+            isok++;
+        }
+    }
+    if(isok == ml) {
+        $('#genform_ok').attr('disabled',false).parent('label').removeClass('disabled');                    
+    } else {                   
+        $('#genform_ok').attr('disabled',true).parent('label').addClass('disabled');
+    }
+
+}

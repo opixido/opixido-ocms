@@ -50,109 +50,109 @@ class genAdmin {
 
     function genAdmin($table="", $id = 0) {
 
-	/* Always do on loading */
+        /* Always do on loading */
 
 
-	$this->table = $table;
-	$this->id = $id;
-	$this->sa = new smallAdmin($this);
+        $this->table = $table;
+        $this->id = $id;
+        $this->sa = new smallAdmin($this);
 
-	$t = getTables();
+        $t = getTables();
 
-	if ($table && !in_array($table, $t)) {
-	    echo '<a href="?">' . ta('this_table_doesnt_exist') . '</a>';
-	    die();
-	}
+        if ($table && !in_array($table, $t)) {
+            echo '<a href="?">' . ta('this_table_doesnt_exist') . '</a>';
+            die();
+        }
 
-	$_SESSION['XHRlastCurId'] = akev($_REQUEST, 'curId') ? $_REQUEST['curId'] : akev($_SESSION, 'XHRlastCurId');
+        $_SESSION['XHRlastCurId'] = akev($_REQUEST, 'curId') ? $_REQUEST['curId'] : akev($_SESSION, 'XHRlastCurId');
 
-	global $gs_obj, $lg;
+        global $gs_obj, $lg;
 
-	$actions = akev($_REQUEST, 'genform_action');
-	if ($actions && count($actions) && !isset($_REQUEST['genform_action']['edit'])) {
-	    $_REQUEST['resume'] = 1;
-	}
+        $actions = akev($_REQUEST, 'genform_action');
+        if ($actions && count($actions) && !isset($_REQUEST['genform_action']['edit'])) {
+            $_REQUEST['resume'] = 1;
+        }
 
-	$this->gs = &$gs_obj;
+        $this->gs = &$gs_obj;
 
-	$this->firstId = $id;
+        $this->firstId = $id;
 
-	$GLOBALS['rteElements'] = '';
-	$GLOBALS['rteIncluded'] = false;
-	$GLOBALS['codeFieldPrinted'] = '';
+        $GLOBALS['rteElements'] = '';
+        $GLOBALS['rteIncluded'] = false;
+        $GLOBALS['codeFieldPrinted'] = '';
 
-	global $_Gconfig;
-	global $gr_on;
-	foreach ($_Gconfig['orderedTable'] as $tableO => $champO) {
-	    $_Gconfig['rowActions'][$tableO]['moveTableRowUp'] = true;
-	    $_Gconfig['rowActions'][$tableO]['moveTableRowDown'] = true;
-	    $gr_on['insert'][$tableO][] = 'insertTableRowOrder';
-	    $gr_on['beforeDelete'][$tableO][] = 'deleteTableRowOrder';
-	}
+        global $_Gconfig;
+        global $gr_on;
+        foreach ($_Gconfig['orderedTable'] as $tableO => $champO) {
+            $_Gconfig['rowActions'][$tableO]['moveTableRowUp'] = true;
+            $_Gconfig['rowActions'][$tableO]['moveTableRowDown'] = true;
+            $gr_on['insert'][$tableO][] = 'insertTableRowOrder';
+            $gr_on['beforeDelete'][$tableO][] = 'deleteTableRowOrder';
+        }
 
-	$this->loadPlugins();
+        $this->loadPlugins();
 
-	$this->checkActions();
+        $this->checkActions();
 
-	/* Si on clique sur le logo, on revient  vide */
+        /* Si on clique sur le logo, on revient  vide */
 
-	if ((!count($_POST) && akev($_GET, 'curTable') && !isset($_GET['delId']) && !isset($_GET['goBack']) ) || isset($_GET['home'])) {
-	    $_SESSION[gfuid()]['levels'] = array();
-	    $_SESSION[gfuid()]['nbLevels'] = 0;
-	    $gl = new GenLocks();
-	    $gl->unsetAllLocks();
-	}
+        if ((!count($_POST) && akev($_GET, 'curTable') && !isset($_GET['delId']) && !isset($_GET['goBack']) ) || isset($_GET['home'])) {
+            $_SESSION[gfuid()]['levels'] = array();
+            $_SESSION[gfuid()]['nbLevels'] = 0;
+            $gl = new GenLocks();
+            $gl->unsetAllLocks();
+        }
 
-	/* On quitte et detruit la session */
-	if (akev($_REQUEST, 'destroy') || akev($_REQUEST, 'logout')) {
-	    $this->destroySession();
-	}
-
-
-	/* On export la table en CSV */
-	if (akev($_REQUEST, 'export')) {
-	    $this->exportCsv();
-	}
-
-	$this->doRecord();
-
-	$this->FormToInclude = $this->whichForm();
-
-	/* On vide la table */
-	if (akev($_REQUEST, 'vider') && akev($_REQUEST, 'confirm')) {
-	    $this->emptyTable();
-	}
-
-	if (akev($_REQUEST, 'hideRub') || akev($_REQUEST, 'showRub')) {
-
-	    $this->handleOpenRubs();
-	}
+        /* On quitte et detruit la session */
+        if (akev($_REQUEST, 'destroy') || akev($_REQUEST, 'logout')) {
+            $this->destroySession();
+        }
 
 
+        /* On export la table en CSV */
+        if (akev($_REQUEST, 'export')) {
+            $this->exportCsv();
+        }
 
+        $this->doRecord();
+
+        $this->FormToInclude = $this->whichForm();
+
+        /* On vide la table */
+        if (akev($_REQUEST, 'vider') && akev($_REQUEST, 'confirm')) {
+            $this->emptyTable();
+        }
+
+        if (akev($_REQUEST, 'hideRub') || akev($_REQUEST, 'showRub')) {
+
+            $this->handleOpenRubs();
+        }
 
 
 
 
 
-	$this->arboRubs = $this->sa->getRubs();
 
-	$this->insideRealRubId = $this->getRealRubriqueId();
 
-	/* Auto open rubs ! */
-	if ($this->isInRubrique()) {
-	    $id = $this->insideRealRubId;
 
-	    while (true) {
-		if (!$id) {
-		    break;
-		} else {
+        $this->arboRubs = $this->sa->getRubs();
 
-		    $_SESSION['visibleRubs'][$id] = true;
-		    $id = $this->reverserubs[$id];
-		}
-	    }
-	}
+        $this->insideRealRubId = $this->getRealRubriqueId();
+
+        /* Auto open rubs ! */
+        if ($this->isInRubrique()) {
+            $id = $this->insideRealRubId;
+
+            while (true) {
+                if (!$id) {
+                    break;
+                } else {
+
+                    $_SESSION['visibleRubs'][$id] = true;
+                    $id = $this->reverserubs[$id];
+                }
+            }
+        }
     }
 
     /**
@@ -161,16 +161,16 @@ class genAdmin {
      * @return unknown
      */
     function isInRubrique() {
-	if ($this->table == 's_rubrique') {
-	    return true;
-	} else if (
-		isset($_SESSION[gfuid()]['levels'][1])
-		&& !empty($_SESSION[gfuid()]['levels'][1]['curTable'])
-		&& $_SESSION[gfuid()]['levels'][1]['curTable'] == 's_rubrique') {
-	    return true;
-	}
+        if ($this->table == 's_rubrique') {
+            return true;
+        } else if (
+                isset($_SESSION[gfuid()]['levels'][1])
+                && !empty($_SESSION[gfuid()]['levels'][1]['curTable'])
+                && $_SESSION[gfuid()]['levels'][1]['curTable'] == 's_rubrique') {
+            return true;
+        }
 
-	return false;
+        return false;
     }
 
     /**
@@ -180,151 +180,151 @@ class genAdmin {
      */
     function LoadPlugins() {
 
-	$plugs = GetPlugins();
+        $plugs = GetPlugins();
 
-	foreach ($plugs as $v) {
+        foreach ($plugs as $v) {
 
-	    $GLOBALS['gb_obj']->includeFile('admin.php', PLUGINS_FOLDER . '' . $v . '/');
-	    $adminClassName = $v . 'Admin';
-	    if (class_exists($adminClassName)) {
+            $GLOBALS['gb_obj']->includeFile('admin.php', PLUGINS_FOLDER . '' . $v . '/');
+            $adminClassName = $v . 'Admin';
+            if (class_exists($adminClassName)) {
 
-		$this->plugins[$v] = new $adminClassName($this);
-		if (method_exists($this->plugins[$v], 'ocms_getParams')) {
-		    global $_Gconfig;
-		    $_Gconfig['pluginsParams'][] = $v;
-		}
-	    }
-	}
+                $this->plugins[$v] = new $adminClassName($this);
+                if (method_exists($this->plugins[$v], 'ocms_getParams')) {
+                    global $_Gconfig;
+                    $_Gconfig['pluginsParams'][] = $v;
+                }
+            }
+        }
     }
 
     public function getRealRubriqueId() {
 
 
-	if (isset($this->real_rub_id))
-	    return $this->real_rub_id;
-	if (is_array($_SESSION[gfuid()]['levels'])) {
-	    @reset($_SESSION[gfuid()]['levels']);
-	    foreach ($_SESSION[gfuid()]['levels'] as $lev) {
+        if (isset($this->real_rub_id))
+            return $this->real_rub_id;
+        if (is_array($_SESSION[gfuid()]['levels'])) {
+            @reset($_SESSION[gfuid()]['levels']);
+            foreach ($_SESSION[gfuid()]['levels'] as $lev) {
 
-		if (akev($lev, 'curTable') == 's_rubrique') {
-		    @reset($_SESSION[gfuid()]['levels']);
+                if (akev($lev, 'curTable') == 's_rubrique') {
+                    @reset($_SESSION[gfuid()]['levels']);
 
-		    if ($this->rubver[$lev['curId']])
-			return $this->rubver[$lev['curId']];
+                    if ($this->rubver[$lev['curId']])
+                        return $this->rubver[$lev['curId']];
 
-		    else
-			return $lev['curId'];
-		}
-	    }
-	    @reset($_SESSION[gfuid()]['levels']);
-	}
-	return false;
+                    else
+                        return $lev['curId'];
+                }
+            }
+            @reset($_SESSION[gfuid()]['levels']);
+        }
+        return false;
     }
 
     function gen() {
 
-	global $gb_obj;
+        global $gb_obj;
 
-	//include(gen_include_path.'/admin_html/inc.header.php');
-
-
-	$gb_obj->includeFile('inc.header.php', 'admin_html');
+        //include(gen_include_path.'/admin_html/inc.header.php');
 
 
-	$this->getHeader();
+        $gb_obj->includeFile('inc.header.php', 'admin_html');
 
 
-
-	p('<div id="contenu">');
-
-	$this->GetHeaderTitle();
-
-
-	if (isset($_REQUEST['include_action'])) {
-	    p('<div style="border:1px dashed #cc0000;background:lightgray;padding:10px;"><h1>ACTIONS</h1>');
-	    $GLOBALS['gb_obj']->includeFile($_REQUEST['include_action'], 'include_actions');
-	    //die();
-	    p('</div>');
-	}
+        $this->getHeader();
 
 
 
-	p('<div id="contenupadd">');
+        p('<div id="contenu">');
 
-	$this->includeForm();
-
-
-	p('</div>');
-
-	p('</div>');
+        $this->GetHeaderTitle();
 
 
-	$gb_obj->includeFile('inc.footer.php', 'admin_html');
+        if (isset($_REQUEST['include_action'])) {
+            p('<div style="border:1px dashed #cc0000;background:lightgray;padding:10px;"><h1>ACTIONS</h1>');
+            $GLOBALS['gb_obj']->includeFile($_REQUEST['include_action'], 'include_actions');
+            //die();
+            p('</div>');
+        }
+
+
+
+        p('<div id="contenupadd">');
+
+        $this->includeForm();
+
+
+        p('</div>');
+
+        p('</div>');
+
+
+        $gb_obj->includeFile('inc.footer.php', 'admin_html');
     }
 
     function GetTools() {
 
-	if ($this->table != 's_rubrique') {
-	    global $_Gconfig;
-	    p('<div id="tools" >');
+        if ($this->table != 's_rubrique') {
+            global $_Gconfig;
+            p('<div id="tools" >');
 
-	    if ($this->gs->can('add', $this->table)) {
-		p('<a class="abutton" href="?curTable=' . $this->table . '&amp;curId=new"> <img src="' . ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/actions/document-new.png" alt=""  /> ' . t('ajouter_elem') . '</a>');
-	    }
+            if ($this->gs->can('add', $this->table)) {
+                p('<a class="abutton" href="?curTable=' . $this->table . '&amp;curId=new"> <img src="' . ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/actions/document-new.png" alt=""  /> ' . t('ajouter_elem') . '</a>');
+            }
 
-	    if (ake($_Gconfig['tableActions'], $this->table)) {
-
-
-
-		foreach ($_Gconfig['tableActions'][$this->table] as $action) {
-
-		    if ($this->gs->can($action, $this->table) && $action != $_REQUEST['tableAction']) {
-
-			p('<a class="abutton" href="?curTable=' . $this->table . '&tableAction=' . $action . '"> <img src="' . ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/actions/' . $action . '.png" alt=""  /> ' . t($action) . '</a>');
-		    }
-		}
-	    }
-
-	    p('</div>');
+            if (ake($_Gconfig['tableActions'], $this->table)) {
 
 
-	    if (!empty($_REQUEST['tableAction']) && in_array($_REQUEST['tableAction'], $_Gconfig['tableActions'][$this->table])) {
 
-		if ($this->gs->can($action, $this->table)) {
-		    p('<div class="tableActions">');
+                foreach ($_Gconfig['tableActions'][$this->table] as $action) {
 
-		    p('<h3>' . t('tableAction') . ' ' . t($_REQUEST['tableAction']) . '</h3>');
+                    if ($this->gs->can($action, $this->table) && $action != $_REQUEST['tableAction']) {
 
-		    $_REQUEST['tableAction']();
+                        p('<a class="abutton" href="?curTable=' . $this->table . '&tableAction=' . $action . '"> <img src="' . ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/actions/' . $action . '.png" alt=""  /> ' . t($action) . '</a>');
+                    }
+                }
+            }
 
-		    p('</div>');
-		} else {
-		    debug(t('action_non_autorisee'));
-		}
-	    }
-	}
+            p('</div>');
+
+
+            if (!empty($_REQUEST['tableAction']) && in_array($_REQUEST['tableAction'], $_Gconfig['tableActions'][$this->table])) {
+
+                if ($this->gs->can($action, $this->table)) {
+                    p('<div class="tableActions">');
+
+                    p('<h3>' . t('tableAction') . ' ' . t($_REQUEST['tableAction']) . '</h3>');
+
+                    $_REQUEST['tableAction']();
+
+                    p('</div>');
+                } else {
+                    debug(t('action_non_autorisee'));
+                }
+            }
+        }
     }
 
     function GetHeader() {
 
 
-	p('    <div id="menug">');
+        p('    <div id="menug">');
 
 
-	if ($this->isInRubrique()) {
+        if ($this->isInRubrique()) {
 
-	    $this->getArboRubs();
-	} else {
-	    p('<style type="text/css">
+            $this->getArboRubs();
+        } else {
+            p('<style type="text/css">
 					#contenu {
 						margin-left:0;
 					}
 					</style>
 				');
-	}
+        }
 
 
-	p('    </div>');
+        p('    </div>');
     }
 
     /**
@@ -332,243 +332,243 @@ class genAdmin {
      * Si oui declenche l'action
      */
     function checkActions() {
-	if (ake('genform_relinvaction', $_REQUEST)) {
+        if (ake('genform_relinvaction', $_REQUEST)) {
 
-	    foreach ($_REQUEST['genform_relinvaction'] as $action => $v) {
-		foreach ($v as $table => $value) {
-		    $this->action = new GenAction($action, $table, $value);
-		    $this->action->DoIt();
-		}
-	    }
-	}
+            foreach ($_REQUEST['genform_relinvaction'] as $action => $v) {
+                foreach ($v as $table => $value) {
+                    $this->action = new GenAction($action, $table, $value);
+                    $this->action->DoIt();
+                }
+            }
+        }
 
-	if (ake('genform_action', $_REQUEST)) {
-
-
-	    while (list($action, ) = each($_REQUEST['genform_action'])) {
+        if (ake('genform_action', $_REQUEST)) {
 
 
-		$this->action = new GenAction($action, $this->table, $this->id, $this->row);
-
-		$this->action->DoIt();
+            while (list($action, ) = each($_REQUEST['genform_action'])) {
 
 
-		if (isset($_REQUEST['fromList']) && $this->action->canReturnToList()) {
-		    $_REQUEST['curId'] = '';
-		    $this->id = '';
-		    $_REQUEST['resume'] = '';
-		} else
-		if ($action != 'edit') {
-		    $_REQUEST['resume'] = '1';
-		}
-	    }
-	}
+                $this->action = new GenAction($action, $this->table, $this->id, $this->row);
+
+                $this->action->DoIt();
 
 
-	if (!empty($_REQUEST['mass_action'])) {
-	    foreach ($_REQUEST['massiveActions'] as $k => $v) {
+                if (isset($_REQUEST['fromList']) && $this->action->canReturnToList()) {
+                    $_REQUEST['curId'] = '';
+                    $this->id = '';
+                    $_REQUEST['resume'] = '';
+                } else
+                if ($action != 'edit') {
+                    $_REQUEST['resume'] = '1';
+                }
+            }
+        }
 
-		$action = new GenAction($_REQUEST['mass_action'], $this->table, $v);
-		$action->DoIt();
-	    }
-	}
+
+        if (!empty($_REQUEST['mass_action'])) {
+            foreach ($_REQUEST['massiveActions'] as $k => $v) {
+
+                $action = new GenAction($_REQUEST['mass_action'], $this->table, $v);
+                $action->DoIt();
+            }
+        }
     }
 
     function doRecord() {
 
-	if (akev($_REQUEST, 'genform__add_sub_table') && akev($_REQUEST, 'genform__add_sub_id')) {
-	    $_SESSION[gfuid()]['genform__add_sub_table'] = $_REQUEST['genform__add_sub_table'];
-	    $_SESSION[gfuid()]['genform__add_sub_id'] = $_REQUEST['genform__add_sub_id'];
-	}
+        if (akev($_REQUEST, 'genform__add_sub_table') && akev($_REQUEST, 'genform__add_sub_id')) {
+            $_SESSION[gfuid()]['genform__add_sub_table'] = $_REQUEST['genform__add_sub_table'];
+            $_SESSION[gfuid()]['genform__add_sub_id'] = $_REQUEST['genform__add_sub_id'];
+        }
 
 
-	$this->genRecord = new genRecord($this->table, $this->id, true);
+        $this->genRecord = new genRecord($this->table, $this->id, true);
 
-	$this->id = $this->genRecord->doRecord();
+        $this->id = $this->genRecord->doRecord();
     }
 
     function getArboRubs() {
 
-	p('<h1>' . t('arborescence') . '</h1>');
-	p('<div id="arbo_rubs">');
-	$this->sa->getArboActions();
-	p('<div id="arbo">');
-	$this->sa->recurserub('NULL', 0, "1");
-	p('</div>');
-	p('</div>');
+        p('<h1>' . t('arborescence') . '</h1>');
+        p('<div id="arbo_rubs">');
+        $this->sa->getArboActions();
+        p('<div id="arbo">');
+        $this->sa->recurserub('NULL', 0, "1");
+        p('</div>');
+        p('</div>');
     }
 
     function getLeftMenu() {
 
-	global $adminMenus;
-	if (!is_array($adminMenus)) {
-	    derror('Pas de menus definis');
-	    return;
-	}
-	while (list($k, $v) = each($adminMenus)) {
-	    p('<h1>' . t('menu_' . $k) . '</h1>');
-	    p('<ul class="text1">');
+        global $adminMenus;
+        if (!is_array($adminMenus)) {
+            derror('Pas de menus definis');
+            return;
+        }
+        while (list($k, $v) = each($adminMenus)) {
+            p('<h1>' . t('menu_' . $k) . '</h1>');
+            p('<ul class="text1">');
 
 
-	    foreach ($v as $m) {
-		if ($this->gs->can('view', $m)) {
-		    p('<li>');
-		    $cl = ($this->table == $m) ? "class='mselected'" : "";
-		    p('<a ' . $cl . ' href="index.php?curTable=' . $m . '&"><img src="' . ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/actions/document-open.png" alt="-" /> ' . t($m) . '</a>');
-		    p('</li>');
-		}
-	    }
-	    p('</ul>');
-	    p('<br/>');
-	}
+            foreach ($v as $m) {
+                if ($this->gs->can('view', $m)) {
+                    p('<li>');
+                    $cl = ($this->table == $m) ? "class='mselected'" : "";
+                    p('<a ' . $cl . ' href="index.php?curTable=' . $m . '&"><img src="' . ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/actions/document-open.png" alt="-" /> ' . t($m) . '</a>');
+                    p('</li>');
+                }
+            }
+            p('</ul>');
+            p('<br/>');
+        }
     }
 
     function genPlugins() {
 
-	if (!is_array($this->plugins)) {
-	    return false;
-	}
-	foreach ($this->plugins as $plugin) {
-	    if (method_exists($plugin, 'gen')) {
-		$plugin->gen();
-	    }
-	}
+        if (!is_array($this->plugins)) {
+            return false;
+        }
+        foreach ($this->plugins as $plugin) {
+            if (method_exists($plugin, 'gen')) {
+                $plugin->gen();
+            }
+        }
     }
 
     function includeForm() {
 
-	global $form;
-	$toInclude = $this->FormToInclude;
+        global $form;
+        $toInclude = $this->FormToInclude;
 
 
-	$this->genPlugins();
+        $this->genPlugins();
 
-	if (@method_exists($this->action->obj, 'gen')) {
-	    $this->action->obj->gen();
-	}
+        if (@method_exists($this->action->obj, 'gen')) {
+            $this->action->obj->gen();
+        }
 
-	switch ($toInclude) {
+        switch ($toInclude) {
 
-	    case "home":
+            case "home":
 
-		$gl = new GenLocks();
-		$gl->unsetAllLocks();
+                $gl = new GenLocks();
+                $gl->unsetAllLocks();
 
-		$GLOBALS['inScreen'] = 'home';
+                $GLOBALS['inScreen'] = 'home';
 
-		/* global $gb_obj;
-		  $gb_obj->includeFile('home.php','admin_html');
-		 */
-		$this->control_panel = new genControlPanel();
+                /* global $gb_obj;
+                  $gb_obj->includeFile('home.php','admin_html');
+                 */
+                $this->control_panel = new genControlPanel();
 
 
-		// $this->plugins['stats']->genAfter();
-		foreach ($this->plugins as $k => $v) {
+                // $this->plugins['stats']->genAfter();
+                foreach ($this->plugins as $k => $v) {
 
-		    if (is_object($v) && method_exists($v, 'genAfter')) {
-			$v->genAfter();
-		    }
-		}
+                    if (is_object($v) && method_exists($v, 'genAfter')) {
+                        $v->genAfter();
+                    }
+                }
 
-		p($this->control_panel->gen());
+                p($this->control_panel->gen());
 
 
-		break;
-	    case "search":
+                break;
+            case "search":
 
 
-		$gl = new GenLocks();
-		$gl->unsetAllLocks();
+                $gl = new GenLocks();
+                $gl->unsetAllLocks();
 
 
 
-		$GLOBALS['inScreen'] = 'search';
+                $GLOBALS['inScreen'] = 'search';
 
-		$this->GetTools();
+                $this->GetTools();
 
 
-		$search = new GenSearchv2($this->table);
+                $search = new GenSearchv2($this->table);
 
-		$search->printAll();
+                $search->printAll();
 
 
 
-		break;
+                break;
 
-	    case 'searchv2':
+            case 'searchv2':
 
 
-		$gl = new GenLocks();
-		$gl->unsetAllLocks();
+                $gl = new GenLocks();
+                $gl->unsetAllLocks();
 
 
 
-		$GLOBALS['inScreen'] = 'searchv2';
+                $GLOBALS['inScreen'] = 'searchv2';
 
-		$this->GetTools();
+                $this->GetTools();
 
 
-		$search = new GenSearchV2($this->table);
+                $search = new GenSearchV2($this->table);
 
-		$search->printAll();
+                $search->printAll();
 
 
 
-		break;
+                break;
 
-	    case "form":
+            case "form":
 
-		$GLOBALS['inScreen'] = 'form';
+                $GLOBALS['inScreen'] = 'form';
 
-		$gl = new GenLocks();
-		$tl = $gl->getLock($this->table, $this->id);
+                $gl = new GenLocks();
+                $tl = $gl->getLock($this->table, $this->id);
 
-		if (is_array($tl)) {
-		    dinfo(t('erreur_lock_existe'));
+                if (is_array($tl)) {
+                    dinfo(t('erreur_lock_existe'));
 
 
-		    global $editMode;
-		    $editMode = true;
+                    global $editMode;
+                    $editMode = true;
 
-		    $form = new GenForm($this->table, "", $this->id, "");
-		    $form->editMode = true;
-		    //debug($tl);
-		} else {
-		    
-		}
+                    $form = new GenForm($this->table, "", $this->id, "");
+                    $form->editMode = true;
+                    //debug($tl);
+                } else {
+                    
+                }
 
 
-		$form = new GenForm($this->table, "", $this->id, "");
+                $form = new GenForm($this->table, "", $this->id, "");
 
-		$form->genHeader();
+                $form->genHeader();
 
-		$form->genPages();
+                $form->genPages();
 
-		$form->genFooter();
+                $form->genFooter();
 
 
-		break;
+                break;
 
-	    case "resume":
+            case "resume":
 
 
 
-		$gl = new GenLocks();
+                $gl = new GenLocks();
 
-		$gl->unsetAllLocks();
+                $gl->unsetAllLocks();
 
-		$GLOBALS['inScreen'] = 'resume';
+                $GLOBALS['inScreen'] = 'resume';
 
-		p('<div >');
-		p('<div id="genform_navi" style="width:100px;"><div class="genform_onglet"><div class="btnOngletOn"><a>' . t('recapitulatif') . '</a></div></div></div>');
+                p('<div >');
+                p('<div id="genform_navi" style="width:100px;"><div class="genform_onglet"><div class="btnOngletOn"><a>' . t('recapitulatif') . '</a></div></div></div>');
 
 
-		$form = new GenForm($this->table, "", $this->id, "");
+                $form = new GenForm($this->table, "", $this->id, "");
 
-		$form->separator = '<br/>';
-		global $editMode;
+                $form->separator = '<br/>';
+                global $editMode;
 
-		p('<style type="text/css">
+                p('<style type="text/css">
 				#zegenform {padding:0 !important;margin:0;}
 				#zegenform p ,
 				#zegenform h1  ,
@@ -579,190 +579,190 @@ class genAdmin {
 		
 				</style>');
 
-		$editMode = 1;
+                $editMode = 1;
 
-		$form->editMode = 1;
+                $form->editMode = 1;
 
-		$form->genActions();
+                $form->genActions();
 
-		$form->genHeader();
-
-
-
-		$form->genPages();
+                $form->genHeader();
 
 
-		$this->showLog();
+
+                $form->genPages();
 
 
-		$form->genFooter();
+                $this->showLog();
 
-		p('</div>');
 
-		break;
+                $form->genFooter();
 
-	    case "arbo":
+                p('</div>');
 
-		$GLOBALS['inScreen'] = 'arbo';
+                break;
 
-		$arbo = new genArbo(akev($_REQUEST,'rubId'));
-		$arbo->gen();
+            case "arbo":
 
-		break;
-	}
-	/* if($toInclude && is_file($toInclude))
-	  include ( $toInclude );
-	  else
-	  debug('Page en construction');
-	 */
+                $GLOBALS['inScreen'] = 'arbo';
+
+                $arbo = new genArbo(akev($_REQUEST, 'rubId'));
+                $arbo->gen();
+
+                break;
+        }
+        /* if($toInclude && is_file($toInclude))
+          include ( $toInclude );
+          else
+          debug('Page en construction');
+         */
     }
 
     function showLog() {
-	//if($this->table == 's_rubrique') {
-	$sql = 'SELECT * FROM s_log_action
+        //if($this->table == 's_rubrique') {
+        $sql = 'SELECT * FROM s_log_action
 				 LEFT JOIN s_admin AS A ON fk_admin_id = A.admin_id 
 				 WHERE log_action_fk_id = "' . $this->id . '" 
 					AND log_action_table = "' . $this->table . '"  
 				    ORDER BY log_action_time DESC, log_action_id DESC LIMIT 0,30';
 
-	$res = GetAll($sql);
+        $res = GetAll($sql);
 
-	p('<table id="table_log_action" summary="">');
-	p('<caption>' . t('table_log_action') . '</caption>');
-	$k = 0;
-	foreach ($res as $row) {
+        p('<table id="table_log_action" summary="">');
+        p('<caption>' . t('table_log_action') . '</caption>');
+        $k = 0;
+        foreach ($res as $row) {
 
-	    //if($lastAction !=  $row['log_action_action'] || $lastAdmin != $row['admin_id']) {
-	    $k++;
-	    $lastAction = $row['log_action_action'];
-	    $lastAdmin = $row['admin_id'];
-	    p('<tr ' . ($k % 2 ? '' : 'class="odd"') . '><td>' . $row['admin_nom'] . '</td><td>' . $row['admin_email'] . '</td><td>' . t('action_' . $row['log_action_action']) . '</td><td>' . niceDateTime($row['log_action_time']) . '</td></tr>');
-	    //}
-	}
-	p('</table>');
+            //if($lastAction !=  $row['log_action_action'] || $lastAdmin != $row['admin_id']) {
+            $k++;
+            $lastAction = $row['log_action_action'];
+            $lastAdmin = $row['admin_id'];
+            p('<tr ' . ($k % 2 ? '' : 'class="odd"') . '><td>' . $row['admin_nom'] . '</td><td>' . $row['admin_email'] . '</td><td>' . t('action_' . $row['log_action_action']) . '</td><td>' . niceDateTime($row['log_action_time']) . '</td></tr>');
+            //}
+        }
+        p('</table>');
 
-	//}
+        //}
     }
 
     public static function handleOpenRubs() {
 
-	/* AFFICHER MASQUER DES RUBRIQUES DU MENU */
+        /* AFFICHER MASQUER DES RUBRIQUES DU MENU */
 
 
-	$visibleRubs = akev($_SESSION, 'visibleRubs');
+        $visibleRubs = akev($_SESSION, 'visibleRubs');
 
 
-	if (!empty($_REQUEST['showRub'])) {
-	    $visibleRubs[$_REQUEST['showRub']] = true;
-	} else if (akev($_REQUEST,'hideRub') > 0) {
-	    unset($visibleRubs[$_REQUEST['hideRub']]);
-	}
+        if (!empty($_REQUEST['showRub'])) {
+            $visibleRubs[$_REQUEST['showRub']] = true;
+        } else if (akev($_REQUEST, 'hideRub') > 0) {
+            unset($visibleRubs[$_REQUEST['hideRub']]);
+        }
 
 
-	$_SESSION['visibleRubs'] = $visibleRubs;
+        $_SESSION['visibleRubs'] = $visibleRubs;
     }
 
     function destroySession() {
 
-	/* On vire tout, c'est pratique pour les tests */
-	$this->gs->clearAuth();
-	session_destroy();
-	$_SESSION = "";
-	$_SESSION = array();
+        /* On vire tout, c'est pratique pour les tests */
+        $this->gs->clearAuth();
+        session_destroy();
+        $_SESSION = "";
+        $_SESSION = array();
 
-	header('location:/');
+        header('location:/');
     }
 
     function exportCsv() {
 
-	/* Export la table courante en CSV */
+        /* Export la table courante en CSV */
 
-	$sql = 'SELECT * FROM ' . $this->table;
-	$res = GetAll($sql);
+        $sql = 'SELECT * FROM ' . $this->table;
+        $res = GetAll($sql);
 
-	header('Content-Disposition: attachment; filename="' . $this->table . '.csv"');
-	header("Content-Type: text/comma-separated-values");
+        header('Content-Disposition: attachment; filename="' . $this->table . '.csv"');
+        header("Content-Type: text/comma-separated-values");
 
 
-	foreach ($res as $row) {
-	    $i = 0;
+        foreach ($res as $row) {
+            $i = 0;
 
-	    $f = new GenForm($this->table, 'post', 0, $row);
-	    $f->editMode = true;
-	    $f->onlyData = true;
-	    while (list($k, ) = each($row)) {
-		if ($i % 2)
-		    print($this->csvenc($f->gen($k)) . ';');
-		$i++;
-	    }
+            $f = new GenForm($this->table, 'post', 0, $row);
+            $f->editMode = true;
+            $f->onlyData = true;
+            while (list($k, ) = each($row)) {
+                if ($i % 2)
+                    print($this->csvenc($f->gen($k)) . ';');
+                $i++;
+            }
 
-	    print("\n");
-	}
+            print("\n");
+        }
 
-	die();
+        die();
     }
 
     function csvenc($str) {
-	/* pour ï¿½iter les problï¿½es en CSV on rï¿½ncode les retours ï¿½la ligne et les ";" */
+        /* pour ï¿½iter les problï¿½es en CSV on rï¿½ncode les retours ï¿½la ligne et les ";" */
 
-	return str_replace(array(";", "\n", "\r"), array(":", " ", " "), $str);
+        return str_replace(array(";", "\n", "\r"), array(":", " ", " "), $str);
     }
 
     function addMessage($str) {
-	/* Pour l'information */
-	$this->messages[] = $str;
+        /* Pour l'information */
+        $this->messages[] = $str;
     }
 
     function emptyTable() {
-	$sql = 'TRUNCATE TABLE ' . $this->table;
-	DoSql($sql);
+        $sql = 'TRUNCATE TABLE ' . $this->table;
+        DoSql($sql);
 
-	$this->addMessage(t('table_videe') . " " . t($this->table));
+        $this->addMessage(t('table_videe') . " " . t($this->table));
     }
 
     function GetRecordTitle($table, $id, $sep=" ", $pk="") {
-	/*
-	 * Formate proprement le titre d'une table
-	 *
-	 * */
+        /*
+         * Formate proprement le titre d'une table
+         *
+         * */
 
-	global $tabForms;
-	if (strlen($pk) == 0) {
-	    $pk = GetPrimaryKey($table);
-	}
-	$sql = "SELECT " . GetTitleFromTable($table, ' , ') . " FROM " . $table . " WHERE " . $pk . " = '" . $id . "'";
-	$row = GetSingle($sql);
+        global $tabForms;
+        if (strlen($pk) == 0) {
+            $pk = GetPrimaryKey($table);
+        }
+        $sql = "SELECT " . GetTitleFromTable($table, ' , ') . " FROM " . $table . " WHERE " . $pk . " = '" . $id . "'";
+        $row = GetSingle($sql);
 
-	$r = "";
-	/*
-	  if(is_array($row)) {
-	  $i=0;
-	  foreach($row as $v) {
-	  $i++;
-	  if($i%2)
-	  $r .= $v.$sep;
-	  }
+        $r = "";
+        /*
+          if(is_array($row)) {
+          $i=0;
+          foreach($row as $v) {
+          $i++;
+          if($i%2)
+          $r .= $v.$sep;
+          }
 
-	  $r= substr($r,0,-1*(int)strlen($sep));
-	  }
-	  return $r;
-	 */
+          $r= substr($r,0,-1*(int)strlen($sep));
+          }
+          return $r;
+         */
 
-	return GetTitleFromRow($table, $row);
+        return GetTitleFromRow($table, $row);
     }
 
     function GetHeaderTitle() {
 
-	p('<div id="titre">');
+        p('<div id="titre">');
 
-	$urlOnline = getObjUrl();
-	global $tabForms;
-	if ($urlOnline) {
-	    p('<a style="float:right" href="' . $urlOnline . '" target="_blank"><img src="' . ADMIN_PICTOS_FOLDER . ADMIN_PICTOS_FORM_SIZE . '/actions/document-properties.png" alt=' . alt(t('voir_enligne')) . ' /></a>');
-	}
-	if ($this->id && $this->table != 's_rubrique') {
+        $urlOnline = getObjUrl();
+        global $tabForms;
+        if ($urlOnline) {
+            p('<a style="float:right" href="' . $urlOnline . '" target="_blank"><img src="' . ADMIN_PICTOS_FOLDER . ADMIN_PICTOS_FORM_SIZE . '/actions/document-properties.png" alt=' . alt(t('voir_enligne')) . ' /></a>');
+        }
+        if ($this->id && $this->table != 's_rubrique') {
 
-	    p('<div class="toolsright">
+            p('<div class="toolsright">
 				<a class="bloc2" title=' . alt(t('add_another') . ' ' . t($_REQUEST['curTable'])) . ' 
 						href="?curTable=' . $this->table . '&curId=new">
 						<img src="' . ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/actions/document-new.png" 
@@ -774,264 +774,264 @@ class genAdmin {
 					<input type="image" style="border:0" src="' . ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/actions/system-search.png" /> 
 				</form>
 			</div>');
-	}
+        }
 
-	if (isset($_SESSION[gfuid()]['levels'][0]))
-	    $table = !empty($_SESSION[gfuid()]['levels'][0]['curTable']) ? $_SESSION[gfuid()]['levels'][0]['curTable'] : $_REQUEST['curTable'];
-	else if (isset($_REQUEST['table']))
-	    $table = $_REQUEST['table'];
-	else
-	    $table = false;
-
-
-	if ($table) {
-	    $src = $tabForms[$table]['picto'] ? str_replace(ADMIN_PICTOS_BIG_SIZE, ADMIN_PICTOS_FORM_SIZE, $tabForms[$table]['picto']) : t('src_desktop');
-	    $src = getPicto($table, ADMIN_PICTOS_FORM_SIZE);
-	    p('<a class="titreListe" title=' . alt(t('retour') . ' ' . t($table)) . ' href="?curTable=' . $table . '&amp" ><img class="inputimage" src="' . $src . '"  alt="" /> ');
-	    p(' &nbsp;' . t($this->table) . '</a>');
-	}
+        if (isset($_SESSION[gfuid()]['levels'][0]))
+            $table = !empty($_SESSION[gfuid()]['levels'][0]['curTable']) ? $_SESSION[gfuid()]['levels'][0]['curTable'] : $_REQUEST['curTable'];
+        else if (isset($_REQUEST['table']))
+            $table = $_REQUEST['table'];
+        else
+            $table = false;
 
 
-	if ($this->id || $this->id == 'new') {
+        if ($table) {
+            $src = !empty($tabForms[$table]['picto']) ? str_replace(ADMIN_PICTOS_BIG_SIZE, ADMIN_PICTOS_FORM_SIZE, $tabForms[$table]['picto']) : t('src_desktop');
+            $src = getPicto($table, ADMIN_PICTOS_FORM_SIZE);
+            p('<a class="titreListe" title=' . alt(t('retour') . ' ' . t($table)) . ' href="?curTable=' . $table . '&amp" ><img class="inputimage" src="' . $src . '"  alt="" /> ');
+            p(' &nbsp;' . t($this->table) . '</a>');
+        }
+
+
+        if ($this->id || $this->id == 'new') {
 
 
 
-	    if (akev($_SESSION[gfuid()], 'nbLevels') > 0) {
+            if (akev($_SESSION[gfuid()], 'nbLevels') > 0) {
 
-		p('<a href="?curTable=' . $_SESSION[gfuid()]['levels'][1]['curTable'] . '&amp;curId=' . $_SESSION[gfuid()]['levels'][1]['curId'] . '&resume=1" ><img class="inputimage" src="' . t('src_first') . '" alt="Retour" /></a> ');
+                p('<a href="?curTable=' . $_SESSION[gfuid()]['levels'][1]['curTable'] . '&amp;curId=' . $_SESSION[gfuid()]['levels'][1]['curId'] . '&resume=1" ><img class="inputimage" src="' . t('src_first') . '" alt="Retour" /></a> ');
 
-		p('<a href="?' . time() . '" ><img class="inputimage" src="' . t('src_back') . '" alt="Retour" /></a> ');
+                p('<a href="?' . time() . '" ><img class="inputimage" src="' . t('src_back') . '" alt="Retour" /></a> ');
 
-		while (list($k, $v) = each($_SESSION[gfuid()]['levels'])) {
-		    if (isset($v['curTable'])) {
-			p('<span class="titreListe">' . limitWords(strip_tags($this->GetRecordTitle($v["curTable"], $v["curId"], " ", $v["curTableKey"])), 15) . " [" . $v["curId"] . "] </span> &raquo;");
-		    }
-		}
-	    } else {
+                while (list($k, $v) = each($_SESSION[gfuid()]['levels'])) {
+                    if (isset($v['curTable'])) {
+                        p('<span class="titreListe">' . limitWords(strip_tags($this->GetRecordTitle($v["curTable"], $v["curId"], " ", $v["curTableKey"])), 15) . " [" . $v["curId"] . "] </span> &raquo;");
+                    }
+                }
+            } else {
 
-		if ($this->FormToInclude == 'resume') {
-		    p('<a href="?curTable=' . $_REQUEST['curTable'] . '" style="margin:0;padding:0"><img style="vertical-align:middle;margin:0;" src="' . t('src_first') . '" alt="Retour" /></a>');
-		} else if ($this->id == 'new') {
-		    p('<a href="?curTable=' . $_REQUEST['curTable'] . '" style="margin:0;padding:0"><img style="vertical-align:middle;margin:0;" src="' . t('src_first') . '" alt="Retour" /></a>');
-		} else {
-		    p('<a href="?curTable=' . $_REQUEST['curTable'] . '&amp;curId=' . $_REQUEST['curId'] . '&resume=1" style="margin:0;padding:0"><img style="vertical-align:middle;margin:0;" src="' . t('src_first') . '" alt="Retour" /></a>');
-		}
-	    }
-	    //p("  ".t($_REQUEST['curTable']));
-	    $t = limitWords(strip_tags($this->GetRecordTitle($this->table, $this->id)), 15);
-	    if ($this->id && $t)
-		p(' <span class="titreListe">' . $t . ' [' . $this->id . ']</span> ');
-	    else
-		p('<span class="titreListe">Nouveau [' . $this->id . ']</span>');
+                if ($this->FormToInclude == 'resume') {
+                    p('<a href="?curTable=' . $_REQUEST['curTable'] . '" style="margin:0;padding:0"><img style="vertical-align:middle;margin:0;" src="' . t('src_first') . '" alt="Retour" /></a>');
+                } else if ($this->id == 'new') {
+                    p('<a href="?curTable=' . $_REQUEST['curTable'] . '" style="margin:0;padding:0"><img style="vertical-align:middle;margin:0;" src="' . t('src_first') . '" alt="Retour" /></a>');
+                } else {
+                    p('<a href="?curTable=' . $_REQUEST['curTable'] . '&amp;curId=' . $_REQUEST['curId'] . '&resume=1" style="margin:0;padding:0"><img style="vertical-align:middle;margin:0;" src="' . t('src_first') . '" alt="Retour" /></a>');
+                }
+            }
+            //p("  ".t($_REQUEST['curTable']));
+            $t = limitWords(strip_tags($this->GetRecordTitle($this->table, $this->id)), 15);
+            if ($this->id && $t)
+                p(' <span class="titreListe">' . $t . ' [' . $this->id . ']</span> ');
+            else
+                p('<span class="titreListe">Nouveau [' . $this->id . ']</span>');
 
-	    // p(' / <span class="titreTable">'.t($this->table).'</span>');
-	} else if ($this->table) {
-	    
-	}
+            // p(' / <span class="titreTable">'.t($this->table).'</span>');
+        } else if ($this->table) {
+            
+        }
 
 
-	p('</div>
+        p('</div>
         ');
     }
 
     function whichForm() {
 
-	/* Quel formulaire on inclu */
+        /* Quel formulaire on inclu */
 
-	global $tabForms, $formsRep, $fieldError, $genMessages;
-	$comingBack = 0;
-
-
-	/**
-	 * On reste sur le meme formulaire
-	 * Car il y a un champ mal remplit ou bien on a demander à  rester
-	 */
-	if (is_array($fieldError) || akev($_POST, 'genform_stay')) {
-	    $gl = new GenLocks();
-
-	    $gl->setLock($this->table, $this->id);
-
-	    return ("form");
-	} else {
-	    /**
-	     *  Si on vient de cliquer sur un bouton Ajouter depuis un autre formulaire
-	     * */
-	    if (isset($_REQUEST['newTable'])) {
-		/*
-		  On stock les infos actuelles dans la session
-		 */
-
-		$_SESSION[gfuid()]['nbLevels']++;
-		$_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['curTable'] = $_REQUEST['curTable'];
-		$_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['curTableKey'] = $_REQUEST['curTableKey'];
-		$_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['curId'] = $_REQUEST['curId'];
-		$_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['fieldToUpdate'] = akev($_REQUEST, 'fieldToUpdate');
-		$_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['curPage'] = $_REQUEST['curPage'];
-		$_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['tableToUpdate'] = akev($_REQUEST, 'tableToUpdate');
-		$_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['insertOtherField'] = $_REQUEST['insertOtherField'];
+        global $tabForms, $formsRep, $fieldError, $genMessages;
+        $comingBack = 0;
 
 
+        /**
+         * On reste sur le meme formulaire
+         * Car il y a un champ mal remplit ou bien on a demander à  rester
+         */
+        if (is_array($fieldError) || akev($_POST, 'genform_stay')) {
+            $gl = new GenLocks();
 
-		/*
-		  Et pour aller sur le nouveau formulaire on fait ca
-		 */
-		$_REQUEST['curTable'] = $_REQUEST['newTable'];
-		$_REQUEST['curId'] = $_REQUEST['newId'] ? $_REQUEST['newId'] : "";
-		$_REQUEST['curTableKey'] = "";
-		$_REQUEST['curPage'] = "";
-		$_REQUEST['newTable'] = "";
-		$_REQUEST['tableToUpdate'] = "";
-		$_REQUEST['insertOtherField'] = "";
-	    }
-	    /**
-	     *  Sinon, si on revient d'un formulaire vers un autre
-	     * */ else if (isset($_SESSION[gfuid()]['nbLevels']) && $_SESSION[gfuid()]['nbLevels'] > 0) {
-		/*
-		  On recupere nos variables de sessions
-		 */
-		$beforeRequest = $_REQUEST;
+            $gl->setLock($this->table, $this->id);
 
-		$_REQUEST['curTable'] = $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['curTable'];
-		$_REQUEST['curTableKey'] = $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['curTableKey'];
-		$_REQUEST['curPage'] = $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['curPage'];
-		$_REQUEST['tableToUpdate'] = $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['tableToUpdate'];
-		$_REQUEST['insertOtherField'] = $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['insertOtherField'];
+            return ("form");
+        } else {
+            /**
+             *  Si on vient de cliquer sur un bouton Ajouter depuis un autre formulaire
+             * */
+            if (isset($_REQUEST['newTable'])) {
+                /*
+                  On stock les infos actuelles dans la session
+                 */
 
-		$sql = "";
-
-		/*
-		  On modifie la Table de relation
-		 */
-		if ($_REQUEST['tableToUpdate'] && $_REQUEST['curId'] && $_REQUEST['curId'] != 'new') {
-		    $sql = "INSERT INTO " . $_REQUEST['tableToUpdate'] .
-			    " ( fk_" . $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['fieldToUpdate'] . " , fk_" .
-			    $_REQUEST['curTableKey'] . " )  VALUES  ( " .
-			    $_REQUEST['curId'] . " , " .
-			    $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['curId'] . " ) ";
-		} else if ($_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['fieldToUpdate'] &&
-			$_REQUEST['curId'] && $_REQUEST['curId'] != "new") {
-		    /*
-		      On modifie la Clef externe simple
-		     */
-		    $sql = "UPDATE " . $_REQUEST['curTable'] . " SET " .
-			    $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['fieldToUpdate'] . " = " .
-			    $_REQUEST['curId'] . " WHERE " . $_REQUEST['curTableKey'] . " = '" .
-			    $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['curId'] . "'";
+                $_SESSION[gfuid()]['nbLevels']++;
+                $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['curTable'] = $_REQUEST['curTable'];
+                $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['curTableKey'] = $_REQUEST['curTableKey'];
+                $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['curId'] = $_REQUEST['curId'];
+                $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['fieldToUpdate'] = akev($_REQUEST, 'fieldToUpdate');
+                $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['curPage'] = $_REQUEST['curPage'];
+                $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['tableToUpdate'] = akev($_REQUEST, 'tableToUpdate');
+                $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['insertOtherField'] = $_REQUEST['insertOtherField'];
 
 
-		    /* On reorganise / reordone */
-		    $ord = new GenOrder($_REQUEST['curTable'], $_REQUEST['curId']);
-		    $ord->OrderAfterInsertLastAtBottom();
-		}
 
-		/*
-		  Si on a pas annulé on fait vraiment cette requete
-		 */
+                /*
+                  Et pour aller sur le nouveau formulaire on fait ca
+                 */
+                $_REQUEST['curTable'] = $_REQUEST['newTable'];
+                $_REQUEST['curId'] = $_REQUEST['newId'] ? $_REQUEST['newId'] : "";
+                $_REQUEST['curTableKey'] = "";
+                $_REQUEST['curPage'] = "";
+                $_REQUEST['newTable'] = "";
+                $_REQUEST['tableToUpdate'] = "";
+                $_REQUEST['insertOtherField'] = "";
+            }
+            /**
+             *  Sinon, si on revient d'un formulaire vers un autre
+             * */ else if (isset($_SESSION[gfuid()]['nbLevels']) && $_SESSION[gfuid()]['nbLevels'] > 0) {
+                /*
+                  On recupere nos variables de sessions
+                 */
+                $beforeRequest = $_REQUEST;
 
-		if (!isset($_POST['genform_cancel']) && $sql) {
-		    DoSql($sql);
-		}
+                $_REQUEST['curTable'] = $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['curTable'];
+                $_REQUEST['curTableKey'] = $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['curTableKey'];
+                $_REQUEST['curPage'] = $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['curPage'];
+                $_REQUEST['tableToUpdate'] = $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['tableToUpdate'];
+                $_REQUEST['insertOtherField'] = $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['insertOtherField'];
 
-		$gl = new GenLocks();
+                $sql = "";
 
-		$gl->unsetLock($this->table, $this->id);
-
-
-		if (!isset($_POST['nextPage']) && !isset($_POST['prevPage'])) {
-		    $_REQUEST['curId'] = $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['curId'];
-
-		    $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']] = "";
-		    $comingBack = 1;
-
-		    $_SESSION[gfuid()]['nbLevels']--;
-		    $_REQUEST['curTable'] = $_REQUEST['curTable'];
-		} else {
-		    $_REQUEST = $beforeRequest;
-		}
-	    }
-
-
-	    global $_Gconfig;
-	    /**
-	     *  Si on finit apres avoir soumis le formulaire
-	     * */
-	    if (( ake('genform_cancel', $_POST)
-		    || ake('genform_ok', $_POST)
-		    || ake('genform_ok_x', $_POST)
-		    || ake('genform_cancel', $_POST)
-		    || isset($_REQUEST['resume']) ) && !$comingBack) {
+                /*
+                  On modifie la Table de relation
+                 */
+                if ($_REQUEST['tableToUpdate'] && $_REQUEST['curId'] && $_REQUEST['curId'] != 'new') {
+                    $sql = "INSERT INTO " . $_REQUEST['tableToUpdate'] .
+                            " ( fk_" . $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['fieldToUpdate'] . " , fk_" .
+                            $_REQUEST['curTableKey'] . " )  VALUES  ( " .
+                            $_REQUEST['curId'] . " , " .
+                            $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['curId'] . " ) ";
+                } else if ($_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['fieldToUpdate'] &&
+                        $_REQUEST['curId'] && $_REQUEST['curId'] != "new") {
+                    /*
+                      On modifie la Clef externe simple
+                     */
+                    $sql = "UPDATE " . $_REQUEST['curTable'] . " SET " .
+                            $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['fieldToUpdate'] . " = " .
+                            $_REQUEST['curId'] . " WHERE " . $_REQUEST['curTableKey'] . " = '" .
+                            $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['curId'] . "'";
 
 
-		/**
-		 * Si c'est une table en "updateAfterInsert" et qu'on vient de la créer, on revient dessus
-		 */
-		if (in_array($this->table, $_Gconfig['updateAfterInsert']) && $this->firstId == 'new') {
+                    /* On reorganise / reordone */
+                    $ord = new GenOrder($_REQUEST['curTable'], $_REQUEST['curId']);
+                    $ord->OrderAfterInsertLastAtBottom();
+                }
 
-		    $gl = new GenLocks();
+                /*
+                  Si on a pas annulé on fait vraiment cette requete
+                 */
 
-		    $gl->setLock($this->table, $this->id);
+                if (!isset($_POST['genform_cancel']) && $sql) {
+                    DoSql($sql);
+                }
 
-		    return('form');
-		}
-		/**
-		 * Sinon on retourne au résumé si on a fait OK ou CANCEL ou qu'on a demandé le résumé
-		 */
-		if ((ake('genform_ok', $_POST)
-			|| ake('genform_ok_x', $_POST)
-			|| ake('genform_cancel', $_POST)
-			|| ake('genform_cancel_x', $_POST)
-			|| $_REQUEST['resume']
-		)) {
-		    if (!isset($_REQUEST['resume'])) {
-			//$this->genRecord->checkDoOn('saved');
-		    }
-		    return('resume');
-		} else {
-		    if (in_array($_REQUEST['curTable'], $_Gconfig['multiVersionTable'])) {
-			return ("searchv2");
-		    } else {
-			return ("search");
-		    }
-		}
-	    } else if (isset($_REQUEST['curTable']) || isset($_POST['prevPage']) || isset($_POST['nextPage'])) {
+                $gl = new GenLocks();
 
-		/**
-		 * Si on inclu vraiment le formulaire
-		 *
-		 * */
-		$_REQUEST['curPage'] = isset($_REQUEST['curPage']) ? $_REQUEST['curPage'] : '0';
+                $gl->unsetLock($this->table, $this->id);
 
-		/* Enfin on retourne le formulaire */
-		if (isset($_REQUEST['curId'])) {
-		    $this->table = $_REQUEST['curTable'];
-		    $this->id = $_REQUEST['curId'];
 
-		    $gl = new GenLocks();
+                if (!isset($_POST['nextPage']) && !isset($_POST['prevPage'])) {
+                    $_REQUEST['curId'] = $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['curId'];
 
-		    $gl->setLock($this->table, $this->id);
+                    $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']] = "";
+                    $comingBack = 1;
 
-		    return "form";
-		}
+                    $_SESSION[gfuid()]['nbLevels']--;
+                    $_REQUEST['curTable'] = $_REQUEST['curTable'];
+                } else {
+                    $_REQUEST = $beforeRequest;
+                }
+            }
 
-		//return ($formsRep.$tabForms[$_REQUEST['curTable']]['pages'][$_REQUEST['curPage']]);
-		else if ($_REQUEST['curTable']) {
-		    if (in_array($_REQUEST['curTable'], $_Gconfig['multiVersionTable'])) {
-			return ("searchv2");
-		    } else {
-			return ("search");
-		    }
-		}
-	    } else if (isset($_REQUEST['arbo'])) {
 
-		return ("arbo");
-	    } else {
-		/* Sinon  quoi ? */
-		$_REQUEST['curTable'] = "";
-		$_REQUEST['curId'] = "";
+            global $_Gconfig;
+            /**
+             *  Si on finit apres avoir soumis le formulaire
+             * */
+            if (( ake('genform_cancel', $_POST)
+                    || ake('genform_ok', $_POST)
+                    || ake('genform_ok_x', $_POST)
+                    || ake('genform_cancel', $_POST)
+                    || isset($_REQUEST['resume']) ) && !$comingBack) {
 
-		return ("home");
-	    }
-	}
+
+                /**
+                 * Si c'est une table en "updateAfterInsert" et qu'on vient de la créer, on revient dessus
+                 */
+                if (in_array($this->table, $_Gconfig['updateAfterInsert']) && $this->firstId == 'new') {
+
+                    $gl = new GenLocks();
+
+                    $gl->setLock($this->table, $this->id);
+
+                    return('form');
+                }
+                /**
+                 * Sinon on retourne au résumé si on a fait OK ou CANCEL ou qu'on a demandé le résumé
+                 */
+                if ((ake('genform_ok', $_POST)
+                        || ake('genform_ok_x', $_POST)
+                        || ake('genform_cancel', $_POST)
+                        || ake('genform_cancel_x', $_POST)
+                        || $_REQUEST['resume']
+                )) {
+                    if (!isset($_REQUEST['resume'])) {
+                        //$this->genRecord->checkDoOn('saved');
+                    }
+                    return('resume');
+                } else {
+                    if (in_array($_REQUEST['curTable'], $_Gconfig['multiVersionTable'])) {
+                        return ("searchv2");
+                    } else {
+                        return ("search");
+                    }
+                }
+            } else if (isset($_REQUEST['curTable']) || isset($_POST['prevPage']) || isset($_POST['nextPage'])) {
+
+                /**
+                 * Si on inclu vraiment le formulaire
+                 *
+                 * */
+                $_REQUEST['curPage'] = isset($_REQUEST['curPage']) ? $_REQUEST['curPage'] : '0';
+
+                /* Enfin on retourne le formulaire */
+                if (isset($_REQUEST['curId'])) {
+                    $this->table = $_REQUEST['curTable'];
+                    $this->id = $_REQUEST['curId'];
+
+                    $gl = new GenLocks();
+
+                    $gl->setLock($this->table, $this->id);
+
+                    return "form";
+                }
+
+                //return ($formsRep.$tabForms[$_REQUEST['curTable']]['pages'][$_REQUEST['curPage']]);
+                else if ($_REQUEST['curTable']) {
+                    if (in_array($_REQUEST['curTable'], $_Gconfig['multiVersionTable'])) {
+                        return ("searchv2");
+                    } else {
+                        return ("search");
+                    }
+                }
+            } else if (isset($_REQUEST['arbo'])) {
+
+                return ("arbo");
+            } else {
+                /* Sinon  quoi ? */
+                $_REQUEST['curTable'] = "";
+                $_REQUEST['curId'] = "";
+
+                return ("home");
+            }
+        }
     }
 
 }
@@ -1042,12 +1042,12 @@ class genAdmin {
  */
 function gfuid() {
     if (akev($_REQUEST, 'gfuid')) {
-	$uid = $_REQUEST['gfuid'];
+        $uid = $_REQUEST['gfuid'];
     } else {
-	$uid = $_REQUEST['gfuid'] = "guid_" . str_replace('.', '', getmicrotime());
+        $uid = $_REQUEST['gfuid'] = "guid_" . str_replace('.', '', getmicrotime());
     }
     if (!ake($_SESSION, $uid)) {
-	$_SESSION[$uid] = array();
+        $_SESSION[$uid] = array();
     }
     return $uid;
 }
@@ -1057,12 +1057,12 @@ class smallAdmin {
     public $parent;
 
     function __construct($parent) {
-	$this->parent = $parent;
+        $this->parent = $parent;
 
 
-	if (( (isset($_GET['bas_1'])) || (isset($_GET['haut_1'])) ) && (isset($_GET['rubId']))) {
-	    $this->updateRubriqueOrder();
-	}
+        if (( (isset($_GET['bas_1'])) || (isset($_GET['haut_1'])) ) && (isset($_GET['rubId']))) {
+            $this->updateRubriqueOrder();
+        }
     }
 
     /**
@@ -1075,29 +1075,29 @@ class smallAdmin {
     function recurserub($id=0, $nivv=0, $dolinka=0) {
 
 
-	$lighta = "<span style='color:#999'>";
-	$lightb = "</span>";
+        $lighta = "<span style='color:#999'>";
+        $lightb = "</span>";
 
-	$pictoAr['siteroot'] = ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/apps/system-software-update.png';
-	;
-	$pictoAr['menuroot'] = ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/apps/preferences-system-windows.png';
-	$pictoAr['page'] = ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/actions/document-template.png';
-	$pictoAr['link'] = ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/actions/edit-redo.png';
-	$pictoAr['folder'] = ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/places/folder.png';
-	$ht = '';
-	$bs = '';
-	$ajout = '';
-	$souldBeOrder = 1;
+        $pictoAr['siteroot'] = ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/apps/system-software-update.png';
+        ;
+        $pictoAr['menuroot'] = ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/apps/preferences-system-windows.png';
+        $pictoAr['page'] = ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/actions/document-template.png';
+        $pictoAr['link'] = ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/actions/edit-redo.png';
+        $pictoAr['folder'] = ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/places/folder.png';
+        $ht = '';
+        $bs = '';
+        $ajout = '';
+        $souldBeOrder = 1;
 
-	/**
-	 * Selectionne toutes les sous rubriques
-	 */
-	if ($id == 0 && isset($this->parent->gs->myroles['s_rubrique']) && is_array($this->parent->gs->myroles['s_rubrique']['rows'])) {
-	    /**
-	     * Pour les utilisateurs simples
-	     * avec des accès sous-rubriques
-	     */
-	    $q = "SELECT
+        /**
+         * Selectionne toutes les sous rubriques
+         */
+        if ($id == 0 && isset($this->parent->gs->myroles['s_rubrique']) && is_array($this->parent->gs->myroles['s_rubrique']['rows'])) {
+            /**
+             * Pour les utilisateurs simples
+             * avec des accès sous-rubriques
+             */
+            $q = "SELECT
 						G.*,
 	        			R1.* , 
 	        			R2.rubrique_ordre as r2_ordre, 
@@ -1105,11 +1105,11 @@ class smallAdmin {
 	        			FROM  s_rubrique as R2 , s_rubrique AS R1 LEFT JOIN s_gabarit AS G ON G.gabarit_id = R1.fk_gabarit_id
 	        			WHERE R1.rubrique_id IN(" . implode(',', $this->parent->gs->myroles['s_rubrique']['rows']) . ") " . sqlRubriqueVersions('R2.rubrique_id', 'R1') . " 
 	        			ORDER BY r2_ordre ASC ";
-	} else {
-	    /**
-	     * Pour les super admins
-	     */
-	    $q = "SELECT
+        } else {
+            /**
+             * Pour les super admins
+             */
+            $q = "SELECT
 	        			G.*,
 	        			R1.* , 
 	        			R2.rubrique_ordre as r2_ordre, 
@@ -1117,276 +1117,274 @@ class smallAdmin {
 	        			FROM  s_rubrique as R2 , s_rubrique AS R1 LEFT JOIN s_gabarit AS G ON G.gabarit_id = R1.fk_gabarit_id
 	        			WHERE R1.fk_rubrique_id " . sqlParam($id) . " " . sqlRubriqueVersions('R2.rubrique_id', 'R1') . " 
 	        			ORDER BY r2_ordre ASC ";
-	}
+        }
 
-	$query = GetAll($q);
-
-
-	$tot = count($query) - 1;
-
-	foreach ($query as $knb => $aff) {
-
-	    $fakeRubs = false;
-	    $real_rub = $aff['fk_rubrique_version_id'];
-	    $version_rub = $aff['rubrique_id'];
-
-	    /**
-	     * Si l'utilisateur peut modifier cette rubrique
-	     */
-	    if ($this->parent->gs->can('edit', 's_rubrique', $aff)) {
-
-		p('<ul id="arbo_' . $id . '">');
-
-		/**
-		 * Titre par défaut si vide
-		 */
-		if (!strlen($aff['rubrique_titre_' . LG_DEF])) {
-		    $aff['rubrique_titre_' . LG_DEF] = "[TITRE VIDE]";
-		}
+        $query = GetAll($q);
 
 
-		/**
-		 * Si jamais l'ordre n'était pas bon pour une raison X
-		 */
-		if ($souldBeOrder != $aff["r2_ordre"]) {
-		    /**
-		     * Si jamais l'ordre est faux, on réordonne
-		     */
-		    $sql = 'UPDATE s_rubrique SET rubrique_ordre = "' . $souldBeOrder . '" WHERE `rubrique_id` = "' . $real_rub . '"';
-		    $res = DoSql($sql);
+        $tot = count($query) - 1;
 
-		    $aff['r2_ordre'] = $souldBeOrder;
-		}
+        foreach ($query as $knb => $aff) {
 
-		/**
-		 * On fait un lien ?
-		 *
-		 */
-		$dolink = true;
+            $fakeRubs = false;
+            $real_rub = $aff['fk_rubrique_version_id'];
+            $version_rub = $aff['rubrique_id'];
 
-		/**
-		 * permet de connaitre pour la rubriqque en cours son niveau maximal
-		 */
-		$cl = '';
+            /**
+             * Si l'utilisateur peut modifier cette rubrique
+             */
+            if ($this->parent->gs->can('edit', 's_rubrique', $aff)) {
 
-		/**
-		 * Cette rubrique est-elle sélectionnée ?
-		 */
-		if ($this->parent->insideRealRubId == $real_rub ||
-			( $aff['fk_rubrique_version_id'] == akev($_SESSION, 'XHRlastCurId') && !isset($_REQUEST['curId']))
-			|| $version_rub == akev($_REQUEST,'curId')
-			) {
-		    
-		    $cl = 'class="mselected"';
-		    $_SESSION['XHRlastCurId'] = $aff['fk_rubrique_version_id'];
-		}
+                p('<ul id="arbo_' . $id . '">');
 
-		p('<li ' . $cl . '><span>');
-
-		/**
-		 *  Ancres pour liens directs quand le menu est plus long que la page
-		 */
-		if ($aff["fk_rubrique_id"] == 0)
-		    p('<a name="rub' . $aff["rubrique_id"] . '" />');
-
-		/**
-		 * Classe transparente si rubrique masquée
-		 */
-		$classColor = '';
-		$classColor = $aff['r2_etat'] == 'en_ligne' ? '' : ' pasenligne';
+                /**
+                 * Titre par défaut si vide
+                 */
+                if (!strlen($aff['rubrique_titre_' . LG_DEF])) {
+                    $aff['rubrique_titre_' . LG_DEF] = "[TITRE VIDE]";
+                }
 
 
+                /**
+                 * Si jamais l'ordre n'était pas bon pour une raison X
+                 */
+                if ($souldBeOrder != $aff["r2_ordre"]) {
+                    /**
+                     * Si jamais l'ordre est faux, on réordonne
+                     */
+                    $sql = 'UPDATE s_rubrique SET rubrique_ordre = "' . $souldBeOrder . '" WHERE `rubrique_id` = "' . $real_rub . '"';
+                    $res = DoSql($sql);
 
-		/**
-		 * Dossier ouvert / fermé :
-		 * plus ou moins
-		 */
-		$paramShow = isset($_SESSION['visibleRubs'][$real_rub]) ? 'hideRub=' . $real_rub : 'showRub=' . $real_rub;
-		$plusmoins = isset($_SESSION['visibleRubs'][$real_rub]) ? '<img src="./img/moins.gif" alt="" />' : '<img src="./img/plus.gif" alt="" />';
+                    $aff['r2_ordre'] = $souldBeOrder;
+                }
 
-		/**
-		 * Code JS pour ouverture
-		 */
-		$xhr = 'onclick="XHR_menuArbo(this.href,this);return false;"';
+                /**
+                 * On fait un lien ?
+                 *
+                 */
+                $dolink = true;
 
+                /**
+                 * permet de connaitre pour la rubriqque en cours son niveau maximal
+                 */
+                $cl = '';
 
-		$imageToShow = '';
+                /**
+                 * Cette rubrique est-elle sélectionnée ?
+                 */
+                if ($this->parent->insideRealRubId == $real_rub ||
+                        ( $aff['fk_rubrique_version_id'] == akev($_SESSION, 'XHRlastCurId') && !isset($_REQUEST['curId']))
+                        || $version_rub == akev($_REQUEST, 'curId')
+                ) {
 
-		/**
-		 * URL d'accès
-		 */
-		$url = '?' . $paramShow . '&amp;curTable=s_rubrique';
+                    $cl = 'class="mselected"';
+                    $_SESSION['XHRlastCurId'] = $aff['fk_rubrique_version_id'];
+                }
 
+                p('<li ' . $cl . '><span>');
 
-		$picto = $pictoAr[$aff['rubrique_type']];
+                /**
+                 *  Ancres pour liens directs quand le menu est plus long que la page
+                 */
+                if ($aff["fk_rubrique_id"] == 0)
+                    p('<a name="rub' . $aff["rubrique_id"] . '" />');
 
-		if ($aff['gabarit_classe']) {
-		    if ($aff['gabarit_plugin']) {
-			$f = path_concat(PLUGINS_FOLDER, $aff['gabarit_plugin']);
-		    } else {
-			$f = 'bdd';
-		    }
-		    $GLOBALS['gb_obj']->includeFile($aff['gabarit_classe'] . '.php', $f);
-		    //debug( $GLOBALS['gb_obj']->includeFile($aff['gabarit_classe'].'.php',$f));
-		    //$res = ${$aff['gabarit_classe'].'::getPicto'}();
-		    //debug($aff['gabarit_classe']);
-		    //$aaaa = eval(''.$aff['gabarit_classe'].'::getPicto();');
-		    if (method_exists($aff['gabarit_classe'], 'ocms_getPicto')) {
-			//	            		debug('PICTO');
-			$picto = call_user_func(array($aff['gabarit_classe'], 'ocms_getPicto'), $aff);
-		    }
-
-		    if (method_exists($aff['gabarit_classe'], 'ocms_getSubRubs')) {
-			$subRubs = call_user_func( array($aff['gabarit_classe'],'ocms_getSubRubs'), $aff);
-			$this->parent->arboRubs[$real_rub] = $subRubs;
-			$fakeRubs = true;
-		    }
-		}
+                /**
+                 * Classe transparente si rubrique masquée
+                 */
+                $classColor = '';
+                $classColor = $aff['r2_etat'] == 'en_ligne' ? '' : ' pasenligne';
 
 
 
-		if (isset($this->parent->arboRubs[$real_rub]) && count($this->parent->arboRubs[$real_rub]) > 0) {
-		    p('<a class="plusmoins ' . $classColor . '"
+                /**
+                 * Dossier ouvert / fermé :
+                 * plus ou moins
+                 */
+                $paramShow = isset($_SESSION['visibleRubs'][$real_rub]) ? 'hideRub=' . $real_rub : 'showRub=' . $real_rub;
+                $plusmoins = isset($_SESSION['visibleRubs'][$real_rub]) ? '<img src="./img/moins.gif" alt="" />' : '<img src="./img/plus.gif" alt="" />';
+
+                /**
+                 * Code JS pour ouverture
+                 */
+                $xhr = 'onclick="XHR_menuArbo(this.href,this);return false;"';
+
+
+                $imageToShow = '';
+
+                /**
+                 * URL d'accès
+                 */
+                $url = '?' . $paramShow . '&amp;curTable=s_rubrique';
+
+
+                $picto = $pictoAr[$aff['rubrique_type']];
+
+                if ($aff['gabarit_classe']) {
+                    if ($aff['gabarit_plugin']) {
+                        $f = path_concat(PLUGINS_FOLDER, $aff['gabarit_plugin']);
+                    } else {
+                        $f = 'bdd';
+                    }
+                    $GLOBALS['gb_obj']->includeFile($aff['gabarit_classe'] . '.php', $f);
+                    //debug( $GLOBALS['gb_obj']->includeFile($aff['gabarit_classe'].'.php',$f));
+                    //$res = ${$aff['gabarit_classe'].'::getPicto'}();
+                    //debug($aff['gabarit_classe']);
+                    //$aaaa = eval(''.$aff['gabarit_classe'].'::getPicto();');
+                    if (method_exists($aff['gabarit_classe'], 'ocms_getPicto')) {
+                        //	            		debug('PICTO');
+                        $picto = call_user_func(array($aff['gabarit_classe'], 'ocms_getPicto'), $aff);
+                    }
+
+                    if (method_exists($aff['gabarit_classe'], 'ocms_getSubRubs')) {
+                        $subRubs = call_user_func(array($aff['gabarit_classe'], 'ocms_getSubRubs'), $aff);
+                        $this->parent->arboRubs[$real_rub] = $subRubs;
+                        $fakeRubs = true;
+                    }
+                }
+
+
+
+                if (isset($this->parent->arboRubs[$real_rub]) && count($this->parent->arboRubs[$real_rub]) > 0) {
+                    p('<a class="plusmoins ' . $classColor . '"
 							' . $xhr . ' href="' . $url . '" 
 							>
 							' . $plusmoins . '<img src="' . $picto . '" alt="" /></a>');
-		} else {
-		    p('<a class="plusmoins ' . $classColor . '"
+                } else {
+                    p('<a class="plusmoins ' . $classColor . '"
 							>
 							<img src="./img/pixel.gif" width="16" height="16" alt="" /><img src="' . $picto . '" alt="" /></a>');
-		}
-		/**
-		 * Sommes nous en fin de rubrique ?
+                }
+                /**
+                 * Sommes nous en fin de rubrique ?
 
-		  $m = "SELECT max(rubrique_ordre) as maxi FROM s_rubrique WHERE fk_rubrique_id ".sqlParam($id).' '.sqlRubriqueOnlyReal();
-		  $max = GetSingle($m);
-		  $maxxi = $max["maxi"];
-		 */
-		/**
-		 * Si on a des sous-rubriques on affiche le plus/moins
-		 * Sinon ... non
-		 */
-		if ($this->parent->insideRealRubId == $aff['fk_rubrique_version_id'] ||
-			( $aff['fk_rubrique_version_id'] == $_SESSION['XHRlastCurId'] && !isset($_REQUEST['curId']))) {
-
-
-		    if ($knb == 0) {
-			p('<script type="text/javascript">$("#goHautLink").attr("href","#").addClass("disabled");</script>');
-		    }
-
-		    if ($knb == $tot) {
-			p('<script type="text/javascript">$("#goBasLink").attr("href","#").addClass("disabled");</script>');
-		    }
-
-		    if ($fakeRubs) {
-			p('<script type="text/javascript">$("#addSubLink").attr("href","#").addClass("disabled");</script>');
-		    }
-		}
+                  $m = "SELECT max(rubrique_ordre) as maxi FROM s_rubrique WHERE fk_rubrique_id ".sqlParam($id).' '.sqlRubriqueOnlyReal();
+                  $max = GetSingle($m);
+                  $maxxi = $max["maxi"];
+                 */
+                /**
+                 * Si on a des sous-rubriques on affiche le plus/moins
+                 * Sinon ... non
+                 */
+                if ($this->parent->insideRealRubId == $aff['fk_rubrique_version_id'] ||
+                        ( $aff['fk_rubrique_version_id'] == $_SESSION['XHRlastCurId'] && !isset($_REQUEST['curId']))) {
 
 
-		/**
-		 * Lien texte
-		 */
-		$linka = '<a ' . $cl . ' href="index.php?curTable=s_rubrique&amp;showRub=' . $real_rub . '&amp;curId=' . $version_rub . '&amp;resume=1"  
+                    if ($knb == 0) {
+                        p('<script type="text/javascript">$("#goHautLink").attr("href","#").addClass("disabled");</script>');
+                    }
+
+                    if ($knb == $tot) {
+                        p('<script type="text/javascript">$("#goBasLink").attr("href","#").addClass("disabled");</script>');
+                    }
+
+                    if ($fakeRubs) {
+                        p('<script type="text/javascript">$("#addSubLink").attr("href","#").addClass("disabled");</script>');
+                    }
+                }
+
+
+                /**
+                 * Lien texte
+                 */
+                $linka = '<a ' . $cl . ' href="index.php?curTable=s_rubrique&amp;showRub=' . $real_rub . '&amp;curId=' . $version_rub . '&amp;resume=1"  
 			 onmouseover="swapactions(\'imm_' . $real_rub . '\',this)">';
 
 
-		$link = (($aff['rubrique_titre_' . LG_DEF]));
-		$link = getLgValue('rubrique_titre', $aff);
-		$linkb = '</a>';
+                $link = (($aff['rubrique_titre_' . LG_DEF]));
+                $link = getLgValue('rubrique_titre', $aff);
+                $linkb = '</a>';
 
 
-		if ($dolink)
-		    echo $linka . $link . $linkb . '<span class="img_move" id="imm_' . $real_rub . '">' . $ht . $bs . " " . $ajout . "</span>";
-		else
-		    echo $lighta . $link . $lightb;
+                if ($dolink)
+                    echo $linka . $link . $linkb . '<span class="img_move" id="imm_' . $real_rub . '">' . $ht . $bs . " " . $ajout . "</span>";
+                else
+                    echo $lighta . $link . $lightb;
 
-		p('</span>');
+                p('</span>');
 
-		p('<br/>');
+                p('<br/>');
 
 
-		if (isset($_SESSION['visibleRubs'][$real_rub])) {
-		    /**
-		     * On parcourt en dessous
-		     */
-		    if ($fakeRubs && $subRubs) {
-			p('<ul class="fakeSubs">');
-			foreach ($subRubs as $v) {
-			    p('<li ><a onclick="return doblank(this)" href="' . getUrlFromId($real_rub, LG, array($v['PARAM'] => $v['VALUE'])) . '"  >' . $v['NAME'] . '</a></li>');
-			}
-			p('</ul>');
-		    } else {
-			$this->recurserub($real_rub, $nivv + 1, $dolink);
-		    }
-		}
+                if (isset($_SESSION['visibleRubs'][$real_rub])) {
+                    /**
+                     * On parcourt en dessous
+                     */
+                    if ($fakeRubs && $subRubs) {
+                        p('<ul class="fakeSubs">');
+                        foreach ($subRubs as $v) {
+                            p('<li ><a onclick="return doblank(this)" href="' . getUrlFromId($real_rub, LG, array($v['PARAM'] => $v['VALUE'])) . '"  >' . $v['NAME'] . '</a></li>');
+                        }
+                        p('</ul>');
+                    } else {
+                        $this->recurserub($real_rub, $nivv + 1, $dolink);
+                    }
+                }
 
-		$nextlink = 0;
+                $nextlink = 0;
 
-		p('</ul>');
-	    } else {
-		/**
-		 * On avait pas accès à cette rubrique,
-		 * On parcourt en dessous voir si on a accès
-		 */
-		$this->recurserub($real_rub, $nivv + 1, $dolink);
-	    }
+                p('</ul>');
+            } else {
+                /**
+                 * On avait pas accès à cette rubrique,
+                 * On parcourt en dessous voir si on a accès
+                 */
+                $this->recurserub($real_rub, $nivv + 1, $dolink);
+            }
 
-	    $souldBeOrder++;
-	}
+            $souldBeOrder++;
+        }
     }
 
     public function getRubs() {
 
-	$sql = 'Select rubrique_id,fk_rubrique_id,fk_rubrique_version_id FROM s_rubrique';
-	$res = GetAll($sql);
-	$rubs = array();
-	$this->parent->rubver = array();
-	$this->parent->reverserubs = array();
-	foreach ($res as $row) {
-	    $rubs[$row['fk_rubrique_id']][] = $row['rubrique_id'];
-	    $this->parent->reverserubs[$row['rubrique_id']] = $row['fk_rubrique_id'];
-	    $this->parent->rubver[$row['rubrique_id']] = $row['fk_rubrique_version_id'];
-	    if ($this->parent->table == 's_rubrique' && $this->parent->id == $row['rubrique_id']) {
-		$this->parent->real_rub_id = $row['fk_rubrique_version_id'];
-		$this->parent->real_fk_rub = $row['fk_rubrique_id'];
-	    }
-	}
+        $sql = 'Select rubrique_id,fk_rubrique_id,fk_rubrique_version_id FROM s_rubrique';
+        $res = GetAll($sql);
+        $rubs = array();
+        $this->parent->rubver = array();
+        $this->parent->reverserubs = array();
+        foreach ($res as $row) {
+            $rubs[$row['fk_rubrique_id']][] = $row['rubrique_id'];
+            $this->parent->reverserubs[$row['rubrique_id']] = $row['fk_rubrique_id'];
+            $this->parent->rubver[$row['rubrique_id']] = $row['fk_rubrique_version_id'];
+            if ($this->parent->table == 's_rubrique' && $this->parent->id == $row['rubrique_id']) {
+                $this->parent->real_rub_id = $row['fk_rubrique_version_id'];
+                $this->parent->real_fk_rub = $row['fk_rubrique_id'];
+            }
+        }
 
-	return $rubs;
+        return $rubs;
     }
 
     function updateRubriqueOrder() {
 
-	$go = new GenOrder('s_rubrique', $_GET['rubId'], $_GET['fkrubId']);
+        $go = new GenOrder('s_rubrique', $_GET['rubId'], $_GET['fkrubId']);
 
-	if (isset($_GET['bas_1'])) {
-	    $go->getDown();
-	}
+        if (isset($_GET['bas_1'])) {
+            $go->getDown();
+        }
 
-	if (isset($_GET['haut_1'])) {
-	    $go->getUp();
-	}
+        if (isset($_GET['haut_1'])) {
+            $go->getUp();
+        }
 
-	DoSql('UPDATE s_param SET param_valeur = UNIX_TIMESTAMP() WHERE param_id = "date_update_arbo"');
+        DoSql('UPDATE s_param SET param_valeur = UNIX_TIMESTAMP() WHERE param_id = "date_update_arbo"');
     }
 
-    
-    
     function getArboActions() {
-	p('<div id="arbo_actions">');
+        p('<div id="arbo_actions">');
 
-	$ht = '';
-	$bs = '';
-	$ajout = '';
+        $ht = '';
+        $bs = '';
+        $ajout = '';
 
-	if ($this->parent->id) {
+        if ($this->parent->id) {
 
-	    $ht = '&nbsp;&nbsp;&nbsp;<a id="goHautLink" onclick="XHR_menuArbo(this.href,this);return false;" href="index.php?showRub='.$this->parent->real_rub_id.'&amp;haut_1=1&amp;curTable=' . $this->parent->table . '&amp;curId=' . $this->parent->id . '&amp;rubId=' . $this->parent->real_rub_id . '&amp;resume=1&amp;fkrubId=' . $this->parent->real_fk_rub . '" title="Monter d\'un niveau"><img src="' . ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/actions/go-up.png" alt="" /> ' . t('monter') . ' </a>';
+            $ht = '&nbsp;&nbsp;&nbsp;<a id="goHautLink" onclick="XHR_menuArbo(this.href,this);return false;" href="index.php?showRub=' . $this->parent->real_rub_id . '&amp;haut_1=1&amp;curTable=' . $this->parent->table . '&amp;curId=' . $this->parent->id . '&amp;rubId=' . $this->parent->real_rub_id . '&amp;resume=1&amp;fkrubId=' . $this->parent->real_fk_rub . '" title="Monter d\'un niveau"><img src="' . ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/actions/go-up.png" alt="" /> ' . t('monter') . ' </a>';
 
-	    $bs = '&nbsp;&nbsp;&nbsp;<a id="goBasLink" onclick="XHR_menuArbo(this.href,this);return false;" href="index.php?showRub='.$this->parent->real_rub_id.'&amp;bas_1=1&amp;curTable=' . $this->parent->table . '&amp;curId=' . $this->parent->id . '&amp;rubId=' . $this->parent->real_rub_id . '&amp;resume=1&amp;fkrubId=' . $this->parent->real_fk_rub . '" title="Descendre d\'un niveau"><img src="' . ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/actions/go-down.png" alt="" /> ' . t('descendre') . '</a>';
+            $bs = '&nbsp;&nbsp;&nbsp;<a id="goBasLink" onclick="XHR_menuArbo(this.href,this);return false;" href="index.php?showRub=' . $this->parent->real_rub_id . '&amp;bas_1=1&amp;curTable=' . $this->parent->table . '&amp;curId=' . $this->parent->id . '&amp;rubId=' . $this->parent->real_rub_id . '&amp;resume=1&amp;fkrubId=' . $this->parent->real_fk_rub . '" title="Descendre d\'un niveau"><img src="' . ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/actions/go-down.png" alt="" /> ' . t('descendre') . '</a>';
 
-	    $ajout = '';
+            $ajout = '';
 //
 //
 //	    // On autorise jusqu'a X niveau d'arborescence
@@ -1412,19 +1410,18 @@ class smallAdmin {
 //		$ajout = ' &nbsp; <a id="addSubLink" href="index.php?curTable=s_rubrique&amp;curId=new&amp;genform__add_sub_table=s_rubrique&amp;genform__add_sub_id=' . $this->parent->real_rub_id . '&amp;genform_default__rubrique_ordre=' . ((count($a) / 2) + 1) . '" title="Ajouter une sous rubrique "><img src="' . ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/actions/document-new.png" alt="" /> ' . t('ajout_sub_rub') . '</a>';
 //	    }
 //	    
-	    $ajout = ' &nbsp; <a id="addSubLink" href="index.php?curTable=s_rubrique&amp;curId=new&amp;genform__add_sub_table=s_rubrique&amp;genform__add_sub_id=' . $this->parent->real_rub_id . '" title="Ajouter une sous rubrique "><img src="' . ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/actions/document-new.png" alt="" /> ' . t('ajout_sub_rub') . '</a>';
-	} else {
-	    $ht = t('select_rub_below');
-	}
+            $ajout = ' &nbsp; <a id="addSubLink" href="index.php?curTable=s_rubrique&amp;curId=new&amp;genform__add_sub_table=s_rubrique&amp;genform__add_sub_id=' . $this->parent->real_rub_id . '" title="Ajouter une sous rubrique "><img src="' . ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/actions/document-new.png" alt="" /> ' . t('ajout_sub_rub') . '</a>';
+        } else {
+            $ht = t('select_rub_below');
+        }
 
-	/* construction simplifiée de l'aroborescence  */
-	if (isset($_REQUEST['curId']) && $_REQUEST['curId'] != 'new')
-	    $arbo = '&nbsp;&nbsp;&nbsp;<a href="index.php?arbo=1&amp;rubId=' . $this->parent->id . '&amp;fkrubId=' . $this->parent->real_fk_rub . '" title="' . t('arborescence') . '"><img src="' . ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/actions/arbo.png" alt="" /></a>';
-	else
-	    $arbo = '';
+        /* construction simplifiée de l'aroborescence  */
+        if (isset($_REQUEST['curId']) && $_REQUEST['curId'] != 'new')
+            $arbo = '&nbsp;&nbsp;&nbsp;<a href="index.php?arbo=1&amp;rubId=' . $this->parent->id . '&amp;fkrubId=' . $this->parent->real_fk_rub . '" title="' . t('arborescence') . '"><img src="' . ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/actions/arbo.png" alt="" /></a>';
+        else
+            $arbo = '';
 
-	p($ht . $bs . $ajout . $arbo . '</div><br/>');
+        p($ht . $bs . $ajout . $arbo . '</div><br/>');
     }
 
-    
 }

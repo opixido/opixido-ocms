@@ -701,8 +701,8 @@ function derror($txt) {
  * * @param mixed $txt
  */
 function debug() {
-    global $genMessages;
-    if($_SERVER['REMOTE_ADDR'] != "192.168.1.199" && !isset($_REQUEST['debug'])) {
+    global $genMessages,$_Gconfig;
+    if(!arrayInWord($_Gconfig['debugIps'],$_SERVER['REMOTE_ADDR']) && !isset($_REQUEST['debug'])) {
 	return;
     }
     $vars = func_get_args();
@@ -1316,7 +1316,10 @@ function arraySplit($array_with_elements, $key_name) {
 }
 
 function arrayInWord($arr, $word) {
-    while (list(, $v) = @each($arr)) {
+    if(!is_array($arr)) {
+        return false;
+    }
+    while (list(, $v) = each($arr)) {
 	if (strstr($word, $v) !== false)
 	    return true;
     }
