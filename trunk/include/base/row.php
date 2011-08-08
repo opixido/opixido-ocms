@@ -72,7 +72,7 @@ class row {
             $coup = mb_substr($fk_table, strpos($this->table, '_') + 1);
             $classe = false;
             if (class_exists($fk_table)) {
-                $classe = $this->table;
+                $classe = $fk_table;
             } else if (class_exists($coup)) {
                 $classe = $coup;
             }
