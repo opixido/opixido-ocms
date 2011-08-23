@@ -574,6 +574,9 @@ $_Gconfig['adminMenus']['menu_admin'] = array( 's_admin','s_plugin','s_param','s
 $_Gconfig['nonMassAction'] = array('edit','view');
 
 
+$_Gconfig['relationToAjaxMinimum'] = 100;
+
+
 define('ADMIN_PICTOS_FOLDER',ADMIN_URL.'pictos_stock/tango/');
 
 
