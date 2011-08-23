@@ -56,6 +56,9 @@ if (!$this->editMode) {
 	$result = $preValues;
     } else {
 
+        if (isset($_Gconfig['specialListing'][$fk_table]) && $_Gconfig['specialListing'][$fk_table][$this->table_name.'.'.$name]) {
+	    $result = $_Gconfig['specialListing'][$fk_table][$this->table_name.'.'.$name]($this);
+	} else
 	if (isset($_Gconfig['specialListing'][$fk_table]) && $_Gconfig['specialListing'][$fk_table][$this->table_name]) {
 	    $result = $_Gconfig['specialListing'][$fk_table][$this->table_name]($this);
 	} else {
