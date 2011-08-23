@@ -111,7 +111,7 @@ if (!$this->editMode) {
     /* FIN DU SELECT */
     $this->addBuffer('</select>');
 
-    if (count($result) > 30) {
+    if (!empty($_Gconfig['relationToAjaxMinimum']) && count($result) > $_Gconfig['relationToAjaxMinimum']) {
 	$this->addBuffer('
 			<script type="text/javascript">
 				selectToSearch("genform_' . $name . '");
