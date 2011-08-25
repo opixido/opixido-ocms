@@ -7,7 +7,7 @@ class genContact extends ocmsGen {
      *
      * @var Gensite
      */
-    private $site;
+    public $site;
     /**
      * simpleform
      *
