@@ -71,6 +71,22 @@ class genAction {
 	}
     }
 
+    public function genIt() {
+        if (is_object($this->obj)) {
+	    if (method_exists($this->obj ,'genIt') && $this->obj->checkCondition()) {
+               
+		$gr = new genRecord($this->table, $this->id);
+		$gr->checkDoOn($this->action);
+		logAction($this->action, $this->table, $this->id);
+		return $this->obj->genIt();
+	    } else {
+		return false;
+	    }
+	} else {
+	    return false;
+	}
+    }
+
     public function checkCondition() {
 	if (is_object($this->obj)) {
 	    return $this->obj->checkCondition();
@@ -883,7 +899,7 @@ class genActionValidate {
 
 	$dupli = new objDuplication('s_rubrique', $this->id, $this->row);
 
-	$dupli->noCopyField = $this->noCopyField;
+	$dupli->noCopyField = array_merge($dupli->noCopyField,$this->noCopyField);
 
 	$dupli->duplicateTo($this->row['fk_rubrique_version_id']);
 
