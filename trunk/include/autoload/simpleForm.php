@@ -671,7 +671,7 @@ class simpleForm {
      * @return Code HTML du label
      */
     function getLabel($field) {
-
+        $s = '';
 	if (strlen($field['label'])) {
 	    $needed = !empty($field['needed']) ? $this->neededSymbol : '';
 	    $s = '<label   ' . akev($field, 'tag') . '  ' . $this->classError($field) . ' id="label_' . akev($field, 'id') . '" for="' . akev($field, 'id') . '"><span>' . akev($field, 'label') . '</span> ' . $needed . '' . $this->postLabel . '</label>' . "\n";

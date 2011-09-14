@@ -2454,7 +2454,7 @@ function xmlencode($str) {
  * sinon la même requete avec le hash de verification
  * @param $src Chemin complet
  */
-function getThumbCacheFile($src,$u) {
+function getThumbCacheFile($src,$u='') {
     global $_Gconfig;
     $src = str_replace($_Gconfig['CDN'], '', $src);
 
@@ -2485,5 +2485,5 @@ function getThumbCacheFile($src,$u) {
     }
 
 
-    return $src . '&hash=' . $hash;
+    return $src;// . '&hash=' . $hash;
 }

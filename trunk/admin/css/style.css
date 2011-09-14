@@ -1456,3 +1456,8 @@ tr.myDragClass {
     background : #F5B85A !important;
 
 }
+
+
+.ui-state-active , .ui-state-highlight {
+    border:1px solid red;
+}

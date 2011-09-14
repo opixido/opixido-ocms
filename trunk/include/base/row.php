@@ -6,12 +6,12 @@ class row {
 
         $this->table = $table;
 
-        if (is_array($roworid)) {
+        if (is_array($roworid) && count($roworid)) {
             $this->row = $roworid;
             $this->id = $this->row[getPrimaryKey($table)];
         } else {
             $this->id = $roworid;
-            $this->row = getRowAndRelFromId($table, $this->id);
+            $this->row = getRowFromId($this->table, $this->id);
         }
 
         if (!$this->row) {

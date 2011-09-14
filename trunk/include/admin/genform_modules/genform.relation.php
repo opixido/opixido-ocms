@@ -71,6 +71,12 @@ if (!$this->editMode) {
 	    } else if (in_array($fk_table, $_Gconfig['multiVersionTable'])) {
 		$sql .= ' AND G.' . MULTIVERSION_FIELD . ' = ' . getPrimaryKey($fk_table);
 	    }
+
+            if(!empty($GLOBALS['gs_obj']->myroles[$fk_table]['rows'])) {
+                $sql .= ' AND '.  getPrimaryKey($fk_table).' IN("'.implode('","',$GLOBALS['gs_obj']->myroles[$fk_table]['rows']).'") ';
+            }
+          
+            
 	    $sql .= ' ORDER BY G.' . $nomSql . ' ';
 	    $result = GetAll($sql);
 	}
