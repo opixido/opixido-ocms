@@ -60,6 +60,7 @@ function errorHandler($errno, $errstr='', $errfile='', $errline='')
 
     $errMsg = "$err: $errstr in $errfile on line $errline";
 
+    //if($errno != E_NOTICE)
     debug($errMsg);
     return;
     

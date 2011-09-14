@@ -12,7 +12,7 @@
 
 <script type="text/javascript" >
 
-$.fn.tipsy.defaults = {
+    $.fn.tipsy.defaults = {
         delayIn: 0.3,
         delayOut: 0.3,
         fade: true,
@@ -24,115 +24,112 @@ $.fn.tipsy.defaults = {
     };
 
 
-$(document).ready(function() {
-	//$('.resizable').TextAreaResizer();
-	$('.resizable').each(function() {FitToContent($(this).attr('id'));});
+    $(document).ready(function() {
+        //$('.resizable').TextAreaResizer();
+        $('.resizable').each(function() {FitToContent($(this).attr('id'));});
 	
-	$('input, a, div.rtePreview').tipsy({html: true ,gravity:  $.fn.tipsy.autoWE});
-	$('img.helpimg').tipsy({html: true ,gravity:  $.fn.tipsy.autoWE,title:'alt'});
-});
+        $('input, a, div.rtePreview').tipsy({html: true ,gravity:  $.fn.tipsy.autoWE});
+        $('img.helpimg').tipsy({html: true ,gravity:  $.fn.tipsy.autoWE,title:'alt'});
+    });
 
 
 
-$("table.sortable .order").remove();
+    $("table.sortable .order").remove();
 
-$("table.sortable").each( function() {
+    $("table.sortable").each( function() {
 
-	if($(this).find("tbody tr").length > 1) {
+        if($(this).find("tbody tr").length > 1) {
 		
-		$(this).find("tbody tr").prepend('<td class="dragHandle" title=<?=alt(t('relinv_move'));?>></td>');
-		$(this).find('td.dragHandle').tipsy({html: true ,gravity:  'e'});
-		$(this).find("thead th:first").after("<th width='20'></th>");
+            $(this).find("tbody tr").prepend('<td class="dragHandle" title=<?= alt(t('relinv_move')); ?>></td>');
+            $(this).find('td.dragHandle').tipsy({html: true ,gravity:  'e'});
+            $(this).find("thead th:first").after("<th width='20'></th>");
 		
-		$(this).tableDnD({
-	        onDrop: function(table, row) {
-	           var trs = $(table).find('tbody tr');
-	           var arr = new Array();
-	           for(p = 0;p<trs.length;p++) {
-	           		arr.push(($(trs[p]).attr('rel')));
-	           }
-	           var t = $(table).attr('rel');
-	           t = t.split('__');
-	           ajaxAction("reorderRelinv", t[0],"<?=akev($_REQUEST,'curId')?>",{relinv:t[1],order:arr});	        },
-	        dragHandle: "dragHandle",
-	        onDragClass: "myDragClass"		
-   		 });
-	}
+            $(this).tableDnD({
+                onDrop: function(table, row) {
+                    var trs = $(table).find('tbody tr');
+                    var arr = new Array();
+                    for(p = 0;p<trs.length;p++) {
+                        arr.push(($(trs[p]).attr('rel')));
+                    }
+                    var t = $(table).attr('rel');
+                    t = t.split('__');
+                    ajaxAction("reorderRelinv", t[0],"<?= akev($_REQUEST, 'curId') ?>",{relinv:t[1],order:arr});	        },
+                dragHandle: "dragHandle",
+                onDragClass: "myDragClass"
+            });
+        }
 	
 	
-});
+    });
 
-$('#arbo_1').sortable();
-
-
-
-/**
- * Pour la limitation de certains serveurs à un nombre de champ d'upload restreint
- */
-$("#genform_formulaire").submit(function() {
-	$("#genform_formulaire input[type=file]").each(function() {
-		if($(this).val() == "") {
-			$(this).remove();			
-		}
-	});
-});
+    $('#arbo_1').sortable();
 
 
 
+    /**
+     * Pour la limitation de certains serveurs à un nombre de champ d'upload restreint
+     */
+    $("#genform_formulaire").submit(function() {
+        $("#genform_formulaire input[type=file]").each(function() {
+            if($(this).val() == "") {
+                $(this).remove();
+            }
+        });
+    });
+  
 
-<?php if($GLOBALS['rteElements']) { ?>
-if(tinyMCE_GZ) {
-tinyMCE_GZ.init({				   
-	theme : "advanced",
-	skin : "default",
-	language : "en",
-	plugins : "safari,paste,fullscreen,advimage,xhtmlxtras,contextmenu"		 
-});
-}
+<?php if ($GLOBALS['rteElements']) { ?>
+        if(tinyMCE_GZ) {
+            tinyMCE_GZ.init({
+                theme : "advanced",
+                skin : "default",
+                language : "en",
+                plugins : "safari,paste,fullscreen,advimage,xhtmlxtras,contextmenu"
+            });
+        }
 <? } ?>
 
 
 </script>
 <script type="text/javascript">
-<?php if($GLOBALS['rteElements']) { //<?=substr($GLOBALS['rteElements'],0,-2)? >
-?>
-function setupTinymce(elementsId) {
-tinyMCE.init({
-				    mode : "exact",
-					elements : elementsId,
-					theme : "advanced",
-					skin : "default",
-					language : "en",
-					plugins : "safari,paste,fullscreen,advimage,xhtmlxtras,contextmenu",
-					entity_encoding : "raw",
-					content_css : "<?=BU?>/css/baseadmin.css",
-					theme_advanced_styles : "Couleur principale=couleur_1;Couleur secondaire=couleur_2;Miso=miso;MisoLight=misol;MisoBold=misob;Texte plus grand=txtbig",
-					theme_advanced_buttons1 : "styleselect,bold,italic,underline,separator,removeformat,separator,hr,image,link,unlink,separator,pastetext,separator,bullist,bullnum,separator,code,cleanup,separator,sub,sup,separator,abbr,acronym,charmap,fullscreen",
-					theme_advanced_buttons2 : "",
-					theme_advanced_buttons3 : "",
-					theme_advanced_toolbar_location : "top",
-					theme_advanced_toolbar_align : "left",
-					theme_advanced_statusbar_location : "",
-				    plugi2n_insertdate_dateFormat : "%d/%m/%Y",
-				    plugi2n_insertdate_dateFormat : "%d/%m/%Y",		   
-				    relative_urls : false , 
-					auto_reset_designmode:true,
-					file_browser_callback : "fileBrowserCallBack",
-					theme_advanced_resize_horizontal : false,	
-					paste_auto_cleanup_on_paste : true,
-					paste_text_use_dialog : true,
-					paste_convert_headers_to_strong : true,
-					paste_strip_class_attributes : "all",
-					paste_remove_spans : true,
-					paste_remove_styles : true,		
-					convert_fonts_to_spans : true,
-					verify_html : false ,
-					forced_root_block : 'p',	
-					remove_linebreaks : false
-						 
-				});
-}
-<? 
+<?php if ($GLOBALS['rteElements']) { //<?=substr($GLOBALS['rteElements'],0,-2)? >         ?>
+        function setupTinymce(elementsId) {
+            tinyMCE.init({
+                mode : "exact",
+                elements : elementsId,
+                theme : "advanced",
+                skin : "default",
+                language : "en",
+                plugins : "safari,paste,fullscreen,advimage,xhtmlxtras,contextmenu",
+                entity_encoding : "raw",
+                content_css : "<?= BU ?>/css/baseadmin.css",
+                theme_advanced_styles : "Couleur principale=couleur_1;Couleur secondaire=couleur_2;Miso=miso;MisoLight=misol;MisoBold=misob;Texte plus grand=txtbig",
+                theme_advanced_buttons1 : "styleselect,bold,italic,underline,separator,removeformat,separator,hr,image,link,unlink,separator,pastetext,separator,bullist,bullnum,separator,code,cleanup,separator,sub,sup,separator,abbr,acronym,charmap,fullscreen",
+                theme_advanced_buttons2 : "",
+                theme_advanced_buttons3 : "",
+                theme_advanced_toolbar_location : "top",
+                theme_advanced_toolbar_align : "left",
+                theme_advanced_statusbar_location : "",
+                plugi2n_insertdate_dateFormat : "%d/%m/%Y",
+                plugi2n_insertdate_dateFormat : "%d/%m/%Y",
+                relative_urls : false ,
+                auto_reset_designmode:true,
+                file_browser_callback : "fileBrowserCallBack",
+                theme_advanced_resize_horizontal : false,
+                paste_auto_cleanup_on_paste : true,
+                paste_text_use_dialog : true,
+                paste_convert_headers_to_strong : true,
+                paste_strip_class_attributes : "all",
+                paste_remove_spans : true,
+                paste_remove_styles : true,
+                convert_fonts_to_spans : true,
+                verify_html : false ,
+                forced_root_block : 'p',
+                remove_linebreaks : false
+
+            });
+        }
+    <?
 }
 ?>
 

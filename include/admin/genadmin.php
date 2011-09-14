@@ -832,6 +832,19 @@ class genAdmin {
 
         p('</div>
         ');
+
+
+
+        if (ake('genform_action', $_REQUEST)) {
+            
+            reset($_REQUEST['genform_action']);
+            while (list($action, ) = each($_REQUEST['genform_action'])) {
+
+                $this->action = new GenAction($action, $this->table, $this->id, $this->row);
+                $this->action->GenIt();
+
+            }
+        }
     }
 
     function whichForm() {

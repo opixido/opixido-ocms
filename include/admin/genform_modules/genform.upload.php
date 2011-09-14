@@ -213,7 +213,9 @@ if ( !$this->editMode ) {
 	
 					
     $this->addBuffer(' </label> <br/>');
-    $this->addBuffer('<input type="file" id="genform_' . $name . '" name="genform_' . $name . '"  /> 
+    $this->addBuffer('
+
+<input type="file" class="fileupload" id="genform_' . $name . '" name="genform_' . $name . '"  />
 
     <label class="abutton"  style="float:none;width:120px;">
     <input class="inputimage" type="image" value="" src="'.t('src_upload').'"  name="genform_stay"  />

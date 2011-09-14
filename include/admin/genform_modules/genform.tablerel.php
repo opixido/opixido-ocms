@@ -107,7 +107,7 @@ class genform_tablerel extends genform_base {
 	function genForm() {
 		
 		global $previewField,$tabForms;
-			
+			$chps = '';
 		/**
 		 * Image d'aide
 		 */
@@ -202,7 +202,7 @@ class genform_tablerel extends genform_base {
 			/**
 			* Bouton de PREVISUALISATION
 			*/
-			$chps = '';
+			
 			if(!empty($previewField[$this->table][$this->champ]))  {
 				$chps = is_array($previewField[$this->table][$this->champ]) ? implode(';',$previewField[$this->table][$this->champ]) : $previewField[$this->table][$this->champ];
 				$this->addBuffer('<br/><input title="'.t('preview').'" class="inputimage" id="genform_preview_'.$this->champ.'_'.$this->fk_champ.'_btn" src="'.t('src_preview').'" type="image" name="genform_preview" value="'.t('preview').'" onclick="genformPreviewFk(\''.$this->fk_table.'\',\''.$this->champ.'_'.$this->fk_champ.'\',\''.$chps.'\');return false;" />');

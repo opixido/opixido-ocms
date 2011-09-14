@@ -4,7 +4,7 @@
     <head>
         <title>Administration :: <?php echo ta('base_title') ?> :: </title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-
+       
         <?php
         $css = array('admin/css/style.css',
             'admin/css/style_suite.css',
@@ -12,7 +12,8 @@
             'admin/genform/css/genform.css',
             'admin/jq/css/cupertino/jquery-ui-1.7.1.custom.css',
             'admin/jq/css/tipsy.css',
-            'admin/jq/css/fg.menu.css'
+            'admin/jq/css/fg.menu.css',
+
         );
         $js = array(
             'admin/jq/js/jquery.js',
@@ -24,7 +25,9 @@
             'admin/jq/js/jquery.textarearesizer.compressed.js',
             'admin/jq/js/jquery.tablednd_0_5.js',
             'admin/jq/js/jquery.autocomplete-min.js',
-            'admin/jq/js/jquery.tipsy.js'
+            'admin/jq/js/jquery.tipsy.js',
+
+
         );
 
         //'/js/tooltip.js',
@@ -41,10 +44,10 @@
         ?>
 
         <script type="text/javascript">
-        <?
-        global $_Gconfig;
-        echo 'var lgs = ' . json_encode($_Gconfig['LANGUAGES']) . ';';
-        ?>
+<?
+global $_Gconfig;
+echo 'var lgs = ' . json_encode($_Gconfig['LANGUAGES']) . ';';
+?>
         </script>
 
         <?php
@@ -104,9 +107,9 @@
         ?>
                             </style>
                             <div class="clearer"></div>
-                        <?php } ?>		
+                        <?php } ?>
                         <a class="logoa" href="index.php?home=1"><h1><?php echo ta('base_title') ?></h1></a>
-                    </div>	
+                    </div>
                 </div>
 
 

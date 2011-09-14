@@ -191,6 +191,16 @@ class genRecord {
             $ord->ReOrder();
         }
 
+        
+        if (akev($_REQUEST,'genform_stay') == 'autosave') {
+            echo '<style>*{font-size:11px;padding:2px;margin:0;border:0;font-family:sans-serif;text-align:right;}</style>' . t('saved_at') . date('H:i:s') . '';
+            echo '
+        	<script>
+        		top.document.getElementById("curId").value = "' . $_REQUEST['curId'] . '";
+        	</script>
+        	';
+            die();
+        }
 
         $_SESSION[gfuid()]['curFields'] = array();
         // mail('conort@gmail.com','clean',gfuid());
@@ -261,7 +271,6 @@ class genRecord {
         }
 
         $res = $this->checkDoOn('insert');
-        
     }
 
     /**
@@ -303,7 +312,7 @@ class genRecord {
         global $_Gconfig;
         $chps = getTabField($this->table);
         if (isset($chps[$_Gconfig['field_date_maj']])) {
-            DoSql('UPDATE ' . $this->table . ' SET date_modif = NOW() WHERE ' . $this->pk . ' = "' . $this->id . '"');
+            DoSql('UPDATE ' . $this->table . ' SET ' . $_Gconfig['field_date_maj'] . ' = NOW() WHERE ' . $this->pk . ' = "' . $this->id . '"');
         }
 
 
@@ -834,6 +843,8 @@ class genRecord {
 
             $ord->ReOrder();
         }
+
+        $this->checkDoOn('afterUpdate');
 
         if ($isError)
             return $fieldError;

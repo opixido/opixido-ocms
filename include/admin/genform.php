@@ -45,6 +45,7 @@ class GenForm {
     var $smallThumbWidth = 200;
     var $smallThumbHeight = 200;
     public $restricted = false;
+
     /**
      * genSecurity
      *
@@ -1034,6 +1035,24 @@ class GenForm {
 
             p('genform_activatePage(' . $_REQUEST["curPage"] . ');');
 
+
+            p('
+					
+                function doSaveAllAndStay(func) {
+                       
+                        $("#genform_stay").val("autosave");
+                        if(func) {
+                            $("#autosave_frame").load(func);
+                        }
+                        $("#genform_formulaire").attr("target","autosave_frame").submit().attr("target","");
+                        $("#genform_stay").val("");                                
+                        
+                        return false;
+                        
+                }
+            ');
+            p('</script>');
+
             p('</script>');
 
             //$this->genButtons();
@@ -1132,7 +1151,7 @@ class GenForm {
 
             p('<div id="genform_header_btn_lgs" class="genform_header_btn" style="margin-top:100px;padding:2px;" >');
             p('<label>');
-            if(empty($_SESSION['onlyLg'])) {
+            if (empty($_SESSION['onlyLg'])) {
                 $_SESSION['onlyLg'] = false;
             }
             if (($_SESSION['onlyLg'] && $_SESSION['onlyLg'] != 'ALL')) {
@@ -1171,6 +1190,8 @@ class GenForm {
 
             p(t('save') . '</label>');
 
+
+            p('<iframe id="autosave_frame" frameborder="0" name="autosave_frame"></iframe>');
 
             if (isset($_REQUEST['gfa'])) {
                 p(' <label class="abutton" for="genform_ok_close" >');
