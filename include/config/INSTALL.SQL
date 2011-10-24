@@ -750,3 +750,13 @@ CREATE TABLE `s_bloc` (
 PRIMARY KEY ( `bloc_nom` )
 ) ;
 
+REPLACE INTO `s_admin_trad` (
+`admin_trad_id` ,
+`admin_trad_[LG]` ,
+`fk_plugin_id`
+)
+VALUES (
+'map_geocode', 'Trouver la position à partir de l''adresse', '', ''
+), (
+'map_usecenter', 'Enregistrer le centre actuel de la carte', '', ''
+);

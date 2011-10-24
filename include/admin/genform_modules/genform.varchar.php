@@ -125,12 +125,12 @@ if (!$this->editMode) {
 	/**
 	 * Champ du mot de passe
 	 */
-	$this->addBuffer('<input 
-							id="genform_' . $name . '" ' . $jsColor . ' 
-							type="text" ' . $attributs . ' 
-							name="genform_' . $name . '" 
-							size="12" 
-							maxlength="' . $this->tab_field[$name]->max_length . '" 
+	$this->addBuffer('<input
+							id="genform_' . $name . '" ' . $jsColor . '
+							type="text" ' . $attributs . '
+							name="genform_' . $name . '"
+							size="12"
+							maxlength="' . $this->tab_field[$name]->max_length . '"
 							value=' . alt($this->tab_default_field[$name]) . ' />');
 
 
@@ -138,15 +138,15 @@ if (!$this->editMode) {
 	    /**
 	     * Lien pour génération auto
 	     */
-	    $this->addBuffer('		
-			
-				<a href="#" 
-					class="titreListe" 
-					style="clear:both;" 
+	    $this->addBuffer('
+
+				<a href="#"
+					class="titreListe"
+					style="clear:both;"
 					id="generatepassword_' . $name . '" >
-					<img src="' . t('src_random_password') . '" 
-						class="inputimage" 
-						type="image"  
+					<img src="' . t('src_random_password') . '"
+						class="inputimage"
+						type="image"
 						/>' . t('generate_random_password') . '</a>');
 
 	    $this->addBuffer('
@@ -154,6 +154,52 @@ if (!$this->editMode) {
 						$("#generatepassword_' . $name . '").click(
 						function() {
 							$("#genform_' . $name . '").val(generatepass(8));
+							return false;
+						});
+					</script>
+				');
+	}
+
+
+
+
+	/**
+	 * VARCHAR NORMAL
+	 */
+    }else if (in_array($name, $_Gconfig['passwordFieldsMd5'])) {
+
+	/**
+	 * Champ du mot de passe
+	 */
+	$this->addBuffer('<input
+							id="genform_' . $name . '" ' . $jsColor . '
+							type="text" ' . $attributs . '
+							name="genform_' . $name . '"
+							size="12"
+							maxlength="' . $this->tab_field[$name]->max_length . '"
+							value="" />');
+
+
+	if (!$this->editMode) {
+	    /**
+	     * Lien pour génération auto
+	     */
+	    $this->addBuffer('
+
+				<a href="#"
+					class="titreListe"
+					style="clear:both;"
+					id="generatepassword_' . $name . '" >
+					<img src="' . t('src_random_password') . '"
+						class="inputimage"
+						type="image"
+						/>' . t('generate_random_password') . '</a>');
+
+	    $this->addBuffer('
+					<script type="text/javascript">
+						$("#generatepassword_' . $name . '").click(
+						function() {
+							$("#genform_' . $name . '").val(generatepass(10));
 							return false;
 						});
 					</script>
