@@ -48,7 +48,7 @@ session_start();
  */
 function newarrayInWord($arr, $word) {
     while (list(, $v) = each($arr)) {
-	if (ereg($v, $word))
+	if (strstr($word,$v) !== false)
 	    return true;
     }
     return false;
@@ -64,7 +64,7 @@ if (newarrayInWord($tabNoCache, $url)) {
 /**
  * Si on cache, qu'on ne demande pas explicitement à ne pas cacher, qu'on est pas connecté, et qu'on a pas soumis de formulaire :
  */
-if ($agressiveUseCache && !$_REQUEST['nocache'] && !$_SESSION['ocms_login']['utilisateur_id'] && !count($_POST)) {
+if ($agressiveUseCache && empty($_REQUEST['nocache']) && empty($_SESSION['ocms_login']['utilisateur_id']) && !count($_POST)) {
     /**
      * Si le fichier de cache existe déjà on continue
      */
