@@ -814,6 +814,13 @@ class GenForm {
              * 	Relation simple
              * * */
             include($gb_obj->getIncludePath('genform.relation.php', 'admin/genform_modules'));
+
+        } else if(!empty($_Gconfig['mapsFields'][$this->table][$name])) {            
+            /**
+             * Champ latitude/longitude avec carto
+             */
+            include($gb_obj->getIncludePath('genform.maps.php', 'admin/genform_modules'));
+
         } else if (in_array($name, $uploadFields) || in_array(getBaseLgField($name), $uploadFields)) {
             /**
              * UPLOAD DE FICHIERS

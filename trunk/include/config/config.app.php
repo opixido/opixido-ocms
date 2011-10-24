@@ -17,8 +17,8 @@ if ($_GET['nocache']) {
 /**
  * Compression et union des JS et CSS ?
  */
-$_Gconfig['compressCssFiles'] = false;
-$_Gconfig['compressJsFiles'] = false;
+$_Gconfig['compressCssFiles'] = true;
+$_Gconfig['compressJsFiles'] = true;
 
 
 /**
@@ -333,6 +333,13 @@ $_Gconfig['menus']['__default__'] = array(
  * $_Gconfig['gsNoFollowRel'] = array('TABLE.SECONDETABLE');
  */
 $_Gconfig['gsNoFollowRel'];
+
+
+/**
+ * Positionnement Latitude Longitude sur la carte
+ * $_Gconfig['mapsFields']['TABLE']['IDENTIFIANT_CHAMP'] = array('CHAMP_LAT','CHAMP_LNG',array('LISTE','DES','CHAMPS','ADRESSE'));
+ */
+$_Gconfig['mapsFields'] = array();
 
 
 
