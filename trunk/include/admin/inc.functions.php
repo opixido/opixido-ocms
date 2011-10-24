@@ -326,12 +326,19 @@ if (!function_exists("ta")) {
 }
 
 function decodePassword($str) {
+    if (!strlen($str)) {
+        return;
+    }
     global $gs_obj;
     return $gs_obj->decrypt($str);
     return $str;
 }
 
 function encodePassword($str) {
+    if (!strlen($str)) {
+        return;
+    }
+
     global $gs_obj;
     return $gs_obj->encrypt($str);
     return $str;
@@ -722,9 +729,9 @@ class MySQLDump {
 
                         $structure .= "  `{$row->Field}` {$row->Type}";
                         if ($row->Default != 'CURRENT_TIMESTAMP') {
-                            $structure .= ( !empty($row->Default)) ? " DEFAULT '{$row->Default}'" : false;
+                            $structure .= (!empty($row->Default)) ? " DEFAULT '{$row->Default}'" : false;
                         } else {
-                            $structure .= ( !empty($row->Default)) ? " DEFAULT {$row->Default}" : false;
+                            $structure .= (!empty($row->Default)) ? " DEFAULT {$row->Default}" : false;
                         }
                         $structure .= ( $row->Null != "YES") ? " NOT NULL" : false;
                         if ($row->Null == "YES") {
@@ -734,7 +741,7 @@ class MySQLDump {
                         }
 
 
-                        $structure .= ( !empty($row->Extra)) ? " {$row->Extra}" : false;
+                        $structure .= (!empty($row->Extra)) ? " {$row->Extra}" : false;
                         $structure .= ",\n";
                     }
 
@@ -917,8 +924,8 @@ function getPicto($nom, $taille="32x32") {
         $p = $tabForms[$nom]['picto'];
     } else if (tradExists($nom)) {
         $p = t($nom);
-    }    
-   
+    }
+
     $pos = strpos($p, ADMIN_PICTOS_FOLDER);
     if ($pos !== false) {
         $p = substr($p, $pos + strlen(ADMIN_PICTOS_FOLDER) + 5);
