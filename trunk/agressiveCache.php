@@ -3,7 +3,7 @@
 /**
  * On utilise l'agressive cache ?
  */
-$agressiveUseCache = true;
+$agressiveUseCache = false;
 
 /**
  * Nombre de secondes avant de forcer une regénération de la page
