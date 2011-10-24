@@ -720,6 +720,7 @@ VALUES (
 
 REPLACE INTO s_plugin SET plugin_nom = "o_createplugin" , plugin_actif = 1 , plugin_installe = 1;
 REPLACE INTO s_plugin SET plugin_nom = "o_messages" , plugin_actif = 1 , plugin_installe = 1;
+REPLACE INTO s_plugin SET plugin_nom = "o_blocs" , plugin_actif = 1 , plugin_installe = 1;
 
 
 
