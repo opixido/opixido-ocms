@@ -92,6 +92,13 @@ class genAdmin {
 
         $this->loadPlugins();
 
+        /**
+         * Ajout de l'action de géocodage si des champs sont définis
+         */
+        if(is_array($_Gconfig['mapsFields']) && count($_Gconfig['mapsFields'])) {
+            $_Gconfig['globalActions'][] = 'autoGeocodeAllFields';
+        }
+
         $this->checkActions();
 
         /* Si on clique sur le logo, on revient  vide */
