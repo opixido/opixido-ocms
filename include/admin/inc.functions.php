@@ -1008,3 +1008,82 @@ function cleanFiles() {
     echo '  ' . pretty_bytes($totf);
     echo '<hr/><a class="button" onclick="$(\'#todels input\').attr(\'checked\',\'checked\')" >Tout sélectionner</a> | <a class="button" onclick="$(\'#todels input\').attr(\'checked\',false)">Tout déselectionner</a>';
 }
+
+function autoGeocodeAllFields() {
+    global $_Gconfig,$co;
+
+    if ($_REQUEST['table'] && count($_REQUEST['table'])) {
+
+        foreach ($_REQUEST['table'] as $table) {
+
+            $code = $_Gconfig['mapsFields'][$table];
+            foreach ($code as $chps) {
+               
+                if (!$chps) {
+                    continue;
+                }
+                $chp_lat = array_shift($chps);
+                $chp_lng = array_shift($chps);
+
+                $chps = $chps[0];
+
+                $sql = 'SELECT * FROM ' . $table . ' WHERE  ';
+                if ($_REQUEST['geocode_mode'] == 'empty') {
+                    $sql .= '  ' . $chp_lat . ' = 0 AND ' . $chp_lng . ' = 0 ';
+                } else {
+                    $sql .= ' 1 ';
+                }
+                $sql .= ' ORDER BY RAND()  ';
+                $res = GetAll($sql);
+
+                echo '<table class="genform_table"><caption>' . t($table) . '</caption>';
+                foreach ($res as $row) {
+                    $r = new row($table, $row);
+                    echo '<tbody><tr><th><a target="_blank" href="?curTable='.$table.'&curId='.$r->id.'">' . $r->id . '</a></th>';
+                    $v = '';
+                    foreach ($chps as $chp) {
+                        $val = $r->{$chp};
+                        if($val === false) {
+                            $val = $chp;
+                        }
+                        $v .= $val.' ';
+                        echo '<td>'.$val.'</td>';
+                    }
+                    
+                    $res = file_get_contents('http://maps.googleapis.com/maps/api/geocode/json?sensor=false&address='.urlencode($v));
+                    $res = json_decode($res);
+                    if($res->status == 'OK') {
+                        $lat= $res->results[0]->geometry->location->lat;
+                        $lng = $res->results[0]->geometry->location->lng;
+                        echo '<td>'.$res->status.'</td><td><a target="_blank" href="http://maps.google.com/?q=('.$lat.','.$lng.')">'.$lat.','.$lng.'</a></td>';
+                        DoSql('UPDATE '.$table.' SET '.$chp_lat.' = '.sql($lat).' , '.$chp_lng.' = '.sql($lng).' WHERE '.getPrimaryKey($table).' = '.$r->id);
+                    } else {
+                        echo '<td style="background:red;color:white;font-weight:bold">'.$res->status.'</td>';
+                    }
+                    echo '</tr></tbody>';
+                    ob_flush();
+                    flush();
+                }
+                echo '</table>';
+            }
+        }
+    } else {
+        echo '<h2>' . ta('choisissez_la_table_a_geocoder') . '</h2>';
+        echo '<form method="get" action="index.php" ><input type="hidden" name="globalAction" value="autoGeocodeAllFields" />';
+        echo '<label for="geocode_mode">
+                <input type="radio" id="geocode_mode_all" name="geocode_mode" value="all" />
+                ' . ta('geocode_mode_all') . '</label><br/>';
+        echo '<label for="geocode_mode">
+                <input type="radio" id="geocode_mode_empty" checked="checked" name="geocode_mode" value="empty" />
+                ' . ta('geocode_mode_empty') . '</label>';
+        echo '<ul>';
+        foreach ($_Gconfig['mapsFields'] as $k => $v) {
+            echo '<li><label for="table_' . $k . '" >
+                        <input type="checkbox" name="table[]" id="table_' . $k . '" value="' . $k . '" /> ' . t($k) . '</label>
+                         </li>';
+        }
+        echo '</ul>
+                <input type="submit" />
+';
+    }
+}
