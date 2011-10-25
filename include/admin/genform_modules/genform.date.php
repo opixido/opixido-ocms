@@ -33,7 +33,7 @@ if ( !$this->editMode ) {
 	
 	
 } else {
-	
+    if(!isNull($date))
 	$this->addBuffer( niceTextDate($date) );
 }
 
