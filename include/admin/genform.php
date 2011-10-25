@@ -482,7 +482,7 @@ class GenForm {
                 $_SESSION[gfuid()]['curFields'][] = $tab_name . '_' . $lg;
             }
 
-            $lg = isset($_SESSION['onlyLg']) && $_SESSION['onlyLg'] != 'ALL' ? $_SESSION['onlyLg'] : $_Gconfig['LANGUAGES'][0];
+            $lg = !empty($_SESSION['onlyLg']) && $_SESSION['onlyLg'] != 'ALL' ? $_SESSION['onlyLg'] : LG_DEF;
 
             $this->addBuffer('
 			<script type="text/javascript">		
