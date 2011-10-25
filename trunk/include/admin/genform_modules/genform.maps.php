@@ -1,6 +1,4 @@
 <?php
-
-
 $conf = $_Gconfig['mapsFields'][$this->table][$name];
 $chp_lat = $conf[0];
 $chp_lon = $conf[1];
@@ -61,8 +59,9 @@ if (!$this->editMode) {
 
 
         $('#map_field_<?php echo $name ?> button.usecenter').click(function() {
-
             marker.setPosition(map.getCenter());
+            $('#genform_<?php echo $chp_lat ?>').val(map.getCenter().lat());
+            $('#genform_<?php echo $chp_lon ?>').val(map.getCenter().lng());
             return false;
         });
 
@@ -91,8 +90,16 @@ if (!$this->editMode) {
         var map = new google.maps.Map(document.getElementById("map_field_<?php echo $name ?>_map"),myOptions);
         var marker = new google.maps.Marker({
             map: map,
-            position: latlng
+            position: latlng,
+            draggable:true
         });
+            
+        google.maps.event.addListener(marker, 'position_changed', function() {
+            $('#genform_<?php echo $chp_lat ?>').val(marker.getPosition().lat());
+            $('#genform_<?php echo $chp_lon ?>').val(marker.getPosition().lng());
+        });
+
+
         var geocoder = new google.maps.Geocoder();
 
 
@@ -121,8 +128,7 @@ if (!$this->editMode) {
 } else {
 
 
-    $ll = $this->tab_default_field[$chp_lat].','.$this->tab_default_field[$chp_lon];
-    $this->addBuffer('('.$ll.')');    
-    $this->addBuffer('<a target="_blank" href="http://maps.google.com/?q=('.$ll.')"><img src="http://maps.googleapis.com/maps/api/staticmap?size=300x300&sensor=false&center='.$ll.'&zoom=13&markers='.$ll.'" alt="" /></a>');
-
+    $ll = $this->tab_default_field[$chp_lat] . ',' . $this->tab_default_field[$chp_lon];
+    $this->addBuffer('(' . $ll . ')');
+    $this->addBuffer('<a target="_blank" href="http://maps.google.com/?q=(' . $ll . ')"><img src="http://maps.googleapis.com/maps/api/staticmap?size=300x300&sensor=false&center=' . $ll . '&zoom=13&markers=' . $ll . '" alt="" /></a>');
 }
