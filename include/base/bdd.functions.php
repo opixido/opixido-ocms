@@ -529,11 +529,11 @@ $_SESSION['cache'][UNIQUE_SITE]['pks'] = choose(akev($_SESSION['cache'][UNIQUE_S
 
 if (!function_exists('getPrimaryKey')) {
     function getPrimaryKey($table) {
-        global $co;
+        
 
         if (strlen($table)) {
-            if (!akev($_SESSION['cache'][UNIQUE_SITE],'pks') 
-		    || !akev($_SESSION['cache'][UNIQUE_SITE]['pks'], $table)) {
+            if (empty($_SESSION['cache'][UNIQUE_SITE]['pks'][$table])) {
+                global $co;
                 $t = $co->MetaPrimaryKeys($table);
                 if (count($t) == 1)
                     $_SESSION['cache'][UNIQUE_SITE]['pks'][$table] = $t[0];

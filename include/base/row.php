@@ -2,6 +2,10 @@
 
 class row {
 
+    public $table = '';
+    public $id = 0;
+    public $tabField = array();
+
     function __construct($table, $roworid) {
 
         $this->table = $table;
@@ -49,20 +53,19 @@ class row {
         /**
          * Check field types
          */
-        global $uploadFields, $relations, $relinv, $tablerel, $orderFields;
+        global $relations, $relinv, $tablerel, $orderFields;
 
         /**
          * Upload => genfile
          */
-        if (arrayInWord($uploadFields, $field)) {
-
-            return new genFile($this->table, $field, $this->row);
+        if (isUploadField($field)) {
+            $this->$field = new genFile($this->table, $field, $this->row);
+            
         }
         /**
          * LG Field
          */ else if (isBaseLgField($field, $this->table)) {
-
-            return getLgValue($field, $this->row);
+            $this->$field = getLgValue($field, $this->row);
         }
         /**
          * Foreign key
@@ -78,10 +81,10 @@ class row {
             }
 
             if ($classe) {
-                return new $classe($this->row[$field]);
+                $this->$field = new $classe($this->row[$field]);
             }
 
-            return new row($fk_table, $this->row[$field]);
+            $this->$field = new row($fk_table, $this->row[$field]);
         } else if (!empty($tablerel[$field])) {
 
             /**
@@ -111,7 +114,7 @@ class row {
                     $sql .= ' ORDER BY ' . $orderFields[$field][0];
                 }
 
-                return GetAll($sql);
+                $this->$field = GetAll($sql);
             } else {
                 
             }
@@ -134,7 +137,7 @@ class row {
                 $sql .= ' ORDER BY ' . $orderFields[$foreignTable][0];
             }
 
-            return GetAll($sql);
+            $this->$field = GetAll($sql);
 
             /**
              * Raw value
@@ -145,15 +148,17 @@ class row {
 
             if ($type == 'date' || $type == 'datetime') {
 
-                return new Date($this->row[$field]);
+                $this->$field = new Date($this->row[$field]);
             }
 
             if (substr($type, 0, 4) == 'set(') {
-                return explode(',', $this->row[$field]);
+                $this->$field = explode(',', $this->row[$field]);
             }
 
-            return $this->row[$field];
+            $this->$field = $this->row[$field];
         }
+
+        return $this->$field;
     }
 
     function __get($name) {

@@ -559,6 +559,9 @@ function niceTextDate($date, $jour = false) {
 
     global $lg;
 
+    if(is_object($date)) {
+        $date = $date->toString('U');
+    }
     $d = strtotime($date);
 
     $type = '%e %B %Y';
@@ -1319,12 +1322,26 @@ function arrayInWord($arr, $word) {
     if(!is_array($arr)) {
         return false;
     }
+    //return in_array($word, $arr);
     while (list(, $v) = each($arr)) {
-	if (strstr($word, $v) !== false)
+	if (strpos($word, $v) !== false)
 	    return true;
     }
     return false;
 }
+
+function isUploadField($field) {
+
+    if(isset($GLOBALS['cache']['isUploadField'][$field])) {
+        return $GLOBALS['cache']['isUploadField'][$field];
+    }
+    global $uploadFields;
+    $GLOBALS['cache']['isUploadField'][$field] = arrayInWord($uploadFields,$field);
+
+    return $GLOBALS['cache']['isUploadField'][$field];
+    
+}
+
 
 function path_concat() {
     /*
@@ -2111,7 +2128,7 @@ function isTrue($val) {
  * @return string
  */
 function getServerUrl() {
-    return 'http' . ($_SERVER['HTTPS'] == 'on' ? 's' : '') . '://' . $_SERVER['HTTP_HOST'];
+    return 'http' . (akev($_SERVER,'HTTPS') == 'on' ? 's' : '') . '://' . $_SERVER['HTTP_HOST'];
 }
 
 /**

@@ -36,6 +36,8 @@ class genFile {
     var $forceBaseFormat = true;
     var $baseFormat = 'png';
     var $bg = 'FFFFFF';
+
+    public $realSystemPath= false;
     public $mask = '';
 
     /**
@@ -935,12 +937,15 @@ class genFile {
      *
      */
     function getSystemPath() {
-
+        if($this->realSystemPath) {
+            return $this->realSystemPath;
+        }
 	if ($this->imageExists) {
-	    return realpath($this->systemPath . $this->fileName);
-	} else {
+	    $this->realSystemPath = realpath($this->systemPath . $this->fileName);
+	} else { 
 	    return '';
 	}
+        return $this->realSystemPath;
     }
 
     /**
