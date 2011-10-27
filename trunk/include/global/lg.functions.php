@@ -301,18 +301,23 @@ function getLgValue($k, $tab, $addspan='') {
 
     $curLg = LG;
 
-    if (akev($GLOBALS, 'forceLG')) {
+    if (!empty($GLOBALS['forceLG'])) {
 	$curLg = $GLOBALS['forceLG'];
     }
 
-
+    /**
+     * Arguments inversés ... on devrait afficher une notice au moins ...
+     */
     if (is_array($k) && !is_array($tab)) {
 	$kk = $k;
 	$k = $tab;
 	$tab = $k;
     }
 
-    if (arrayInWord($_Gconfig['urlFields'], $k)) {
+    /**
+     * 
+     */
+    if (isUrlField($k)) {
 	$addspan = false;
     }
 
@@ -450,14 +455,22 @@ function checkLgUrl($k, $v) {
 
     $k = $k . '_' . LG;
 
-    global $_Gconfig;
-
-    if (arrayInWord($_Gconfig['urlFields'], $k) || $k == 'link_' . LG) {
+    if (isUrlField($k) || $k == 'link_' . LG) {
 	return getLgUrl($v);
     } else {
 
 	return $v;
     }
+}
+
+
+function isUrlField($field) {
+    if(isset($GLOBALS['cache']['isUrlField'][$field])) {
+        return $GLOBALS['cache']['isUrlField'][$field];
+    }
+    global $_Gconfig;
+    $GLOBALS['cache']['isUrlField'][$field] = arrayInWord($_Gconfig['urlFields'], $field);
+    return $GLOBALS['cache']['isUrlField'][$field];
 }
 
 function getLgUrl($v) {
@@ -480,12 +493,15 @@ function getLgUrl($v) {
  * @return unknown
  */
 function isBaseLgField($field, $table) {
-
-    $tab = GetTabField($table);
-    if (ake($tab, $field . '_' . LG_DEF) && !ake($tab, $field)) {
-	return true;
+    if(isset($GLOBALS['cache']['isBaseLgField'][$table.$field])) {
+        return $GLOBALS['cache']['isBaseLgField'][$table.$field];
     }
-    return false;
+    $tab = GetTabField($table);
+    $GLOBALS['cache']['isBaseLgField'][$table.$field] = false;
+    if (ake($tab, $field . '_' . LG_DEF) && !ake($tab, $field)) {
+	$GLOBALS['cache']['isBaseLgField'][$table.$field] = true;
+    }
+    return $GLOBALS['cache']['isBaseLgField'][$table.$field];;
 }
 
 function myLocale($lg) {
