@@ -244,8 +244,8 @@ class genHeaders {
 	     */
 	    $css = compressCss($css);
 
-	    $css = str_replace('(/', '(' . $_Gconfig['CDN'] . BU . '/' . $this->addFolder . '/img/', $css);
-	    $css = str_replace('../img/', $_Gconfig['CDN'] . BU . '/' . $this->addFolder . '/img/', $css);
+	    $css = str_replace('(/', '(' .path_concat($_Gconfig['CDN'], BU , '/', $this->addFolder , '/img/'), $css);
+	    $css = str_replace('../img/', path_concat($_Gconfig['CDN'] , BU , '/' , $this->addFolder , '/img/'), $css);
 
 
 	    /**
