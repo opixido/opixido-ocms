@@ -1,4 +1,5 @@
 <?php
+
 #
 # This file is part of oCMS.
 #
@@ -23,7 +24,7 @@
 
 ob_start();
 
-define('IN_ADMIN',true);
+define('IN_ADMIN', true);
 
 error_reporting(E_ALL & ~E_NOTICE);
 
@@ -36,6 +37,17 @@ $gb_obj = new genBase();
 
 $gb_obj->includeConfig();
 
+if (!empty($_REQUEST['lg'])) {
+    $lg = $_SESSION['lg'] = $_REQUEST['lg'];
+} else if (!empty($_SESSION['lg'])) {
+    $lg = $_SESSION['lg'];
+} else {
+    $lg = LG_DEF;
+}
+
+define('LG', $lg);
+
+
 $gb_obj->includeBase();
 
 $gb_obj->includeGlobal();
@@ -46,59 +58,46 @@ $genMessages = new genMessages();
 
 $gb_obj->includeAdmin();
 
-if(ake($_REQUEST,'lg') && $_REQUEST['lg']) {
-    $lg = $_SESSION['lg'] = $_REQUEST['lg'];
-} else if(ake($_SESSION,'lg') && $_SESSION['lg']) {
-    $lg = $_SESSION['lg'];
-} else {
-    $lg = getBrowserLang();
-}
 
-define('LG',$lg);   		
-   		
-initPlugins();
 
 $gs_obj = new genSecurity();
 
 $gs_obj->needAuth();
 
+initPlugins();
+
 loadParams();
 
 
-if(isset($_REQUEST['reindex']) ) {
-	
-die();
+if (isset($_REQUEST['reindex'])) {
+
+    die();
 }
-if(isset($_REQUEST['popup'])){
+if (isset($_REQUEST['popup'])) {
 
-	$gpopup = new genAdminPopup();
-	$gpopup->gen();
+    $gpopup = new genAdminPopup();
+    $gpopup->gen();
+} else if (isset($_REQUEST['gfa'])) {
 
-}else if(isset($_REQUEST['gfa'])) {
+    $gpopup = new genPopupAdmin(akev($_REQUEST, 'curTable'), akev($_REQUEST, 'curId'));
+    $gpopup->gen();
+} else if (isset($_REQUEST['xhr'])) {
 
-	$gpopup = new genPopupAdmin(akev($_REQUEST,'curTable'),akev($_REQUEST,'curId'));
-	$gpopup->gen();
-	
-} else  if(isset($_REQUEST['xhr'])) {
-	
-	$gpopup = new genXhrAdmin(akev($_REQUEST,'curTable'),akev($_REQUEST,'curId'));
-	$gpopup->gen();
-	
+    $gpopup = new genXhrAdmin(akev($_REQUEST, 'curTable'), akev($_REQUEST, 'curId'));
+    $gpopup->gen();
 } else {
 
-	$gadmin = new genAdmin(akev($_REQUEST,'curTable'),akev($_REQUEST,'curId'));	
-	
-	$gadmin->gen();    
+    $gadmin = new genAdmin(akev($_REQUEST, 'curTable'), akev($_REQUEST, 'curId'));
 
-
+    $gadmin->gen();
 }
 
 
 $genMessages->gen();
 
 
-if(isset($profileSTR) && (strstr($_SERVER['REMOTE_ADDR'],'192.168.1.') || strstr($_SERVER['REMOTE_ADDR'],'82.67.200.175') || $_REQUEST['debug'] )) {
-	print($profileSTR);
+if (isset($profileSTR) && (strstr($_SERVER['REMOTE_ADDR'], '192.168.1.') || strstr($_SERVER['REMOTE_ADDR'], '82.67.200.175') || $_REQUEST['debug'] )) {
+    print($profileSTR);
 }
 
 
