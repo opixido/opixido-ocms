@@ -1,61 +1,30 @@
 <?php
 
+global $admin_trads, $_Gconfig;
 
+$v = LG;
 
-
-global $admin_trads,$_Gconfig;
-/*
-define('ADMIN_PICTOS_FOLDER',ADMIN_URL.'pictos_stock/tango/');
-define('ADMIN_PICTOS_ARBO_SIZE','16x16');
-define('ADMIN_PICTOS_FORM_SIZE','22x22');
-define('ADMIN_PICTOS_FRONT_SIZE','22x22');
-
-*/
-
-$sql = 'SELECT * FROM s_trad';
+$sql = 'SELECT trad_id,trad_'.$v.' FROM s_trad';
 $res = GetAll($sql);
 
-
-if($res) {
-	foreach($res as $row) {
-		reset($_Gconfig['LANGUAGES']);
-		foreach($_Gconfig['LANGUAGES'] as $v) {
-	
-			if($v) {				
-				$admin_trads[$row['trad_id']][$v] = $row['trad_'.$v];
-			}
-		}
-		reset($_Gconfig['LANGUAGES']);
-	}
+if ($res) {
+    foreach ($res as $row) {
+        $admin_trads[$row['trad_id']][$v] = $row['trad_' . $v];
+    }
 }
 
-$sql = 'SELECT * FROM s_admin_trad';
+$sql = 'SELECT admin_trad_id,admin_trad_'.$v.' FROM s_admin_trad';
 $res = GetAll($sql);
 
-if($res) {
-	foreach($res as $row) {
-		reset($_Gconfig['LANGUAGES']);
-		foreach($_Gconfig['LANGUAGES'] as $v) {
-	
-			if($v) {
-				$row['admin_trad_'.$v] = str_replace(array('[ADMIN_PICTOS_FOLDER]',
-															'[ADMIN_PICTOS_ARBO_SIZE]',
-															'[ADMIN_PICTOS_FORM_SIZE]')
-											,		array(ADMIN_PICTOS_FOLDER,
-															ADMIN_PICTOS_ARBO_SIZE,
-															ADMIN_PICTOS_FORM_SIZE),
-															$row['admin_trad_'.$v]);
-				$admin_trads[$row['admin_trad_id']][$v] = $row['admin_trad_'.$v];
-			}
-		}
-		reset($_Gconfig['LANGUAGES']);
-	}
+if ($res) {
+    foreach ($res as $row) {
+        $row['admin_trad_' . $v] = str_replace(array('[ADMIN_PICTOS_FOLDER]',
+            '[ADMIN_PICTOS_ARBO_SIZE]',
+            '[ADMIN_PICTOS_FORM_SIZE]')
+                , array(ADMIN_PICTOS_FOLDER,
+            ADMIN_PICTOS_ARBO_SIZE,
+            ADMIN_PICTOS_FORM_SIZE), $row['admin_trad_' . $v]);
+        $admin_trads[$row['admin_trad_id']][$v] = $row['admin_trad_' . $v];
+    }
 }
 
-
-
-
-//debug($admin_trads);
-
-
-?>
