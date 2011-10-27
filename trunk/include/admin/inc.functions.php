@@ -924,8 +924,12 @@ function getPicto($nom, $taille="32x32") {
         $p = $tabForms[$nom]['picto'];
     } else if (tradExists($nom)) {
         $p = t($nom);
-    }
+    }    
 
+    $pos = strpos($p, 'http');
+    if ($pos !== false) {
+        return $p;
+    }
     $pos = strpos($p, ADMIN_PICTOS_FOLDER);
     if ($pos !== false) {
         $p = substr($p, $pos + strlen(ADMIN_PICTOS_FOLDER) + 5);
