@@ -2473,20 +2473,19 @@ function xmlencode($str) {
  */
 function getThumbCacheFile($src,$u='') {
     global $_Gconfig;
-    $src = str_replace($_Gconfig['CDN'], '', $src);
-
-    $src = urldecode(str_replace('&amp;', '&', $src));
+    $src_clean = str_replace($_Gconfig['CDN'], '', $src);
+    $src_clean = urldecode(str_replace('&amp;', '&', $src_clean));
     
     /* debugOpix($src);
       debugOpix($fCname); */
-    $u = parse_url($src);
+    $u = parse_url($src_clean);
     parse_str($u['query'],$u);    
     $u = akev($u,'src');
     if($u && !file_exists($u)) {
 	$u = path_concat($_SERVER['DOCUMENT_ROOT'],$u);
     }
 
-    $s = explode('?', $src);
+    $s = explode('?', $src_clean);
     $hash = md5($s[1] . crypto_key);
     $fCname = $GLOBALS['ImgCacheFolder'] . $hash;
     
