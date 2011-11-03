@@ -757,7 +757,17 @@ REPLACE INTO `s_admin_trad` (
 `fk_plugin_id`
 )
 VALUES (
-'map_geocode', 'Trouver la position à partir de l''adresse', '', ''
+'map_geocode', 'Trouver la position à partir de l''adresse', ''
 ), (
-'map_usecenter', 'Enregistrer le centre actuel de la carte', '', ''
+'map_usecenter', 'Enregistrer le centre actuel de la carte', ''
+);
+
+
+REPLACE INTO `s_admin_trad` (
+`admin_trad_id` ,
+`admin_trad_[LG]` ,
+`fk_plugin_id`
+)
+VALUES (
+'help_maps', 'Vous pouvez positionner précisement le lieu sur le carte en utilisant : <br/> - la détection automatique de l\'adresse<br/> - En naviguant sur la carte et en déplaçant manuellement le marqueur<br/> - En saisissant manuellement les latitude/longitude ci dessous', ''
 );
