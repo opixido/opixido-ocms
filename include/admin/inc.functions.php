@@ -1053,7 +1053,8 @@ function autoGeocodeAllFields() {
                         $v .= $val.' ';
                         echo '<td>'.$val.'</td>';
                     }
-                    
+
+                    usleep(250000);
                     $res = file_get_contents('http://maps.googleapis.com/maps/api/geocode/json?sensor=false&address='.urlencode($v));
                     $res = json_decode($res);
                     if($res->status == 'OK') {
