@@ -959,7 +959,7 @@ class GenForm {
 			
 			function saveAndReloadForm() {
 				gid("genform_stay").value = 1;
-				gid("genform_formulaire").submit();
+				gid("genform_ok").click();
 			}
 			
 		</script>
@@ -1166,7 +1166,7 @@ class GenForm {
             }
             p(t('langue') . '</label>');
 
-            p('<select name="onlyLg" onchange="gid(\'genform_stay\').value=1;gid(\'genform_formulaire\').submit()">');
+            p('<select name="onlyLg" onchange="saveAndReloadForm()">');
 
             global $_Gconfig;
             p('<option ' . ($_SESSION['onlyLg'] == 'ALL' ? 'selected="selected"' : '') . ' value="ALL">' . t('all') . '</option>');
