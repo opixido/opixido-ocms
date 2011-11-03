@@ -181,6 +181,7 @@ $searchField['s_admin'] = array('admin_nom','admin_login','s_admin_role');
  */
 $_Gconfig['passwordFields'] = array('admin_pwd');
 
+$_Gconfig['passwordFieldsMd5'] = array();
 
 //'rubrique_date_crea','rubrique_date_modif','rubrique_date_publi'
 
@@ -552,6 +553,8 @@ $_Gconfig['ajaxRelinv']['TABLE']['NOM_DU_FAUX_CHAMP'] = array('SOUS_TABLE','CLEF
 $_Gconfig['adminMenus'] = array();
 //$_Gconfig['adminMenus'][] = array( 's_rubrique');
 $_Gconfig['bigMenus']['contenu'] = array('s_rubrique');
+
+
 
 
 
