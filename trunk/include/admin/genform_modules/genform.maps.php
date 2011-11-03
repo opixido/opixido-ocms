@@ -25,6 +25,13 @@ if (!$this->editMode) {
         }
     }
 
+    if(isNull($this->tab_default_field[$chp_lat])) {
+        $this->tab_default_field[$chp_lat] = $conf[3][0];
+    }
+    if(isNull($this->tab_default_field[$chp_lon])) {
+        $this->tab_default_field[$chp_lon] = $conf[3][1];
+    }
+
     $_SESSION[gfuid()]['curFields'][] = $chp_lat;
     $_SESSION[gfuid()]['curFields'][] = $chp_lon;
 
@@ -56,6 +63,7 @@ if (!$this->editMode) {
     </script>
 
     <script type="text/javascript">
+
 
 
         $('#map_field_<?php echo $name ?> button.usecenter').click(function() {
@@ -103,17 +111,22 @@ if (!$this->editMode) {
         var geocoder = new google.maps.Geocoder();
 
 
+        
         function codeAddress(address) {
             geocoder.geocode( { 'address': address}, function(results, status) {
                 if (status == google.maps.GeocoderStatus.OK) {
+
                     map.setCenter(results[0].geometry.location);
-                    marker = new google.maps.Marker({
+                    marker.setPosition(results[0].geometry.location);
+                   /* marker = new google.maps.Marker({
                         map: map,
                         position: results[0].geometry.location
                     });
+                    
 
                     $('#genform_<?php echo $chp_lat ?>').val(results[0].geometry.location.lat());
                     $('#genform_<?php echo $chp_lon ?>').val(results[0].geometry.location.lng());
+                    */
                 } else {
                     alert("Geocode was not successful for the following reason: " + status);
                 }
