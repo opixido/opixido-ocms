@@ -1737,7 +1737,7 @@ function GetTitleFromRow($table, $row, $separator=" ", $html=false) {
     }
     reset($tabForms[$table]['titre']);
     $tab = getTabField($table);
-    $titre = '';
+    $titre = array();
     while (list($k, $v) = each($tabForms[$table]['titre'])) {
 
 	if (akev($relations, $table) && akev($relations[$table], $v)) {
@@ -1754,20 +1754,21 @@ function GetTitleFromRow($table, $row, $separator=" ", $html=false) {
 	    $gf = new genFile($table, $v, $row);
 	    if ($gf->isImage()) {
 
-		$titre .= $gf->getThumbImgtag(40, 40) . $separator;
+		$titre[] = $gf->getThumbImgtag(40, 40);
 	    }
 	} else
 	if (!isset($fields[$v]) || !$fields[$v]) {
-	    $titre .= getLgValue($v, $row) . $separator;
+	    $titre[] = getLgValue($v, $row);
 	} else {
-	    $titre .= akev($row, $v) . $separator;
+	    $titre[] = akev($row, $v);
 	}
     }
 
+    $titre = array_diff($titre,array(''));
 
 
 
-    return substr($titre, 0, -strlen($separator));
+    return implode($titre,$separator);
 }
 
 /**

@@ -180,6 +180,7 @@ $searchField['s_admin'] = array('admin_nom','admin_login','s_admin_role');
  * $_Gconfig['passwordFields'] = array('CHAMPS');
  */
 $_Gconfig['passwordFields'] = array('admin_pwd');
+$_Gconfig['passwordFieldsMd5'] = array();
 
 $_Gconfig['passwordFieldsMd5'] = array();
 
