@@ -241,13 +241,15 @@ class genSearchV2 {
                     $sql = "SELECT * FROM " . $fk_table . " " . GetOnlyEditableVersion($fk_table) . " ORDER BY " . $label;
                     $res = GetAll($sql);
 
-                    p('<select style="height:70px;float:left;"  name="' . $k . '[]" multiple="multiple" >');
+                    p('<select style="height:70px;float:left;"  id="'.$k.'" name="' . $k . '[]" multiple="multiple" >');
 
                     foreach ($res as $row) {
                         $sel = @in_array($row[$thiskey], $_POST[$k]) ? 'selected="selected"' : '';
                         p('<option ' . $sel . ' value="' . $row[$thiskey] . '">' . limit(GetTitleFromRow($fk_table, $row, " "), 30) . '</option>');
                     }
-                    p('</select>');
+                    
+                    p('</select> <input type="text" class="selectMSearch" id="'.$k.'_search" onkeydown="searchInSelect(this)" />');
+                    
                 } else
                 if (!empty($relations[$table][$k])) {
 
@@ -261,13 +263,13 @@ class genSearchV2 {
                     $sql = "SELECT A." . $thiskey . " , " . $label . " FROM " . $tablenom . " AS A  , " . $table . " AS B WHERE B." . $k . " = A." . $thiskey . " " . GetOnlyEditableVersion($tablenom, 'A') . ' GROUP BY  A.' . $thiskey . " ORDER BY " . $label;
                     $res = GetAll($sql);
 
-                    p('<select  style="height:70px;float:left;" name="' . $k . '[]" multiple="multiple" >');
+                    p('<select id="'.$k.'" style="height:70px;float:left;" name="' . $k . '[]" multiple="multiple" >');
 
                     foreach ($res as $row) {
                         $sel = @in_array($row[$thiskey], $_POST[$k]) ? 'selected="selected"' : '';
                         p('<option ' . $sel . ' value="' . $row[$thiskey] . '">' . limit(GetTitleFromRow($tablenom, $row, " "), 30) . '</option>');
                     }
-                    p('</select>');
+                    p('</select> <input type="text" class="selectMSearch" id="'.$k.'_search" onkeydown="searchInSelect(this)" />');
                 } else {
 
                     if ( ($type == "int" && $size < 2 ) || $type == "tinyint" ) {

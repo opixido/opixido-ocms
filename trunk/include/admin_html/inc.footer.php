@@ -26,8 +26,7 @@
 
     $(document).ready(function() {
         //$('.resizable').TextAreaResizer();
-        $('.resizable').each(function() {FitToContent($(this).attr('id'));});
-	
+        $('.resizable').each(function() {FitToContent($(this).attr('id'));});	
         $('input, a, div.rtePreview').tipsy({html: true ,gravity:  $.fn.tipsy.autoWE});
         $('img.helpimg').tipsy({html: true ,gravity:  $.fn.tipsy.autoWE,title:'alt'});
     });

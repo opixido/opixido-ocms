@@ -285,7 +285,7 @@ class genAdmin {
 
                 foreach ($_Gconfig['tableActions'][$this->table] as $action) {
 
-                    if ($this->gs->can($action, $this->table) && $action != $_REQUEST['tableAction']) {
+                    if ($this->gs->can($action, $this->table) && $action != akev($_REQUEST,'tableAction')) {
 
                         p('<a class="abutton" href="?curTable=' . $this->table . '&tableAction=' . $action . '"> <img src="' . ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/actions/' . $action . '.png" alt=""  /> ' . t($action) . '</a>');
                     }

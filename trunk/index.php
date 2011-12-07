@@ -2,7 +2,7 @@
 #
 # This file is part of oCMS.
 #
-# oCMS is free software: you can redistribute it and/or modify
+# oCMS is free software: you cgan redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
@@ -105,7 +105,3 @@ $genMessages->gen();
  * On se déconnecte de la BDD
  */
 $co->disconnect();
-
-if($useCache && $fname) {
-	@file_put_contents($fname,ob_get_contents());
-}

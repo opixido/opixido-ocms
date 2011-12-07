@@ -25,9 +25,7 @@
             'admin/jq/js/jquery.textarearesizer.compressed.js',
             'admin/jq/js/jquery.tablednd_0_5.js',
             'admin/jq/js/jquery.autocomplete-min.js',
-            'admin/jq/js/jquery.tipsy.js',
-
-
+            'admin/jq/js/jquery.tipsy.js'
         );
 
         //'/js/tooltip.js',

@@ -106,7 +106,7 @@ if (!$this->editMode) {
 
 	$thisValue = '';
 
-	$thisValue = truncate(GetTitleFromRow($fk_table, $row, " ", false), 100);
+	$thisValue = truncate(GetTitleFromRow($fk_table, $row, " , ", false), 100);
 
 	if (strcmp($this->tab_default_field[$name], $row[$clef]) == 0)
 	    $this->addBuffer('<option selected="selected" value="' . $row[$clef] . '">' . ( $thisValue ) . '</option>');

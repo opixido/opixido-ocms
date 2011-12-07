@@ -673,3 +673,23 @@ function checkFields() {
     }
 
 }
+
+$.extend($.expr[':'], {
+  'containsi': function(elem, i, match, array)
+  {
+    return (elem.textContent || elem.innerText || '').toLowerCase()
+    .indexOf((match[3] || "").toLowerCase()) >= 0;
+  }
+});
+        
+function searchInSelect(obj) {
+    var selectToSearch = '#'+$(obj).attr('id').replace('_search','');
+    var textToSearch = $(obj).val();
+    if(textToSearch.length > 0) {
+        $(selectToSearch+" option").hide();
+        $(selectToSearch+" option:containsi('"+textToSearch+"')").show();
+    } else {
+        $(selectToSearch+" option").show();
+    }
+
+}

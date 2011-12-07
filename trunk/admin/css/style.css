@@ -23,7 +23,7 @@ img {
 #contenant {
     /*    position:absolute;
      width:950px;
-     
+
      left:50%;
      -margin-left:-475px;
     */
@@ -508,7 +508,7 @@ textarea {
  border:1px solid #dddddd;
  border-bottom:3px solid #bbbbbb;
  border-right:1px solid #999999;
- 
+
  }
 */
 .img_move {
@@ -1260,6 +1260,7 @@ table.relinv {
     left: 0px;
     top: 25px;
     _margin-top: 20px;
+    z-index:1;
 }
 
 .bigmenus a span {
@@ -1452,12 +1453,22 @@ tr.myDragClass {
 }
 
 .tr_selected td {
-
     background : #F5B85A !important;
-
 }
 
 
 .ui-state-active , .ui-state-highlight {
     border:1px solid red;
+}
+
+#autosave_frame {
+    width:10px;
+    height:10px;
+}
+
+
+.selectMSearch {
+    display:block;
+    background:url(../pictos_stock/tango/16x16/actions/system-search.png) no-repeat right center;
+    
 }

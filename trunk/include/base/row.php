@@ -155,7 +155,12 @@ class row {
                 $this->$field = explode(',', $this->row[$field]);
             }
 
-            $this->$field = $this->row[$field];
+            if(array_key_exists($field,$this->row)) {
+                return $this->row[$field];
+            }
+
+            return false;
+            
         }
 
         return $this->$field;
