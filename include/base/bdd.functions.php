@@ -394,7 +394,7 @@ function mes($str) {
  *
  * @param string $sql
  * @param string $msg Message en cas d'erreur
- * @return $res
+ * @return ADORecordSet $res
  */
 function dosql($sql, $msg = '') {
     global $co;
