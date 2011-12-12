@@ -963,7 +963,3 @@ class genFile {
     }
 
 }
-
-global $_Gconfig;
-
-$GLOBALS['ImgCacheFolder'] = (dirname($_SERVER['SCRIPT_FILENAME']) . substr(str_replace($_Gconfig['CDN'], '', THUMBPATH), strlen(BU)) . 'cache') . '/';

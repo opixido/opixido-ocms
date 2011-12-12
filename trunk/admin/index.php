@@ -45,6 +45,7 @@ if (!empty($_REQUEST['lg'])) {
     $lg = LG_DEF;
 }
 
+
 define('LG', $lg);
 
 
@@ -102,3 +103,5 @@ if (isset($profileSTR) && (strstr($_SERVER['REMOTE_ADDR'], '192.168.1.') || strs
 
 
 echo getStats();
+
+

@@ -509,6 +509,12 @@ function getTabField($table) {
  * @return unknown
  */
 function sql($param, $type = 'string') {
+    
+    if(is_object($param) && get_class($param) == 'ADORecordSet_empty') {
+        echo "\n\n---------------------------------\n\n";
+        debug_print_backtrace();
+        return '""';
+    }
     if ($type == 'int') {
         $param = (int) $param;
     } else if ($param == 'NULL') {

@@ -386,7 +386,8 @@ function importSqlFile($FILENAME) {
     $_REQUEST["foffset"] = 0;
     $_REQUEST["totalqueries"] = 0;
     $_REQUEST["fn"] = $FILENAME;
-    if (!$error && isset($_REQUEST["start"]) && isset($_REQUEST["foffset"]) && eregi("(\.(sql|gz))$", $_REQUEST["fn"])) {
+    $QUERIESTODO = array();
+    if (!$error && isset($_REQUEST["start"]) && isset($_REQUEST["foffset"]) ) {
 
 
 
@@ -420,8 +421,8 @@ function importSqlFile($FILENAME) {
 
                 // Handle DOS and Mac encoded linebreaks (I don't know if it will work on Win32 or Mac Servers)
 
-                $dumpline = ereg_replace("\r\n$", "\n", $dumpline);
-                $dumpline = ereg_replace("\r$", "\n", $dumpline);
+                $dumpline = str_replace("\r\n", "\n", $dumpline);
+                $dumpline = str_replace("\r", "\n", $dumpline);
 
                 // DIAGNOSTIC
                 // echo ("<p>Line $linenumber: $dumpline</p>\n");
@@ -475,7 +476,7 @@ function importSqlFile($FILENAME) {
 
                 // Execute query if end of query detected (; as last character) AND NOT in parents
 
-                if (ereg(";$", trim($dumpline)) && !$inparents) {
+                if (strpos(trim($dumpline), ";$") !== false && !$inparents) {
 
                     $QUERIESTODO[] = str_replace('[LG]', (defined('LG_TEMP') ? LG_TEMP : LG_DEF), $query);
                     /*
