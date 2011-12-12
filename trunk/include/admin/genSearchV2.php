@@ -56,7 +56,7 @@ class genSearchV2 {
 
         $sql .= " T." . GetTitleFromTable($this->table, " , ");
 
-        $this->res = GetAll($sql);
+        $this->res = DoSql($sql);
 
 
         if ($this->table != 's_rubrique') {
@@ -84,6 +84,7 @@ class genSearchV2 {
                     $_POST = $_SESSION['LastSearchQuery'][$this->table];
                 }
             }
+
 
             /**
              * Si on fait une recherche full text sur l'ensemble de la table
@@ -135,7 +136,8 @@ class genSearchV2 {
 
         $res = $this->res;
 
-        if (count($res) > 1000)
+
+        if (($res->RecordCount()) > 1000)
             return;
 
         // p('<div style="clear:both;">&nbsp;</div>
@@ -207,9 +209,9 @@ class genSearchV2 {
             $k = $vv;
             $v = akev($fields, $vv);
 
-            $type =false;
+            $type = false;
             $size = false;
-            if(is_object($v)) {
+            if (is_object($v)) {
                 $type = $v->type;
                 $size = $v->max_length;
             }
@@ -241,15 +243,14 @@ class genSearchV2 {
                     $sql = "SELECT * FROM " . $fk_table . " " . GetOnlyEditableVersion($fk_table) . " ORDER BY " . $label;
                     $res = GetAll($sql);
 
-                    p('<select style="height:70px;float:left;"  id="'.$k.'" name="' . $k . '[]" multiple="multiple" >');
+                    p('<select style="height:70px;float:left;"  id="' . $k . '" name="' . $k . '[]" multiple="multiple" >');
 
                     foreach ($res as $row) {
                         $sel = @in_array($row[$thiskey], $_POST[$k]) ? 'selected="selected"' : '';
                         p('<option ' . $sel . ' value="' . $row[$thiskey] . '">' . limit(GetTitleFromRow($fk_table, $row, " "), 30) . '</option>');
                     }
-                    
-                    p('</select> <input type="text" class="selectMSearch" id="'.$k.'_search" onkeydown="searchInSelect(this)" />');
-                    
+
+                    p('</select> <input type="text" class="selectMSearch" id="' . $k . '_search" onkeydown="searchInSelect(this)" />');
                 } else
                 if (!empty($relations[$table][$k])) {
 
@@ -263,17 +264,17 @@ class genSearchV2 {
                     $sql = "SELECT A." . $thiskey . " , " . $label . " FROM " . $tablenom . " AS A  , " . $table . " AS B WHERE B." . $k . " = A." . $thiskey . " " . GetOnlyEditableVersion($tablenom, 'A') . ' GROUP BY  A.' . $thiskey . " ORDER BY " . $label;
                     $res = GetAll($sql);
 
-                    p('<select id="'.$k.'" style="height:70px;float:left;" name="' . $k . '[]" multiple="multiple" >');
+                    p('<select id="' . $k . '" style="height:70px;float:left;" name="' . $k . '[]" multiple="multiple" >');
 
                     foreach ($res as $row) {
                         $sel = @in_array($row[$thiskey], $_POST[$k]) ? 'selected="selected"' : '';
                         p('<option ' . $sel . ' value="' . $row[$thiskey] . '">' . limit(GetTitleFromRow($tablenom, $row, " "), 30) . '</option>');
                     }
-                    p('</select> <input type="text" class="selectMSearch" id="'.$k.'_search" onkeydown="searchInSelect(this)" />');
+                    p('</select> <input type="text" class="selectMSearch" id="' . $k . '_search" onkeydown="searchInSelect(this)" />');
                 } else {
 
-                    if ( ($type == "int" && $size < 2 ) || $type == "tinyint" ) {
-                        $vv = akev($_POST,$k);
+                    if (($type == "int" && $size < 2 ) || $type == "tinyint") {
+                        $vv = akev($_POST, $k);
                         $sel = $vv == "" ? 'selected="selected"' : '';
                         $sel0 = $vv == "0" ? 'selected="selected"' : '';
                         $sel1 = $vv == 1 ? 'selected="selected"' : '';
@@ -285,7 +286,7 @@ class genSearchV2 {
                             </select>
                         ');
                     } else if ($type == "datetime" || $type == "date") {
-                        $vv = akev($_POST,$k . '_type');
+                        $vv = akev($_POST, $k . '_type');
                         $sel = $vv == "" ? 'selected="selected"' : '';
                         $sel0 = $vv == "inf" ? 'selected="selected"' : '';
                         $sel1 = $vv == "eg" ? 'selected="selected"' : '';
@@ -371,7 +372,7 @@ class genSearchV2 {
         /**
          * Calcul des pages
          */
-        $totRes = count($res);
+        $totRes = ($res->RecordCount());
         $_SESSION['LastStart'][$this->table] = $lstart = akev($_GET, 'lstart') != '' ? $_GET['lstart'] : (!empty($_GET['fromList']) ? $_SESSION['LastStart'][$this->table] : 0);
 
         $lend = $lstart + $this->nbperpage;
@@ -509,7 +510,7 @@ class genSearchV2 {
         /**
          * Nombre de résultats
          */
-        $r .= '<tr><td colspan="10">' . ('<h4  >' . t('il_y_a') . ' ' . count($res) . ' ' . t('resultats') . '</h4>') . '</td></tr>';
+        $r .= '<tr><td colspan="10">' . ('<h4  >' . t('il_y_a') . ' ' . ($res->RecordCount()) . ' ' . t('resultats') . '</h4>') . '</td></tr>';
 
 
         if ($totRes == 0) {
@@ -631,7 +632,8 @@ class genSearchV2 {
              */
             for ($k = $lstart; $k < $lend; $k++) {
 
-                $row = $res[$k];
+                $res->Move($k);
+                $row = $res->FetchRow();
 
                 $r .= ( '<tr class="' . ($k % 2 ? 'odd' : 'even') . '">');
 
@@ -689,7 +691,7 @@ class genSearchV2 {
                 $r .= "\n";
             }
 
-            if (count($res) > 0) {
+            if (($res->RecordCount()) > 0) {
 
                 p($r);
             }
@@ -1088,7 +1090,8 @@ class genSearchV2 {
 
         $wheresql .= "T." . $label;
 
-        $res = GetAll($presql . $wheresql);
+
+        $res = Dosql($presql . $wheresql);
 
 
         return $res;
@@ -1243,7 +1246,7 @@ class genSearchV2 {
 
         $sql .= $label;
 
-        $res = GetAll($sql);
+        $res = DoSql($sql);
 
 
         $this->printRes($res);
