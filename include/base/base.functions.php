@@ -2472,35 +2472,35 @@ function xmlencode($str) {
  * sinon la même requete avec le hash de verification
  * @param $src Chemin complet
  */
-function getThumbCacheFile($src,$u='') {
+function getThumbCacheFile($src,$u=false) {
     global $_Gconfig;
+
+    
     $src_clean = str_replace($_Gconfig['CDN'], '', $src);
     $src_clean = urldecode(str_replace('&amp;', '&', $src_clean));
     
-    /* debugOpix($src);
-      debugOpix($fCname); */
-    $u = parse_url($src_clean);
-    parse_str($u['query'],$u);    
-    $u = akev($u,'src');
-    if($u && !file_exists($u)) {
-	$u = path_concat($_SERVER['DOCUMENT_ROOT'],$u);
+    $cacheFile = md5($src_clean);
+    $cachePath = path_concat($_SERVER['DOCUMENT_ROOT'],THUMBPATH,'cache',$cacheFile);
+
+    if(!$u) {
+        $u = parse_url($src_clean);
+        parse_str($u['query'],$u);
+        $u = akev($u,'src');
+        if($u && !file_exists($u)) {
+            $u = path_concat($_SERVER['DOCUMENT_ROOT'],$u);
+        }
     }
 
-    $s = explode('?', $src_clean);
-    $hash = md5($s[1] . crypto_key);
-    $fCname = $GLOBALS['ImgCacheFolder'] . $hash;
-    
     /**
      * Si le fichier de cache existe
      */
-    if (file_exists($fCname)) {
-	if ($u && filemtime($fCname) >= filemtime($u)) {
-	    return THUMBPATH . 'cache' . '/' . $hash;
+    if (file_exists($cachePath)) {
+	if ($u && filemtime($cachePath) >= filemtime($u)) {
+	    return path_concat(THUMBPATH , 'cache' , $cacheFile);
 	}
-    } else {
-	//debugOpix($fCname.' - '.$src);
     }
 
-
     return $src;// . '&hash=' . $hash;
+
 }
+
