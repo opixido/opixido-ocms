@@ -138,6 +138,10 @@ class tablerel {
 	
     }
 
+    public function getNamesFromAjax() {
+        
+    }
+    
 }
 
 /**
