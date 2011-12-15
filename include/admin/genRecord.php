@@ -492,7 +492,7 @@ class genRecord {
 
         $isError = false;
         /* Boucle sur le tableau POST */
-        // debug($_POST);
+        
         reset($_POST);
         // debug('New Record');
 
@@ -616,6 +616,62 @@ class genRecord {
                         $order = 1;
                         while (list($k, $v) = @each($value)) {
                             if ($v) {
+                                $orderField = '';
+                                $orderValue = '';
+                                if (array_key_exists($tab[1], $orderFields)) {
+                                    $orderField = ',' . $orderFields[$tab[1]][0];
+                                    $orderValue = ',' . $order;
+                                }
+                                $sql = 'INSERT INTO ' . $tab[1] . ' ( ' . $fk1 . ' , ' . $fk2 . '' . $orderField . ')  VALUES (' . $this->id . ',' . $v . '' . $orderValue . ') ';
+                                DoSql($sql);
+                                $order++;
+                            }
+                        }
+                    }
+                }else
+                    /**
+                     * Tablerel gérée avec des tags !
+                     */
+                if (strstr($key_name, "genform_tagrel") !== false && strstr($key_name, "_temoin") !== false) {
+                    $key_name = str_replace("_temoin", "", $key_name);
+                    $value = akev($_POST, $key_name);
+
+                    $tab = explode("__", $key_name);
+                    $found = false;
+                    reset($tablerel[$tab[1]]);
+                    while (list($k, $v) = each($tablerel[$tab[1]])) {
+                        if ($v == $this->table && !$found) {
+                            $fk1 = $k;
+                            $found = true;
+                        } else {
+                            $fk2 = $k;
+                            $fk_table = $v;
+                        }
+                    }
+                    reset($tablerel[$tab[1]]);
+
+                    if (empty($_REQUEST['genform_cancel_x'])) {
+                        $sql = "DELETE FROM " . $tab[1] . " WHERE " . $fk1 . " = " . $this->id;
+                        DoSql($sql);
+
+                        $order = 1;
+                        while (list($k, $v) = @each($value)) {
+                            if ($v) {
+                                /**
+                                 * Nouvel élément
+                                 */
+                                if(strpos($k, '-') !== false) {                                    
+                                    $c = $_Gconfig['tablerelAsTags'][$tab[1]]['allowAdd'];
+                                    if($c) {
+                                       
+                                        $rinsert = array($c=>$v);
+                                        global $co;
+                                        $co->Autoexecute($fk_table,$rinsert,'INSERT');
+                                        $v = InsertId();
+                                    }
+                                } else {
+                                    $v = $k;
+                                }                                
                                 $orderField = '';
                                 $orderValue = '';
                                 if (array_key_exists($tab[1], $orderFields)) {

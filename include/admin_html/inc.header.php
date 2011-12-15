@@ -10,9 +10,10 @@
             'admin/css/style_suite.css',
             'admin/css/arbo.css',
             'admin/genform/css/genform.css',
-            'admin/jq/css/cupertino/jquery-ui-1.7.1.custom.css',
+            'admin/jq/css/ui-lightness/jquery-ui-1.8.16.custom.css',
             'admin/jq/css/tipsy.css',
             'admin/jq/css/fg.menu.css',
+            'admin/jq/css/jquery.tagedit.css'
 
         );
         $js = array(
@@ -23,10 +24,13 @@
             'admin/js/ajaxForm.js',
             'admin/jq/js/jquery-ui.js',
             'admin/jq/js/jquery.textarearesizer.compressed.js',
-            'admin/jq/js/jquery.tablednd_0_5.js',
-            'admin/jq/js/jquery.autocomplete-min.js',
-            'admin/jq/js/jquery.tipsy.js'
+            'admin/jq/js/jquery.tablednd_0_5.js',              
+            'admin/jq/js/jquery.tipsy.js',
+            'admin/jq/js/jquery.autoGrowInput.js',
+            'admin/jq/js/jquery.tagedit.js'
+            
         );
+        /* 'admin/jq/js/jquery.autocomplete-min.js',         */
 
         //'/js/tooltip.js',
 

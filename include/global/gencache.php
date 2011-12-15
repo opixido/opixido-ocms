@@ -22,189 +22,186 @@
 # @package ocms
 #
 
-
 class genCache {
 
-	private $cache_id;
-	private $cache_time;
-	private $cached = false;
-	public $cache_path;
-	private $strCache = '';
-	private $cacheChecked = false;
+    private $cache_id;
+    private $cache_time;
+    private $cached = false;
+    public $cache_path;
+    private $strCache = '';
+    private $cacheChecked = false;
 
-	function genCache($cache_id,$cache_time,$cache_path='') {
+    function genCache($cache_id, $cache_time, $cache_path='') {
 
-		global $gb_obj;
-		
-		/**
-		 * How many times has genCache been instantiated ?
-		 */
-		$GLOBALS['nbCacheTotal']++;
-		
-		/**
-		 * Cache unique filename
-		 */
-		$this->cache_id = LG.str_replace('/','.',BU).$_SERVER['SERVER_NAME'].'_'.$cache_id;
-		
-		/**
-		 * Name of cache declared
-		 */
-		$GLOBALS['cacheDeclared'][] = $this->cache_id;
-		
-		/**
-		 * Full path to cache file
-		 */
-		if(!$cache_path) {
-			$cache_path = is_object($gb_obj) ? $gb_obj->include_path.'/'.GetParam('cache_path').'/'.$this->cache_id : $cache_path.'/'.$this->cache_id;
-		} else {
-			$cache_path .= '/'.$cache_id;		
-		}
-		
-		/**
-		 * When was the content modified
-		 */
-		$this->cache_time = $cache_time;
-		
-		/**
-		 * Full path
-		 */
-		$this->cache_path = $cache_path;
+        global $gb_obj;
 
-	}
+        /**
+         * How many times has genCache been instantiated ?
+         */
+        $GLOBALS['nbCacheTotal']++;
 
-	/**
-	 * Checks if cache file exists and is newer than content modification
-	 *
-	 * @return bool
-	 */
-	function cacheExists() {
-		
-		/**
-		 * No cache ... no cache
-		 */
-		if(!CACHE_IS_ON)
-			return false;
+        /**
+         * Cache unique filename
+         */
+        $this->cache_id = LG . str_replace('/', '.', BU) . $_SERVER['SERVER_NAME'] . '_' . $cache_id;
 
-		/**
-		 * If not already checked
-		 */
-		if(!$this->cacheChecked) {
-			/**
-			 * File must exist
-			 */
-			if( file_exists($this->cache_path) ) {
-				/**
-				 * And be newer than content modification
-				 */
-				if($this->cache_time <= filemtime($this->cache_path)) {					
-					$this->cacheChecked = true;
-					$this->cached = true;
-				}
-			}
-		}
-		return $this->cached;
-	}
+        /**
+         * Name of cache declared
+         */
+        $GLOBALS['cacheDeclared'][] = $this->cache_id;
 
-	/**
-	 * Saves content in plain file (not gziped)
-	 *
-	 * @param string $str
-	 * @return bool
-	 */
-	function saveCachePlain($str) {
+        /**
+         * Full path to cache file
+         */
+        if (!$cache_path) {
+            $cache_path = is_object($gb_obj) ? $gb_obj->include_path . '/' . GetParam('cache_path') . '/' . $this->cache_id : $cache_path . '/' . $this->cache_id;
+        } else {
+            $cache_path .= '/' . $cache_id;
+        }
 
-		$this->cacheChecked = true;
-		$this->strCache = $str;
-		
-		if(!file_exists(dirname($this->cache_path))) {
-			devbug('Cache directory missing : '.$this->cache_path);
-			return;
-		}
-		
-		$a = file_put_contents($this->cache_path, $str);
-		chgrp($this->cache_path,'www-data');
-		return $a;
-	}
+        /**
+         * When was the content modified
+         */
+        $this->cache_time = $cache_time;
 
-	/**
-	 * Returns the content of the current cache file 
-	 * USE ONLY IF FILE WAS PLAIN TEXT SAVED
-	 *
-	 * @return string
-	 */
-	function getCachePlain() {
-		/**
-		 * Cache used
-		 * If this method is not called, then cache is useless
-		 */
-		$GLOBALS['cacheUsed'][] = $this->cache_id;
-		
-		/**
-		 * Cached version ?
-		 */
-		if(!$this->strCache) {
-			$GLOBALS['nbCacheUsed']++;
-			return file_get_contents($this->cache_path);
-		}
-		return $this->strCache;
-	}
-	
-	/**
-	 * Default alias for savePlain or saveGz
-	 *
-	 * @param string $str
-	 * @return bool
-	 */
-	function saveCache($str) {
-		return $this->saveCachePlain($str);
-		
-	}
-	
-	/**
-	 * Default alias for savePlain of saveGz
-	 *
-	 * @return string
-	 */
-	function getCache() {
-		return  $this->getCachePlain();
-	}
+        /**
+         * Full path
+         */
+        $this->cache_path = $cache_path;
+    }
 
+    /**
+     * Checks if cache file exists and is newer than content modification
+     *
+     * @return bool
+     */
+    function cacheExists() {
 
-	/**
-	 * Saves cache content and compress it via GZ
-	 *
-	 * @param string $str
-	 * @return bool
-	 */
-	function saveCacheGz($str) {
+        /**
+         * No cache ... no cache
+         */
+        if (!CACHE_IS_ON)
+            return false;
 
-		$this->cacheChecked = true;
-		$this->strCache = $str;
+        /**
+         * If not already checked
+         */
+        if (!$this->cacheChecked) {
+            /**
+             * File must exist
+             */
+            if (file_exists($this->cache_path)) {
+                /**
+                 * And be newer than content modification
+                 */
+                if ($this->cache_time <= filemtime($this->cache_path)) {
+                    $this->cacheChecked = true;
+                    $this->cached = true;
+                }
+            }
+        }
+        return $this->cached;
+    }
 
-		$gz = gzopen($this->cache_path,'wb');
-		gzputs($gz,$str);
-		gzclose($gz);
-		
-		return true;
-	}
+    /**
+     * Saves content in plain file (not gziped)
+     *
+     * @param string $str
+     * @return bool
+     */
+    function saveCachePlain($str) {
 
-	/**
-	 * Returns Cache saved and compressed in GZ
-	 *
-	 * @return string
-	 */
-	function getCacheGz() {
-		
-		$GLOBALS['cacheUsed'][] = $this->cache_id;
-		
-		if(!$this->strCache) {
-			$GLOBALS['nbCacheUsed']++;			
-			$gza = gzfile($this->cache_path);
-			return implode($gza);		
-		} else {
-			return $this->strCache;
-		}
-	}
+        $this->cacheChecked = true;
+        $this->strCache = $str;
+
+        if (!file_exists(dirname($this->cache_path))) {
+            devbug('Cache directory missing : ' . $this->cache_path);
+            return;
+        }
+
+        $a = file_put_contents($this->cache_path, $str);
+        chgrp($this->cache_path, 'www-data');
+        chmod($this->cache_path,0777);
+        return $a;
+    }
+
+    /**
+     * Returns the content of the current cache file
+     * USE ONLY IF FILE WAS PLAIN TEXT SAVED
+     *
+     * @return string
+     */
+    function getCachePlain() {
+        /**
+         * Cache used
+         * If this method is not called, then cache is useless
+         */
+        $GLOBALS['cacheUsed'][] = $this->cache_id;
+
+        /**
+         * Cached version ?
+         */
+        if (!$this->strCache) {
+            $GLOBALS['nbCacheUsed']++;
+            return file_get_contents($this->cache_path);
+        }
+        return $this->strCache;
+    }
+
+    /**
+     * Default alias for savePlain or saveGz
+     *
+     * @param string $str
+     * @return bool
+     */
+    function saveCache($str) {
+        return $this->saveCachePlain($str);
+    }
+
+    /**
+     * Default alias for savePlain of saveGz
+     *
+     * @return string
+     */
+    function getCache() {
+        return $this->getCachePlain();
+    }
+
+    /**
+     * Saves cache content and compress it via GZ
+     *
+     * @param string $str
+     * @return bool
+     */
+    function saveCacheGz($str) {
+
+        $this->cacheChecked = true;
+        $this->strCache = $str;
+
+        $gz = gzopen($this->cache_path, 'wb');
+        gzputs($gz, $str);
+        gzclose($gz);
+
+        return true;
+    }
+
+    /**
+     * Returns Cache saved and compressed in GZ
+     *
+     * @return string
+     */
+    function getCacheGz() {
+
+        $GLOBALS['cacheUsed'][] = $this->cache_id;
+
+        if (!$this->strCache) {
+            $GLOBALS['nbCacheUsed']++;
+            $gza = gzfile($this->cache_path);
+            return implode($gza);
+        } else {
+            return $this->strCache;
+        }
+    }
 
 }
 
