@@ -361,6 +361,7 @@ function importSqlFile($FILENAME) {
 
     $db_connection_charset = '';
 
+    $delimiter = ';';
 
     // *******************************************************************************************
     // If not familiar with PHP please don't change anything below this line
@@ -388,8 +389,6 @@ function importSqlFile($FILENAME) {
     $_REQUEST["fn"] = $FILENAME;
     $QUERIESTODO = array();
     if (!$error && isset($_REQUEST["start"]) && isset($_REQUEST["foffset"]) ) {
-
-
 
         $gzipmode = false;
 
@@ -476,9 +475,10 @@ function importSqlFile($FILENAME) {
 
                 // Execute query if end of query detected (; as last character) AND NOT in parents
 
-                if (strpos(trim($dumpline), ";$") !== false && !$inparents) {
-
+                if (preg_match('/'.preg_quote($delimiter).'$/',trim($dumpline)) && !$inparents) {
+                    
                     $QUERIESTODO[] = str_replace('[LG]', (defined('LG_TEMP') ? LG_TEMP : LG_DEF), $query);
+                    
                     /*
                       if (!DoSql(trim($query)))
                       { echo ("<p class=\"error\">Error at the line $linenumber: ". trim($dumpline)."</p>\n");
