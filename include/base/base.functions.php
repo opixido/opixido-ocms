@@ -560,7 +560,7 @@ function niceTextDate($date, $jour = false) {
     global $lg;
 
     if(is_object($date)) {
-        $date = $date->toString('U');
+    	$date = $date->input;
     }
     $d = strtotime($date);
 

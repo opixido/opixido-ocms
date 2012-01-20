@@ -784,6 +784,10 @@ function strftimeloc($format, $timestamp=0) {
     }
     $format = str_replace('%A', $tab['weekdays_long'][$weekday], $format);
 
+	if ($GLOBALS['isWindows']) {
+	    $format = preg_replace('#(?<!%)((?:%%)*)%e#', '\1%#d', $format);
+	}
+    
     return strftime($format, $timestamp);
     //}
 }
