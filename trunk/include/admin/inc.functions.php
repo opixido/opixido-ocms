@@ -45,15 +45,14 @@ function getEditTrad($nom) {
     }
 }
 
-function getTableListing($table) {
+function getTableListing($table, $sub_table = "") {
 
     global $_Gconfig;
 
-    $liste = $_Gconfig['specialListing'][$table];
-
+    $liste = $_Gconfig['specialListing'][$table][$sub_table];
     if ($liste) {
 
-        return $_Gconfig['specialListing'][$table]();
+        return $_Gconfig['specialListing'][$table][$sub_table]();
     } else {
 
         $sql = 'SELECT G.* FROM ' . $table . ' AS G WHERE 1 ';
