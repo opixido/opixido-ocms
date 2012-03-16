@@ -78,7 +78,7 @@ class ajaxRelations {
 	
 	function getListing() {
 		
-		$res = getTableListing($this->fk_table);
+		$res = getTableListing($this->fk_table, $this->table);
 		return $res;
 		
 	}
