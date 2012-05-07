@@ -572,16 +572,17 @@ class genFile {
         }
 
         /* Création de l'arborescence */
-
-        $t = explode("/", dirname($this->systemPath)); //$specialUpload[$this->table][$name]
+	$F = dirname($fullpath);
+        $t = explode("/", $F); //$specialUpload[$this->table][$name]
 
         if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
             $reconst = '';
         } else {
             $reconst = '/';
         }
-        if (!file_exists(dirname($this->systemPath))) {
-            mkdir(dirname($this->systemPath), 0777, true);
+
+        if (!file_exists($F)) {
+            mkdir(dirname($F), 0777, true);
         }
 
         foreach ($t as $folder) {
