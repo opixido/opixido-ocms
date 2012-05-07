@@ -582,7 +582,7 @@ class genFile {
         }
 
         if (!file_exists($F)) {
-            mkdir(dirname($F), 0777, true);
+            mkdir(($F), 0777, true);
         }
 
         foreach ($t as $folder) {
