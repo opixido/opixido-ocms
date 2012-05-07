@@ -582,7 +582,7 @@ class genFile {
             $reconst = '/';
         }
         if (!file_exists($F)) {
-            echo 'MKDIR : '.mkdir($F, 0777, true);
+           mkdir($F, 0777, true);
         }
 
         foreach ($t as $folder) {
