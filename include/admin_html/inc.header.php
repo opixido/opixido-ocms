@@ -122,7 +122,7 @@ echo 'var lgs = ' . json_encode($_Gconfig['LANGUAGES']) . ';';
                             </style>
                             <div class="clearer"></div>
                         <?php } ?>
-                        <a class="logoa" href="index.php?home=1" style="height:65px;background-image:url(img/logo.png)!important;background-repeat:no-repeat"><h1>&nbsp;</h1></a>
+                        <a class="logoa" href="index.php?home=1" style="height:65px;"><h1>&nbsp;</h1></a>
                     </div>
                 </div>
 
