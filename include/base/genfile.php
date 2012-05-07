@@ -229,6 +229,7 @@ class genFile {
             $this->systemPath = $this->addSlashPath($this->systemPath);
 
             $this->webPath = path_concat(BU, $this->addSlashPath($this->webPath));
+	    $this->systemPath = $this->getSystemPath();
         }
     }
 
@@ -572,7 +573,7 @@ class genFile {
         }
 
         /* Création de l'arborescence */
-	$F = dirname($fullpath);
+	$F = dirname($this->systemPath);
         $t = explode("/", $F); //$specialUpload[$this->table][$name]
 
         if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
@@ -580,9 +581,8 @@ class genFile {
         } else {
             $reconst = '/';
         }
-
         if (!file_exists($F)) {
-            mkdir(($F), 0777, true);
+            echo 'MKDIR : '.mkdir($F, 0777, true);
         }
 
         foreach ($t as $folder) {
