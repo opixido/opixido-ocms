@@ -28,41 +28,41 @@ class ajaxForm {
     public $id;
     public $row;
 
-    function __construct($table, $id="new") {
+    function __construct($table, $id = "new") {
 
-	$this->table = $table;
-	$this->id = $id;
+        $this->table = $table;
+        $this->id = $id;
 
-	if ($this->id != 'new') {
-	    $this->row = getRowFromId($this->table, $this->id);
-	}
+        if ($this->id != 'new') {
+            $this->row = getRowFromId($this->table, $this->id);
+        }
 
-	$this->tab_field = getTabField($this->table);
+        $this->tab_field = getTabField($this->table);
     }
 
     function gen() {
-	
+
     }
 
     function genLabel() {
-	
+
     }
 
     function genField($champ) {
 
-	global $_Gconfig;
+        global $_Gconfig;
 
-	if (isBaseLgField($champ, $this->table)) {
+        if (isBaseLgField($champ, $this->table)) {
 
-	    $htmlLgs = '';
-	    $nbLgs = count($_Gconfig['LANGUAGES']);
-	    foreach ($_Gconfig['LANGUAGES'] as $v) {
-		$htmlLgs .= '<option value="' . $v . '" style="background:url(img/flags/' . $v . '.gif) 2px 2px no-repeat;padding-left:20px">' . $v . '</option>';
-		$this->genOneField($champ . '_' . $v, true);
-		$html .= '<span class="lg_' . $v . '">' . $this->getBuffer(true) . '</span>';
-	    }
+            $htmlLgs = '';
+            $nbLgs = count($_Gconfig['LANGUAGES']);
+            foreach ($_Gconfig['LANGUAGES'] as $v) {
+                $htmlLgs .= '<option value="' . $v . '" style="background:url(img/flags/' . $v . '.gif) 2px 2px no-repeat;padding-left:20px">' . $v . '</option>';
+                $this->genOneField($champ . '_' . $v, true);
+                $html .= '<span class="lg_' . $v . '">' . $this->getBuffer(true) . '</span>';
+            }
 
-	    $js = '		
+            $js = '
 			<script type="text/javascript">				
 				//-TOEVAL-
 				window.ajax_cur_lg["' . $this->table . '-' . $champ . '-' . $this->id . '"] = "' . LG_DEF . '";				
@@ -70,89 +70,89 @@ class ajaxForm {
 				//-ENDEVAL-
 			</script>
 			';
-	    $htmlRet .= '<div id="' . $this->table . '-' . $champ . '-' . $this->id . '" class="ajax_lgs">';
-	    if ($nbLgs > 1) {
-		$htmlRet .= '<select class="ajax_lg_select">' . $htmlLgs . '</select>';
-	    }
-	    $htmlRet .= '' . $html . '</div>' . $js;
+            $htmlRet .= '<div id="' . $this->table . '-' . $champ . '-' . $this->id . '" class="ajax_lgs">';
+            if ($nbLgs > 1) {
+                $htmlRet .= '<select class="ajax_lg_select">' . $htmlLgs . '</select>';
+            }
+            $htmlRet .= '' . $html . '</div>' . $js;
 
-	    return $htmlRet;
-	} else {
+            return $htmlRet;
+        } else {
 
-	    $this->genOneField($champ);
-	    return $this->getBuffer(true);
-	}
+            $this->genOneField($champ);
+            return $this->getBuffer(true);
+        }
     }
 
     function genOneField($champ) {
 
 
-	global $relations, $uploadFields;
+        global $relations, $uploadFields;
 
-	if (false && ( in_array($champ, $uploadFields) || in_array(getBaseLgField($champ), $uploadFields) )) {
+        if (( in_array($champ, $uploadFields) || in_array(getBaseLgField($champ), $uploadFields) )) {
 
-	    $GLOBALS['gb_obj']->includeFile('ajax.upload.php', 'admin/af_modules');
+            $GLOBALS['gb_obj']->includeFile('ajax.upload.php', 'admin/af_modules');
 
-	    $f = new ajaxUpload($this, $champ);
+            $f = new ajaxUpload($this, $champ);
 
-	    $this->addBuffer($f->gen());
-	} else if (!empty($relations[$this->table][$champ])) {
+            $this->addBuffer($f->gen());
+        } else if (!empty($relations[$this->table][$champ])) {
 
-	    $GLOBALS['gb_obj']->includeFile('ajax.relations.php', 'admin/af_modules');
+            $GLOBALS['gb_obj']->includeFile('ajax.relations.php', 'admin/af_modules');
 
-	    $f = new ajaxRelations($this, $champ, $relations[$this->table][$champ]);
+            $f = new ajaxRelations($this, $champ, $relations[$this->table][$champ]);
 
-	    $this->addBuffer($f->gen());
-	} else if ($this->tab_field[$champ]->type == 'enum') {
+            $this->addBuffer($f->gen());
+        } else if ($this->tab_field[$champ]->type == 'enum') {
 
-	    $GLOBALS['gb_obj']->includeFile('ajax.enum.php', 'admin/af_modules');
+            $GLOBALS['gb_obj']->includeFile('ajax.enum.php', 'admin/af_modules');
 
-	    $f = new ajaxEnum($this, $champ);
+            $f = new ajaxEnum($this, $champ);
 
-	    $this->addBuffer($f->gen());
-	} else if ($this->tab_field[$champ]->type == 'tinyint' && $this->tab_field[$champ]->size < 2) {
+            $this->addBuffer($f->gen());
+        } else if ($this->tab_field[$champ]->type == 'tinyint' && $this->tab_field[$champ]->size < 2) {
 
-	    $GLOBALS['gb_obj']->includeFile('ajax.bool.php', 'admin/af_modules');
+            $GLOBALS['gb_obj']->includeFile('ajax.bool.php', 'admin/af_modules');
 
-	    $f = new ajaxBool($this, $champ);
+            $f = new ajaxBool($this, $champ);
 
-	    $this->addBuffer($f->gen());
-	} else if ($this->tab_field[$champ]->type == 'datetime') {
+            $this->addBuffer($f->gen());
+        } else if ($this->tab_field[$champ]->type == 'datetime') {
 
-	    $GLOBALS['gb_obj']->includeFile('ajax.datetime.php', 'admin/af_modules');
+            $GLOBALS['gb_obj']->includeFile('ajax.datetime.php', 'admin/af_modules');
 
-	    $f = new ajaxDateTime($this, $champ);
+            $f = new ajaxDateTime($this, $champ);
 
-	    $this->addBuffer($f->gen());
-	} else {
+            $this->addBuffer($f->gen());
+        } else {
 
-	    $GLOBALS['gb_obj']->includeFile('ajax.varchar.php', 'admin/af_modules');
+            $GLOBALS['gb_obj']->includeFile('ajax.varchar.php', 'admin/af_modules');
 
-	    $f = new ajaxVarchar($this, $champ);
+            $f = new ajaxVarchar($this, $champ, $this->tab_field[$champ]->max_length);
 
-	    $this->addBuffer($f->gen());
-	}
+            $this->addBuffer($f->gen());
+        }
 
-	return $this->getBuffer();
+        return $this->getBuffer();
     }
 
     function addBuffer($str) {
 
-	$this->strBuffer .= $str;
+        $this->strBuffer .= $str;
     }
 
     function cleanBuffer() {
 
-	$this->strBuffer = '';
+        $this->strBuffer = '';
     }
 
-    function getBuffer($andClean=false) {
-	$str = $this->strBuffer;
-	if ($andClean) {
-	    $this->cleanBuffer();
-	}
+    function getBuffer($andClean = false) {
+        $str = $this->strBuffer;
+        if ($andClean) {
+            $this->cleanBuffer();
+        }
 
-	return $str;
+        return $str;
     }
 
 }

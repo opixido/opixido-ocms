@@ -45,14 +45,20 @@ function getEditTrad($nom) {
     }
 }
 
-function getTableListing($table, $sub_table = "") {
+function getTableListing($table) {
 
     global $_Gconfig;
 
-    $liste = $_Gconfig['specialListing'][$table][$sub_table];
+    if(!empty($GLOBALS['tableListing'][$table])) {
+        return $GLOBALS['tableListing'][$table];
+    }
+
+    $liste = akev($_Gconfig['specialListing'],$table);
+
     if ($liste) {
 
-        return $_Gconfig['specialListing'][$table][$sub_table]();
+        $GLOBALS['tableListing'][$table] = $_Gconfig['specialListing'][$table]();
+        return $GLOBALS['tableListing'][$table];
     } else {
 
         $sql = 'SELECT G.* FROM ' . $table . ' AS G WHERE 1 ';
@@ -60,14 +66,16 @@ function getTableListing($table, $sub_table = "") {
         $nomSql = GetTitleFromTable($table, ' , ');
 
         if (in_array($table, $_Gconfig['versionedTable'])) {
-
             $sql .= ' AND(  ' . VERSION_FIELD . ' = ""  OR  ' . VERSION_FIELD . ' IS NULL   OR  ' . VERSION_FIELD . ' = 0  )';
         }
 
         $sql .= 'ORDER BY ' . $nomSql;
         $result = GetAll($sql);
 
-        return $result;
+        $GLOBALS['tableListing'][$table] = $result;
+        
+        return $GLOBALS['tableListing'][$table];
+        
     }
 }
 
@@ -281,7 +289,7 @@ function GetRubTitle($row) {
 
 function GetRubUrl($row) {
     //return 'index.php?r='.$row['rubrique_id'];
-    $gurl = new GenUrl();
+    $gurl = new GenUrlV2();
     $url = $gurl->buildUrlFromId($row['rubrique_id']) . GetParam('fake_folder_action') . '/' . GetParam('action_editer ');
     return $url;
 }
@@ -924,15 +932,17 @@ function getPicto($nom, $taille="32x32") {
         $p = $tabForms[$nom]['picto'];
     } else if (tradExists($nom)) {
         $p = t($nom);
-    }    
-
+    } 
+/*
     $pos = strpos($p, 'http');
     if ($pos !== false) {
         return $p;
-    }
+    }*/
     $pos = strpos($p, ADMIN_PICTOS_FOLDER);
     if ($pos !== false) {
         $p = substr($p, $pos + strlen(ADMIN_PICTOS_FOLDER) + 5);
+    } else {
+        $p = $nom;
     }
 
     $a = path_concat(ADMIN_PICTOS_FOLDER, $taille, $p);

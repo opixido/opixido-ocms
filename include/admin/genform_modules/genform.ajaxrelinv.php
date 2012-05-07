@@ -56,21 +56,21 @@ class ajaxRelinv {
 
 
 	$html = '<div class="ajaxRelinv">
-		
-		<script src="js/ajaxForm.js" type="text/javascript">		
-			
-		</script>
-		
 		<a href="" onclick="';
 
 	$html .= 'arAddValue(this,\'' . $this->cur_table . '\',\'' . $this->fake_name . '\',$(\'#curId\').val());return false;">
 		<img src="' . ADMIN_PICTOS_FOLDER . ADMIN_PICTOS_FORM_SIZE . '/actions/list-add.png" alt="' . t('ajouter') . '" /></a>
 		
-		<table class="genform_table ajax_table" id="ar_' . $this->cur_table . '-' . '' . $this->fake_name . '">';
+		<table width="590" class="genform_table ajax_table" id="ar_' . $this->cur_table . '-' . '' . $this->fake_name . '">';
 
 	global $restrictedMode;
 	$restrictedMode = true;
 	//$this->nbLines = count($liste);
+        $html .= '<thead><tr><th>&nbsp;</th>';
+        foreach($fields as $v) {
+            $html .= '<th scope="col">' . t($v) . '</th>';
+        }
+        $html .= '</tr></thead>';
 	foreach ($liste as $row) {
 	    $html .= '<tbody>' . "\n";
 	    $html .= $this->getLine($row, $fields) . "\n";
@@ -136,7 +136,7 @@ class ajaxRelinv {
 
 	$af = new ajaxForm($this->fk_table, $idd);
 	foreach ($fields as $v) {
-	    $html .= '<td><label>' . t($v) . '</label>' . $af->genField($v) . '</td>';
+	    $html .= '<td class="ajaxrelinv_'.$v.'">' . $af->genField($v) . '</td>';
 	}
 	$html .= "\n" . '</tr>';
 

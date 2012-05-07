@@ -25,6 +25,8 @@ class genXhrAdmin {
         $this->gs = $GLOBALS['gs_obj'];
 
 
+
+
         if (!$this->gs->isLogged()) {
             die();
         }
@@ -38,6 +40,7 @@ class genXhrAdmin {
         } else {
             $_SESSION['lastUsedField'] = $this->field;
         }
+
 
         $this->LoadPlugins();
     }
@@ -131,37 +134,358 @@ class genXhrAdmin {
             case 'tablerelAsTags':
                 $this->tablerelAsTags();
                 break;
+
+            case 'upload':
+                $this->upload();
+                break;
+
+            case 'uploadDiaporama':
+                $this->uploadDiaporama();
+                break;
+            case 'uploadRP':
+                $this->uploadRP();
+                break;
+            case 'reloadChamp':
+                $this->reloadChamp();
+                break;
+
+            case 'loadFileTag':
+                $this->loadFileTag();
+
+            case 'deleteFile':
+                $this->deleteFile();
         }
+    }
+
+    function loadFileTag() {
+
+        $gf = new genFile($_REQUEST['curTable'], $_REQUEST['champ'], $_REQUEST['curId']);
+        echo $gf->genAdminTag();
+        die();
+    }
+
+    function deleteFile() {
+        global $gs_obj;
+        if ($gs_obj->can('edit', $_REQUEST['curTable'], array(), $_REQUEST['curId'],$_REQUEST['curChamp'])) {
+            $gf = new genFile($_REQUEST['curTable'], $_REQUEST['curChamp'], $_REQUEST['curId']);
+            $gf->deleteFile(true);
+            global $getRowFromId_cacheRow;
+            $getRowFromId_cacheRow = array();
+            $gf = new genFile($_REQUEST['curTable'], $_REQUEST['curChamp'], $_REQUEST['curId']);
+            if(!empty($_REQUEST['small'])) {
+                echo $gf->genSmallAdminTag();
+            } else {
+                echo $gf->genAdminTag();
+            }
+            die();
+        }
+    }
+
+    function upload() {
+
+
+        header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
+        header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+        header("Cache-Control: no-store, no-cache, must-revalidate");
+        header("Cache-Control: post-check=0, pre-check=0", false);
+        header("Pragma: no-cache");
+        global $gs_obj;
+        if (!$gs_obj->can('edit', $_REQUEST['curTable'], array(), $_REQUEST['curId'],$_REQUEST['champ'])) {
+            die('access denied');
+        }
+
+        @set_time_limit(5 * 60);
+
+        /**
+         * Différents Chunks du fichier
+         */
+        $chunk = isset($_REQUEST["chunk"]) ? $_REQUEST["chunk"] : 0;
+        $chunks = isset($_REQUEST["chunks"]) ? $_REQUEST["chunks"] : 0;
+
+        /**
+         * Nom réel à l'upload
+         */
+        $fileName = isset($_REQUEST["name"]) ? $_REQUEST["name"] : '';
+
+        if (isset($_SERVER["HTTP_CONTENT_TYPE"]))
+            $contentType = $_SERVER["HTTP_CONTENT_TYPE"];
+
+        if (isset($_SERVER["CONTENT_TYPE"]))
+            $contentType = $_SERVER["CONTENT_TYPE"];
+
+        $tempName = md5($_SESSION['gs_admin_id'] . '_' . $_REQUEST['curTable'] . '_' . $_REQUEST['curId'] . '_' . $_REQUEST['champ']);
+
+
+
+        global $gb_obj;
+        $targetDir = path_concat($gb_obj->include_path, GetParam('cache_path'));
+        $tempFullPath = path_concat($targetDir, $tempName);
+
+
+        // Handle non multipart uploads older WebKit versions didn't support multipart in HTML5
+        if (strpos($contentType, "multipart") !== false) {
+            if (isset($_FILES['file']['tmp_name']) && is_uploaded_file($_FILES['file']['tmp_name'])) {
+                // Open temp file
+
+                $out = fopen($tempFullPath, $chunk == 0 ? "wb" : "ab");
+                if ($out) {
+                    // Read binary input stream and append it to temp file
+                    $in = fopen($_FILES['file']['tmp_name'], "rb");
+
+                    if ($in) {
+                        while ($buff = fread($in, 4096))
+                            fwrite($out, $buff);
+                    } else
+                        die('{"jsonrpc" : "2.0", "error" : {"code": 101, "message": "Failed to open input stream."}, "id" : "id"}');
+                    fclose($in);
+                    fclose($out);
+                    @unlink($_FILES['file']['tmp_name']);
+                } else
+                    die('{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Failed to open output stream."}, "id" : "id"}');
+            } else
+                die('{"jsonrpc" : "2.0", "error" : {"code": 103, "message": "Failed to move uploaded file."}, "id" : "id"}');
+        } else {
+            // Open temp file
+            $out = fopen($tempFullPath, $chunk == 0 ? "wb" : "ab");
+            if ($out) {
+                // Read binary input stream and append it to temp file
+                $in = fopen("php://input", "rb");
+
+                if ($in) {
+                    while ($buff = fread($in, 4096))
+                        fwrite($out, $buff);
+                } else
+                    die('{"jsonrpc" : "2.0", "error" : {"code": 101, "message": "Failed to open input stream."}, "id" : "id"}');
+
+                fclose($in);
+                fclose($out);
+            } else
+                die('{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Failed to open output stream."}, "id" : "id"}');
+        }
+
+
+        if ($chunks - 1 == $chunk || $chunks == 0) {
+
+
+            $gf = new genFile($_REQUEST['curTable'], $_REQUEST['champ'], $_REQUEST['curId'], $fileName, false);
+            $fileName = $gf->getSystemPath();
+
+            $fileName = $gf->fileName;
+            $targetDir = $gf->systemPath;
+
+
+            /* chmod($targetDir.DIRECTORY_SEPARATOR.$fileName, 0777);
+              chgrp($targetDir.DIRECTORY_SEPARATOR.$filename, 'www-data'); */
+            $gf->uploadFile($tempFullPath, true);
+            if (!empty($_REQUEST['type']) && $_REQUEST['type'] == 'small') {
+                echo $gf->genSmallAdminTag();
+            } else {
+                echo $gf->genAdminTag();
+            }
+            unlink($tempFullPath);
+            die();
+        }
+        // Return JSON-RPC response
+        die('{"jsonrpc" : "2.0", "result" : null, "id" : "id"}');
+    }
+
+    function uploadDiaporama() {
+
+        global $gs_obj;
+        if ($gs_obj->can('edit', 'c_programme', array(), $_REQUEST['curId'])) {
+            DoSql('INSERT INTO c_diaporama (diaporama_id, fk_programme_id,diaporama_titre)
+                    VALUES ("",' . sql($_REQUEST['curId']) . ',' . sql($_REQUEST['name']) . ') ');
+            $_REQUEST['curId'] = $_GET['curId'] = $_POST['curId'] = InsertId();
+            $_REQUEST['curTable'] = $_GET['curTable'] = $_POST['curTable'] = 'c_diaporama';
+            $_REQUEST['champ'] = $_GET['champ'] = $_POST['champ'] = 'diaporama_img';
+
+            $this->upload();
+        }
+    }
+
+    function uploadRP() {
+
+
+        header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
+        header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+        header("Cache-Control: no-store, no-cache, must-revalidate");
+        header("Cache-Control: post-check=0, pre-check=0", false);
+        header("Pragma: no-cache");
+
+        @set_time_limit(5 * 60);
+
+        /**
+         * Différents Chunks du fichier
+         */
+        $chunk = isset($_REQUEST["chunk"]) ? $_REQUEST["chunk"] : 0;
+        $chunks = isset($_REQUEST["chunks"]) ? $_REQUEST["chunks"] : 0;
+
+        /**
+         * Nom réel à l'upload
+         */
+        $fileName = isset($_REQUEST["name"]) ? $_REQUEST["name"] : '';
+
+        if (isset($_SERVER["HTTP_CONTENT_TYPE"]))
+            $contentType = $_SERVER["HTTP_CONTENT_TYPE"];
+
+        if (isset($_SERVER["CONTENT_TYPE"]))
+            $contentType = $_SERVER["CONTENT_TYPE"];
+
+        $tempName = md5($_SESSION['gs_admin_id'] . '_' . $_REQUEST['curTable'] . '_' . $_REQUEST['curId'] . '_' . $_REQUEST['champ']);
+
+
+
+        global $gb_obj;
+        $targetDir = path_concat($gb_obj->include_path, GetParam('cache_path'));
+        $tempFullPath = path_concat($targetDir, $tempName);
+
+
+        // Handle non multipart uploads older WebKit versions didn't support multipart in HTML5
+        if (strpos($contentType, "multipart") !== false) {
+            if (isset($_FILES['file']['tmp_name']) && is_uploaded_file($_FILES['file']['tmp_name'])) {
+                // Open temp file
+
+                $out = fopen($tempFullPath, $chunk == 0 ? "wb" : "ab");
+                if ($out) {
+                    // Read binary input stream and append it to temp file
+                    $in = fopen($_FILES['file']['tmp_name'], "rb");
+
+                    if ($in) {
+                        while ($buff = fread($in, 4096))
+                            fwrite($out, $buff);
+                    } else
+                        die('{"jsonrpc" : "2.0", "error" : {"code": 101, "message": "Failed to open input stream."}, "id" : "id"}');
+                    fclose($in);
+                    fclose($out);
+                    @unlink($_FILES['file']['tmp_name']);
+                } else
+                    die('{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Failed to open output stream."}, "id" : "id"}');
+            } else
+                die('{"jsonrpc" : "2.0", "error" : {"code": 103, "message": "Failed to move uploaded file."}, "id" : "id"}');
+        } else {
+            // Open temp file
+            $out = fopen($tempFullPath, $chunk == 0 ? "wb" : "ab");
+            if ($out) {
+                // Read binary input stream and append it to temp file
+                $in = fopen("php://input", "rb");
+
+                if ($in) {
+                    while ($buff = fread($in, 4096))
+                        fwrite($out, $buff);
+                } else
+                    die('{"jsonrpc" : "2.0", "error" : {"code": 101, "message": "Failed to open input stream."}, "id" : "id"}');
+
+                fclose($in);
+                fclose($out);
+            } else
+                die('{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Failed to open output stream."}, "id" : "id"}');
+        }
+
+
+        if ($chunks - 1 == $chunk || $chunks == 0) {
+
+
+            $x = simplexml_load_file($tempFullPath);
+
+            echo '<table class="genform_table">';
+            foreach ($x->image as $image) {
+
+
+                if (empty($image['name'])) {
+                    continue;
+                }
+                echo '<tr><td>' . $image['name'] . '</td>';
+                /**
+                 * On cherche le timecode correspondant
+                 */
+                $tc = $x->xpath('//crossfade[@target=' . $image['handle'] . ']');
+                if (empty($tc[0]['start'])) {
+                    echo '<td>Timecode (crossfade) correspondant manquant</td></tr>';
+                    continue;
+                }
+                $tc = $tc[0]['start'];
+
+                /**
+                 * On supprime les milisecondes
+                 */
+                $tc = explode('.', $tc);
+                $tc = $tc[0];
+
+                /**
+                 * On récupère le tout en tableau
+                 */
+                $tcs = explode(':', $tc);
+                $secs = $tcs[1] * 3600 + $tcs[2] * 60 + $tcs[3];
+
+                //print_r($tc);
+                $n = explode('/', $image['name']);
+                $n = $n[count($n) - 1];
+                $sql = 'SELECT * FROM c_diaporama WHERE fk_programme_id = ' . sql($_REQUEST['curId']) . ' AND diaporama_img LIKE "%' . $n . '"';
+                $r = getSingle($sql);
+                if (!$r) {
+                    echo '<td>Aucun fichier image dans le diaporama ne correspond</td></tr>';
+                    continue;
+                }
+                DoSql('UPDATE c_diaporama SET diaporama_repere_temporel = ' . sql($secs) . ' WHERE diaporama_id = ' . sql($r['diaporama_id']));
+                echo '<td>' . $tc . '</td><td>' . $secs . 'sec</td><td><b>OK</b></td></tr>';
+            }
+            echo '</table>';
+
+            unlink($tempFullPath);
+            die();
+        }
+        // Return JSON-RPC response
+        die('{"jsonrpc" : "2.0", "result" : null, "id" : "id"}');
+    }
+
+    function reloadChamp() {
+
+        $gf = new GenForm($_REQUEST['curTable'], 'post', $_REQUEST['curId']);
+        echo $gf->gen($_REQUEST['curChamp']);
+        die();
     }
 
     function tablerelAsTags() {
         global $tablerel, $_Gconfig;
 
 
+        $fields = $_Gconfig['tablerelAsTags'][$_REQUEST['tablerel']]['label'];
+        $_GET['order'] = $_REQUEST['order'] = $fields[0];
+        $_GET['to'] = $_REQUEST['to'] = 'asc';
         $s = new genSearchV2($_REQUEST['table']);
         $res = $s->doFullSearch($_REQUEST['term']);
 
         $re = array();
         $pk = getPrimaryKey($_REQUEST['table']);
 
-        $fields = $_Gconfig['tablerelAsTags'][$_REQUEST['tablerel']]['label'];
-        $fieldsD = akev($_Gconfig['tablerelAsTags'][$_REQUEST['tablerel']],'desc');
-        if(!is_array($fieldsD)) {
+
+        $fieldsD = akev($_Gconfig['tablerelAsTags'][$_REQUEST['tablerel']], 'desc');
+        if (!is_array($fieldsD)) {
             $fieldsD = array();
         }
+        $tr = $_REQUEST['tablerel'];
 
         foreach ($res as $row) {
             $td = $t = array();
             foreach ($fields as $v) {
                 $t[] = $row[$v];
             }
-            foreach ($fieldsD as $v) {
-                $td[] = $row[$v];
+            /*
+              foreach ($fieldsD as $v) {
+              $td[] = $row[$v];
+              }
+              if ($td) {
+              $td = '<span class="petit">' . implode($td, ' - ') . '</span>';
+              }
+             */
+            $label = $value = implode($t, " - ");
+            if ($tr == 'r_programme_dewey') {
+                $r = explode('.', $t[0]);
+                if (count($r) > 1) {
+                    $label = str_repeat('_', 1 + strlen($r[1])) . $label;
+                }
             }
-            if($td) {
-                $td = '<span class="petit">'.implode($td,' - ').'</span>';
-            }
-            $re[] = array('id' => $row[$pk], 'label' => implode($t," - "), 'value' => implode($t," - "));
+            $re[] = array('id' => $row[$pk], 'label' => $label, 'value' => $value);
         }
 
         echo json_encode($re);
@@ -232,17 +556,17 @@ class genXhrAdmin {
 
 
 
-        if ($GLOBALS['gs_obj']->can($action, $_REQUEST['table'], $_REQUEST['id'])) {
+        if ($GLOBALS['gs_obj']->can($action, $_REQUEST['table'], array(), $_REQUEST['id'])) {
 
             if ($action == 'goup') {
                 $row = getRowFromId($_REQUEST['table'], $_REQUEST['id']);
-                $fkC = $row[$params['vfk1']] ? $params['vfk1'] : $params['vfk2'];
+                $fkC = $row[$params['vfk2']] ? $params['vfk2'] : $params['vfk1'];
                 $o = new GenOrder($_REQUEST['table'], $_REQUEST['id'], $row[$fkC], $fkC);
                 $o->GetUp();
             } else if ($action == 'godown') {
 
                 $row = getRowFromId($_REQUEST['table'], $_REQUEST['id']);
-                $fkC = $row[$params['vfk1']] ? $params['vfk1'] : $params['vfk2'];
+                $fkC = $row[$params['vfk2']] ? $params['vfk2'] : $params['vfk1'];
                 echo 'Descend ' . $_REQUEST['table'] . ' - ' . $_REQUEST['id'] . ' - ' . $fkC;
 
                 $o = new GenOrder($_REQUEST['table'], $_REQUEST['id'], $row[$fkC], $fkC);
@@ -254,6 +578,7 @@ class genXhrAdmin {
                 /* print_r($_REQUEST);
                   print_r(unserialize($_REQUEST['params']));
                  */
+
 
                 $xfk = $id ? $params['vfk2'] : $params['vfk1'];
                 $id = $id ? $id : $params['id'];
@@ -294,19 +619,21 @@ class genXhrAdmin {
                 }
                 die();
             }
+        } else {
+            echo 'CANTDO';
         }
     }
 
     function ajaxForm() {
 
-        if ($_REQUEST['upload']) {
+        if (!empty($_REQUEST['upload'])) {
             echo 'UPLOAD';
             print_r($_REQUEST);
             print_r($_FILES);
         } else
         if (ake($_REQUEST, 'save') && $_REQUEST['champ'] && $_REQUEST['id'] && $_REQUEST['table']) {
 
-            if ($GLOBALS['gs_obj']->can('edit', $_REQUEST['table'], $_REQUEST['id'], $_REQUEST['champ'])) {
+            if ($GLOBALS['gs_obj']->can('edit', $_REQUEST['table'], array(), $_REQUEST['id'], $_REQUEST['champ'])) {
 
                 DoSql('UPDATE ' . $_REQUEST['table'] . '
 	    						SET ' . $_REQUEST['champ'] . ' = ' . sql($_REQUEST['save']) . ' 
@@ -319,16 +646,17 @@ class genXhrAdmin {
 
     function ajaxRelinv() {
 
-        if ($_REQUEST['save'] && $_REQUEST['field'] && $_REQUEST['id'] && $_REQUEST['table']) {
 
-            if ($GLOBALS['gs_obj']->can('edit', $_REQUEST['table'], $_REQUEST['id'], $_REQUEST['field'])) {
+        if (!empty($_REQUEST['save']) && $_REQUEST['field'] && $_REQUEST['id'] && $_REQUEST['table']) {
+
+            if ($GLOBALS['gs_obj']->can('edit', $_REQUEST['table'], array(), $_REQUEST['id'], $_REQUEST['field'])) {
 
                 echo DoSql('UPDATE ' . $_REQUEST['table'] . ' SET ' . $_REQUEST['field'] . ' = ' . sql($_REQUEST['save']) . '
 	    					WHERE ' . getPrimaryKey($_REQUEST['table']) . ' = ' . $_REQUEST['id']);
             }
-        } else if ($_REQUEST['fake']) {
+        } else if (!empty($_REQUEST['fake'])) {
 
-            if ($GLOBALS['gs_obj']->can('edit', $_REQUEST['table'], $_REQUEST['id'], $_REQUEST['field'])) {
+            if ($GLOBALS['gs_obj']->can('edit', $_REQUEST['table'], array(), $_REQUEST['id'], $_REQUEST['field'])) {
 
                 global $_Gconfig, $orderFields;
 
@@ -343,8 +671,7 @@ class genXhrAdmin {
 
                 $sqlInsert = 'INSERT INTO ' . $vals[0] . ' (' . getPrimaryKey($vals[0]) . ' , ' . $vals[1] . ') VALUES ("",' . sql($_REQUEST['id']) . ')';
                 //echo $sqlInsert;
-                DoSql($sqlInsert);
-                //echo mysql_error();
+                $res = DoSql($sqlInsert);
                 $id = InsertId();
 
 
@@ -365,13 +692,13 @@ class genXhrAdmin {
 
                 echo $a->getLine($row, $vals[2]);
             }
-        } else if ($_REQUEST['delete']) {
-            if ($GLOBALS['gs_obj']->can('delete', $_REQUEST['table'], $_REQUEST['delete'])) {
-
+        } else if (!empty($_REQUEST['delete'])) {
+            if ($GLOBALS['gs_obj']->can('delete', $_REQUEST['table'], array(), $_REQUEST['delete'])) {
                 $gr = new genRecord($_REQUEST['table'], $_REQUEST['delete']);
                 echo $gr->DeleteRow($_REQUEST['delete']);
-
                 //echo DoSql('DELETE FROM '.$_REQUEST['table'].' WHERE '.getPrimaryKey($_REQUEST['table']). ' = '.sql($_REQUEST['delete']));
+            } else {
+                echo 'CANTDO';
             }
         }
 
@@ -505,19 +832,18 @@ class genXhrAdmin {
         print $this->html;
     }
 
-    private function recursLinks($array, $level='1', $rootRub='1') {
+    private
+
+    function recursLinks($array, $level = '1', $rootRub = '1') {
         if (!is_array($array)) {
             return;
         }
         foreach ($array as $page) {
-
             $page['url'] = '';
             $url = '@rubrique_id=' . $page['id'];
             if ($level == 1) {
                 $this->html .= ( '<li class="top_div_' . $rootRub . '">');
                 $this->html .= ( '<a onclick="update_links(\'' . $_GET['champ'] . '\',' . $page['id'] . ')" > ' . $page['titre'] . '</a>');
-
-
                 if (count($page['sub']) && $level != 3) {
                     $this->html .= ( '<ul class="ul_' . $rootRub . '">');
                     $this->recursLinks($page['sub'], $level + 1, $rootRub);
@@ -535,7 +861,6 @@ class genXhrAdmin {
                 }
                 $this->html .= ( '</li>');
             }
-
             if ($level == 1)
                 $rootRub++;
         }
@@ -544,5 +869,5 @@ class genXhrAdmin {
 }
 
 class object {
-    
+
 }

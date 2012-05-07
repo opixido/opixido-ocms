@@ -78,7 +78,7 @@ if (!$this->editMode) {
           
             
 	    $sql .= ' ORDER BY G.' . $nomSql . ' ';
-	    $result = GetAll($sql);
+	    $result = DoSql($sql);
 	}
     }
 
@@ -98,6 +98,11 @@ if (!$this->editMode) {
     if (!$cantBeEmpty) {
 	$this->addBuffer('<option value=""> </option>');
     }
+    $_Gconfig['relationToAjaxMinimum'] = 500;
+    $asAjax = false;
+    if (!empty($_Gconfig['relationToAjaxMinimum']) && ($result->RowCount()) > $_Gconfig['relationToAjaxMinimum']) {
+        $asAjax = true;
+    }
 
     foreach ($result as $row) {
 	/*
@@ -110,14 +115,14 @@ if (!$this->editMode) {
 
 	if (strcmp($this->tab_default_field[$name], $row[$clef]) == 0)
 	    $this->addBuffer('<option selected="selected" value="' . $row[$clef] . '">' . ( $thisValue ) . '</option>');
-	else
+	else if(!$asAjax)
 	    $this->addBuffer('<option  value="' . $row[$clef] . '"> ' . ( $thisValue ) . '</option>');
     }
 
     /* FIN DU SELECT */
     $this->addBuffer('</select>');
-
-    if (!empty($_Gconfig['relationToAjaxMinimum']) && count($result) > $_Gconfig['relationToAjaxMinimum']) {
+    
+    if ($asAjax) {
 	$this->addBuffer('
 			<script type="text/javascript">
 				selectToSearch("genform_' . $name . '");

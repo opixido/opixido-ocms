@@ -1,4 +1,5 @@
 <?php
+
 #
 # This file is part of oCMS.
 #
@@ -20,7 +21,6 @@
 # @link http://code.google.com/p/opixido-ocms/
 # @package ocms
 #
-
 
 /**
  * Insert a new record in database
@@ -52,7 +52,6 @@ function insertEmptyRecord($table, $id = false, $champs = array()) {
         } else {
             return false;
         }
-
     }
 
 
@@ -87,10 +86,9 @@ function insertEmptyRecord($table, $id = false, $champs = array()) {
             return false;
         }
     }
-        /**
-         * else if a specific function is defined for this table
-         */
-    else if ($_Gconfig['insertRules'][$table]) {
+    /**
+     * else if a specific function is defined for this table
+     */ else if ($_Gconfig['insertRules'][$table]) {
 
         return $_Gconfig['insertRules'][$table]();
 
@@ -103,23 +101,18 @@ function insertEmptyRecord($table, $id = false, $champs = array()) {
         $row = GetSingle($sql);
 
         return insertEmptyRecord($table, $row['MAXI'] + 1);
-
     }
-
 }
-
 
 function sqlParam($param) {
     if (in_array($param, array('NULL', 'NOT NULL'))) {
         return ' IS ' . $param;
-    }
-    else if ((int) $param == $param) {
+    } else if ((int) $param == $param) {
         return ' = ' . $param . ' ';
     } else {
         return ' LIKE "' . $param . '" ';
     }
 }
-
 
 /**
  * Retourne le SQL de sélection d'un champ de langue
@@ -133,9 +126,7 @@ function sqlLgValue($champ, $alias = '') {
         $alias = $alias . '.';
     }
     return ' IF(LENGTH(TRIM(' . $alias . $champ . '_' . LG . '))>=1,' . $alias . $champ . '_' . LG . ',' . $alias . $champ . '_' . LG_DEF . ')  ';
-
 }
-
 
 /**
  * Retourne le CODE SQL de sélection des champs de langue directement pour les TITRES d'une table
@@ -172,7 +163,6 @@ function sqlLgTitle($table, $sep = ' - ') {
     return $sql;
 }
 
-
 global $getRowFromId_cacheRow;
 $getRowFromId_cacheRow = array();
 
@@ -183,7 +173,6 @@ function getRowFromId($table, $id, $onlyOnline = false) {
     if (!array_key_exists($table . "_-_" . $id, $getRowFromId_cacheRow) || !$getRowFromId_cacheRow[$table . "_-_" . $id] || IN_ADMIN) {
         $sql = 'SELECT * FROM ' . $table . ' WHERE ' . GetPrimaryKey($table) . ' = ' . sql($id) . ' ' . sqlOnlyOnline($table);
         $row = GetSingle($sql);
-
         if (IN_ADMIN) {
             return $row;
         } else {
@@ -211,7 +200,7 @@ function sqlOnlyOnline($table, $alias = '') {
         //$sql .= $alias;
     }
 
-    if (ake('date_online',$t) && ake('date_offline',$t) && $t['date_online'] && $t['date_offline']) {
+    if (ake('date_online', $t) && ake('date_offline', $t) && $t['date_online'] && $t['date_offline']) {
         $sql .= ' AND ( date_online <= NOW() OR date_online = "0000-00-00" )
 		AND (date_offline >= NOW() OR date_offline = "0000-00-00"  ) ';
     }
@@ -230,8 +219,9 @@ function sqlOnlyOnline($table, $alias = '') {
     return $sql;
 }
 
-
 function sqlVersionOnline($table = '', $alias = '') {
+
+    $sql = '';
 
     if (strlen($alias)) {
         $alias = $alias . '.';
@@ -243,15 +233,12 @@ function sqlVersionOnline($table = '', $alias = '') {
     }
 
     return $sql;
-
 }
 
 function GetRowFromFieldLike($table, $champ, $val) {
     $sql = 'SELECT * FROM ' . $table . ' WHERE ' . mes($champ) . ' = "' . mes($val) . '" ';
     return GetSingle($sql);
-
 }
-
 
 /**
  * Retourne le premier enregistrement d'une requete SQL
@@ -267,6 +254,7 @@ function GetSingle($sql, $cache = 0, $connexion = '') {
     if (!$co) {
         return false;
     }
+    if($cache != 2)
     $cache = false;
     $t = getmicrotime();
     $nbRSql++;
@@ -298,7 +286,6 @@ function GetSingle($sql, $cache = 0, $connexion = '') {
     return $res;
 }
 
-
 /**
  * Retourne l'ensemble des résultats d'une requete
  *
@@ -322,9 +309,9 @@ function GetAll($sql, $cache = 0, $connexion = '') {
     $nbRSql++;
 
     /* if(!$cache)
-                 $res = $co->GetAll($sql);
-         else
-                 $res = $co->CacheGetAll($sql);
+      $res = $co->GetAll($sql);
+      else
+      $res = $co->CacheGetAll($sql);
      */
     if (strlen($connexion)) {
 
@@ -353,16 +340,13 @@ function GetAll($sql, $cache = 0, $connexion = '') {
         $nbRetSql += count($res);
 
         return $res;
-
     }
 }
-
 
 function GetAllArr($sql, $arr) {
     global $co;
     return $co->GetAll($sql, $arr);
 }
-
 
 /**
  * Retoure les champs d'une table
@@ -376,7 +360,6 @@ function MetaColumns($table) {
     return $co->MetaColumns($table);
 }
 
-
 /**
  * My Mysql_escape_string
  *
@@ -387,7 +370,6 @@ function mes($str) {
     return str_replace(array("'", '"'), array("\'", '\"'), $str);
     //return mysqli_escape_string($str);
 }
-
 
 /**
  * Exécute une requete SQL
@@ -438,10 +420,10 @@ function TrySql($sql) {
  */
 function getTables() {
     global $co;
-    if(empty($_SESSION['cache'][UNIQUE_SITE])) {
-	$_SESSION['cache'][UNIQUE_SITE] = array();
+    if (empty($_SESSION['cache'][UNIQUE_SITE])) {
+        $_SESSION['cache'][UNIQUE_SITE] = array();
     }
-    if (!ake($_SESSION['cache'][UNIQUE_SITE],'tables')) {
+    if (!ake($_SESSION['cache'][UNIQUE_SITE], 'tables')) {
         $_SESSION['cache'][UNIQUE_SITE]['tables'] = $co->MetaTables('TABLES');
     }
     return $_SESSION['cache'][UNIQUE_SITE]['tables'];
@@ -466,7 +448,6 @@ function InsertId() {
     return $co->Insert_ID();
 }
 
-
 $_SESSION['cache'][UNIQUE_SITE]['tabfield'] = choose(akev($_SESSION['cache'], 'tabfield'), array(''));
 
 /**
@@ -479,7 +460,7 @@ function getTabField($table) {
     global $co;
 
     //return $co->MetaColumns($table,false);
-    if (empty($_SESSION['cache'][UNIQUE_SITE]['tabField_'.$table])) {
+    if (empty($_SESSION['cache'][UNIQUE_SITE]['tabField_' . $table])) {
 
         $t = MetaColumns($table);
         if (!is_array($t)) {
@@ -491,15 +472,12 @@ function getTabField($table) {
         }
 
         //reset($t);
-        $_SESSION['cache'][UNIQUE_SITE]['tabField_'.$table] = $t2;
+        $_SESSION['cache'][UNIQUE_SITE]['tabField_' . $table] = $t2;
         return $t2;
-
-
     }
 
-    return $_SESSION['cache'][UNIQUE_SITE]['tabField_'.$table];
+    return $_SESSION['cache'][UNIQUE_SITE]['tabField_' . $table];
 }
-
 
 /**
  * Ajoute un paramètre à une chaine SQL
@@ -509,8 +487,8 @@ function getTabField($table) {
  * @return unknown
  */
 function sql($param, $type = 'string') {
-    
-    if(is_object($param) && get_class($param) == 'ADORecordSet_empty') {
+
+    if (is_object($param) && get_class($param) == 'ADORecordSet_empty') {
         echo "\n\n---------------------------------\n\n";
         debug_print_backtrace();
         return '""';
@@ -527,15 +505,16 @@ function sql($param, $type = 'string') {
     return '"' . $param . '"';
 }
 
-if(empty($_SESSION['cache'][UNIQUE_SITE])) {
+if (empty($_SESSION['cache'][UNIQUE_SITE])) {
     $_SESSION['cache'][UNIQUE_SITE] = array();
 }
 
 $_SESSION['cache'][UNIQUE_SITE]['pks'] = choose(akev($_SESSION['cache'][UNIQUE_SITE], 'pks'), array(''));
 
 if (!function_exists('getPrimaryKey')) {
+
     function getPrimaryKey($table) {
-        
+
 
         if (strlen($table)) {
             if (empty($_SESSION['cache'][UNIQUE_SITE]['pks'][$table])) {
@@ -549,8 +528,8 @@ if (!function_exists('getPrimaryKey')) {
         }
         return $_SESSION['cache'][UNIQUE_SITE]['pks'][$table];
     }
-}
 
+}
 
 /**
  * Checks if a rubrique has this particular option

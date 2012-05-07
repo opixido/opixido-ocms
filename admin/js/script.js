@@ -479,13 +479,13 @@ function selectToSearch(obj) {
 
     var o = $("#" + obj);
     o.hide();
-    o.after('<input type="hidden" name="' + obj + '" id="' + obj + '"  value="'
+    o.after('<input autocomplete="off" type="hidden" name="' + obj + '" id="' + obj + '"  value="'
         + $(o).val() + '" />');
 
     o.after('<ul class="ulajax" id="' + obj + '_liste"></ul>');
     $('#' + obj + '_liste').hide();
     o
-    .after('<input class="relationSelect" type="text" onclick="prepareSelect(this)" onkeyup="searchSelect(this)" rel="'
+    .after('<input autocomplete="off" class="relationSelect" type="text" onclick="prepareSelect(this)" onkeyup="searchSelect(this)" rel="'
         + obj
         + '"  id="'
         + obj
@@ -525,7 +525,7 @@ function reinitSelect() {
 
 function searchSelect(o) {
     var url = "index.php?xhr=searchRelation&table=" + $('#curTable').val()
-    + "&fk=" + $(o).attr('rel') + "&q=" + $(o).val();
+    + "&fk=" + $(o).attr('rel') + "&q=" + encodeURIComponent($(o).val());
     $("#" + $(o).attr('rel') + "_liste").show();
     $("#" + $(o).attr('rel') + "_liste").html(
         '<li><img src="img/loading.gif" alt="Loading" /></li>');
@@ -557,7 +557,7 @@ function toggleFieldset(obj) {
 function toggleRteInline(tarea) {
     var obj = $('#' + tarea);
     obj.hide();
-    var vval = obj.val();
+    var vval = jQuery.trim(obj.val());
     if (vval.length < 3) {
         vval = '<span class="light">Champ Vide</span>';
     }

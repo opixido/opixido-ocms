@@ -36,9 +36,9 @@ class genFile {
     var $forceBaseFormat = true;
     var $baseFormat = 'png';
     var $bg = 'FFFFFF';
-
-    public $realSystemPath= false;
+    public $realSystemPath = false;
     public $mask = '';
+    public $useImageEditor = true;
 
     /**
      *
@@ -57,168 +57,179 @@ class genFile {
      * @param addLg bool on definit le champ automatiquement, $valeur doit etre un array
      *
      */
-    function genFile($table=false, $champ=false, $id=false, $valeur="", $actuel=true, $addlg=false) {
+    function genFile($table = false, $champ = false, $id = false, $valeur = "", $actuel = true, $addlg = false) {
 
+        global $specialUpload, $uploadRep, $_Gconfig;
+        $this->actuel = $actuel;
+        if (!$table) {
+            return;
+        }
+        $this->table = $table;
 
-	global $specialUpload, $uploadRep, $_Gconfig;
+        $this->champ = $champ;
 
-	if (!$table) {
-	    return;
-	}
-	$this->table = $table;
+        $this->imageExists = true;
 
-	$this->champ = $champ;
+        $this->valeurInit = $this->valeur = $valeur;
 
-	$this->imageExists = true;
-
-	$this->valeurInit = $this->valeur = $valeur;
-
-	/**
-	 * Si on a passé le row Ã  $id
-	 */
-	if (is_array($id)) {
-	    $valeur = $this->valeur = $id;
-	    $this->id = $id[getPrimaryKey($table)];
-	} else {
-	    $this->id = $id;
-	}
-
-
-
-	if (substr($this->champ, -1) == '_') {
-	    $this->champ = substr($this->champ, 0, -1);
-	}
-
-	$fields = getTabField($table);
-
-	if (!ake($fields, $champ)) {
-	    /* Surement un champ de langue */
-	    $addlg = true;
-	    $champLG = getLgFromField($champ);
-	}
-
-	if ($addlg) {
-
-	    /*
-	      Alors $valeur est un array et on selectionne le fichier approprié
-	     */
-
-	    if (TRADLG || $champLG) {
-
-		$champLG = TRADLG ? TRADLG : $champLG;
-		$val = getTradValue($this->table, $this->id, $this->champ, $champLG);
-	    }
-
-	    if ($val) {
-		$this->champ = $this->champ . '_' . $champLG;
-		$this->valeur = $val;
-	    } else {
-
-		if ($this->valeur[$this->champ . '_' . LG]) {
-
-		    $this->champ = $this->champ . '_' . LG;
-
-		    $this->valeur = $valeur[$this->champ];
-		    $this->valeurFound = true;
-		} else if ($this->valeur[$this->champ . '_' . $GLOBALS['otherLg']]) {
-
-		    $this->champ = $this->champ . '_' . $GLOBALS['otherLg'];
-
-		    $this->valeur = $valeur[$this->champ];
-		    $this->valeurFound = true;
-		} else {
-
-		    $this->valeur = '';
-		    $this->valeurFound = true;
-		}
-	    }
-	}
-
-
-	if (is_array($this->valeur) && array_key_exists($champ, $this->valeur)) {
-	    $this->valeur = $this->valeur[$champ];
-	}
+        /**
+         * Si on a passé le row Ã  $id
+         */
+        if (is_array($id)) {
+            $this->row = $id;
+            $valeur = $this->valeur = $id;
+            $this->id = $id[getPrimaryKey($table)];
+        } else {
+            $this->id = $id;
+        }
 
 
 
-	if (is_array($this->valeur)) {
-	    /* debug($this->valeur);
-	      debug($champ); */
-	    return;
-	}
+        if (substr($this->champ, -1) == '_') {
+            $this->champ = substr($this->champ, 0, -1);
+        }
 
-	if (!strlen($this->valeur) && $id && !is_array($this->valeurInit)) {
-	    $row = GetRowFromId($this->table, $this->id); //getSingle($sql);
-	    $this->valeur = akev($row, $champ);
-	}
+        $fields = getTabField($table);
+
+        if (!ake($fields, $champ)) {
+            /* Surement un champ de langue */
+            $addlg = true;
+            $champLG = getLgFromField($champ);
+        }
+
+        if (!empty($_Gconfig['fileClass'][$this->table][$this->champ])) {
+            $this->classe = new $_Gconfig['fileClass'][$this->table][$this->champ]($this);
+        } else {
+            $this->classe = false;
+        }
+
+        if ($addlg) {
+
+            /*
+              Alors $valeur est un array et on selectionne le fichier approprié
+             */
+
+            if (TRADLG || $champLG) {
+
+                $champLG = TRADLG ? TRADLG : $champLG;
+                $val = getTradValue($this->table, $this->id, $this->champ, $champLG);
+            }
+
+            if ($val) {
+                $this->champ = $this->champ . '_' . $champLG;
+                $this->valeur = $val;
+            } else {
+
+                if ($this->valeur[$this->champ . '_' . LG]) {
+
+                    $this->champ = $this->champ . '_' . LG;
+
+                    $this->valeur = $valeur[$this->champ];
+                    $this->valeurFound = true;
+                } else if ($this->valeur[$this->champ . '_' . $GLOBALS['otherLg']]) {
+
+                    $this->champ = $this->champ . '_' . $GLOBALS['otherLg'];
+
+                    $this->valeur = $valeur[$this->champ];
+                    $this->valeurFound = true;
+                } else {
+
+                    $this->valeur = '';
+                    $this->valeurFound = true;
+                }
+            }
+        }
+
+
+        if (is_array($this->valeur) && array_key_exists($champ, $this->valeur)) {
+            $this->valeur = $this->valeur[$champ];
+        }
 
 
 
+        if (is_array($this->valeur)) {
+            /* debug($this->valeur);
+              debug($champ); */
+            return;
+        }
 
-	if (ake($specialUpload, $this->table) && is_array($specialUpload[$this->table][$this->champ])) {
-	    $this->rules = $specialUpload[$this->table][$this->champ];
-	} else {
-	    $this->rules = $specialUpload['genfile_default']['genfile_default'];
-	}
-
-
-	$this->realName = basename($this->valeur);
-
-
-
-	if (!strlen($this->realName)) {
-	    $this->imageExists = false;
-	}
-
-
-	if (!$actuel) {
-	    $this->realName = $this->niceName($this->realName);
-	}
+        if (!strlen($this->valeur) && $id && !is_array($this->valeurInit)) {
+            $row = GetRowFromId($this->table, $this->id); //getSingle($sql);
+            $this->valeur = akev($row, $champ);
+        }
 
 
 
-	$exte = explode(".", $this->realName);
+        if (ake($specialUpload, $this->table) && !empty($specialUpload[$this->table][$this->champ])) {
+            $this->rules = $specialUpload[$this->table][$this->champ];
+        } else {
+            $this->rules = $specialUpload['genfile_default']['genfile_default'];
+        }
 
-	$this->fileExtension = "";
 
-	if (count($exte) > 1) {
-	    $this->fileExtension = $exte[count($exte) - 1];
+        $this->realName = basename($this->valeur);
 
-	    /**
-	     * Cette ligne était en dehors du IF
-	     * Modifié pour gérer les cas oÃ¹ il n'y a pas d'extension au nom stocké
-	     * (ex: Cerdys, valeur du champ silhouette : AQ29 et fichier = AQ29.bmp 
-	     */
-	    array_pop($exte);
-	}
-	$this->fileBase = implode(".", $exte);
 
-	$this->fileName = $this->realCode($this->rules['name']);
 
-	if ($this->fileIsLinkedToFolder()) {
-	    /**
-	     * Sélection directe d'un fichier dans un dossier existant
-	     */
-	    $this->fileName = substr($this->realName, 2);
+        if (!strlen($this->realName)) {
+            $this->imageExists = false;
+        }
 
-	    $s = $_Gconfig['fileListingFromFolder'][$this->table][getBaseLgField($champ)];
-	    $s = explode('{', $s);
-	    $this->systemPath = $s[0];
 
-	    $this->webPath = str_replace($_SERVER['DOCUMENT_ROOT'], '', $this->systemPath);
-	} else {
+        if (!$actuel && !$this->classe) {
+            $this->valeur = $this->nicename($this->valeur);
+            $this->realName = $this->niceName($this->realName);
+        }
 
-	    /**
-	     * Fichier uploadé normalement
-	     */
-	    $this->systemPath = $this->realCode($this->rules['system']);
 
-	    $this->webPath = $_Gconfig['CDN'] . $this->realCode($this->rules['web']);
 
-	    $this->systemPath = $this->addSlashPath($this->systemPath);
+        $exte = explode(".", $this->realName);
 
-	    $this->webPath = path_concat(BU, $this->addSlashPath($this->webPath));
-	}
+        $this->fileExtension = "";
+
+        if (count($exte) > 1) {
+            $this->fileExtension = $exte[count($exte) - 1];
+
+            /**
+             * Cette ligne était en dehors du IF
+             * Modifié pour gérer les cas oÃ¹ il n'y a pas d'extension au nom stocké
+             * (ex: Cerdys, valeur du champ silhouette : AQ29 et fichier = AQ29.bmp
+             */
+            array_pop($exte);
+        }
+        $this->fileBase = implode(".", $exte);
+
+        $this->fileName = $this->realCode($this->rules['name']);
+
+        if ($this->classe) {
+            $this->systemPath = $this->classe->getSystemPath();
+            $this->webPath = dirname($this->classe->getWebUrl());
+            $this->fileName = $this->classe->getFilename();
+        } else
+        if ($this->fileIsLinkedToFolder()) {
+            /**
+             * Sélection directe d'un fichier dans un dossier existant
+             */
+            $this->fileName = substr($this->realName, 2);
+
+            $s = $_Gconfig['fileListingFromFolder'][$this->table][getBaseLgField($champ)];
+            $s = explode('{', $s);
+            $this->systemPath = $s[0];
+
+            $this->webPath = str_replace($_SERVER['DOCUMENT_ROOT'], '', $this->systemPath);
+        } else {
+
+            /**
+             * Fichier uploadé normalement
+             */
+            $this->systemPath = $this->realCode($this->rules['system']);
+
+            $this->webPath = $_Gconfig['CDN'] . $this->realCode($this->rules['web']);
+
+            $this->systemPath = $this->addSlashPath($this->systemPath);
+
+            $this->webPath = path_concat(BU, $this->addSlashPath($this->webPath));
+        }
     }
 
     /**
@@ -228,7 +239,7 @@ class genFile {
      * @return bool
      */
     function fileIsLinkedToFolder() {
-	return substr($this->realName, 0, 2) == '**';
+        return substr($this->realName, 0, 2) == '**';
     }
 
     /**
@@ -238,24 +249,24 @@ class genFile {
      *
      */
     function realCode($string) {
-	$str = str_replace(array("*TABLE*", "*FIELD*", "*ID*", "*EXT*", '*NAME*'), array($this->table, $this->champ, $this->id, $this->fileExtension, $this->fileBase), $string);
-	$strs = explode('*', $str);
-	$stringa = '';
-	foreach ($strs as $k => $v) {
-	    if ($k % 2 == 0) {
-		$stringa .= $v;
-	    } else {
-		$stringa .= $this->getVal($v);
-	    }
-	}
-	return $stringa;
+        $str = str_replace(array("*TABLE*", "*FIELD*", "*ID*", "*EXT*", '*NAME*'), array($this->table, $this->champ, $this->id, $this->fileExtension, $this->fileBase), $string);
+        $strs = explode('*', $str);
+        $stringa = '';
+        foreach ($strs as $k => $v) {
+            if ($k % 2 == 0) {
+                $stringa .= $v;
+            } else {
+                $stringa .= $this->getVal($v);
+            }
+        }
+        return $stringa;
     }
 
     function getVal($v) {
-	if (!$this->row) {
-	    $this->row = getRowFromId($this->table, $this->id);
-	}
-	return $this->row[$v];
+        if (empty($this->row)) {
+            $this->row = getRowFromId($this->table, $this->id);
+        }
+        return akev($this->row, $v);
     }
 
     /**
@@ -265,44 +276,44 @@ class genFile {
      * 	@return Nom de fichier nettoyé
      */
     function niceName($string) {
-	$string = htmlentities(strtolower($string));
-	$string = preg_replace("/&(.)(acute|cedil|circ|ring|tilde|uml);/", "$1", $string);
-	$string = preg_replace("/([^a-z0-9_]+)/", ".", html_entity_decode($string));
-	$string = trim($string);
-	return $string;
+        $string = htmlentities(strtolower($string));
+        $string = preg_replace("/&(.)(acute|cedil|circ|ring|tilde|uml);/", "$1", $string);
+        $string = preg_replace("/([^a-z0-9_]+)/", ".", html_entity_decode($string));
+        $string = trim($string);
+        return $string;
     }
 
-    function getFilters($fltr=array()) {
-	//if($this->getExtension() == 'png') {
-	$s = '';
-	if ($this->forceBaseFormat) {
-	    $s .= '&amp;f=' . $this->getExtension() . '';
-	} else {
-	    /* $ext = $this->getExtension();
-	      $ext = $ext == 'jpg' ? $this->baseFormat : $ext; */
-	    //	$ext = $ext == 'png' ? $this->baseFormat : $ext;
-	    $s .= '&amp;f=' . $this->baseFormat . '&amp;bg=' . $this->bg;
-	}
-	//}
+    function getFilters($fltr = array()) {
+        //if($this->getExtension() == 'png') {
+        $s = '';
+        if ($this->forceBaseFormat) {
+            $s .= '&amp;f=' . $this->getExtension() . '';
+        } else {
+            /* $ext = $this->getExtension();
+              $ext = $ext == 'jpg' ? $this->baseFormat : $ext; */
+            //	$ext = $ext == 'png' ? $this->baseFormat : $ext;
+            $s .= '&amp;f=' . $this->baseFormat . '&amp;bg=' . $this->bg;
+        }
+        //}
 
-	if ($this->mask) {
-	    $fltr[] = 'mask|' . $this->mask;
-	}
+        if ($this->mask) {
+            $fltr[] = 'mask|' . $this->mask;
+        }
 
-	if (count($fltr)) {
-	    if (!is_array($fltr)) {
-		$fltr = array($fltr);
-	    }
-	    foreach ($fltr as $v) {
-		$s .= '&amp;fltr[]=' . $v;
-	    }
-	}
-	return $s;
+        if (count($fltr)) {
+            if (!is_array($fltr)) {
+                $fltr = array($fltr);
+            }
+            foreach ($fltr as $v) {
+                $s .= '&amp;fltr[]=' . $v;
+            }
+        }
+        return $s;
     }
 
     function getCacheFile($src) {
-	return getThumbCacheFile($src);
-	
+        return getThumbCacheFile($src);
+
 //	global $_Gconfig;
 //	$src = str_replace($_Gconfig['CDN'], '', $src);
 //
@@ -330,16 +341,16 @@ class genFile {
      * @param int $h
      * @return string
      */
-    function getThumbUrl($w=200, $h=200, $fltr=array()) {
-	if (!$this->isImage())
-	    return $this->getWebUrl();
+    function getThumbUrl($w = 200, $h = 200, $fltr = array()) {
+        if (!$this->isImage())
+            return $this->getWebUrl();
 
-	if ($this->imageExists) {
-	    return $this->getCacheFile(path_concat(THUMBPATH) . '?q=' . $this->quality . '&amp;w=' . $w . '&amp;h=' . $h . '&amp;src=' . $this->getSystemPath() . '' . $this->getFilters($fltr));
-	    //return path_concat(THUMBPATH).'?q='.$this->quality.'&amp;w='.$w.'&amp;h='.$h.'&amp;table='.$this->table.'&amp;champ='.$this->champ.'&amp;id='.$this->id;
-	} else {
-	    return '';
-	}
+        if ($this->imageExists) {
+            return $this->getCacheFile(path_concat(THUMBPATH) . '?q=' . $this->quality . '&amp;w=' . $w . '&amp;h=' . $h . '&amp;src=' . $this->getSystemPath() . '' . $this->getFilters($fltr));
+            //return path_concat(THUMBPATH).'?q='.$this->quality.'&amp;w='.$w.'&amp;h='.$h.'&amp;table='.$this->table.'&amp;champ='.$this->champ.'&amp;id='.$this->id;
+        } else {
+            return '';
+        }
     }
 
     /**
@@ -349,13 +360,13 @@ class genFile {
      * @param int $h
      * @return string
      */
-    function getThumbUrlExact($w=200, $h=200, $fltr=array()) {
-	if ($this->imageExists) {
-	    return $this->getCacheFile(path_concat(THUMBPATH) . '?q=' . $this->quality . '&amp;zc=1&amp;w=' . $w . '&amp;h=' . $h . '&amp;src=' . $this->getSystemPath() . $this->getFilters($fltr));
-	    return path_concat(THUMBPATH) . '?q=' . $this->quality . '&amp;zc=1&amp;w=' . $w . '&amp;h=' . $h . '&amp;table=' . $this->table . '&amp;champ=' . $this->champ . '&amp;id=' . $this->id;
-	} else {
-	    return '';
-	}
+    function getThumbUrlExact($w = 200, $h = 200, $fltr = array()) {
+        if ($this->imageExists) {
+            return $this->getCacheFile(path_concat(THUMBPATH) . '?q=' . $this->quality . '&amp;zc=1&amp;w=' . $w . '&amp;h=' . $h . '&amp;src=' . $this->getSystemPath() . $this->getFilters($fltr));
+            return path_concat(THUMBPATH) . '?q=' . $this->quality . '&amp;zc=1&amp;w=' . $w . '&amp;h=' . $h . '&amp;table=' . $this->table . '&amp;champ=' . $this->champ . '&amp;id=' . $this->id;
+        } else {
+            return '';
+        }
     }
 
     /**
@@ -365,29 +376,29 @@ class genFile {
      * @param int $h
      * @return string
      */
-    function getCropUrl($w=200, $h=200, $fltr=array()) {
-	if ($this->imageExists) {
-	    return $this->getCacheFile(path_concat(THUMBPATH) . '?q=' . $this->quality . '&amp;zc=1&amp;w=' . $w . '&amp;h=' . $h . '&amp;src=' . $this->getSystemPath() . $this->getFilters($fltr));
-	    return path_concat(THUMBPATH) . '?q=' . $this->quality . '&amp;zc=1&amp;w=' . $w . '&amp;h=' . $h . '&amp;src=' . $this->getSystemPath() . $this->getFilters($fltr);
-	    return path_concat(THUMBPATH) . '?q=' . $this->quality . '&amp;zc=1&amp;sw=' . $w . '&amp;sh=' . $h . '&amp;table=' . $this->table . '&amp;champ=' . $this->champ . '&amp;id=' . $this->id;
-	} else {
-	    return '';
-	}
+    function getCropUrl($w = 200, $h = 200, $fltr = array()) {
+        if ($this->imageExists) {
+            return $this->getCacheFile(path_concat(THUMBPATH) . '?q=' . $this->quality . '&amp;zc=1&amp;w=' . $w . '&amp;h=' . $h . '&amp;src=' . $this->getSystemPath() . $this->getFilters($fltr));
+            return path_concat(THUMBPATH) . '?q=' . $this->quality . '&amp;zc=1&amp;w=' . $w . '&amp;h=' . $h . '&amp;src=' . $this->getSystemPath() . $this->getFilters($fltr);
+            return path_concat(THUMBPATH) . '?q=' . $this->quality . '&amp;zc=1&amp;sw=' . $w . '&amp;sh=' . $h . '&amp;table=' . $this->table . '&amp;champ=' . $this->champ . '&amp;id=' . $this->id;
+        } else {
+            return '';
+        }
     }
 
     function getImageHeight() {
 
-	if ($this->isImage()) {
-	    $i = getimagesize($this->getSystemPath());
-	    return $i[1];
-	}
+        if ($this->isImage()) {
+            $i = getimagesize($this->getSystemPath());
+            return $i[1];
+        }
     }
 
     function getImageWidth() {
-	if ($this->isImage()) {
-	    $i = getimagesize($this->getSystemPath());
-	    return $i[0];
-	}
+        if ($this->isImage()) {
+            $i = getimagesize($this->getSystemPath());
+            return $i[0];
+        }
     }
 
     /**
@@ -397,10 +408,10 @@ class genFile {
      *  @return Chemin vérifié avec les slashs
      */
     function addSlashPath($string) {
-	if (substr($string, -1, 1) != '/') {
-	    $string .= "/";
-	}
-	return $string;
+        if (substr($string, -1, 1) != '/') {
+            $string .= "/";
+        }
+        return $string;
     }
 
     /**
@@ -408,12 +419,16 @@ class genFile {
      * 	@return Chemin Web absolu depuis la racine
      */
     function getWebUrl() {
-	global $uploadRep, $specialUpload;
+        global $uploadRep, $specialUpload;
 
-	if ($this->imageExists)
-	    return $this->webPath . $this->fileName;
-	else
-	    return '';
+        if ($this->classe) {
+            return $this->classe->getWebUrl();
+        }
+
+        if ($this->imageExists)
+            return $this->webPath . $this->fileName;
+        else
+            return '';
     }
 
     /**
@@ -423,15 +438,15 @@ class genFile {
      * @param string $tag
      * @return string HTML
      */
-    function getExactImgtag($w=0, $h=0, $alt='', $tag='', $filters=array()) {
+    function getExactImgtag($w = 0, $h = 0, $alt = '', $tag = '', $filters = array()) {
 
-	$url = $this->getThumbUrlExact($w, $h, $filters);
+        $url = $this->getThumbUrlExact($w, $h, $filters);
 
-	if (strlen($url)) {
-	    return '<img src="' . $url . '" alt="' . $alt . '" ' . $tag . ' />';
-	} else {
-	    return '';
-	}
+        if (strlen($url)) {
+            return '<img src="' . $url . '" alt="' . $alt . '" ' . $tag . ' />';
+        } else {
+            return '';
+        }
     }
 
     /**
@@ -441,13 +456,13 @@ class genFile {
      * @param string $tag
      * @return string HTML
      */
-    function getImgtag($alt='', $tag='') {
-	$url = $this->getWebUrl();
-	if (strlen($url)) {
-	    return '<img src="' . $url . '" alt="' . $alt . '" ' . $tag . ' />';
-	} else {
-	    return '';
-	}
+    function getImgtag($alt = '', $tag = '') {
+        $url = $this->getWebUrl();
+        if (strlen($url)) {
+            return '<img src="' . $url . '" alt="' . $alt . '" ' . $tag . ' />';
+        } else {
+            return '';
+        }
     }
 
     /**
@@ -457,15 +472,15 @@ class genFile {
      * @param string $tag
      * @return string HTML
      */
-    function getThumbImgtag($w=0, $h=0, $alt='', $tag='', $filters=array()) {
+    function getThumbImgtag($w = 0, $h = 0, $alt = '', $tag = '', $filters = array()) {
 
-	$url = $this->getThumbUrl($w, $h, $filters);
+        $url = $this->getThumbUrl($w, $h, $filters);
 
-	if (strlen($url)) {
-	    return '<img src="' . $url . '" alt="' . $alt . '" ' . $tag . ' />';
-	} else {
-	    return '';
-	}
+        if (strlen($url)) {
+            return '<img src="' . $url . '" alt="' . $alt . '" ' . $tag . ' />';
+        } else {
+            return '';
+        }
     }
 
     /**
@@ -475,15 +490,15 @@ class genFile {
      * @param string $tag
      * @return string HTML
      */
-    function getCropImgtag($w=0, $h=0, $alt='', $tag='', $filters=array()) {
+    function getCropImgtag($w = 0, $h = 0, $alt = '', $tag = '', $filters = array()) {
 
-	$url = $this->getCropUrl($w, $h, $filters);
+        $url = $this->getCropUrl($w, $h, $filters);
 
-	if (strlen($url)) {
-	    return '<img src="' . $url . '" alt="' . $alt . '" ' . $tag . ' />';
-	} else {
-	    return '';
-	}
+        if (strlen($url)) {
+            return '<img src="' . $url . '" alt="' . $alt . '" ' . $tag . ' />';
+        } else {
+            return '';
+        }
     }
 
     /**
@@ -492,23 +507,40 @@ class genFile {
      * @return true ou false si l'opération s'est bien déroulée
      *
      */
-    function deleteFile() {
+    function deleteFile($updateDb=false) {
 
-	//debug($this->systemPath.$this->fileName);
 
-	if (strlen($this->fileName) && strlen($this->valeur)) {
-	    $dir = dirname($this->systemPath . $this->fileName);
-	    $dir = realpath($dir);
-	    if (!$this->fileIsLinkedToFolder()) {
-		/**
-		 * On ne supprime pas les fichiers du dossier partagé
-		 */
-		$res = @unlink($this->systemPath . $this->fileName);
-	    } else {
-		return true;
-	    }
-	    return $res;
-	}
+        if (strlen($this->fileName) && strlen($this->valeur)) {
+            $dir = dirname($this->systemPath);
+            $dir = realpath($dir);
+            if (!$this->fileIsLinkedToFolder()) {
+                /**
+                 * On ne supprime pas les fichiers du dossier partagé
+                 */
+                $res = unlink($this->systemPath);
+                if($updateDb) {
+                   $sql = ('UPDATE ' . $this->table . ' SET ' . $this->champ . ' = "" WHERE ' . getPrimaryKey($this->table) . ' = ' . sql($this->id));
+                   DoSql($sql);
+                }
+                $this->valeur = '';
+                
+            } else {
+                return true;
+            }
+            return $res;
+        }
+    }
+
+    public function updateDb() {
+        $name = $this->getStoredName();
+
+        $sql = ('UPDATE ' . $this->table . ' SET ' . $this->champ . ' = ' . sql($name) . ' WHERE ' . getPrimaryKey($this->table) . ' = ' . sql($this->id));
+
+        return DoSql($sql);
+    }
+
+    public function getStoredName() {
+        return $this->valeur;
     }
 
     /**
@@ -517,172 +549,164 @@ class genFile {
      *
      * 	@return résultat de l'opération copy()
      */
-    function uploadFile($tmpname, $updateDB=false, $fromString=false) {
+    function uploadFile($tmpname, $updateDB = false, $fromString = false) {
 
-	global $_Gconfig;
-	//debug('$tmpname : '.$tmpname);
-
-
-	$gf = new genFile($this->table, $this->champ, $this->id);
-	$gf->deleteFile();
+        global $_Gconfig;
+        //debug('$tmpname : '.$tmpname);
 
 
-	if ($updateDB) {
-	    $name = $this->getRealName();
-	    /*
-	      if(!$name) {
-	      if($_FILES[$this->champ]['name']) {
-	      $name = $this->niceName($_FILES[$this->champ]['name']);
-	      $this->realName = $this->fileName = $name;
-	      }
-	      }
-	     */
-	    $sql = ('UPDATE ' . $this->table . ' SET ' . $this->champ . ' = ' . sql($name) . ' WHERE ' . getPrimaryKey($this->table) . ' = ' . sql($this->id));
-	    //debug($sql);
-	    DoSql($sql);
-	}
+        $gf = new genFile($this->table, $this->champ, $this->id);
+        $gf->deleteFile();
 
 
-	$ext = $this->getExtension();
-	//debug($ext);
-	if (in_array($ext, $_Gconfig['notAllowedFileExtension'])) {
-	    derror(t('notAllowedFileExtension'), 'error');
-	    return false;
-	}
-
-	/* Création de l'arborescence */
-
-	$t = explode("/", $this->systemPath); //$specialUpload[$this->table][$name]
-
-	if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
-	    $reconst = '';
-	} else {
-	    $reconst = '/';
-	}
-	if (!file_exists($this->systemPath)) {
-	    //	mkdir($this->systemPath,0777);
-	}
-
-	foreach ($t as $folder) {
-	    if ($folder == '*ID*') {
-		$folder = $this->id;
-	    }
-	    $oldReconst = $reconst;
-	    $reconst = path_concat($reconst, $folder);
-
-	    if (!@is_dir($reconst) && $reconst != '' && @is_writable($oldReconst)) {
-		$res = @mkdir($reconst, 0777);
-
-		if (!$res) {
-		    debug('Impossible de créer le dossier : ' . $reconst);
-		}
-		$res = @chmod($reconst, 0777);
-		//chgrp($reconst,'web');				
-		//@chown($reconst,100002);
-	    }
-	}
+        if ($updateDB) {
+            $this->updateDb();
+        }
 
 
-	$fullpath = $this->systemPath . $this->fileName;
-	//debug('copy to : '.$this->systemPath.$this->fileName);
-	//print($tmpname.'    - '.$fullpath.'<br/>');
-	if ($fromString) {
-	    file_put_contents($fullpath, $tmpname);
-	} else {
-	    $cop = copy($tmpname, $fullpath);
-	    if (!$cop) {
-		$cop = move_uploaded_file($tmpname, $fullpath);
-	    }
-	}
+        $ext = $this->getExtension();
+        //debug($ext);
+        if (in_array($ext, $_Gconfig['notAllowedFileExtension'])) {
+            derror(t('notAllowedFileExtension'), 'error');
+            return false;
+        }
+
+        /* Création de l'arborescence */
+
+        $t = explode("/", dirname($this->systemPath)); //$specialUpload[$this->table][$name]
+
+        if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
+            $reconst = '';
+        } else {
+            $reconst = '/';
+        }
+        if (!file_exists(dirname($this->systemPath))) {
+            mkdir(dirname($this->systemPath), 0777, true);
+        }
+
+        foreach ($t as $folder) {
+            if ($folder == '*ID*') {
+                $folder = $this->id;
+            }
+            $oldReconst = $reconst;
+            $reconst = path_concat($reconst, $folder);
+
+            if (!@is_dir($reconst) && $reconst != '' && @is_writable($oldReconst)) {
+                $res = @mkdir($reconst, 0777);
+
+                if (!$res) {
+                    debug('Impossible de créer le dossier : ' . $reconst);
+                }
+                $res = @chmod($reconst, 0777);
+                //chgrp($reconst,'web');
+                //@chown($reconst,100002);
+            }
+        }
+
+        $fullpath = $this->getSystemPath(); //$this->systemPath. $this->fileName;
+        //debug('copy to : '.$this->systemPath.$this->fileName);
+        //print($tmpname.'    - '.$fullpath.'<br/>');
+        if ($fromString) {
+            file_put_contents($fullpath, $tmpname);
+        } else {
+            $cop = copy($tmpname, $fullpath);
+            if (!$cop) {              
+                $cop = move_uploaded_file($tmpname, $fullpath);                
+            }
+        }
 
 
-	//chgrp($this->systemPath.$this->fileName,'web');
+        //chgrp($this->systemPath.$this->fileName,'web');
 
-	if ($_Gconfig['chmodFiles']) {
+        if ($_Gconfig['chmodFiles']) {
 
-	    $a = chmod($fullpath, $_Gconfig['chmodFiles']);
+            $a = chmod($fullpath, $_Gconfig['chmodFiles']);
 
-	    if (!$a)
-		dinfo(t('error_chmod'));
-	}
+            if (!$a)
+                dinfo(t('error_chmod'));
+        }
 
-	if ($_Gconfig['chownFiles']) {
-	    $a = chown($fullpath, $_Gconfig['chownFiles']);
-	    if (!$a)
-		dinfo(t('error_chown'));
-	}
+        if ($_Gconfig['chownFiles']) {
+            $a = chown($fullpath, $_Gconfig['chownFiles']);
+            if (!$a)
+                dinfo(t('error_chown'));
+        }
 
-	if ($_Gconfig['chgrpFiles']) {
-	    $a = chgrp($fullpath, $_Gconfig['chgrpFiles']);
-	    if (!$a)
-		dinfo(t('error_chgrp'));
-	}
+        if ($_Gconfig['chgrpFiles']) {
+            $a = chgrp($fullpath, $_Gconfig['chgrpFiles']);
+            if (!$a)
+                dinfo(t('error_chgrp'));
+        }
 
 
-	if (isImage($fullpath) && isset($_Gconfig['imageAutoResizeExact'][getBaseLgField($this->champ)])) {
-	    $maxw = $_Gconfig['imageAutoResizeExact'][getBaseLgField($this->champ)][0];
-	    $maxh = $_Gconfig['imageAutoResizeExact'][getBaseLgField($this->champ)][1];
-	    $this->easyResize($fullpath, $fullpath, 95, $maxw, $maxh);
-	}
-	if (isImage($fullpath) && isset($_Gconfig['imageAutoResize'][$this->champ])) {
+        if (isImage($fullpath) && isset($_Gconfig['imageAutoResizeExact'][getBaseLgField($this->champ)])) {
+            $maxw = $_Gconfig['imageAutoResizeExact'][getBaseLgField($this->champ)][0];
+            $maxh = $_Gconfig['imageAutoResizeExact'][getBaseLgField($this->champ)][1];
+            $this->easyResize($fullpath, $fullpath, 95, $maxw, $maxh);
+        }
+        if (isImage($fullpath) && isset($_Gconfig['imageAutoResize'][$this->champ])) {
 
-	    $maxw = $_Gconfig['imageAutoResize'][getBaseLgField($this->champ)][0];
-	    $maxh = $_Gconfig['imageAutoResize'][getBaseLgField($this->champ)][1];
+            $maxw = $_Gconfig['imageAutoResize'][getBaseLgField($this->champ)][0];
+            $maxh = $_Gconfig['imageAutoResize'][getBaseLgField($this->champ)][1];
 
-	    list($w, $h) = GetImageSize($fullpath);
+            list($w, $h) = GetImageSize($fullpath);
 
-	    if ($w <= $maxw && $h <= $maxh) {
+            if ($w <= $maxw && $h <= $maxh) {
 
-		// Fait rien 
-	    } else
+                // Fait rien
+            } else
 
-	    if ($maxw > $maxh) {
+            if ($maxw > $maxh) {
 
-		if ($w > $h) {
+                if ($w > $h) {
 
-		    $nw = $maxw;
-		    $nh = round(($nw / $w) * $h);
-		    if ($nh > $maxh) {
-			$nh = $maxh;
-			$nw = round(($nh / $h) * $w);
-		    }
-		} else {
-		    $nh = $maxh;
-		    $nw = round(($nh / $h) * $w);
-		    if ($nw > $maxw) {
-			$nw = $maxw;
-			$nh = round(($nw / $w) * $h);
-		    }
-		}
-		$w = $nw;
-		$h = $nh;
+                    $nw = $maxw;
+                    $nh = round(($nw / $w) * $h);
+                    if ($nh > $maxh) {
+                        $nh = $maxh;
+                        $nw = round(($nh / $h) * $w);
+                    }
+                } else {
+                    $nh = $maxh;
+                    $nw = round(($nh / $h) * $w);
+                    if ($nw > $maxw) {
+                        $nw = $maxw;
+                        $nh = round(($nw / $w) * $h);
+                    }
+                }
+                $w = $nw;
+                $h = $nh;
 
-		$this->easyResize($fullpath, $fullpath, 95, $nw, $nh);
-	    } else {
+                $this->easyResize($fullpath, $fullpath, 95, $nw, $nh);
+            } else {
 
-		if ($w > $h) {
-		    $nh = $maxh;
-		    $nw = round(($nh / $h) * $w);
-		    if ($nw > $maxw) {
-			$nw = $maxw;
-			$nh = round(($nw / $w) * $h);
-		    }
-		} else {
-		    $nw = $maxw;
-		    $nh = round(($nw / $w) * $h);
-		    if ($nh > $maxh) {
-			$nh = $maxh;
-			$nw = round(($nh / $h) * $w);
-		    }
-		}
-		$w = $nw;
-		$h = $nh;
+                if ($w > $h) {
+                    $nh = $maxh;
+                    $nw = round(($nh / $h) * $w);
+                    if ($nw > $maxw) {
+                        $nw = $maxw;
+                        $nh = round(($nw / $w) * $h);
+                    }
+                } else {
+                    $nw = $maxw;
+                    $nh = round(($nw / $w) * $h);
+                    if ($nh > $maxh) {
+                        $nh = $maxh;
+                        $nw = round(($nh / $h) * $w);
+                    }
+                }
+                $w = $nw;
+                $h = $nh;
 
-		$this->easyResize($fullpath, $fullpath, 95, $nw, $nh);
-	    }
-	}
+                $this->easyResize($fullpath, $fullpath, 95, $nw, $nh);
+            }
+        }
 
-	return $cop;
+        if ($this->classe && method_exists($this->classe, 'onFileUploaded')) {
+            $this->classe->onFileUploaded();
+        }
+
+        return $cop;
     }
 
     /**
@@ -692,7 +716,7 @@ class genFile {
      */
     function fileExists() {
 
-	return file_exists($this->getSystemPath());
+        return file_exists($this->getSystemPath());
     }
 
     /**
@@ -702,8 +726,7 @@ class genFile {
      * @return boolean
      */
     function isImage() {
-
-	return isImage($this->fileName);
+        return isImage($this->fileName);
     }
 
     /**
@@ -714,14 +737,14 @@ class genFile {
      */
     function getExtension() {
 
-	$parts = explode('.', $this->fileName);
-	if (count($parts) > 1) {
-	    $ext = strtolower($parts[count($parts) - 1]);
-	} else {
-	    $ext = '';
-	}
+        $parts = explode('.', $this->fileName);
+        if (count($parts) > 1) {
+            $ext = strtolower($parts[count($parts) - 1]);
+        } else {
+            $ext = '';
+        }
 
-	return $ext;
+        return $ext;
     }
 
     /**
@@ -735,86 +758,86 @@ class genFile {
      */
     function easyResize($img_sourse, $save_to, $quality, $width, $new_height) {
 
-	$size = GetImageSize($img_sourse);
+        $size = GetImageSize($img_sourse);
 
-	$ext = $this->getExtension();
+        $ext = $this->getExtension();
 
-	$this->setMemoryForImage($img_sourse);
+        $this->setMemoryForImage($img_sourse);
 
-	if (in_array($ext, array('jpeg', 'jpg')))
-	    $im_in = imagecreatefromjpeg($img_sourse);
-	else if ($ext == 'gif')
-	    $im_in = imagecreatefromgif($img_sourse);
-	else if ($ext == 'png')
-	    $im_in = imagecreatefrompng($img_sourse);
+        if (in_array($ext, array('jpeg', 'jpg')))
+            $im_in = imagecreatefromjpeg($img_sourse);
+        else if ($ext == 'gif')
+            $im_in = imagecreatefromgif($img_sourse);
+        else if ($ext == 'png')
+            $im_in = imagecreatefrompng($img_sourse);
 
-	// $new_height = ($width * $size[1]) / $size[0]; // Generate new height for image
-	$im_out = imagecreatetruecolor($width, $new_height);
+        // $new_height = ($width * $size[1]) / $size[0]; // Generate new height for image
+        $im_out = imagecreatetruecolor($width, $new_height);
 
-	ImageCopyResampled($im_out, $im_in, 0, 0, 0, 0, $width, $new_height, $size[0], $size[1]);
+        ImageCopyResampled($im_out, $im_in, 0, 0, 0, 0, $width, $new_height, $size[0], $size[1]);
 
-	//$p = new phpthumb();
-	#Find X & Y for note
-	/* $X_var = ImageSX($im_out);
-	  $X_var = $X_var - 130;
-	  $Y_var = ImageSY($im_out);
-	  $Y_var = $Y_var - 25;
-	 */
-	#Color
-	#$white = ImageColorAllocate($im_out, 0, 0, 0);
-	#Add note(simple: site address)
-	#ImageString($im_out,2,$X_var,$Y_var,$str,$white);
+        //$p = new phpthumb();
+        #Find X & Y for note
+        /* $X_var = ImageSX($im_out);
+          $X_var = $X_var - 130;
+          $Y_var = ImageSY($im_out);
+          $Y_var = $Y_var - 25;
+         */
+        #Color
+        #$white = ImageColorAllocate($im_out, 0, 0, 0);
+        #Add note(simple: site address)
+        #ImageString($im_out,2,$X_var,$Y_var,$str,$white);
 
-	unlink($save_to);
+        unlink($save_to);
 
-	//$im_in = ImageJPEG($im_out, $save_to, $quality);
-	//return;
+        //$im_in = ImageJPEG($im_out, $save_to, $quality);
+        //return;
 
-	if ($ext == 'png') {
-	    $save_to = str_replace('.png', '.jpg', $save_to);
-	    $ext = 'jpg';
-	    $this->realName = str_replace('.png', '.jpg', $this->realName);
-	    //if($updateDB) {			
-	    DoSql('UPDATE ' . $this->table . ' SET ' . $this->champ . ' = ' . sql($this->getRealName()) . ' WHERE ' . getPrimaryKey($this->table) . ' = ' . sql($this->id));
-	    //}
-	}
-	if (in_array($ext, array('jpeg', 'jpg', 'png')))
-	    $im_in = ImageJPEG($im_out, $save_to, $quality);
-	else if ($ext == 'gif')
-	    $im_in = ImageGIF($im_out, $save_to, $quality);
-	else if ($ext == 'png')
-	    $im_in = ImagePNG($im_out, $save_to, 9, PNG_ALL_FILTERS);
+        if ($ext == 'png') {
+            $save_to = str_replace('.png', '.jpg', $save_to);
+            $ext = 'jpg';
+            $this->realName = str_replace('.png', '.jpg', $this->realName);
+            //if($updateDB) {
+            DoSql('UPDATE ' . $this->table . ' SET ' . $this->champ . ' = ' . sql($this->getRealName()) . ' WHERE ' . getPrimaryKey($this->table) . ' = ' . sql($this->id));
+            //}
+        }
+        if (in_array($ext, array('jpeg', 'jpg', 'png')))
+            $im_in = ImageJPEG($im_out, $save_to, $quality);
+        else if ($ext == 'gif')
+            $im_in = ImageGIF($im_out, $save_to, $quality);
+        else if ($ext == 'png')
+            $im_in = ImagePNG($im_out, $save_to, 9, PNG_ALL_FILTERS);
     }
 
     function setMemoryForImage($filename) {
-	$imageInfo = getimagesize($filename);
-	$MB = 1048576;  // number of bytes in 1M
-	$K64 = 65536;    // number of bytes in 64K
-	$TWEAKFACTOR = 50;  // Or whatever works for you
-	$memoryNeeded = round(( $imageInfo[0] * $imageInfo[1]
-		* ($imageInfo['bits'] ? $imageInfo['bits'] : 8)
-		* ($imageInfo['channels'] ? $imageInfo['channels'] : 8) / 8
-		+ $K64
-		) * $TWEAKFACTOR
-	);
-	//ini_get('memory_limit') only works if compiled with "--enable-memory-limit" also
-	//Default memory limit is 8MB so well stick with that.
-	//To find out what yours is, view your php.ini file.
-	$memoryLimitMB = 8;
-	$memoryLimit = $memoryLimitMB * $MB;
-	if (function_exists('memory_get_usage') &&
-		memory_get_usage() + $memoryNeeded > $memoryLimit) {
-	    $newLimit = $memoryLimitMB + ceil(( memory_get_usage()
-			    + $memoryNeeded
-			    - $memoryLimit
-			    ) / $MB
-	    );
+        $imageInfo = getimagesize($filename);
+        $MB = 1048576;  // number of bytes in 1M
+        $K64 = 65536;    // number of bytes in 64K
+        $TWEAKFACTOR = 50;  // Or whatever works for you
+        $memoryNeeded = round(( $imageInfo[0] * $imageInfo[1]
+                * ($imageInfo['bits'] ? $imageInfo['bits'] : 8)
+                * ($imageInfo['channels'] ? $imageInfo['channels'] : 8) / 8
+                + $K64
+                ) * $TWEAKFACTOR
+        );
+        //ini_get('memory_limit') only works if compiled with "--enable-memory-limit" also
+        //Default memory limit is 8MB so well stick with that.
+        //To find out what yours is, view your php.ini file.
+        $memoryLimitMB = 8;
+        $memoryLimit = $memoryLimitMB * $MB;
+        if (function_exists('memory_get_usage') &&
+                memory_get_usage() + $memoryNeeded > $memoryLimit) {
+            $newLimit = $memoryLimitMB + ceil(( memory_get_usage()
+                            + $memoryNeeded
+                            - $memoryLimit
+                            ) / $MB
+            );
 
-	    ini_set('memory_limit', ($newLimit * 2) . 'M');
-	    return true;
-	} else {
-	    return false;
-	}
+            ini_set('memory_limit', ($newLimit * 2) . 'M');
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -825,7 +848,7 @@ class genFile {
      */
     function getNiceSize() {
 
-	return pretty_bytes($this->getSize());
+        return pretty_bytes($this->getSize());
     }
 
     /**
@@ -840,83 +863,83 @@ class genFile {
      */
     function getIcon($front = false) {
 
-	$ext = $this->getExtension();
+        $ext = $this->getExtension();
 
-	$iconList = array(
-	    'jpg' => 'image',
-	    'jpeg' => 'image',
-	    'gif' => 'image',
-	    'png' => 'image',
-	    'tif' => 'image',
-	    'tiff' => 'image',
-	    'tga' => 'image',
-	    'bmp' => 'image',
-	    'doc' => 'doc',
-	    'sxw' => 'doc',
-	    'odt' => 'doc',
-	    'txt' => 'doc',
-	    'pdf' => 'pdf',
-	    'xls' => 'tableur',
-	    'ods' => 'tableur',
-	    'sxc' => 'tableur',
-	    'csv' => 'tableur',
-	    'ppt' => 'presentation',
-	    'odp' => 'presentation',
-	    'sxi' => 'presentation',
-	    'mpeg' => 'video',
-	    'avi' => 'video',
-	    'mpg' => 'video',
-	    'xvid' => 'video',
-	    'mov' => 'video',
-	    'rm' => 'video',
-	    'ram' => 'video',
-	    'divx' => 'video',
-	    'wmv' => 'video',
-	    'swf' => 'video',
-	    'flv' => 'video',
-	    'mp3' => 'son',
-	    'aiff' => 'son',
-	    'aif' => 'son',
-	    'ogg' => 'son',
-	    'asf' => 'son',
-	    'wma' => 'son',
-	    'mpc' => 'son',
-	    'zip' => 'compress',
-	    'rar' => 'compress',
-	    'ace' => 'compress',
-	    'gz' => 'compress',
-	    'bz2' => 'compress',
-	    'exe' => 'exe',
-	    'cgi' => 'exe',
-	    'hqx' => 'exe',
-	    'file' => 'exe',
-	    'html' => 'htm',
-	    'htm' => 'htm'
-	);
+        $iconList = array(
+            'jpg' => 'image',
+            'jpeg' => 'image',
+            'gif' => 'image',
+            'png' => 'image',
+            'tif' => 'image',
+            'tiff' => 'image',
+            'tga' => 'image',
+            'bmp' => 'image',
+            'doc' => 'doc',
+            'sxw' => 'doc',
+            'odt' => 'doc',
+            'txt' => 'doc',
+            'pdf' => 'pdf',
+            'xls' => 'tableur',
+            'ods' => 'tableur',
+            'sxc' => 'tableur',
+            'csv' => 'tableur',
+            'ppt' => 'presentation',
+            'odp' => 'presentation',
+            'sxi' => 'presentation',
+            'mpeg' => 'video',
+            'avi' => 'video',
+            'mpg' => 'video',
+            'xvid' => 'video',
+            'mov' => 'video',
+            'rm' => 'video',
+            'ram' => 'video',
+            'divx' => 'video',
+            'wmv' => 'video',
+            'swf' => 'video',
+            'flv' => 'video',
+            'mp3' => 'son',
+            'aiff' => 'son',
+            'aif' => 'son',
+            'ogg' => 'son',
+            'asf' => 'son',
+            'wma' => 'son',
+            'mpc' => 'son',
+            'zip' => 'compress',
+            'rar' => 'compress',
+            'ace' => 'compress',
+            'gz' => 'compress',
+            'bz2' => 'compress',
+            'exe' => 'exe',
+            'cgi' => 'exe',
+            'hqx' => 'exe',
+            'file' => 'exe',
+            'html' => 'htm',
+            'htm' => 'htm'
+        );
 
-	$icons = array(
-	    'image' => 'image-x-generic.png',
-	    'doc' => 'text-x-generic.png',
-	    'pdf' => 'x-office-address-book.png',
-	    'tableur' => 'x-office-spreadsheet.png',
-	    'presentation' => 'x-directory-desktop.png',
-	    'video' => 'video-x-generic.png',
-	    'son' => 'audio-x-generic.png',
-	    'compress' => 'package-x-generic.png',
-	    'exe' => 'application-x-executable.png',
-	    'htm' => 'text-html.png'
-	);
+        $icons = array(
+            'image' => 'image-x-generic.png',
+            'doc' => 'text-x-generic.png',
+            'pdf' => 'x-office-address-book.png',
+            'tableur' => 'x-office-spreadsheet.png',
+            'presentation' => 'x-directory-desktop.png',
+            'video' => 'video-x-generic.png',
+            'son' => 'audio-x-generic.png',
+            'compress' => 'package-x-generic.png',
+            'exe' => 'application-x-executable.png',
+            'htm' => 'text-html.png'
+        );
 
-	$doss = '/mimetypes/';
+        $doss = '/mimetypes/';
 
-	if (!ake($ext, $iconList)) {
-	    $ext = 'file';
-	}
+        if (!ake($ext, $iconList)) {
+            $ext = 'file';
+        }
 
-	if ($front)
-	    return $_Gconfig['CDN'] . FRONT_PICTOS_FOLDER . $doss . $icons[$iconList[$ext]];
+        if ($front)
+            return $_Gconfig['CDN'] . FRONT_PICTOS_FOLDER . $doss . $icons[$iconList[$ext]];
 
-	return ADMIN_PICTOS_FOLDER . ADMIN_PICTOS_FRONT_SIZE . $doss . $icons[$iconList[$ext]];
+        return ADMIN_PICTOS_FOLDER . ADMIN_PICTOS_FRONT_SIZE . $doss . $icons[$iconList[$ext]];
     }
 
     /**
@@ -925,9 +948,9 @@ class genFile {
      */
     function getSize() {
 
-	$taille = @filesize($this->getSystemPath());
+        $taille = @filesize($this->getSystemPath());
 
-	return $taille;
+        return $taille;
     }
 
     /**
@@ -937,14 +960,21 @@ class genFile {
      *
      */
     function getSystemPath() {
-        if($this->realSystemPath) {
+
+        if ($this->classe) {
+
+            return $this->classe->getSystemPath();
+        }
+
+        if ($this->realSystemPath) {
             return $this->realSystemPath;
         }
-	if ($this->imageExists) {
-	    $this->realSystemPath = realpath($this->systemPath . $this->fileName);
-	} else { 
-	    return '';
-	}
+        if ($this->imageExists) {
+            $this->realSystemPath = ($this->systemPath . $this->fileName);
+        } else {
+            $this->realSystemPath = ($this->systemPath . $this->fileName);
+            //return '';
+        }
         return $this->realSystemPath;
     }
 
@@ -954,12 +984,179 @@ class genFile {
      *
      */
     function getRealName() {
-
-	return $this->realName;
+        return $this->realName;
     }
 
     function __tostring() {
-	return $this->getWebUrl();
+        return $this->getWebUrl();
+    }
+
+    public function genAdminTag() {
+
+
+        if(!strlen($this->valeur)) {
+            return '<div class="genform_uploadfile">&nbsp;</div>';
+        }
+        $chemin = $this->getWebUrl();
+        $this->thumbWidth = 300;
+        $this->thumbHeight = 500;
+        $this->useThumbs = true;
+        $name = $this->champ;
+
+        $h = '';
+        $h .= ('<div class="genform_uploadfile">');
+        /* Nom du fichier */
+
+
+        $h .= (t('deja_fichier') . ' : ');
+        $h .= ('<span style="font-weight:bold;"><img style="vertical-align:middle" src="' . $this->getIcon() . '" alt="' . strtoupper($this->getExtension()) . '"/> [ ' . $this->getNiceSize() . ' ]</span>');
+
+        /* Lien vers le fichier */
+        $h .= (' <a href="' . $chemin . '" target="_blank" >'); //style="width:' . $this->thumbWidth . 'px"
+
+        $h .= (str_replace($name . "_", "", basename($chemin)));
+
+        $h .= '<br/>';
+
+
+        /*
+         * Si c'est une image , vignette + lien
+         */
+        if ($this->isImage()) {
+            if ($this->useThumbs)
+            //$h .= ( ' <br/><img src="thumb/?w='.$this->thumbWidth.'&amp;h='.$this->thumbHeight.'&amp;src='.$systemCh.'" alt="'.t($name).'" id="imgprev_'.$name.'" /><br/>');
+                $h .= (' <img src="' . $this->getThumbUrl($this->thumbWidth, $this->thumbHeight) . '" alt="" id="imgprev_' . $name . '"  /><br/>');
+            else
+                $h .= (' <img src="' . $chemin . '" alt="' . t($name) . '" width="' . $this->thumbWidth . '" />');
+        }
+        // <param name="FlashVars" value="clip=' . $this->getWebUrl() . '&amp;margin=2&amp;bgcolor1=000000&amp;bgcolor2=000000&amp;showstop=1&amp;loadingcolor=555555&amp;showvolume=1&amp;showtime=1&amp;showfullscreen=1&amp;playercolor=ffffff&amp;buttoncolor=000000&amp;showiconplay=1&amp;iconplaybgcolor=ffffff&amp;videobgcolor=ffffff&amp;loadonstop=0" />
+        else if ($this->getExtension() == 'flv' || $this->getExtension() == 'mp4' || $this->getExtension() == 'm4v' || strstr($this->getWebUrl(), 'rtmp')) {
+            global $_Gconfig;
+            if(strstr($this->getWebUrl(), 'rtmp')) {
+                $file = str_replace($_Gconfig['rtmpServeur'], '', $this->getWebUrl());
+                $stream =$_Gconfig['rtmpServeur'];
+            } else {
+                $file = $this->getWebUrl();
+                $stream = '';
+            }
+            
+            
+            $id=  uniqid();
+            $h .= ('
+<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="470" height="290" id="single1" name="single1">
+<param name="movie" value="player.swf">
+<param name="allowfullscreen" value="true">
+<param name="allowscriptaccess" value="always">
+<param name="wmode" value="transparent">
+<param name="flashvars" value="file='.$rtmp.'&streamer='.$_Gconfig['rtmpServeur'].'">
+<embed
+  id="single2"
+  name="single2"
+  src="player.swf"
+  width="470"
+  height="290"
+  bgcolor="#000000"
+  allowscriptaccess="always"
+  allowfullscreen="true"
+  flashvars="file='.$file.'&streamer='.$stream.'"
+/>
+</object>
+</a>
+
+');
+            /*
+             *
+<object type="application/x-shockwave-flash" data="flowplayer.swf" width="300" height="200">
+				    <param name="movie" value="flowplayer.swf" />
+				    <param name="allowFullScreen" value="true" />
+
+				    <param name="FlashVars" value="config={plugins:{influxis:{url:\'' . BU . '/admin/flowplayer.rtmp-3.2.8.swf\',netConnectionUrl:\'' . $_Gconfig['rtmpServeur'] . '\'}},clip:{url:\'' . $rtmp . '\',provider:\'influxis\'}}" />
+				</object>
+             */
+
+        } else {
+            /* Sinon juste lien */
+            $h .= ('' . t('voir'));
+        }
+
+        $h .= ('</a>');
+
+
+        /* Edition via l'ImageManager */
+
+        $ssch = substr($this->getWebUrl(), strlen(BU));
+
+        if ($this->isImage($chemin) && $this->useImageEditor) {
+            $h .= ('<a href="ImageManager/editor.php?img=' . $ssch . '&update=imgprev_' . $name . '" onclick="window.open(this.href,\'\',\'width=900,height=700\');return false" >' . t('edis_image') . '</a>');
+        }
+
+
+        $h .= ('<label class="abutton"  style="float:none;width:120px;"
+			><input onclick="if(confirm(\'' . t('supprimer_fichier') . '\')) {deleteFile(\''.$this->table.'\',\''.$name.'\',\''.$this->id.'\',this,\'\')} return false" class="inputimage" type="image"
+			value="" src="' . t('src_delete') . '"  name="genform_' . $name . '_del"
+			 /> ' . t('supprimer') . '</label>');
+
+        $h .= ('</div>');
+
+        return $h;
+    }
+
+    public function genSmallAdminTag() {
+        
+        if(!strlen($this->valeur)) {
+            return '<div class="genform_uploadfile">&nbsp;</div>';
+        }
+
+        $chemin = $this->getWebUrl();
+        $this->thumbWidth = 50;
+        $this->thumbHeight = 50;
+        $this->useThumbs = true;
+        $name = $this->champ;
+
+
+
+        $h = '';
+        $h .= ('<div class="genform_uploadfile">');
+        
+        /* Lien vers le fichier */
+        $h .= (' <a href="' . $chemin . '" target="_blank" >'); //style="width:' . $this->thumbWidth . 'px"
+
+        $h .= (str_replace($name . "_", "", basename($chemin)));
+
+        $h .= '<br/>';
+
+
+        /*
+         * Si c'est une image , vignette + lien
+         */
+        if ($this->isImage()) {
+            if ($this->useThumbs)
+            //$h .= ( ' <br/><img src="thumb/?w='.$this->thumbWidth.'&amp;h='.$this->thumbHeight.'&amp;src='.$systemCh.'" alt="'.t($name).'" id="imgprev_'.$name.'" /><br/>');
+                $h .= (' <img src="' . $this->getThumbUrl($this->thumbWidth, $this->thumbHeight) . '" alt="" id="imgprev_' . $name . '"  /><br/>');
+            else
+                $h .= (' <img src="' . $chemin . '" alt="' . t($name) . '" width="' . $this->thumbWidth . '" />');
+        }
+         else {
+            /* Sinon juste lien */
+            $h .= ('' . t('voir'));
+        }
+
+        $h .= ('</a>');
+
+
+        /* Edition via l'ImageManager */
+
+        $ssch = substr($this->getWebUrl(), strlen(BU));
+     
+
+        $h .= ('<label class="abutton"  style="float:none;width:120px;"
+			><input onclick="if(confirm(\'' . t('supprimer_fichier') . '\')) {deleteFile(\''.$this->table.'\',\''.$name.'\',\''.$this->id.'\',this,1);} return false" class="inputimage" type="image"
+			value="" src="' . t('src_delete') . '"  name="genform_' . $name . '_del"
+			 /> ' . t('supprimer') . '</label>');
+
+        $h .= ('</div>');
+
+        return $h;
     }
 
 }

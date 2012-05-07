@@ -3,6 +3,7 @@
 class genSearchV2 {
 
     var $nbperpage = 20;
+    var $lstart = 0;
 
     function genSearchV2($table) {
 
@@ -10,6 +11,7 @@ class genSearchV2 {
 
         $this->gs = &$gs_obj;
         $this->table = $table;
+        $this->lstart = empty($_REQUEST['lstart']) ? 0 : $_REQUEST['lstart'];
     }
 
     /**
@@ -25,7 +27,7 @@ class genSearchV2 {
         /**
          * On sélectionne tous les enregistrements
          */
-        $sql = 'SELECT ' . getPrimaryKey($this->table) . ',
+        $sql = ' ' . getPrimaryKey($this->table) . ',
 					' . GetTitleFromTable($this->table, " , ") . ' 
 				FROM ' . $this->table . ' AS T
 				WHERE 1 ' . GetOnlyEditableVersion($this->table) . ' 
@@ -35,13 +37,18 @@ class genSearchV2 {
             $sql .= ' AND ( ' . $_Gconfig['arboredTable'][$this->table] . ' = 0 OR ' . $_Gconfig['arboredTable'][$this->table] . ' IS NULL )';
         }
 
+        $sqlCount = 'SELECT COUNT(' . getPrimaryKey($this->table) . ') AS NB , ' . $sql . ' ';
+        $rCount = DoSql($sqlCount);
+        $rCount = $rCount->FetchRow();
+        $this->count = $rCount['NB'];
+
+        $sql = 'SELECT ' . $sql;
+
         $sql .= ' ORDER BY ';
 
         if (isset($_REQUEST['order']) && array_key_exists($_REQUEST['order'], getTabField($this->table))) {
-
             $sql .= 'T.' . $_REQUEST['order'] . ' ';
-
-            if ($_GET['to'] == 'asc') {
+            if (akev($_GET,'to') == 'asc') {
                 $sql .= ' ASC , ';
             } else {
                 $sql .= ' DESC , ';
@@ -55,6 +62,8 @@ class genSearchV2 {
         //ORDER BY '.GetTitleFromTable($this->table," , ");
 
         $sql .= " T." . GetTitleFromTable($this->table, " , ");
+
+        $sql .= $this->limit();
 
         $this->res = DoSql($sql);
 
@@ -95,6 +104,11 @@ class genSearchV2 {
                 $_SESSION['LastSearch'][$this->table] = 'simple';
                 $_SESSION['LastSearchQuery'][$this->table] = $_REQUEST['searchTxt'];
 
+                $this->getSimpleSearchForm();
+                 if (!empty($searchField[$this->table])) {
+                    $this->getFullSearchForm();
+                }
+                
                 $this->doSimpleSearch();
             } //else if($_REQUEST['doFullSearch'] || true) {
             else {
@@ -105,6 +119,8 @@ class genSearchV2 {
                 $_SESSION['LastSearch'][$this->table] = 'full';
                 $_SESSION['LastSearchQuery'][$this->table] = $_POST;
                 global $searchField;
+
+                $this->getSimpleSearchForm();
                 if (!empty($searchField[$this->table])) {
                     $this->getFullSearchForm();
                 }
@@ -126,18 +142,22 @@ class genSearchV2 {
         p('<input type="hidden" name="curTable" value="' . $this->table . '" />');
 
         p('<label for="searchTxt" style="margin-top:5px;float:left">' . t('search_txt') . '</label>');
+
         p('<input type="text" id="searchTxt" name="searchTxt" value="' . akev($_REQUEST, 'searchTxt') . '" style="float:left;margin-top:5px;" />');
 
         p('<label class="abutton" style="float:left;margin:0;margin-left:10px;"><input type="image" src="' . t('src_search') . '" />' . t('rechercher') . '</label>');
+
         p('</form>');
+        
     }
 
     function getSelect() {
 
+        return;
         $res = $this->res;
 
 
-        if (($res->RecordCount()) > 1000)
+        if (($this->count) > 1000)
             return;
 
         // p('<div style="clear:both;">&nbsp;</div>
@@ -155,9 +175,7 @@ class genSearchV2 {
 
         $this->pk = GetPrimaryKey($this->table);
         foreach ($res as $row) {
-
             $titre = truncate(GetTitleFromRow($this->table, $row), 70);
-
             p('<option value="' . $row[$this->pk] . '">' . $titre . '</option>');
         }
         p('</select>');
@@ -170,7 +188,7 @@ class genSearchV2 {
 
     function getFullSearchForm() {
 
-        global $searchField, $relations, $tablerel, $tabForms;
+        global $searchField, $relations, $tablerel, $tabForms,$gs_obj;
 
         $table = $this->table;
         $fields = getTabField($table);
@@ -240,7 +258,17 @@ class genSearchV2 {
                     $label = GetTitleFromTable($fk_table, " , ");
                     $thiskey = GetPrimaryKey($fk_table);
 
-                    $sql = "SELECT * FROM " . $fk_table . " " . GetOnlyEditableVersion($fk_table) . " ORDER BY " . $label;
+                    if(!empty($gs_obj->myroles[$fk_table]['rows'])) {
+                        $sql = "SELECT * FROM " . $fk_table . " 
+                            WHERE 1 " . GetOnlyEditableVersion($fk_table) . " 
+                                AND ".  getPrimaryKey($fk_table)."
+                                    IN (".implode(",",$gs_obj->myroles[$fk_table]['rows']).")
+                                ORDER BY " . $label;
+                    } else {
+                        $sql = "SELECT * FROM " . $fk_table . " WHERE 1 " . GetOnlyEditableVersion($fk_table) . "
+                            ORDER BY " . $label;
+                    }
+
                     $res = GetAll($sql);
 
                     p('<select style="height:70px;float:left;"  id="' . $k . '" name="' . $k . '[]" multiple="multiple" >');
@@ -276,7 +304,7 @@ class genSearchV2 {
                     if (($type == "int" && $size < 2 ) || $type == "tinyint") {
                         $vv = akev($_POST, $k);
                         $sel = $vv == "" ? 'selected="selected"' : '';
-                        $sel0 = $vv == "0" ? 'selected="selected"' : '';
+                        $sel0 = $vv === "0" ? 'selected="selected"' : '';
                         $sel1 = $vv == 1 ? 'selected="selected"' : '';
                         p('
                             <select style="float:left;" name="' . $k . '">
@@ -298,7 +326,7 @@ class genSearchV2 {
                                 <option ' . $sel1 . ' value="eg">=</option>
                                 <option ' . $sel2 . ' value="sup">></option>
                             </select>
-                            <input style="float:left;width:50px" type="text" name="' . $k . '" value="' . $_REQUEST[$k] . '" />
+                            <input style="float:left;width:50px" type="text" name="' . $k . '" value=' . alt(akev($_REQUEST,$k)) . ' />
                         ');
                     } else if ($type == 'enum') {
                         $values = getEnumValues($this->table, $v->name);
@@ -372,7 +400,7 @@ class genSearchV2 {
         /**
          * Calcul des pages
          */
-        $totRes = ($res->RecordCount());
+        $totRes = $this->count;
         $_SESSION['LastStart'][$this->table] = $lstart = akev($_GET, 'lstart') != '' ? $_GET['lstart'] : (!empty($_GET['fromList']) ? $_SESSION['LastStart'][$this->table] : 0);
 
         $lend = $lstart + $this->nbperpage;
@@ -391,14 +419,6 @@ class genSearchV2 {
             $lstart = ($pageNo - 1) * $this->nbperpage;
             $lend = $lstart + $this->nbperpage;
         }
-
-
-        /*
-          $pageTot = $pageTot == 0 ? 1 : $pageTot;
-          $pageNo = $pageNo == 0 ? 1 : $pageNo;
-         */
-
-
 
         /**
          * Suivant / Précédent
@@ -510,7 +530,7 @@ class genSearchV2 {
         /**
          * Nombre de résultats
          */
-        $r .= '<tr><td colspan="10">' . ('<h4  >' . t('il_y_a') . ' ' . ($res->RecordCount()) . ' ' . t('resultats') . '</h4>') . '</td></tr>';
+        $r .= '<tr><td colspan="10">' . ('<h4  >' . t('il_y_a') . ' ' . ( $this->count ) . ' ' . t('resultats') . '</h4>') . '</td></tr>';
 
 
         if ($totRes == 0) {
@@ -626,15 +646,15 @@ class genSearchV2 {
             $r .= "\n";
 
 
-
             /**
              * Liste des résultats
              */
-            for ($k = $lstart; $k < $lend; $k++) {
-
-                $res->Move($k);
-                $row = $res->FetchRow();
-
+            //for ($k = $lstart; $k < $lend; $k++) {
+            foreach ($res as $row) {
+                /*
+                  $res->Move($k);
+                  $row = $res->FetchRow();
+                 */
                 $r .= ( '<tr class="' . ($k % 2 ? 'odd' : 'even') . '">');
 
                 $id = $row[$thisPk];
@@ -691,7 +711,7 @@ class genSearchV2 {
                 $r .= "\n";
             }
 
-            if (($res->RecordCount()) > 0) {
+            if (( $this->count ) > 0) {
 
                 p($r);
             }
@@ -887,7 +907,7 @@ class genSearchV2 {
             /**
              * Dans tous les cas on ajoute le sens de tri
              */
-            if ($_GET['to'] == 'asc') {
+            if (akev($_GET,'to') == 'asc') {
 
                 $addToORDER .= ' ASC , ';
             } else {
@@ -908,7 +928,7 @@ class genSearchV2 {
         /**
          * SQL start
          */
-        $presql = 'SELECT DISTINCT(T.' . $curkey . ') , T.* FROM ' . $table . ' AS T ' . $addToFROM;
+        $presql = 'SELECT DISTINCT(T.' . $curkey . ') , **COUNT**  T.* FROM ' . $table . ' AS T ' . $addToFROM;
 
         /**
          * Default where clause
@@ -926,7 +946,6 @@ class genSearchV2 {
 
 
         if (empty($searchField[$table])) {
-
             /**
              * No search field in configuration
              * Searching only on titles
@@ -1091,10 +1110,21 @@ class genSearchV2 {
         $wheresql .= "T." . $label;
 
 
-        $res = Dosql($presql . $wheresql);
+        $res = DoSql(str_replace('**COUNT**', ' COUNT(' . getPrimaryKey($this->table) . ') AS NB, ', $presql) . $wheresql);
+        $res = $res->FetchRow();
+        $this->count = $res['NB'];
 
+        $wheresql .= $this->limit();
+
+
+        $res = DoSql(str_replace('**COUNT**', '', $presql) . $wheresql);
 
         return $res;
+    }
+
+    public function limit() {
+
+        return ' LIMIT ' . $this->lstart . ' , ' . $this->nbperpage;
     }
 
     /**
@@ -1188,8 +1218,11 @@ class genSearchV2 {
         /**
          * Construction de la requête
          */
-        $sql = "SELECT DISTINCT(T." . GetPrimaryKey($this->table) . "), T.*
-        		FROM " . $this->table . ' AS T ';
+        $select = "SELECT DISTINCT(T." . GetPrimaryKey($this->table) . "), T.* ";
+        $selectCount = "SELECT COUNT(" . GetPrimaryKey($this->table) . ") AS NB  ";
+
+
+        $sql = " FROM " . $this->table . ' AS T ';
 
         $sql .= $addToFROM;
 
@@ -1201,7 +1234,7 @@ class genSearchV2 {
 
         $sql .= $GLOBALS['gs_obj']->sqlCanRow($this->table) . ' AND ( ';
 
-        $mots = split(" ", $_REQUEST['searchTxt']);
+        $mots = explode(" ", $_REQUEST['searchTxt']);
 
         $sql .= " 0 ";
 
@@ -1246,12 +1279,18 @@ class genSearchV2 {
 
         $sql .= $label;
 
-        $res = DoSql($sql);
+
+        $resCount = DoSql($selectCount . $sql);
+        $resCount = $resCount->FetchRow();
+        $this->count = $resCount['NB'];
+
+
+        $sql .= $this->limit();
+
+        $res = DoSql($select . $sql);
 
 
         $this->printRes($res);
     }
 
 }
-
-?>

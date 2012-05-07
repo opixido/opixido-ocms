@@ -23,6 +23,10 @@ if (phpversion() < '4.1.0') {
 	$_GET    = $HTTP_GET_VARS;
 }
 
+if(empty($_REQUEST['src'])) {
+    die();
+}
+
 function SendSaveAsFileHeaderIfNeeded() {
 	if (headers_sent()) {
 		return false;

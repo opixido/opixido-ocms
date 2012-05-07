@@ -6,7 +6,9 @@
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
        
         <?php
-        $css = array('admin/css/style.css',
+        $css = array(
+            //'admin/css/bootstrap.css',
+            'admin/css/style.css',
             'admin/css/style_suite.css',
             'admin/css/arbo.css',
             'admin/genform/css/genform.css',
@@ -27,7 +29,17 @@
             'admin/jq/js/jquery.tablednd_0_5.js',              
             'admin/jq/js/jquery.tipsy.js',
             'admin/jq/js/jquery.autoGrowInput.js',
-            'admin/jq/js/jquery.tagedit.js'
+            'admin/jq/js/jquery.tagedit.js',
+            'admin/jq/js/jquery.tree.js',
+            //'admin/js/bootstrap.min.js',
+            'admin/plupload/js/plupload.js',
+            'admin/plupload/js/plupload.full.js',
+            'admin/plupload/js/jquery.ui.plupload/jquery.ui.plupload.js',
+            'admin/plupload/js/plupload.gears.js',
+            'admin/plupload/js/plupload.silverlight.js',
+            'admin/plupload/js/plupload.flash.js',
+            'admin/plupload/js/plupload.html5.js',
+            'admin/plupload/js/plupload.html4.js'
             
         );
         /* 'admin/jq/js/jquery.autocomplete-min.js',         */
@@ -110,7 +122,7 @@ echo 'var lgs = ' . json_encode($_Gconfig['LANGUAGES']) . ';';
                             </style>
                             <div class="clearer"></div>
                         <?php } ?>
-                        <a class="logoa" href="index.php?home=1"><h1><?php echo ta('base_title') ?></h1></a>
+                        <a class="logoa" href="index.php?home=1" style="height:65px;background-image:url(img/logo.png)!important;background-repeat:no-repeat"><h1>&nbsp;</h1></a>
                     </div>
                 </div>
 

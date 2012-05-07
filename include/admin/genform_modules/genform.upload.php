@@ -29,13 +29,15 @@ if (isset($_Gconfig['fileListingFromFolder'][$this->table_name]) && ( $fileListi
     $_SESSION[gfuid()]['curFields'][] = $name . "_fromfolder";
 }
 
-
-
+if (!$this->onlyData) {
+    $this->addBuffer('<div class="upload_fileview">');
+}
 if ($this->tab_default_field[$name]) {
 
 
     if (!$this->onlyData) {
         if ($this->editMode) {
+
             /*
              *
              * On est en visualisation  seulement
@@ -84,70 +86,7 @@ if ($this->tab_default_field[$name]) {
 
             $this->genHelpImage('help_file', $name);
 
-            $this->addBuffer('<div class="genform_uploadfile">');
-            /* Nom du fichier */
-
-            $this->addBuffer(t('deja_fichier') . ' : ');
-            $this->addBuffer('<span style="font-weight:bold;"><img style="vertical-align:middle" src="' . $gf->getIcon() . '" alt="' . strtoupper($gf->getExtension()) . '"/> [ ' . $gf->getNiceSize() . ' ]</span>');
-
-            /* Lien vers le fichier */
-            $this->addBuffer(' <a href="' . $chemin . '" target="_blank" style="width:' . $this->thumbWidth . 'px">');
-
-            $this->addBuffer(str_replace($name . "_", "", basename($chemin)));
-
-
-            /*
-             * Si c'est une image , vignette + lien
-             */
-            if ($this->isImage($chemin)) {
-
-
-
-                if ($this->useThumbs)
-                //$this->addBuffer( ' <br/><img src="thumb/?w='.$this->thumbWidth.'&amp;h='.$this->thumbHeight.'&amp;src='.$systemCh.'" alt="'.t($name).'" id="imgprev_'.$name.'" /><br/>');
-                    $this->addBuffer(' <br/><img src="' . $gf->getThumbUrl($this->thumbWidth, $this->thumbHeight) . '" alt="" id="imgprev_' . $name . '"  /><br/>');
-                else
-                    $this->addBuffer(' <br/><img src="' . $chemin . '" alt="' . t($name) . '" width="' . $this->thumbWidth . '" />');
-            }
-            else if ($gf->getExtension() == 'flv') {
-
-                $this->addBuffer('<object type="application/x-shockwave-flash" data="flv.swf" width="300" height="200">
-				    <param name="movie" value="flv.swf" />
-				    <param name="allowFullScreen" value="true" />
-				    <param name="FlashVars" value="flv=' . $gf->getWebUrl() . '&amp;margin=2&amp;bgcolor1=000000&amp;bgcolor2=000000&amp;showstop=1&amp;loadingcolor=555555&amp;showvolume=1&amp;showtime=1&amp;showfullscreen=1&amp;playercolor=ffffff&amp;buttoncolor=000000&amp;showiconplay=1&amp;iconplaybgcolor=ffffff&amp;videobgcolor=ffffff&amp;loadonstop=0" />
-				</object>');
-            } else {
-                /* Sinon juste lien */
-                $this->addBuffer('<br/>' . $this->trad('voir'));
-            }
-
-            $this->addBuffer('</a>');
-
-
-            /* Edition via l'ImageManager */
-            //$ssch = str_replace(BU,'',$gf->getWebUrl(),$count);
-            $ssch = substr($gf->getWebUrl(), strlen(BU));
-            //echo $ssch;
-            // $ssch = $gf->getWebUrl();
-            if ($this->isImage($chemin) && $this->useImageEditor) {
-                $this->addBuffer('<a href="ImageManager/editor.php?img=' . $ssch . '&update=imgprev_' . $name . '" onclick="window.open(this.href,\'\',\'width=900,height=700\');return false" >' . $this->trad('edis_image') . '</a>');
-            }
-            /* Pour supprimer le fichier !
-              $this->addBuffer( '<input type="checkbox" ');
-              $this->addBuffer( ' onclick="if(this.checked) {if(!confirm(\''.t('supprimer_fichier').'\')) this.checked = false; }" ');
-
-              $this->addBuffer(' name="genform_' . $name . '_del" id="genform_' . $name . '_del" value="" />');
-
-              $this->addBuffer(' <label for="genform_' . $name . '_del">' . $this->trad( 'supprimer' ) . '</label><br/><br/>' );
-
-             */
-
-            $this->addBuffer('<label class="abutton"  style="float:none;width:120px;"
-			><input onclick="if(confirm(\'' . t('supprimer_fichier') . '\')) {$(\'#genform_stay\').val(1);return true;} else {return false}" class="inputimage" type="image"
-			value="" src="' . t('src_delete') . '"  name="genform_' . $name . '_del"
-			 /> ' . $this->trad('supprimer') . '</label>');
-
-            $this->addBuffer('</div>');
+            $this->addBuffer($gf->genAdminTag());
 
             $_SESSION[gfuid()]['curFields'][] = $name . "_del";
         }
@@ -184,30 +123,111 @@ if ($this->tab_default_field[$name]) {
         }
     }
 }
+if (!$this->onlyData) {
+    $this->addBuffer('</div>');
+}
 if (!$this->editMode) {
 
-    /* Bouton parcourir pour uploader le fichier */
 
-    $this->addBuffer("<label for='genform_" . $name . "'>");
-    if ($this->tab_default_field[$name])
-        $this->addBuffer(t('fichier_remplacer'));
-    else
-        $this->addBuffer(t('fichier_uploader'));
+    if (true || $name == 'programme_video_url') {
+        $this->addBuffer('
+                    <div id="container_' . $name . '" class="upload_container">
+                        
+                        <a class="abutton" id="pickfiles_' . $name . '" href="javascript:;"><img src="' . path_concat(ADMIN_PICTOS_FOLDER . ADMIN_PICTOS_ARBO_SIZE . '/actions/document-save-as.png') . '" alt="" /> ' . t('upload_parcourir') . ' </a>
+                        <div id="filelist_' . $name . '" class="upload_filelist"></div>
+                            <div class="clearer"></div>
+                    </div>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pickfiles_'.$name.'").hover(refreshUploaders);
+        window.uploader_' . $name . ' = new plupload.Uploader({
+                runtimes : "html5,flash,gears,silverlight,html4",
+                browse_button : "pickfiles_' . $name . '",
+                container: "container_' . $name . '",
+                max_file_size : "5000mb",
+                drop_element: "container_' . $name . '",
+                url : "index.php",
+                chunk_size : "6mb",
+                flash_swf_url : "' . BU . '/admin/plupload/js/plupload.flash.swf",
+                silverlight_xap_url : "../js/plupload.silverlight.xap",
+                headers:{champ:"' . $name . '",curTable:"' . $this->table_name . '",curId:"' . $this->id . '",xhr:"upload"},
+                multipart_params:{champ:"' . $name . '",curTable:"' . $this->table_name . '",curId:"' . $this->id . '",xhr:"upload"},
+                button_browse_hover : true,
+                multiple_queues: true,
+                multi_selection : false,
+                max_file_count : 1
+       });
+        window.uploaders.push(window.uploader_' . $name . ');
+        window.uploader_' . $name . '.bind("FileUploaded", function (up,file,resp) {
+                if(resp.response.indexOf("<div") != -1) {
+                    $("#container_' . $name . '").prev().html(resp.response);
+                    $("#filelist_' . $name . '").html("");
+                }
+                window.filesUploading--;
+                if(window.filesUploading == 0) {
+                        window.onbeforeunload = false;
+                }
+                refreshUploaders();
+            });
+        window.startUpload' . $name . ' = function () {           
+            window.uploader_' . $name . '.settings.multipart_params.curId = $("#curId").val();
+            window.uploader_' . $name . '.settings.headers.curId = $("#curId").val();
+            window.uploader_' . $name . '.start();
+        }
+        window.uploader_' . $name . '.bind("FilesAdded", function(up, files) {
+                var i = 0;
+                if($("#curId").val() == "new") {
+                    doSaveAllAndStay(window.startUpload' . $name . ');
+                } else {
+                    setTimeout("window.startUpload' . $name . '()",500);
+                }
+                window.filesUploading++;
+                window.onbeforeunload = beforeUnloadUploading;
+                refreshUploaders();
+                $("#filelist_' . $name . '").html("<div id=\'" + files[i].id + "\'>" + files[i].name + " (" + plupload.formatSize(files[i].size) + ") <b>Initialisation du transfert <img src=\"img/loading.gif\" alt=\"\" /></b></div>");
+        });
 
-    // debug($name .' ' .getBaseLgField($name));
+        window.uploader_' . $name . '.bind("UploadProgress", function(up, file) {
+                $("#"+file.id+" b").html("<span style=\"width:"+(file.percent*2)+"px\">" + file.percent + "%</span>");
+                refreshUploaders();
+        });
+        window.uploader_' . $name . '.init();
+        $("#container_' . $name . '")
+        .bind("dragenter dragover", function(e) {
+            $(this).addClass("hover");
+            e.preventDefault();
+        })
+        .bind("dragexit dragleave drop dragend mouseleave", function(e) {
+            $(this).removeClass("hover");
+            e.preventDefault();
+        });
+    });
+</script>
+                    ');
+        return;
+    } else {
+        /* Bouton parcourir pour uploader le fichier */
 
-    if (@ake($_Gconfig['imageAutoResize'], getBaseLgField($name))) {
-        $sizes = $_Gconfig['imageAutoResize'][getBaseLgField($name)];
-        $this->addBuffer(' <span class="light">[' . t('max_size') . ' ' . $sizes[0] . ' x ' . $sizes[1] . ' px]</span>');
-    } else
-    if (@ake($_Gconfig['imageAutoResizeExact'], getBaseLgField($name))) {
-        $sizes = $_Gconfig['imageAutoResizeExact'][getBaseLgField($name)];
-        $this->addBuffer(' <span class="light">[' . t('exact_size') . ' ' . $sizes[0] . ' x ' . $sizes[1] . ' px]</span>');
-    }
+        $this->addBuffer("<label for='genform_" . $name . "'>");
+        if ($this->tab_default_field[$name])
+            $this->addBuffer(t('fichier_remplacer'));
+        else
+            $this->addBuffer(t('fichier_uploader'));
+
+        // debug($name .' ' .getBaseLgField($name));
+
+        if (@ake($_Gconfig['imageAutoResize'], getBaseLgField($name))) {
+            $sizes = $_Gconfig['imageAutoResize'][getBaseLgField($name)];
+            $this->addBuffer(' <span class="light">[' . t('max_size') . ' ' . $sizes[0] . ' x ' . $sizes[1] . ' px]</span>');
+        } else
+        if (@ake($_Gconfig['imageAutoResizeExact'], getBaseLgField($name))) {
+            $sizes = $_Gconfig['imageAutoResizeExact'][getBaseLgField($name)];
+            $this->addBuffer(' <span class="light">[' . t('exact_size') . ' ' . $sizes[0] . ' x ' . $sizes[1] . ' px]</span>');
+        }
 
 
-    $this->addBuffer(' </label> <br/>');
-    $this->addBuffer('
+        $this->addBuffer(' </label> <br/>');
+        $this->addBuffer('
 
 <input type="file" class="fileupload" id="genform_' . $name . '" name="genform_' . $name . '"  />
 
@@ -215,38 +235,39 @@ if (!$this->editMode) {
     <input class="inputimage" type="image" value="" src="' . t('src_upload') . '"  name="genform_stay"  />
      ' . $this->trad('mettre_en_ligne') . '</label>');
 
-    if (is_dir($_Gconfig['ftpUpload_path'])) {
+        if (is_dir($_Gconfig['ftpUpload_path'])) {
 
-        //debug(scandir($_Gconfig['ftpUpload_path']));
-        $liste = $GLOBALS['gb_obj']->getFileListing($_Gconfig['ftpUpload_path'], false);
+            //debug(scandir($_Gconfig['ftpUpload_path']));
+            $liste = $GLOBALS['gb_obj']->getFileListing($_Gconfig['ftpUpload_path'], false);
 
 
-        if (count($liste)) {
-            $ij = 0;
+            if (count($liste)) {
+                $ij = 0;
 
-            $_SESSION[gfuid()]['curFields'][] = $name . "_importftp";
-            $_SESSION[gfuid()]['curFields'][] = $name . "_importftp_x";
+                $_SESSION[gfuid()]['curFields'][] = $name . "_importftp";
+                $_SESSION[gfuid()]['curFields'][] = $name . "_importftp_x";
 
-            $this->addBuffer('
+                $this->addBuffer('
                     <img class="inputimage" onclick="showHide(\'filelisting_' . $name . '\')" type="image" src="' . t('src_importftp') . '"  alt="' . t('import_from_ftp') . '" />
                                       
                      <div class="filelisting" style="display:none;" id="filelisting_' . $name . '">');
 
 
-            $this->addBuffer('<label for="genform_' . $name . '_import_' . $ij . '"  ><input type="radio" checked="checked" id="genform_' . $name . '_import_' . $ij . '" name="genform_' . $name . '_importftp" value="0" />' . t('aucun') . '</label>');
-            foreach ($liste as $f) {
-                $ij++;
-                $this->addBuffer('<label for="genform_' . $name . '_import_' . $ij . '"><input type="radio" id="genform_' . $name . '_import_' . $ij . '" name="genform_' . $name . '_importftp" value="' . $f . '" />' . $f . '</label>');
-            }
+                $this->addBuffer('<label for="genform_' . $name . '_import_' . $ij . '"  ><input type="radio" checked="checked" id="genform_' . $name . '_import_' . $ij . '" name="genform_' . $name . '_importftp" value="0" />' . t('aucun') . '</label>');
+                foreach ($liste as $f) {
+                    $ij++;
+                    $this->addBuffer('<label for="genform_' . $name . '_import_' . $ij . '"><input type="radio" id="genform_' . $name . '_import_' . $ij . '" name="genform_' . $name . '_importftp" value="' . $f . '" />' . $f . '</label>');
+                }
 
 
 
-            $this->addBuffer('
+                $this->addBuffer('
     <label class="abutton"  style="float:none;width:70px;">
     <input class="inputimage" type="image" value="" src="' . t('src_copy') . '"  name="genform_stay"  />
      ' . $this->trad('copier') . '</label>');
 
-            $this->addBuffer('</div>');
+                $this->addBuffer('</div>');
+            }
         }
     }
 }

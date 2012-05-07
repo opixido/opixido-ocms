@@ -28,6 +28,7 @@ class genAction {
     public $table;
     public $id;
     public $row;
+    public $obj;
 
     public function __construct($action, $table, $id, $row = array()) {
 
@@ -45,6 +46,7 @@ class genAction {
 
             $cname = 'genAction' . ucfirst($action);
             if (class_exists($cname)) {
+                
                 $this->obj = new $cname($this->action, $this->table, $this->id, $this->row);
             } else {
                 global $genMessages;
@@ -62,6 +64,7 @@ class genAction {
                 $gr = new genRecord($this->table, $this->id);
                 $gr->checkDoOn($this->action);
                 logAction($this->action, $this->table, $this->id);
+                DoSql('UPDATE s_param SET param_valeur = '.sql(time()).' WHERE param_id = "date_update_'.$this->table.'" ');
                 return $this->obj->doIt();
             } else {
                 return false;
@@ -72,7 +75,7 @@ class genAction {
     }
 
     public function genIt() {
-        if (is_object($this->obj)) {
+        if (!empty($this->obj) && is_object($this->obj)) {
             if (method_exists($this->obj, 'genIt') && $this->obj->checkCondition()) {
 
                 $gr = new genRecord($this->table, $this->id);
@@ -88,7 +91,7 @@ class genAction {
     }
 
     public function checkCondition() {
-        if (is_object($this->obj)) {
+        if (!empty($this->obj)) {
             return $this->obj->checkCondition();
         } else {
             return false;
@@ -405,8 +408,6 @@ class genActionShowObject {
     public $canReturnToList = true;
 
     public function __construct($action, $table, $id, $row = array()) {
-
-
         $this->action = $action;
         $this->table = $table;
         $this->id = $id;
@@ -426,6 +427,34 @@ class genActionShowObject {
     }
 
     public function doIt() {
+
+        $errors = array();
+        $r = new row($this->table, $this->row);
+        foreach ($r->row as $k => $v) {
+            if (isNull($v) && isNeeded($this->table, $k)) {
+                $errors[] = $k;
+            }
+        }
+        global $tablerel_reverse;
+        genTableRelReverse();
+
+        if (!empty($tablerel_reverse[$this->table])) {
+            foreach ($tablerel_reverse[$this->table] as $k => $v) {
+                $res = $r->$v['tablerel'];
+                if (isNull($res) && isNeeded($this->table, $v['tablerel'])) {
+                    $errors[] = $v['tablerel'];
+                }
+            }
+        }
+        if (count($errors)) {
+            dinfo(t('show_merci_de_remplir_les_champs_suivants'));
+            $h = '';
+            foreach($errors as $v) {
+                $h .= t($v).'<br/>';
+            }
+            dinfo($h);
+            return false;
+        }
 
         $res = DoSql('UPDATE ' . $this->table . ' SET ' . ONLINE_FIELD . ' = "1"
 				WHERE ' . getPrimaryKey($this->table) . ' = "' . $this->id . '" ');
@@ -453,7 +482,7 @@ class objDuplication {
 
         $this->table = $table;
         $this->id = $id;
-        if (!is_array($row)) {
+        if (!is_array($row) || !count($row)) {
             $this->row = getRowFromId($table, $id);
         } else {
             $this->row = $row;
@@ -505,7 +534,7 @@ class objDuplication {
                  * On met à jour le champ
                  * @old $sql .= ' '.$k.' = '.getNullValue(($v),$k,$this->table).' ,';
                  */
-                $record[$k] = $v; //getNullValue(($v),$k,$this->table);
+                 //getNullValue(($v),$k,$this->table);
 
                 /**
                  * Si c'est un champ d'upload 
@@ -514,6 +543,8 @@ class objDuplication {
                 if (arrayInWord($uploadFields, $k)) {
                     $oldfile = new genFile($this->table, $k, $this->id, $v);
                     $oldfiles[] = array('path' => $oldfile->getSystemPath(), 'valeur' => $v, 'champ' => $k);
+                } else {
+                    $record[$k] = $v;
                 }
             }
         }
@@ -524,9 +555,9 @@ class objDuplication {
          */
         if (count($oldfiles)) {
             foreach ($oldfiles as $oldfile) {
-                $newfile = new genFile($this->table, $oldfile['champ'], $newId, $oldfile['valeur']);
-                if (file_exists($oldfile['path'])) {
-                    $newfile->uploadFile($oldfile['path']);
+                $newfile = new genFile($this->table, $oldfile['champ'], $newId, basename($oldfile['valeur']),false);
+                if (file_exists($oldfile['path']) && is_file($oldfile['path'])) {
+                    $newfile->uploadFile($oldfile['path'],true);
                 }
             }
         }
@@ -543,7 +574,7 @@ class objDuplication {
          */
         global $co;
         $co->autoExecute($this->table, $record, 'UPDATE', getPrimaryKey($this->table) . ' = ' . sql($newId, 'int'));
-
+        
 
         /**
          * On duplique les traduction supplémentaires
@@ -558,7 +589,6 @@ class objDuplication {
             foreach ($relinv[$this->table] as $k => $v) {
 
                 if (!@in_array($k, $this->noCopyField) && !@in_array($this->table . '.' . $k, $this->noCopyField)) {
-
                     $this->deleteAndDupli($v[0], $v[1], $this->id, $newId);
                 }
             }
@@ -812,7 +842,7 @@ class genActionRefuseValidation extends ocms_action {
         global $_Gconfig;
         $m = includeMail();
 
-        $admin = getRowFromId('s_admin', $this->row['ocms_creator']);
+        $admin = getRowFromId('s_admin', $this->row[$_Gconfig['field_creator']]);
 
         $m->AddAddress($admin['admin_email']);
 
@@ -860,7 +890,7 @@ class genActionValidate {
     public function __construct($action, $table, $id, $row = array()) {
 
         global $_Gconfig;
-        $this->noCopyField = array_merge($_Gconfig['noCopyField'],array('rubrique_id', 'fk_rubrique_id', 'fk_rubrique_version_id', 'rubrique_etat', 'rubrique_ordre'));
+        $this->noCopyField = array_merge($_Gconfig['noCopyField'], array('rubrique_id', 'fk_rubrique_id', 'fk_rubrique_version_id', 'rubrique_etat', 'rubrique_ordre'));
         $this->relTableToCopy = array('s_paragraphe');
         $this->action = $action;
         $this->table = $table;

@@ -2,7 +2,7 @@
 
 global $_Gconfig;
 
-if (!empty($_Gconfig['useInternalErrorHandler'])) {
+if (!empty($_Gconfig['useInternalErrorHandler']) && false) {
 
 
     global $cfgError;

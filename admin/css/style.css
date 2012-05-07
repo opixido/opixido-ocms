@@ -380,6 +380,10 @@ li.mselected ul a {
     padding: 3px;
 }
 
+span.titreListe {
+    color:#999;
+}
+
 .genform_txtres {
     font-weight: bold;
     text-decoration: underline;
@@ -552,6 +556,7 @@ textarea {
 
 a.abutton {
     padding: 8px;
+    line-height:14px;
     float: left;
 }
 
@@ -1470,5 +1475,126 @@ tr.myDragClass {
 .selectMSearch {
     display:block;
     background:url(../pictos_stock/tango/16x16/actions/system-search.png) no-repeat right center;
-    
+
+}
+
+.upload_container {
+    border:1px solid #ccc;
+}
+.upload_container.hover{
+    background:white;
+    border:1px dotted #999;
+}
+
+
+.tablerelcheckbox {
+    width:185px;
+    padding:2px;
+    border:1px solid #ccc;
+    background: #fff;
+    margin:2px;
+    float:left;
+    cursor:pointer;
+}
+
+.tablerelcheckbox input:checked + span {
+    font-weight:bold;
+}
+
+.tablerelfullarbo, .tablerelfullarbo ul {
+    list-style-type: none;
+}
+
+ul.hide {
+    display:none;
+}
+
+.tablerelfullarbo span {
+    display: inline-block;
+    width:16px;
+    line-height:11px;
+
+    cursor:pointer;
+    font-weight: bold;
+    font-family: monospace;
+}
+
+.tablerelfullarbo {
+    padding-left:0;
+    margin-top:24px;
+}
+
+.tree_buttons .abutton {
+    border-bottom:1px solid #555;
+    cursor:pointer;
+}
+
+.tablerelfullarbo img {
+    vertical-align: middle;
+}
+
+.tablerelfullarbo ul {
+    padding-left:10px;
+}
+
+.tablerelfullarbo input {
+    margin:0;
+    padding:0;
+    vertical-align: middle;
+}
+
+.tablerelfullarbo > li {
+    background:url("../img/fond.bloc2.gif") repeat scroll 0 0 #DDDDDD;
+    border-right:1px solid #aaa;
+}
+
+.tablerelfullarbo li {
+    padding:2px;
+    color:#333;
+}
+
+
+.tablerelfullarbo  {
+    border-bottom:1px solid #888;
+}
+
+.upload_filelist {
+    font-family:monospace;
+
+}
+
+.upload_filelist b {
+    display: inline-block;
+    width:200px;
+    border:1px solid #fff;
+}
+
+.upload_filelist b span {
+    display: inline-block;
+    background:#ff9600;
+    color:white;
+    text-align:center;
+}
+
+.ajax_table select {
+    max-width:400px;
+}
+
+.genform_champ input[type=text]:focus, .genform_champ textarea:focus {
+    background:white;
+    border:1px solid #555;
+}
+
+.flowplayer {
+    display:block;
+    width:550px;
+    height:300px;
+    line-height:240px;
+    vertical-align: middle;
+    text-align: center;
+    cursor:pointer;
+}
+
+.flowplayer img {
+    vertical-align: middle;
 }

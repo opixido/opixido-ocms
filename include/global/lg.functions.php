@@ -784,10 +784,6 @@ function strftimeloc($format, $timestamp=0) {
     }
     $format = str_replace('%A', $tab['weekdays_long'][$weekday], $format);
 
-	if ($GLOBALS['isWindows']) {
-	    $format = preg_replace('#(?<!%)((?:%%)*)%e#', '\1%#d', $format);
-	}
-    
     return strftime($format, $timestamp);
     //}
 }
@@ -796,7 +792,8 @@ function compressCSS($buffer) {
     /* remove comments */
     $buffer = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $buffer);
     /* remove tabs, spaces, newlines, etc. */
-    $buffer = str_replace(array("\r\n", "\r", "\n", "\t", '  ', '    ', '    '), '', $buffer);
+    $buffer = str_replace(array("\r\n", "\r", "\n", "\t"), '', $buffer);
+    $buffer = str_replace(array( '  ', '    ', '    '), ' ', $buffer);
     $buffer = str_replace(array(' : ', ' :', ': '), ':', $buffer);
     $buffer = str_replace(array(' ; ', ' ;', '; '), ';', $buffer);
     $buffer = str_replace(array(' {'), '{', $buffer);

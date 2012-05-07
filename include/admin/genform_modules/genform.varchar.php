@@ -85,11 +85,12 @@ if (!$this->editMode) {
         /**
          * Bouton pour choisir une rubrique du site
          */
+        /*
         $this->addBuffer('
 		    <img src="' . ADMIN_PICTOS_FOLDER . ADMIN_PICTOS_ARBO_SIZE . '/status/folder-open.png" 
 		    	onclick="XHR_links(\'genform_' . $name . '\')" 
 		    	alt="' . t('choisir_rubrique') . '" />');
-
+                        */
         /**
          * Conteneur pour l'arbo de sélection
          */

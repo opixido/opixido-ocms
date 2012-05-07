@@ -16,10 +16,10 @@
         if ( $this->tab_default_field[$name] == "00:00:00" || $this->tab_default_field[$name] == "" ) {
             // $this->tab_default_field[$name] = date("H:m:s");
         }
-        $timeTab = split( ":", $this->tab_default_field[$name] );
+        $timeTab = explode( ":", $this->tab_default_field[$name] );
 
-        $sec = $timeTab[2];
-        $min = $timeTab[1];
+        $sec = akev($timeTab,2);
+        $min = akev($timeTab,1);
         $hour = $timeTab[0];
         $this->addBuffer( '<input ' . $jsColor . ' type="text" name="genform_' . $name . '_hour" size="2" class="genform_champ_centered" maxlength="2" value="'. $hour . '" />&nbsp;h&nbsp;' );
         $this->addBuffer( '<input ' . $jsColor . ' type="text" name="genform_' . $name . '_min" size="2" class="genform_champ_centered" maxlength="2" value="'. $min . '" />&nbsp;m&nbsp;' );

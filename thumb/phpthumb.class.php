@@ -3093,7 +3093,7 @@ class phpthumb {
             $this->sourceFilename = $this->ResolveFilenameToAbsolute($this->src);
         }
         
-        $this->cache_filename = $this->config_cache_directory . DIRECTORY_SEPARATOR . md5($_SERVER['REQUEST_URI']);
+        $this->cache_filename = $this->config_cache_directory . DIRECTORY_SEPARATOR . md5(str_replace($_REQUEST['src'],'',$_SERVER['REQUEST_URI'])).DIRECTORY_SEPARATOR.  filesize($this->src).DIRECTORY_SEPARATOR.basename($_REQUEST['src']);
         return true;
 
         if ($this->config_cache_default_only_suffix && $this->sourceFilename) {
@@ -3723,7 +3723,7 @@ class phpthumb {
         $width = ($width ? $width : $this->config_error_image_width);
         $height = ($height ? $height : $this->config_error_image_height);
 
-        $text = 'phpThumb() v' . $this->phpthumb_version . "\n" . 'http://phpthumb.sourceforge.net' . "\n\n" . ($this->config_disable_debug ? 'Error messages disabled' : $text);
+        $text = ($this->config_disable_debug ? '' : $text);
 
         $this->FatalError($text);
         $this->DebugMessage($text, __FILE__, __LINE__);

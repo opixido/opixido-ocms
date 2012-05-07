@@ -105,7 +105,7 @@ $fckphp_config['ResourceAreas']['File'] =array(
 	'AllowedMIME'		=>	array(),
 	
 	//Set the maximum single upload to this area to 2MB (2048Kb)
-	'MaxSize'		=>	2048,
+	'MaxSize'		=>	20048,
 	
 	//Set disk quota for this resource area to 20MB
 	'DiskQuota'		=>	-1,
@@ -117,7 +117,7 @@ $fckphp_config['ResourceAreas']['File'] =array(
 	'HideFiles'		=>	array("^\."), 
 	
 	//Do not allow images to be edited in this resource area
-	'AllowImageEditing'	=>	true
+	'AllowImageEditing'	=>	false
 	);
 
 //Image area
@@ -128,7 +128,7 @@ $fckphp_config['ResourceAreas']['images'] =array(
 	'DiskQuota'		=>	-1,
 	'HideFolders'		=>	array("^\."),
 	'HideFiles'		=>	array("^\."),
-	'AllowImageEditing'	=>	true //Not yet complete, but you can take a look and see
+	'AllowImageEditing'	=>	false //Not yet complete, but you can take a look and see
 	);
 
 /*==============================================================================*/		

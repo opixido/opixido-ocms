@@ -120,6 +120,8 @@ class genCache {
         }
 
         $a = file_put_contents($this->cache_path, $str);
+        //chgrp($this->cache_path, 'www-data');
+        //chmod($this->cache_path,0777);
         return $a;
     }
 

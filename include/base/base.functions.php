@@ -82,7 +82,7 @@ function autoConfig($table) {
     global $tabForms, $relations, $_Gconfig, $tablerel, $relinv, $tablerel_reverse;
 
     if ($tabForms[$table]) {
-	return;
+        return;
     }
 
     $fields = getTabField($table);
@@ -110,13 +110,13 @@ function autoConfig($table) {
      */
     foreach ($fields as $k => $v) {
 
-	if (substr($k, 0, 3) == 'fk_') {
-	    $distTable = $prefixe . '_' . substr($k, 3, -3);
-	    if (in_array($distTable, $tables)) {
-		$relations[$table][$k] = $distTable;
-		autoConfig($distTable);
-	    }
-	}
+        if (substr($k, 0, 3) == 'fk_') {
+            $distTable = $prefixe . '_' . substr($k, 3, -3);
+            if (in_array($distTable, $tables)) {
+                $relations[$table][$k] = $distTable;
+                autoConfig($distTable);
+            }
+        }
     }
 
     /**
@@ -125,31 +125,31 @@ function autoConfig($table) {
     $myfk = 'fk_' . substr($table, 2) . '_id';
 
     foreach ($tables as $v) {
-	$tabs = getTabField($v);
-	if (ake($tabs, $myfk)) {
-	    /**
-	     * Table de relation
-	     */
-	    if (count($tabs) == 2 && !$tablerel[$v]) {
+        $tabs = getTabField($v);
+        if (ake($tabs, $myfk)) {
+            /**
+             * Table de relation
+             */
+            if (count($tabs) == 2 && !$tablerel[$v]) {
 
-		foreach ($tabs as $k => $vv) {
-		    if ($vv->name != $myfk) {
-			$distField = $vv->name;
-			$distTable = $prefixe . '_' . substr($k, 3, -3);
-		    }
-		}
+                foreach ($tabs as $k => $vv) {
+                    if ($vv->name != $myfk) {
+                        $distField = $vv->name;
+                        $distTable = $prefixe . '_' . substr($k, 3, -3);
+                    }
+                }
 
 
-		$tablerel[$v] = array($myfk => $table, $distField => $distTable);
-		autoConfig($distTable);
+                $tablerel[$v] = array($myfk => $table, $distField => $distTable);
+                autoConfig($distTable);
 
-		/**
-		 * Table Relinv
-		 */
-	    } else {
-		$relinv[$table]['RELINV_' . $v] = array($v, $myfk);
-	    }
-	}
+                /**
+                 * Table Relinv
+                 */
+            } else {
+                $relinv[$table]['RELINV_' . $v] = array($v, $myfk);
+            }
+        }
     }
 
     //$_Gconfig['adminMenus']['auto'][] = $table;	
@@ -173,19 +173,19 @@ function error($str) {
  * @param array $row
  * @return string
  */
-function getImg($table, $champ, $id, $row=array()) {
+function getImg($table, $champ, $id, $row = array()) {
 
     $f = new GenFile($table, $champ, $id, $row);
     return $f->getWeburl();
 }
 
-function getThumb($table, $champ, $id, $row=array(), $w, $h) {
+function getThumb($table, $champ, $id, $row = array(), $w, $h) {
 
     $f = new GenFile($table, $champ, $id, $row);
     return $f->getThumbUrl($w, $h);
 }
 
-function getCrop($table, $champ, $id, $row=array(), $w, $h) {
+function getCrop($table, $champ, $id, $row = array(), $w, $h) {
 
     $f = new GenFile($table, $champ, $id, $row);
     return $f->getCropUrl($w, $h);
@@ -198,12 +198,12 @@ function getCrop($table, $champ, $id, $row=array(), $w, $h) {
  * @param int $nbwords
  * @return str
  */
-function limitWords($str, $nbwords=30, $tpp = ' ...') {
+function limitWords($str, $nbwords = 30, $tpp = ' ...') {
     $words = explode(' ', $str);
     if (count($words) <= $nbwords) {
-	return $str;
+        return $str;
     } else {
-	return implode(' ', array_slice($words, 0, $nbwords)) . $tpp;
+        return implode(' ', array_slice($words, 0, $nbwords)) . $tpp;
     }
 }
 
@@ -214,12 +214,12 @@ function limitWords($str, $nbwords=30, $tpp = ' ...') {
  * @param int $chars
  * @return string
  */
-function limit($str, $chars=30) {
+function limit($str, $chars = 30) {
 
     if (mb_strlen($str) <= $chars) {
-	return $str;
+        return $str;
     } else {
-	return mb_substr($str, 0, $chars, 'UTF8') . ' ...';
+        return mb_substr($str, 0, $chars, 'UTF8') . ' ...';
     }
 }
 
@@ -228,7 +228,7 @@ function limit($str, $chars=30) {
  *
  * @param unknown_type $info
  */
-function profile($info='') {
+function profile($info = '') {
     global $profileTime, $profileSTR;
 
 
@@ -260,12 +260,12 @@ function debugtrace() {
  * @param string $Email
  * @return boolean
  */
-function CheckEmail($Email = "") {
-
-    if (ereg("^[0-9a-z]([-_.~]?[0-9a-z])*@[0-9a-z]([-.]?[0-9a-z])*\\.[a-z]{2,4}$", strtolower($Email))) {
-	return true;
+function CheckEmail($email = "") {
+    if (filter_var($email, FILTER_VALIDATE_EMAIL) !== false) {
+        return true;
     } else {
-	return false;
+        //debug('MAUVAIS EMAIL' . $email);
+        return false;
     }
 }
 
@@ -284,15 +284,15 @@ function isImage($str) {
     $s = explode(".", $str);
     $ext = $s[count($s) - 1];
     if (in_array(mb_strtolower($ext), $_Gconfig['imageExtensions']))
-	return True;
+        return True;
     else
-	return False;
+        return False;
 }
 
 /**
  * 		Alias pour l'envoi de mail
  */
-function sendMail($to, $subject, $message, $headers='') {
+function sendMail($to, $subject, $message, $headers = '') {
     $m = includeMail();
     $m->AddAddress($to);
     $m->Subject = $subject;
@@ -337,7 +337,7 @@ function isLoggedAsAdmin() {
 
     global $gs_obj;
     if (!is_object($gs_obj)) {
-	return false;
+        return false;
     }
 
     return $gs_obj->checkAuth();
@@ -345,17 +345,17 @@ function isLoggedAsAdmin() {
 
 function getRealRubId($row) {
     if ($row['fk_rubrique_version_id'] != 'NULL' && $row['fk_rubrique_version_id'] != '') {
-	return $row['fk_rubrique_version_id'];
+        return $row['fk_rubrique_version_id'];
     } else {
-	return $row['fk_rubrique_id'];
+        return $row['fk_rubrique_id'];
     }
 }
 
 function getOnlineRubId($row) {
     if ($row['fk_rubrique_version_id'] != 'NULL' && $row['fk_rubrique_version_id'] != '') {
-	return $row['fk_rubrique_version_id'];
+        return $row['fk_rubrique_version_id'];
     } else {
-	return $row['rubrique_id'];
+        return $row['rubrique_id'];
     }
 }
 
@@ -373,11 +373,15 @@ function niceName($str) {
     $string = str_replace('&rsquo;', '-', $string);
     $string = preg_replace("/&(.)(acute|cedil|circ|ring|tilde|uml|grave);/", "$1", $string);
 
-    $string = preg_replace("/([^a-z0-9_]+)/", "-", html_entity_decode($string));
+    $string = preg_replace("/([^a-z0-9_]+)/", "_", html_entity_decode($string));
 
     $string = trim($string);
-    $str = str_replace("---", "-", $string);
-    $str = str_replace("--", "-", $str);
+    $str = str_replace("-", "_", $string);
+    $str = str_replace("ndash", "_", $string);
+    $str = str_replace("___", "_", $str);
+    $str = str_replace("__", "_", $str);
+
+    $str = trim($str, '_');
 
     return $str;
 
@@ -426,9 +430,9 @@ function fieldval($str) {
  */
 function doAdminStuffs() {
     if (isLoggedAsAdmin() && $_SESSION['cache_' . UNIQUE_SITE]['adm']['frontModif']) {
-	return true;
+        return true;
     } else {
-	return false;
+        return false;
     }
 }
 
@@ -449,7 +453,7 @@ function has($s) {
  * @param bool $show_year Definit si l'on garde l'année
  * @return string Date formatée dd/mm[/yyyy]
  */
-function nicedate($d, $show_year=true, $separator = '/') {
+function nicedate($d, $show_year = true, $separator = '/') {
 
     /**
      * Si $d est un date time xxxx-xx-xx 00:00:00
@@ -459,24 +463,24 @@ function nicedate($d, $show_year=true, $separator = '/') {
 
     if ($datetime) {
 
-	$d = substr($d, 0, $datetime);
+        $d = substr($d, 0, $datetime);
 
 
-	/**
-	 * Puis on remet dans l'ordre
-	 */
+        /**
+         * Puis on remet dans l'ordre
+         */
     }
     $t = explode("-", $d);
     if (LG == 'uk' || LG == 'us' || LG == 'en') {
-	if ($show_year)
-	    return $t[1] . $separator . $t[2] . $separator . $t[0];
-	else
-	    return $t[1] . $separator . $t[2];
+        if ($show_year)
+            return $t[1] . $separator . $t[2] . $separator . $t[0];
+        else
+            return $t[1] . $separator . $t[2];
     } else {
-	if ($show_year)
-	    return $t[2] . $separator . $t[1] . $separator . $t[0];
-	else
-	    return $t[2] . $separator . $t[1];
+        if ($show_year)
+            return $t[2] . $separator . $t[1] . $separator . $t[0];
+        else
+            return $t[2] . $separator . $t[1];
     }
 }
 
@@ -501,9 +505,9 @@ function nicedateyear2char($d) {
     $t = explode("-", $d[0]);
 
     if (LG == 'uk' || LG == 'us' || LG == 'en')
-	return $t[1] . '.' . $t[2] . '.' . substr($t[0], 2, 2);
+        return $t[1] . '.' . $t[2] . '.' . substr($t[0], 2, 2);
     else
-	return $t[2] . '.' . $t[1] . '.' . substr($t[0], 2, 2);
+        return $t[2] . '.' . $t[1] . '.' . substr($t[0], 2, 2);
 }
 
 /**
@@ -513,7 +517,7 @@ function nicedateyear2char($d) {
  * @param bool $show_year On retourne l'année ou non
  * @return string 31/12[/2001] 12h59m59s
  */
-function niceDateTime($d, $show_year=true, $showSec=false) {
+function niceDateTime($d, $show_year = true, $showSec = false) {
     $t = explode(" ", $d);
     $mydate = $t[0];
     $mytime = $t[1];
@@ -521,14 +525,14 @@ function niceDateTime($d, $show_year=true, $showSec=false) {
     $t = explode("-", $mydate);
     $tim = explode(":", $mytime);
     if ($show_year)
-	$date = $t[2] . '/' . $t[1] . '/' . $t[0];
+        $date = $t[2] . '/' . $t[1] . '/' . $t[0];
     else
-	$date = $t[2] . '/' . $t[1];
+        $date = $t[2] . '/' . $t[1];
 
     $tim = $tim[0] . 'h' . $tim[1];
 
     if ($showSec) {
-	$tim .= 'm' . $tim[2] . 's';
+        $tim .= 'm' . $tim[2] . 's';
     }
     return $date . ' ' . $tim;
 }
@@ -543,7 +547,7 @@ function niceTime($d) {
     $tim = $tim[0] . ':' . $tim[1] . '';
 
     if ($tim[0] == 0 && $tim[1] == 0) {
-	return '';
+        return '';
     }
 
     return $tim;
@@ -559,21 +563,21 @@ function niceTextDate($date, $jour = false) {
 
     global $lg;
 
-    if(is_object($date)) {
-    	$date = $date->input;
+    if (is_object($date)) {
+        $date = $date->toString('U');
     }
     $d = strtotime($date);
 
     $type = '%e %B %Y';
     if ($jour) {
-	$type = '%A ' . $type;
+        $type = '%A ' . $type;
     }
     @setlocale($GLOBALS['CURLOCALE']);
 
     $s = strftimeloc($type, $d);
 
     if ($GLOBALS['isWindows']) {
-	$s = utf8_encode($s);
+        $s = utf8_encode($s);
     }
 
     return $s;
@@ -590,11 +594,11 @@ function niceTextDate($date, $jour = false) {
  * @param string $date2 Date de fin
  * @return string Date formatée
  */
-function nicedate_interval($date1, $date2='', $separator = '/') {
+function nicedate_interval($date1, $date2 = '', $separator = '/') {
     global $lg, $lglocale;
 
     if ($nb = strpos($date1, ' ')) {
-	$date1 = substr($date1, 0, $nb);
+        $date1 = substr($date1, 0, $nb);
     }
     $d_deb = explode('-', $date1);
     $d_fin = explode('-', $date2);
@@ -602,16 +606,16 @@ function nicedate_interval($date1, $date2='', $separator = '/') {
     @setlocale($GLOBALS['CURLOCALE']);
 
     if ($date1 == $date2 || $date2 == '0000-00-00' || $date2 == '' || $date2 == '0000-00-00 00:00:00') {
-	return t('le') . ' ' . nicetextdate($date1, true, $separator);
+        return t('le') . ' ' . nicetextdate($date1, true, $separator);
     } elseif ($d_deb[1] == $d_fin[1] && $d_deb[0] == $d_fin[0]) {
-	if ($d_deb[2] == "01") {
-	    $d_deb[2] = '1er';
-	}
-	//setLocale(LC_TIME, $lglocale);
-	//return t('du').' ' .$d_deb[2] .' '.t('au').' ' .$d_fin[2] .' ' .(ucfirst(strftime("%B", strtotime($date1)))) .' ' .$d_deb[0];
-	return t('du') . ' ' . $d_deb[2] . ' ' . t('au') . ' ' . nicetextdate($date2, false, $separator);
+        if ($d_deb[2] == "01") {
+            $d_deb[2] = '1er';
+        }
+        //setLocale(LC_TIME, $lglocale);
+        //return t('du').' ' .$d_deb[2] .' '.t('au').' ' .$d_fin[2] .' ' .(ucfirst(strftime("%B", strtotime($date1)))) .' ' .$d_deb[0];
+        return t('du') . ' ' . $d_deb[2] . ' ' . t('au') . ' ' . nicetextdate($date2, false, $separator);
     } else {
-	return t('du') . ' ' . nicedate($date1, true, $separator) . ' ' . t('au') . ' ' . nicedate($date2, true, $separator);
+        return t('du') . ' ' . nicedate($date1, true, $separator) . ' ' . t('au') . ' ' . nicedate($date2, true, $separator);
     }
 }
 
@@ -623,7 +627,7 @@ function nicedate_interval($date1, $date2='', $separator = '/') {
  * @param unknown_type $separator
  * @return unknown
  */
-function niceDateInterval($date1, $date2='', $separator= '/') {
+function niceDateInterval($date1, $date2 = '', $separator = '/') {
     return nicedate_interval($date1, $date2, $separator);
 }
 
@@ -633,7 +637,7 @@ function niceDateInterval($date1, $date2='', $separator= '/') {
  * @param string $date Date yyyy-mm-dd
  * @return date
  */
-function nicedate_str($date, $showYear=1) {
+function nicedate_str($date, $showYear = 1) {
     global $lg, $lglocale;
 
     $d = strtotime($date);
@@ -643,12 +647,12 @@ function nicedate_str($date, $showYear=1) {
     $s = $ee . ' ' . (int) date('d', $d) . ' ' . ((mystrftime("%B", $d)));
 
     if ($showYear) {
-	$s .= ' ' . date('Y', $d);
+        $s .= ' ' . date('Y', $d);
     }
 
 
     if ($GLOBALS['isWindows']) {
-	$s = utf8_encode($s);
+        $s = utf8_encode($s);
     }
 
     return $s;
@@ -704,39 +708,39 @@ function derror($txt) {
  * * @param mixed $txt
  */
 function debug() {
-    global $genMessages,$_Gconfig;
-    if(!arrayInWord($_Gconfig['debugIps'],$_SERVER['REMOTE_ADDR']) && !isset($_REQUEST['debug'])) {
-	return;
+    global $genMessages, $_Gconfig;
+    if (!arrayInWord($_Gconfig['debugIps'], $_SERVER['REMOTE_ADDR']) && !isset($_REQUEST['debug'])) {
+        return;
     }
     $vars = func_get_args();
 
     if (count($vars) == 1) {
-	$txt = $vars[0];
+        $txt = $vars[0];
     } else {
-	$txt = str_replace("\n", "<br/>", var_export($vars, true));
+        $txt = str_replace("\n", "<br/>", var_export($vars, true));
     }
 
 
     $backt = debug_backtrace();
     if (!is_array($txt) && !is_object($txt)) {
-	foreach ($backt as $v) {
-	    if (!empty($v['file'])) {
-		$chemin = str_replace($_SERVER['DOCUMENT_ROOT'], '', $v['file']);
-		$chemin = str_replace(BU, '', $chemin);
-		$txt .= '<br/><span style="font-weight:normal !important"><a onclick="window.open(this.href);return false;" href="http://code.google.com/p/opixido-ocms/source/browse/trunk' . $chemin . '#' . $v['line'] . '">' . basename($v['file']) . '</a> : ' . $v['line'] . ' : ' . $v['function'] . '</span>';
-	    }
-	}/*
-	  $txt .= '<br/><span style="font-weight:normal !important">' . basename($backt[2]['file']) . ' : ' . $backt[2]['line'] . ' : ' . $backt[2]['function'] . '</span>';
-	  $txt .= '<br/><span style="font-weight:normal !important">' . basename($backt[3]['file']) . ' : ' . $backt[3]['line'] . ' : ' . $backt[3]['function'] . '</span>';
-	  $txt .= '<br/><span style="font-weight:normal !important">' . basename($backt[4]['file']) . ' : ' . $backt[4]['line'] . ' : ' . $backt[3]['function'] . '</span>';
-	 */
-	//$txt .= var_export($backt,true);
+        foreach ($backt as $v) {
+            if (!empty($v['file'])) {
+                $chemin = str_replace($_SERVER['DOCUMENT_ROOT'], '', $v['file']);
+                $chemin = str_replace(BU, '', $chemin);
+                $txt .= '<br/><span style="font-weight:normal !important"><a onclick="window.open(this.href);return false;" href="http://code.google.com/p/opixido-ocms/source/browse/trunk' . $chemin . '#' . $v['line'] . '">' . basename($v['file']) . '</a> : ' . $v['line'] . ' : ' . $v['function'] . '</span>';
+            }
+        }/*
+          $txt .= '<br/><span style="font-weight:normal !important">' . basename($backt[2]['file']) . ' : ' . $backt[2]['line'] . ' : ' . $backt[2]['function'] . '</span>';
+          $txt .= '<br/><span style="font-weight:normal !important">' . basename($backt[3]['file']) . ' : ' . $backt[3]['line'] . ' : ' . $backt[3]['function'] . '</span>';
+          $txt .= '<br/><span style="font-weight:normal !important">' . basename($backt[4]['file']) . ' : ' . $backt[4]['line'] . ' : ' . $backt[3]['function'] . '</span>';
+         */
+        //$txt .= var_export($backt,true);
     }
 
     if (is_object($genMessages)) {
-	$genMessages->add($txt, 'error');
+        $genMessages->add($txt, 'error');
     } else {
-	die($txt);
+        die($txt);
     }
 }
 
@@ -752,8 +756,8 @@ function SplitGabaritParams($params) {
     $a = explode(',', $params);
     $para = array();
     foreach ($a as $p) {
-	$pa = explode('=', $p);
-	$para[$pa[0]] = $pa[1];
+        $pa = explode('=', $p);
+        $para[$pa[0]] = $pa[1];
     }
     return $para;
 }
@@ -779,21 +783,22 @@ function debugEvent($str) {
     global $_Gconfig;
     $GLOBALS['curSQL'] = $str;
     $GLOBALS['curSQLStart'] = getmicrotime();
+    $profileSTR = '';
     if ($_Gconfig['debugSql']) {
-	global $h_sqls;
-	$ar = debug_backtrace();
-	if ((basename($ar[5]['file'])))
-	    $profileSTR .= '<hr/>' . (basename($ar[5]['file']) . ' : ' . $ar[5]['function'] . '');
-	if ((basename($ar[4]['file'])))
-	    $profileSTR .= '<br/>' . (basename($ar[4]['file']) . ' : ' . $ar[4]['function'] . '');
-	if ((basename($ar[3]['file'])))
-	    $profileSTR .= '<br/>' . (basename($ar[3]['file']) . ' : ' . $ar[3]['function'] . '');
-	if ((basename($ar[2]['file'])))
-	    $profileSTR .= '<br/>' . (basename($ar[2]['file']) . ' : ' . $ar[2]['function'] . '');
+        global $h_sqls;
+        $ar = debug_backtrace();
+        if ((!empty($ar[5]['file'])))
+            $profileSTR .= '<hr/>' . (basename($ar[5]['file']) . ' : ' . $ar[5]['function'] . '');
+        if ((!empty($ar[4]['file'])))
+            $profileSTR .= '<br/>' . (basename($ar[4]['file']) . ' : ' . $ar[4]['function'] . '');
+        if ((!empty($ar[3]['file'])))
+            $profileSTR .= '<br/>' . (basename($ar[3]['file']) . ' : ' . $ar[3]['function'] . '');
+        if ((!empty($ar[2]['file'])))
+            $profileSTR .= '<br/>' . (basename($ar[2]['file']) . ' : ' . $ar[2]['function'] . '');
 
-	$GLOBALS['curProfile'] = $profileSTR;
-	//$h_sqls[] = $profileSTR;
-	//$h_sqls[] = $str;
+        $GLOBALS['curProfile'] = $profileSTR;
+        //$h_sqls[] = $profileSTR;
+        //$h_sqls[] = $str;
     }
     return;
     /* if(strstr($str,"event"))
@@ -804,12 +809,12 @@ function debugEnd() {
     global $_Gconfig;
 
     if ($_Gconfig['debugSql']) {
-	global $h_sqls, $h_sqlsI;
-	$t = getmicrotime() - $GLOBALS['curSQLStart'];
-	$h_sqls[] = array('sql' => $GLOBALS['curSQL'], 'time' => ($t), 'profile' => $GLOBALS['curProfile']);
-	$t = str_replace('0,0', '', $t);
-	$t = (int) substr($t, 0, 8);
-	$h_sqlsI[$t] = $GLOBALS['curSQL'];
+        global $h_sqls, $h_sqlsI;
+        $t = getmicrotime() - $GLOBALS['curSQLStart'];
+        $h_sqls[] = array('sql' => $GLOBALS['curSQL'], 'time' => ($t), 'profile' => $GLOBALS['curProfile']);
+        $t = str_replace('0,0', '', $t);
+        $t = (int) substr($t, 0, 8);
+        $h_sqlsI[$t] = $GLOBALS['curSQL'];
     }
 }
 
@@ -826,7 +831,7 @@ function pretty_bytes($bytes, $precision = 1) {
 
     $index = floor(@log($bytes + 1, 1024)); // + 1 to prevent -INF
     if ($index == 0)
-	return (substr(($bytes / 1024), 0, 3)) . " " . $suffix[1];
+        return (substr(($bytes / 1024), 0, 3)) . " " . $suffix[1];
     return sprintf("%0.{$precision}f %s", $bytes / pow(1024, $index), $suffix[$index]);
 }
 
@@ -839,13 +844,13 @@ function pretty_bytes($bytes, $precision = 1) {
 function niceSeconds($seconds) {
 
     if ($seconds < 60) {
-	return $seconds . 's';
+        return $seconds . 's';
     } else if ($seconds < 3600) {
-	$m = floor($seconds / 60);
-	return $m . 'min' . floor(($seconds - (60 * $m))) . 's';
+        $m = floor($seconds / 60);
+        return $m . 'min' . floor(($seconds - (60 * $m))) . 's';
     } else {
-	$h = floor($seconds / 3600);
-	return $h . 'h' . floor(($seconds - 3600 * $h) / 60) . 'min';
+        $h = floor($seconds / 3600);
+        return $h . 'h' . floor(($seconds - 3600 * $h) / 60) . 'min';
     }
 }
 
@@ -857,7 +862,7 @@ function niceSeconds($seconds) {
  */
 function debugOpix($s) {
     if (strstr($_SERVER['REMOTE_ADDR'], '192.168.1.') || strstr($_SERVER['REMOTE_ADDR'], '82.67.200.175') || $_REQUEST['debug']) {
-	debug($s);
+        debug($s);
     }
 }
 
@@ -893,18 +898,18 @@ function showError($str) {
  */
 function ucSentence($sentence_split, $impexpA = array(". ", "! ", "? ")) {
     if (!is_array($impexpA)) {
-	$impexpA = array($impexpA);
+        $impexpA = array($impexpA);
     }
     $sentence_split = trim($sentence_split);
     foreach ($impexpA as $impexp) {
-	$textbad = explode($impexp, $sentence_split);
-	$newtext = array();
-	foreach ($textbad as $sentence) {
-	    $sentencegood = ucfirst(strtolower($sentence));
-	    $newtext[] = $sentencegood;
-	}
-	$textgood = implode($impexp, $newtext);
-	$sentence_split = $textgood;
+        $textbad = explode($impexp, $sentence_split);
+        $newtext = array();
+        foreach ($textbad as $sentence) {
+            $sentencegood = ucfirst(strtolower($sentence));
+            $newtext[] = $sentencegood;
+        }
+        $textgood = implode($impexp, $newtext);
+        $sentence_split = $textgood;
     }
     return $sentence_split;
 }
@@ -915,43 +920,43 @@ function ucSentence($sentence_split, $impexpA = array(". ", "! ", "? ")) {
  *
  */
 function GetStats() {
-    
-
-    if ($_REQUEST['debug']) {
-	global $sqlTime, $startTime, $nbRSql, $nbRetSql;
-
-	p('<div onclick="this.style.display=\'none\'" style="z-index:0;_display:none;position:fixed;bottom:0px;right:0px;width:200px;text-align:right;background-color:#fff;opacity:0.8;font-family:arial;font-size:11px;">'); //onclick="this.style.zIndex=50;">');
-	p('Temps d\'execution total : ' . number_format(getmicrotime() - $startTime, 3) . ' sec<br/>');
-	p('Temps d\'execution Externe : ' . number_format($GLOBALS['times']['Plugins'], 3) . ' sec<br/>');
-	p('Temps d\'execution <a href="' . $_SERVER['REQUEST_URI'] . '?debugSql=1' . '">SQL</a> : ' . number_format(($sqlTime), 3) . ' sec<br/>');
-
-	if (!CACHE_IS_ON)
-	    p('Cache d&eacute;sactiv&eacute;<br/>');
-	else {
-	    p('Cache utilis&eacute; : ' . $GLOBALS['nbCacheUsed'] . ' / ' . $GLOBALS['nbCacheTotal'] . '<br/>');
-	    //print_r($GLOBALS['cacheUsed']);
-	    @ksort($GLOBALS['cacheUsed']);
-	    @ksort($GLOBALS['cacheDeclared']);
-
-	    $tab = @array_diff($GLOBALS['cacheDeclared'], $GLOBALS['cacheUsed']);
 
 
-	    if (count($tab)) {
-		foreach ($tab as $v) {
-		    p('Cache inutilis&eacute; : ' . $v . '<br/>');
-		}
-	    }
-	}
-	p('Nombre de requetes SQL : ' . ($nbRSql) . '<br/>');
-	p('Nombre de lignes retournees : ' . ($nbRetSql) . '<br/>');
-	p('Memoire : ' . pretty_bytes(memory_get_usage()) . '<br/>');
-	p('</div>');
+    if (!empty($_REQUEST['debug'])) {
+        global $sqlTime, $startTime, $nbRSql, $nbRetSql;
+
+        p('<div onclick="this.style.display=\'none\'" style="z-index:0;_display:none;position:fixed;bottom:0px;right:0px;width:200px;text-align:right;background-color:#fff;opacity:0.8;font-family:arial;font-size:11px;">'); //onclick="this.style.zIndex=50;">');
+        p('Temps d\'execution total : ' . number_format(getmicrotime() - $startTime, 3) . ' sec<br/>');
+        p('Temps d\'execution Externe : ' . number_format($GLOBALS['times']['Plugins'], 3) . ' sec<br/>');
+        p('Temps d\'execution <a href="' . $_SERVER['REQUEST_URI'] . '?debugSql=1' . '">SQL</a> : ' . number_format(($sqlTime), 3) . ' sec<br/>');
+
+        if (!CACHE_IS_ON)
+            p('Cache d&eacute;sactiv&eacute;<br/>');
+        else {
+            p('Cache utilis&eacute; : ' . $GLOBALS['nbCacheUsed'] . ' / ' . $GLOBALS['nbCacheTotal'] . '<br/>');
+            //print_r($GLOBALS['cacheUsed']);
+            @ksort($GLOBALS['cacheUsed']);
+            @ksort($GLOBALS['cacheDeclared']);
+
+            $tab = @array_diff($GLOBALS['cacheDeclared'], $GLOBALS['cacheUsed']);
+
+
+            if (count($tab)) {
+                foreach ($tab as $v) {
+                    p('Cache inutilis&eacute; : ' . $v . '<br/>');
+                }
+            }
+        }
+        p('Nombre de requetes SQL : ' . ($nbRSql) . '<br/>');
+        p('Nombre de lignes retournees : ' . ($nbRetSql) . '<br/>');
+        p('Memoire : ' . pretty_bytes(memory_get_usage()) . '<br/>');
+        p('</div>');
     }
 }
 
 if (!empty($_REQUEST['debug'])) {
-    
-	register_shutdown_function('getStats');
+
+    register_shutdown_function('getStats');
 }
 
 /**
@@ -963,9 +968,9 @@ if (!empty($_REQUEST['debug'])) {
 function addmyslashes($str) {
     return $str;
     if (ini_get('magic_quotes_gpc'))
-	return $str;
+        return $str;
     else
-	return addslashes($str);
+        return addslashes($str);
 }
 
 /**
@@ -983,10 +988,10 @@ function getLgFields($field, $sep) {
     $nbLg = count($_Gconfig['LANGUAGES']);
     $str = '';
     foreach ($_Gconfig['LANGUAGES'] as $lg) {
-	$str .= $field . '_' . $lg;
-	if ($i < $nbLg)
-	    $str .= $sep;
-	$i++;
+        $str .= $field . '_' . $lg;
+        if ($i < $nbLg)
+            $str .= $sep;
+        $i++;
     }
     return $str;
 }
@@ -1001,16 +1006,16 @@ function getLgFields($field, $sep) {
  */
 function ake($val1, $val2) {
     if (is_array($val1)) {
-	return @array_key_exists($val2, $val1);
+        return @array_key_exists($val2, $val1);
     } else if (is_array($val2)) {
-	$res = @array_key_exists($val1, $val2);
-	/* if(!$res) {
+        $res = @array_key_exists($val1, $val2);
+        /* if(!$res) {
 
-	  } */
-	return $res;
+          } */
+        return $res;
     } else {
-	//debug(debug_backtrace());
-	return false;
+        //debug(debug_backtrace());
+        return false;
     }
 }
 
@@ -1030,7 +1035,7 @@ function akev($val1, $val2) {
 //    }
 
     if (isset($val1[$val2])) { //is_array($val1) && array_key_exists($val2, $val1)) {
-	return $val1[$val2];
+        return $val1[$val2];
     }
     return false;
 }
@@ -1046,9 +1051,9 @@ function mkPasswd() {
     $vowels = 'aeiouy';
 
     for ($x = 0; $x < 6; $x++) {
-	mt_srand((double) microtime() * 1000000);
-	$const[$x] = substr($consts, mt_rand(0, strlen($consts) - 1), 1);
-	$vow[$x] = substr($vowels, mt_rand(0, strlen($vowels) - 1), 1);
+        mt_srand((double) microtime() * 1000000);
+        $const[$x] = substr($consts, mt_rand(0, strlen($consts) - 1), 1);
+        $vow[$x] = substr($vowels, mt_rand(0, strlen($vowels) - 1), 1);
     }
     return $const[0] . $vow[0] . $const[2] . $const[1] . $vow[1] . $const[3] . $vow[3] . $const[4];
 }
@@ -1067,14 +1072,14 @@ function mkPasswdLen($length = 8) {
     // add random characters to $password until $length is reached
     while ($i < $length) {
 
-	// pick a random character from the possible ones
-	$char = substr($possible, mt_rand(0, strlen($possible) - 1), 1);
+        // pick a random character from the possible ones
+        $char = substr($possible, mt_rand(0, strlen($possible) - 1), 1);
 
-	// we don't want this character if it's already in the password
-	if (!strstr($password, $char)) {
-	    $password .= $char;
-	    $i++;
-	}
+        // we don't want this character if it's already in the password
+        if (!strstr($password, $char)) {
+            $password .= $char;
+            $i++;
+        }
     }
 
     // done!
@@ -1115,11 +1120,11 @@ function htmlEncodeText($string) {
     $textMatches = preg_split('/' . $pattern . '/', $string);
 
     foreach ($textMatches as $key => $value) {
-	$textMatches [$key] = htmlentities($value, ENT_QUOTES, 'cp1252');
+        $textMatches [$key] = htmlentities($value, ENT_QUOTES, 'cp1252');
     }
 
     for ($i = 0; $i < count($textMatches); $i++) {
-	$textMatches [$i] = $textMatches [$i] . $tagMatches [$i] [0];
+        $textMatches [$i] = $textMatches [$i] . $tagMatches [$i] [0];
     }
     $string = implode(" ", $textMatches);
     $string = str_replace("#_#", "&", $string);
@@ -1134,18 +1139,18 @@ function loadTrads($lge) {
 
     $lg = $lge;
     if (!$lg) {
-	$lg = LG;
+        $lg = LG;
     }
 
     if (ake('lgLoaded', $GLOBALS) && $GLOBALS['lgLoaded'][$lg]) {
-	return;
+        return;
     }
 
     $GLOBALS['lgLoaded'][$lg] = true;
 
     $sql = 'SELECT trad_id,trad_' . LG . '';
     if (LG != LG_DEF) {
-	$sql .= ' ,trad_' . LG_DEF . '';
+        $sql .= ' ,trad_' . LG_DEF . '';
     }
     $sql .= ' FROM s_trad ';
 
@@ -1153,18 +1158,18 @@ function loadTrads($lge) {
 
     foreach ($res as $row) {
 
-	$_trads[$row['trad_id']][$lg] = $row['trad_' . LG_DEF];
-	if ($row['trad_' . $lg]) {
-	    $_trads[$row['trad_id']][$lg] = $row['trad_' . $lg];
-	}
+        $_trads[$row['trad_id']][$lg] = $row['trad_' . LG_DEF];
+        if ($row['trad_' . $lg]) {
+            $_trads[$row['trad_id']][$lg] = $row['trad_' . $lg];
+        }
     }
 
     if (!is_array($atrads)) {
 
 
-	if (!is_array($atrads)) {
-	    $atrads = $_trads;
-	}
+        if (!is_array($atrads)) {
+            $atrads = $_trads;
+        }
     }
 }
 
@@ -1173,75 +1178,75 @@ if (!function_exists("t")) {
 
     function t($t, $doAdmin = false) {
 
-	global $frontAdminTrads, $trads, $_trads, $admin_trads, $otherLg, $atrads;
+        global $frontAdminTrads, $trads, $_trads, $admin_trads, $otherLg, $atrads;
 
-	$otherLg = LG_DEF;
-	$lg = LG;
+        $otherLg = LG_DEF;
+        $lg = LG;
 
-	if (akev($GLOBALS, 'forceLG')) {
-	    $lg = $GLOBALS['forceLG'];
-	    $otherLg = LG;
-	    loadTrads($lg);
-	    $atrads = $_trads;
-	    //debug($atrads);
-	}
+        if (akev($GLOBALS, 'forceLG')) {
+            $lg = $GLOBALS['forceLG'];
+            $otherLg = LG;
+            loadTrads($lg);
+            $atrads = $_trads;
+            //debug($atrads);
+        }
 
-	$v = false;
+        $v = false;
 
-	if (ake($atrads, $t)) {
+        if (ake($atrads, $t)) {
 
-	    if (akev($atrads[$t], $lg)) {
-		/* La traduction existe t'elle dans la langue courante ? */
-		$v = $atrads[$t][$lg];
-		$id = $t;
-	    } else if (akev($atrads[$t], $otherLg)) {
-		/* Sinon dans l'autre langue */
-		$v = $atrads[$t][$otherLg]; // '<span lang="'.$otherLg.'">'..'</span>'
-		$id = $t;
-	    }
-	}
-
-
-	if (!$v) {
-	    if (function_exists('ta')) {
-		$v = ta($t);
-		$id = $t;
-	    } else {
-		$id = $v = $t;
-	    }
-	}
-	/*
-	  if($doAdmin) {
-	  $ad = new genFrontAdmin("s_trad",$id,false);
-
-	  $v = $ad->startField("trad_fr").$v.$ad->endField();
-	  }
-	 */
+            if (akev($atrads[$t], $lg)) {
+                /* La traduction existe t'elle dans la langue courante ? */
+                $v = $atrads[$t][$lg];
+                $id = $t;
+            } else if (akev($atrads[$t], $otherLg)) {
+                /* Sinon dans l'autre langue */
+                $v = $atrads[$t][$otherLg]; // '<span lang="'.$otherLg.'">'..'</span>'
+                $id = $t;
+            }
+        }
 
 
-	return apost($v);
+        if (!$v) {
+            if (function_exists('ta')) {
+                $v = ta($t);
+                $id = $t;
+            } else {
+                $id = $v = $t;
+            }
+        }
+        /*
+          if($doAdmin) {
+          $ad = new genFrontAdmin("s_trad",$id,false);
+
+          $v = $ad->startField("trad_fr").$v.$ad->endField();
+          }
+         */
+
+
+        return apost($v);
     }
 
 }
 
-function tf($t, $rep=array()) {
+function tf($t, $rep = array()) {
 
     global $_trads, $otherLg;
 
     $v = t($t);
     if (!$v) {
-	$v = ta($t);
+        $v = ta($t);
     }
 
     if (!$v) {
-	foreach ($rep as $k => $vv) {
-	    $v .= $k . ' : [' . $k . ']' . "\n";
-	}
+        foreach ($rep as $k => $vv) {
+            $v .= $k . ' : [' . $k . ']' . "\n";
+        }
     }
     if (count($rep)) {
-	foreach ($rep as $k => $vv) {
-	    $v = str_replace('[' . $k . ']', $vv, $v);
-	}
+        foreach ($rep as $k => $vv) {
+            $v = str_replace('[' . $k . ']', $vv, $v);
+        }
     }
 
     return $v;
@@ -1264,7 +1269,7 @@ function loadParams() {
     $res = GetAll($sql);
     $_params = array();
     foreach ($res as $row) {
-	$_params[$row['param_id']] = $row['param_valeur'];
+        $_params[$row['param_id']] = $row['param_valeur'];
     }
 
     //$_SESSION['_params'] = $_params;
@@ -1274,12 +1279,12 @@ if (!function_exists("getParam")) {
 
     function getParam($t) {
 
-	global $_params;
-	$v = ake($_params, $t) ? $_params[$t] : '';
-	if ($v == "")
-	    return $t;
-	else
-	    return $v;
+        global $_params;
+        $v = ake($_params, $t) ? $_params[$t] : '';
+        if ($v == "")
+            return $t;
+        else
+            return $v;
     }
 
 }
@@ -1298,13 +1303,13 @@ function getBrowserLang() {
     //start going through each one
     foreach ($langs as $value) {
 
-	//select only the first two letters
-	$choice = substr($value, 0, 2);
+        //select only the first two letters
+        $choice = substr($value, 0, 2);
 
-	if ($choice == "fr")
-	    return "fr";
-	else if ($choice == "en")
-	    return "en";
+        if ($choice == "fr")
+            return "fr";
+        else if ($choice == "en")
+            return "en";
     }
     return "fr";
 }
@@ -1313,35 +1318,33 @@ function arraySplit($array_with_elements, $key_name) {
     $key_index = array_keys(array_keys($array_with_elements), $key_name);
     if (count($key_index) != '') {
 
-	array_splice($array_with_elements, $key_index[0], 1);
+        array_splice($array_with_elements, $key_index[0], 1);
     }
     return $array_with_elements;
 }
 
 function arrayInWord($arr, $word) {
-    if(!is_array($arr)) {
+    if (!is_array($arr)) {
         return false;
     }
     //return in_array($word, $arr);
     while (list(, $v) = each($arr)) {
-	if (strpos($word, $v) !== false)
-	    return true;
+        if (strpos($word, $v) !== false)
+            return true;
     }
     return false;
 }
 
 function isUploadField($field) {
 
-    if(isset($GLOBALS['cache']['isUploadField'][$field])) {
+    if (isset($GLOBALS['cache']['isUploadField'][$field])) {
         return $GLOBALS['cache']['isUploadField'][$field];
     }
     global $uploadFields;
-    $GLOBALS['cache']['isUploadField'][$field] = arrayInWord($uploadFields,$field);
+    $GLOBALS['cache']['isUploadField'][$field] = arrayInWord($uploadFields, $field);
 
     return $GLOBALS['cache']['isUploadField'][$field];
-    
 }
-
 
 function path_concat() {
     /*
@@ -1352,18 +1355,18 @@ function path_concat() {
     $numargs = count($arg_list);
 
     for ($i = 0; $i < $numargs; $i++) {
-	$u2 = $arg_list[$i];
-	if (is_array($u2)) {
-	    break;
-	}
-	if (mb_substr($u1, -1) == '/' && mb_substr($u2, 0, 1) == '/')
-	    $u1 = substr($u1, 0, -1) . $u2;
-	else if (mb_substr($u1, -1) == '/' || mb_substr($u2, 0, 1) == '/')
-	    $u1 = $u1 . $u2;
-	else if ($u1 != '')
-	    $u1 = $u1 . '/' . $u2;
-	else
-	    $u1 = $u1 . $u2;
+        $u2 = $arg_list[$i];
+        if (is_array($u2)) {
+            break;
+        }
+        if (mb_substr($u1, -1) == '/' && mb_substr($u2, 0, 1) == '/')
+            $u1 = substr($u1, 0, -1) . $u2;
+        else if (mb_substr($u1, -1) == '/' || mb_substr($u2, 0, 1) == '/')
+            $u1 = $u1 . $u2;
+        else if ($u1 != '')
+            $u1 = $u1 . '/' . $u2;
+        else
+            $u1 = $u1 . $u2;
     }
 
     return $u1;
@@ -1379,15 +1382,15 @@ function urlconcat($u1, $u2) {
     return path_concat($u1, $u2);
 }
 
-function SplitParams($p, $first=';', $second="=") {
+function SplitParams($p, $first = ';', $second = "=") {
     $params = explode($first, $p);
     $retPar = array();
 
     foreach ($params as $param) {
-	$t = explode($second, $param);
-	if ($t[0]) {
-	    $retPar[$t[0]] = akev($t, 1);
-	}
+        $t = explode($second, $param);
+        if ($t[0]) {
+            $retPar[$t[0]] = akev($t, 1);
+        }
     }
 
     return $retPar;
@@ -1395,7 +1398,7 @@ function SplitParams($p, $first=';', $second="=") {
 
 function numpad($nb, $cpt) {
     while (strlen($nb) < $cpt)
-	$nb = '0' . $nb;
+        $nb = '0' . $nb;
     return $nb;
 }
 
@@ -1417,17 +1420,17 @@ function getFlashDetectionSo() {
     return $html;
 }
 
-function getFlash($url, $w=290, $h=240, $alt="Flash", $tag='', $params=array()) {
+function getFlash($url, $w = 290, $h = 240, $alt = "Flash", $tag = '', $params = array()) {
 
     global $_flashTestPrinted;
 
     $html = '';
     if (!$_flashTestPrinted) {
-	$html .= getFlashDetection();
-	$_flashTestPrinted = True;
+        $html .= getFlashDetection();
+        $_flashTestPrinted = True;
     }
     if (!$tag) {
-	$tag = 'flash' . str_replace(',', '', getmicrotime()) . rand(0, 1000);
+        $tag = 'flash' . str_replace(',', '', getmicrotime()) . rand(0, 1000);
     }
 
     $html .= ( '<object id="' . $tag . '" type="application/x-shockwave-flash" data="' . $url . '" width="' . $w . '" height="' . $h . '">');
@@ -1441,9 +1444,9 @@ function getFlash($url, $w=290, $h=240, $alt="Flash", $tag='', $params=array()) 
     $html .= ( '<param name="scalemode" value="showall" />');
 
     if (is_array($params)) {
-	foreach ($params as $k => $v) {
-	    $html .= ( '<param name="' . $k . '" value="' . $v . '" />');
-	}
+        foreach ($params as $k => $v) {
+            $html .= ( '<param name="' . $k . '" value="' . $v . '" />');
+        }
     }
     $html .= ( '<p>' . $alt . '</p>');
     $html .= ( '</object>');
@@ -1457,16 +1460,16 @@ function getFlashSo($url, $w = 290, $h = 240, $alt = "Flash", $id_tag = '', $wmo
 
     if (!$_flashTestPrintedSo) {
 
-	$html .= getFlashDetectionSo();
+        $html .= getFlashDetectionSo();
 
-	$_flashTestPrintedSo = True;
+        $_flashTestPrintedSo = True;
     }
 
     $html .= '<script type="text/javascript">';
     $html .= '// <![CDATA[' . "\n";
     $html .= 'var so = new SWFObject("' . $url . '", "' . $id_tag . '", "' . $w . '", "' . $h . '" , "9", "#FCFCFC") ;';
     if ($wmode)
-	$html .= 'so.addParam( "wmode" , "transparent" ) ;';
+        $html .= 'so.addParam( "wmode" , "transparent" ) ;';
     $html .= 'so.addParam( "scale" , "noscale" ) ;';
 
     $html .= 'so.write("' . $id_tag . '") ;';
@@ -1485,72 +1488,72 @@ function getFlashSo($url, $w = 290, $h = 240, $alt = "Flash", $id_tag = '', $wmo
  * @param int $alt alternatif
  * @param string $tag id de la balise qui reçoit le flash
  */
-function printFlash($url, $w = 290, $h = 240, $alt = "Flash", $tag = '', $params=array()) {
+function printFlash($url, $w = 290, $h = 240, $alt = "Flash", $tag = '', $params = array()) {
 
     if ($tag != '') {
 
-	print getFlashSo($url, $w, $h, $alt, $tag);
+        print getFlashSo($url, $w, $h, $alt, $tag);
     } else {
 
-	print getFlash($url, $w, $h, $alt, $tag, $params);
+        print getFlash($url, $w, $h, $alt, $tag, $params);
     }
 }
 
-function printFlvplayer($url, $w=290, $h=240, $alt="Flash") {
+function printFlvplayer($url, $w = 290, $h = 240, $alt = "Flash") {
 
     printFlash('/flvplayer.swf?file=' . $url . '&amp;txt_clicktoplay=' . t('clicktoplay') . '&amp;txt_buffering=' . t('buffering'), $w, $h, $alt, ' class="flvplayer" ');
 }
 
-function getFlvPlayerSo($url, $w=440, $h=340, $alt="Flash", $idbloc="div_flv") {
+function getFlvPlayerSo($url, $w = 440, $h = 340, $alt = "Flash", $idbloc = "div_flv") {
     return getFlashSo('/flvplayer.swf?file=' . $url . '&amp;txt_clicktoplay=' . t('clicktoplay') . '&amp;txt_buffering=' . t('buffering'), $w, $h, $alt, $idbloc);
 }
 
-function printMp3player($url, $w=290, $h=20, $alt="Flash") {
+function printMp3player($url, $w = 290, $h = 20, $alt = "Flash") {
 
     printFlash('/mp3player.swf?file=' . $url, $w, $h, $alt, ' class="mp3player" ');
 }
 
-function getMp3playerSo($url, $w=290, $h=20, $alt="Flash", $idbloc="") {
+function getMp3playerSo($url, $w = 290, $h = 20, $alt = "Flash", $idbloc = "") {
 
     return getFlashSo('/mp3player.swf?autostart=0&file=' . $url, $w, $h, $alt, $idbloc);
 }
 
-function printMedia($url, $alt="") {
+function printMedia($url, $alt = "") {
     $ext = strtolower(substr($url, strrpos($url, '.') + 1));
 
     switch ($ext) {
-	case 'flv':
-	    printFlvplayer($url);
-	    break;
-	case 'mp3':
-	    printMp3player($url);
-	    break;
-	case 'swf':
-	    printFlash($url);
-	    break;
-	case 'mov':
-	    print('MOV FILE NOT SUPPORTED YET');
-	    break;
-	case 'jpg':
-	    printImage($url, $alt);
-	    break;
-	case 'jpeg':
-	    printImage($url, $alt);
-	    break;
-	case 'png':
-	    printImage($url, $alt);
-	    break;
-	case 'gif':
-	    printImage($url, $alt);
-	    break;
+        case 'flv':
+            printFlvplayer($url);
+            break;
+        case 'mp3':
+            printMp3player($url);
+            break;
+        case 'swf':
+            printFlash($url);
+            break;
+        case 'mov':
+            print('MOV FILE NOT SUPPORTED YET');
+            break;
+        case 'jpg':
+            printImage($url, $alt);
+            break;
+        case 'jpeg':
+            printImage($url, $alt);
+            break;
+        case 'png':
+            printImage($url, $alt);
+            break;
+        case 'gif':
+            printImage($url, $alt);
+            break;
     }
 }
 
-function printImage($src, $alt="", $tag='') {
+function printImage($src, $alt = "", $tag = '') {
     echo getImageTag($src, $alt, $tag);
 }
 
-function getImageTag($src, $alt="", $tag='') {
+function getImageTag($src, $alt = "", $tag = '') {
     return ('<img src="' . $src . '" alt=' . alt($alt) . ' ' . $tag . ' />');
 }
 
@@ -1589,16 +1592,16 @@ function GetPlugins() {
 
 
     if (!akev($_SESSION['cache'][UNIQUE_SITE], 'activePlugins')) {
-	$sql = 'SELECT * FROM s_plugin AS P WHERE plugin_actif = 1 ORDER BY plugin_ordre ASC';
-	$res = GetAll($sql);
-	$ret = array();
-	if (!$res) {
-	    return array();
-	}
-	foreach ($res as $v) {
-	    $ret[] = $v['plugin_nom'];
-	}
-	$_SESSION['cache'][UNIQUE_SITE]['activePlugins'] = $ret;
+        $sql = 'SELECT * FROM s_plugin AS P WHERE plugin_actif = 1 ORDER BY plugin_ordre ASC';
+        $res = GetAll($sql);
+        $ret = array();
+        if (!$res) {
+            return array();
+        }
+        foreach ($res as $v) {
+            $ret[] = $v['plugin_nom'];
+        }
+        $_SESSION['cache'][UNIQUE_SITE]['activePlugins'] = $ret;
     }
     return $_SESSION['cache'][UNIQUE_SITE]['activePlugins'];
 }
@@ -1612,19 +1615,19 @@ function getGabaritsToIndex() {
 
     if (empty($_SESSION['cache'][UNIQUE_SITE]['gabaritsToIndex'])) {
 
-	$_SESSION['cache'][UNIQUE_SITE]['gabaritsToIndex'] = array();
+        $_SESSION['cache'][UNIQUE_SITE]['gabaritsToIndex'] = array();
 
-	$sql = 'SELECT G.*, R.rubrique_id
+        $sql = 'SELECT G.*, R.rubrique_id
 		FROM s_gabarit AS G, s_rubrique AS R
 		WHERE
 		G.gabarit_index_table != ""
 		AND G.gabarit_id = R.fk_gabarit_id
 		 ' . sqlRubriqueOnlyOnline('R');
-	$res = GetAll($sql);
-	foreach ($res as $row) {
+        $res = GetAll($sql);
+        foreach ($res as $row) {
 
-	    $_SESSION['cache'][UNIQUE_SITE]['gabaritsToIndex'][$row['gabarit_index_table']] = $row;
-	}
+            $_SESSION['cache'][UNIQUE_SITE]['gabaritsToIndex'][$row['gabarit_index_table']] = $row;
+        }
     }
 
     return $_SESSION['cache'][UNIQUE_SITE]['gabaritsToIndex'];
@@ -1640,27 +1643,27 @@ function getGabaritsToIndex() {
 function getUrlFromSearchOLD($obj, $row) {
 
     if (!is_array($obj)) {
-	$obj['obj'] = $obj;
+        $obj['obj'] = $obj;
     }
     if ($obj['obj'] == 's_rubrique') {
-	$rubid = $obj['fkid'];
-	$mp = array();
+        $rubid = $obj['fkid'];
+        $mp = array();
     } else {
-	$gabs = getGabaritsToIndex();
-	//debug($gabs);
-	if (!$gabs[$obj['obj']]) {
-	    debug('NO GABARIT DEFINED FOR OBJECT : ' . $obj['obj']);
-	    debug($obj);
-	    return '';
-	}
+        $gabs = getGabaritsToIndex();
+        //debug($gabs);
+        if (!$gabs[$obj['obj']]) {
+            debug('NO GABARIT DEFINED FOR OBJECT : ' . $obj['obj']);
+            debug($obj);
+            return '';
+        }
 
-	$rubid = $gabs[$obj['obj']]['rubrique_id'];
-	$params = $gabs[$obj['obj']]['gabarit_index_url'];
-	$params = splitParams($params);
-	$mp = array();
-	foreach ($params as $param => $value) {
-	    $mp[$param] = $row[$value];
-	}
+        $rubid = $gabs[$obj['obj']]['rubrique_id'];
+        $params = $gabs[$obj['obj']]['gabarit_index_url'];
+        $params = splitParams($params);
+        $mp = array();
+        foreach ($params as $param => $value) {
+            $mp[$param] = $row[$value];
+        }
     }
 //	debug($gabs[$obj['obj']]['gabarit_classe']);
     return getUrlFromId(getRubFromGabarit($gabs[$obj['obj']]['gabarit_classe']), LG, $mp);
@@ -1670,42 +1673,42 @@ function getUrlFromSearchOLD($obj, $row) {
 function getUrlFromSearch($obj, $row) {
 
     if (!is_array($obj)) {
-	$obj['obj'] = $obj;
+        $obj['obj'] = $obj;
     }
-    
-    if(class_exists($obj['obj']) && method_exists($obj['obj'], 'getUrl')) {
-	$o = new $obj['obj']($row);
-	return $o->getUrl();
+
+    if (class_exists($obj['obj']) && method_exists($obj['obj'], 'getUrl')) {
+        $o = new $obj['obj']($row);
+        return $o->getUrl();
     }
     if ($obj['obj'] == 's_rubrique') {
-	$rubid = $obj['fkid'];
-	$mp = array();
+        $rubid = $obj['fkid'];
+        $mp = array();
     } else {
-	$gabs = getGabaritsToIndex();
-	//debug($gabs);
+        $gabs = getGabaritsToIndex();
+        //debug($gabs);
 
-	if (is_array($obj['obj'])) {
-	    return '';
-	}
+        if (is_array($obj['obj'])) {
+            return '';
+        }
 
-	if (!$gabs[$obj['obj']]) {
-	    debug('NO GABARIT DEFINED FOR OBJECT : ' . $obj['obj']);
-	    debug($obj);
-	    return '';
-	}
+        if (!$gabs[$obj['obj']]) {
+            debug('NO GABARIT DEFINED FOR OBJECT : ' . $obj['obj']);
+            debug($obj);
+            return '';
+        }
 
-	$rubid = $gabs[$obj['obj']]['rubrique_id'];
-	$params = $gabs[$obj['obj']]['gabarit_index_url'];
-	if (strpos($params, 'php:') !== false) {
-	    $code = substr($params, 4);
-	    return eval($code);
-	}
-	$params = splitParams($params);
-	$mp = array();
-	foreach ($params as $param => $value) {
-	    $mp[$param] = $row[$value];
-	}
-	$rubid = getRubFromGabarit($gabs[$obj['obj']]['gabarit_classe']);
+        $rubid = $gabs[$obj['obj']]['rubrique_id'];
+        $params = $gabs[$obj['obj']]['gabarit_index_url'];
+        if (strpos($params, 'php:') !== false) {
+            $code = substr($params, 4);
+            return eval($code);
+        }
+        $params = splitParams($params);
+        $mp = array();
+        foreach ($params as $param => $value) {
+            $mp[$param] = $row[$value];
+        }
+        $rubid = getRubFromGabarit($gabs[$obj['obj']]['gabarit_classe']);
     }
 //	debug($gabs[$obj['obj']]['gabarit_classe']);
     return getUrlFromId($rubid, LG, $mp);
@@ -1720,55 +1723,55 @@ function getUrlFromSearch($obj, $row) {
  * @param string $separator
  * @return string
  */
-function GetTitleFromRow($table, $row, $separator=" ", $html=false) {
+function GetTitleFromRow($table, $row, $separator = " ", $html = false) {
     global $tabForms, $relations, $uploadFields;
 
     if (!$row) {
-	return;
+        return;
     }
-    if(class_exists($table) && method_exists($table, 'getTitle')) {
-	$o = new $table($row);
-	return $o->getTitle();
+    if (class_exists($table) && method_exists($table, 'getTitle')) {
+        $o = new $table($row);
+        return $o->getTitle();
     }
     $fields = getTabField($table);
 
     if (!is_array($tabForms[$table]['titre'])) {
-	$tabForms[$table]['titre'] = array($tabForms[$table]['titre']);
+        $tabForms[$table]['titre'] = array($tabForms[$table]['titre']);
     }
     reset($tabForms[$table]['titre']);
     $tab = getTabField($table);
     $titre = array();
     while (list($k, $v) = each($tabForms[$table]['titre'])) {
 
-	if (akev($relations, $table) && akev($relations[$table], $v)) {
-	    $re = GetRowFromId($relations[$table][$v], $row[$v]);
-	    $row[$v] = GetTitleFromRow($relations[$table][$v], $re);
-	} else if (isset($tab[$v]) && $tab[$v]->type == 'date') {
-	    $row[$v] = nicetextdate($row[$v]);
-	} else if (isset($tab[$v]) && $tab[$v]->type == 'datetime') {
-	    $row[$v] = nicetextdate($row[$v]) . ' ' . nicetime($row[$v]);
-	}
+        if (akev($relations, $table) && akev($relations[$table], $v)) {
+            $re = GetRowFromId($relations[$table][$v], $row[$v]);
+            $row[$v] = GetTitleFromRow($relations[$table][$v], $re);
+        } else if (isset($tab[$v]) && $tab[$v]->type == 'date') {
+            $row[$v] = nicetextdate($row[$v]);
+        } else if (isset($tab[$v]) && $tab[$v]->type == 'datetime') {
+            $row[$v] = nicetextdate($row[$v]) . ' ' . nicetime($row[$v]);
+        }
 
-	if ($html && arrayInWord($uploadFields, $v)) {
+        if ($html && arrayInWord($uploadFields, $v)) {
 
-	    $gf = new genFile($table, $v, $row);
-	    if ($gf->isImage()) {
+            $gf = new genFile($table, $v, $row);
+            if ($gf->isImage()) {
 
-		$titre[] = $gf->getThumbImgtag(40, 40);
-	    }
-	} else
-	if (!isset($fields[$v]) || !$fields[$v]) {
-	    $titre[] = getLgValue($v, $row);
-	} else {
-	    $titre[] = akev($row, $v);
-	}
+                $titre[] = $gf->getThumbImgtag(40, 40);
+            }
+        } else
+        if (!isset($fields[$v]) || !$fields[$v]) {
+            $titre[] = getLgValue($v, $row);
+        } else {
+            $titre[] = akev($row, $v);
+        }
     }
 
-    $titre = array_diff($titre,array(''));
+    $titre = array_diff($titre, array(''));
 
 
 
-    return implode($titre,$separator);
+    return implode($titre, $separator);
 }
 
 /**
@@ -1779,47 +1782,47 @@ function GetTitleFromRow($table, $row, $separator=" ", $html=false) {
  * @param string $separator
  * @return string
  */
-function getDescFromRow($table, $row, $limit=60, $separator=" ") {
-       
-    if(class_exists($table) && method_exists($table, 'getDesc')) {
-	$o = new $table($row);
-	return $o->getDesc();
+function getDescFromRow($table, $row, $limit = 60, $separator = " ") {
+
+    if (class_exists($table) && method_exists($table, 'getDesc')) {
+        $o = new $table($row);
+        return $o->getDesc();
     }
-    
+
     global $tabForms;
-    
+
     if (empty($tabForms[$table]['desc'])) {
-	
-	return '';
+
+        return '';
     }
-    
+
     $titre = '';
     if (!is_array($tabForms[$table]['desc'])) {
-	$tabForms[$table]['desc'] = array(is_array($tabForms[$table]['desc']));
-    }    
+        $tabForms[$table]['desc'] = array(is_array($tabForms[$table]['desc']));
+    }
     reset($tabForms[$table]['desc']);
     while (list($k, $v) = each($tabForms[$table]['desc'])) {
-	if (isBaseLgField($v, $table)) {
-	    $titre .= limitWords(getLgValue($v, $row), $limit) . $separator;
-	} else {
-	    $titre .= limitWords($row[$v], $limit) . $separator;
-	}
+        if (isBaseLgField($v, $table)) {
+            $titre .= limitWords(getLgValue($v, $row), $limit) . $separator;
+        } else {
+            $titre .= limitWords($row[$v], $limit) . $separator;
+        }
     }
-   
+
     return $titre;
 }
 
-function getImgFromRow($table, $row, $w=100, $h=100) {
+function getImgFromRow($table, $row, $w = 100, $h = 100) {
     global $tabForms;
 
-    if(class_exists($table) && method_exists($table, 'getImg')) {
-	$o = new $table($row);
-	return $o->getImg($w,$h);
+    if (class_exists($table) && method_exists($table, 'getImg')) {
+        $o = new $table($row);
+        return $o->getImg($w, $h);
     }
-    
+
     if (!empty($tabForms[$table]['img'])) {
-	$gf = new genFile($table, $tabForms[$table]['img'], $row);
-	return $gf->getCropImgtag($w, $h);
+        $gf = new genFile($table, $tabForms[$table]['img'], $row);
+        return $gf->getCropImgtag($w, $h);
     }
 }
 
@@ -1831,10 +1834,10 @@ function getImgFromRow($table, $row, $w=100, $h=100) {
 function GetTablesToIndex() {
 
     if (empty($_SESSION['cache_' . UNIQUE_SITE]['tablesToIndex'])) {
-	$g = getGabaritsToIndex();
-	$ar = array_keys($g);
-	$ar[] = 's_rubrique';
-	$_SESSION['cache_' . UNIQUE_SITE]['tablesToIndex'] = $ar;
+        $g = getGabaritsToIndex();
+        $ar = array_keys($g);
+        $ar[] = 's_rubrique';
+        $_SESSION['cache_' . UNIQUE_SITE]['tablesToIndex'] = $ar;
     }
     return $_SESSION['cache_' . UNIQUE_SITE]['tablesToIndex'];
 }
@@ -1848,8 +1851,8 @@ function GetTablesToIndex() {
 function htmlArray($tab) {
 
     foreach ($tab as $k => $v) {
-	$html .= '<h2>' . t($k) . '</h2>';
-	$html .= '<p>' . $v . '</p>';
+        $html .= '<h2>' . t($k) . '</h2>';
+        $html .= '<p>' . $v . '</p>';
     }
     return $html;
 }
@@ -1864,10 +1867,14 @@ function addSimpleQuotes($tab) {
     $newTab = array();
 
     for ($i = 0; $i < count($tab); $i++) {
-	$newTab[$i] = "'" . $tab[$i] . "'";
+        $newTab[$i] = "'" . $tab[$i] . "'";
     }
 
     return $newTab;
+}
+
+if(empty($_SESSION['cache']) ){
+    $_SESSION['cache'] = array();
 }
 
 if (!ake($_SESSION['cache'][UNIQUE_SITE], 'cache_rubgab')) {
@@ -1881,35 +1888,38 @@ if (!ake($_SESSION['cache'][UNIQUE_SITE], 'cache_rubgab')) {
  * @param string $param
  * @return int
  */
-function getRubFromGabarit($gab, $param='') {
+function getRubFromGabarit($gab, $param = '') {
 
-    if (!akev($_SESSION['cache'][UNIQUE_SITE]['cache_rubgab'], $gab . $param)) {
+    if (empty($_SESSION['cache'][UNIQUE_SITE]['cache_rubgab'][ $gab . $param])) {
 
-	$sql = 'SELECT rubrique_id , G.* FROM s_rubrique AS R, s_gabarit AS G 
+        $sql = 'SELECT rubrique_id , G.* FROM s_rubrique AS R, s_gabarit AS G
 					WHERE G.gabarit_id = R.fk_gabarit_id AND 
 					G.gabarit_classe LIKE "' . mes($gab) . '" 
 					' . sqlRubriqueOnlyOnline('R') . ' AND 
 					( G.fk_default_rubrique_id = R.rubrique_id  OR 
 					G.fk_default_rubrique_id = R.fk_rubrique_version_id ) ';
 
-	if ($param) {
-	    $sql .= 'AND rubrique_gabarit_param LIKE ' . sql('%' . $param . '%') . ' ';
-	}
-	$row = GetSingle($sql);
+        if ($param) {
+            $sql .= 'AND rubrique_gabarit_param LIKE ' . sql('%' . $param . '%') . ' ';
+        }
+        $row = GetSingle($sql);
 
-	if (!count($row)) {
-	    $sql = 'SELECT rubrique_id FROM s_rubrique AS R, s_gabarit AS G 
+        if (!count($row)) {
+            $sql = 'SELECT rubrique_id FROM s_rubrique AS R, s_gabarit AS G
 						WHERE G.gabarit_id = R.fk_gabarit_id AND 
 						G.gabarit_classe LIKE "' . mes($gab) . '" 
 						' . sqlRubriqueOnlyOnline('R') . ' AND 
 						rubrique_gabarit_param LIKE ' . sql('%' . $param . '%') . '  ';
-	    $row = GetSingle($sql);
-	}
-	if ($row) {
-	    $_SESSION['cache'][UNIQUE_SITE]['cache_rubgab'][$gab . $param] = $row['rubrique_id'];
-	} else {
-	    $_SESSION['cache'][UNIQUE_SITE]['cache_rubgab'][$gab . $param] = $GLOBALS['site']->g_url->rootHomeId;
-	}
+            $row = GetSingle($sql);
+        }
+        if ($row) {
+            $_SESSION['cache'][UNIQUE_SITE]['cache_rubgab'][$gab . $param] = $row['rubrique_id'];
+        } else {
+            if (!empty($GLOBALS['site']->g_url->rootHomeId))
+                $_SESSION['cache'][UNIQUE_SITE]['cache_rubgab'][$gab . $param] = $GLOBALS['site']->g_url->rootHomeId;
+            else
+                $_SESSION['cache'][UNIQUE_SITE]['cache_rubgab'][$gab . $param] = '';
+        }
     }
 
     return $_SESSION['cache'][UNIQUE_SITE]['cache_rubgab'][$gab . $param];
@@ -1924,7 +1934,7 @@ function initPlugins() {
     $plugs = GetPlugins();
 
     foreach ($plugs as $v) {
-	$GLOBALS['gb_obj']->includeFile('config.php', PLUGINS_FOLDER . '' . $v . '/');
+        $GLOBALS['gb_obj']->includeFile('config.php', PLUGINS_FOLDER . '' . $v . '/');
     }
 }
 
@@ -1937,7 +1947,7 @@ function initPlugins() {
  */
 function geta($array, $clef) {
     if (array_key_exists($clef, $array)) {
-	return $array[$clef];
+        return $array[$clef];
     }
     return '';
 }
@@ -1956,17 +1966,17 @@ function alt($texte) {
 if (ini_get('magic_quotes_gpc')) {
 
     foreach ($_GET as $k => $v) {
-	if (!is_array($v))
-	    $_GET[$k] = stripslashes($v);
+        if (!is_array($v))
+            $_GET[$k] = stripslashes($v);
     }
 
     foreach ($_POST as $k => $v) {
-	if (!is_array($v))
-	    $_POST[$k] = stripslashes($v);
+        if (!is_array($v))
+            $_POST[$k] = stripslashes($v);
     }
     foreach ($_REQUEST as $k => $v) {
-	if (!is_array($v))
-	    $_REQUEST[$k] = stripslashes($v);
+        if (!is_array($v))
+            $_REQUEST[$k] = stripslashes($v);
     }
 }
 
@@ -1990,17 +2000,17 @@ function etamp($str) {
  *
  * @param unknown_type $params
  */
-function getUrlWithParams($params=array()) {
+function getUrlWithParams($params = array()) {
 
     if (!is_object($GLOBALS['site'])) {
-	$u = new genUrl(LG);
-	return $u->getUrlWithParams($params);
+        $u = new genUrlV2(LG);
+        return $u->getUrlWithParams($params);
     }
 
     return $GLOBALS['site']->g_url->getUrlWithParams($params);
 }
 
-function addParamsToUrl($params=array()) {
+function addParamsToUrl($params = array()) {
 
     return $GLOBALS['site']->g_url->getUrlWithParams(array_merge($GLOBALS['site']->g_url->paramsUrl, $params));
 }
@@ -2013,17 +2023,15 @@ function addParamsToUrl($params=array()) {
  * @param array $params
  * @return string URL
  */
-function getUrlFromId($id, $lg='', $params=array(), $action='') {
-
+function getUrlFromId($id, $lg = '', $params = array(), $action = '') {
     if (!isset($GLOBALS['site']) || !is_object($GLOBALS['site'])) {
-	$u = new genUrl($lg);
-	return $u->buildUrlFromId($id, $lg, $params, $action);
+        $u = new genUrlV2($lg);
+        return $u->buildUrlFromId($id, $lg, $params, $action);
     }
     return $GLOBALS['site']->g_url->buildUrlFromId($id, $lg, $params, $action);
 }
 
 /**
- *
  * @param string $chaine
  * @param int $debut
  * @param int $longueurMax
@@ -2034,15 +2042,15 @@ function substrWithNoCutWord($chaine, $debut, $longueurMax) {
     //return mb_substr($chaine,0,mb_strpos($chaine,' ',$longueurMax));
 
     if (strlen($chaine) > $longueurMax) {
-	$chaine = substr($chaine, $debut, $longueurMax);
-	$tab = explode(' ', $chaine);
-	$result = '';
-	for ($i = 0; $i < count($tab) - 1; $i++) {
-	    $result .= $tab[$i] . ' ';
-	}
+        $chaine = substr($chaine, $debut, $longueurMax);
+        $tab = explode(' ', $chaine);
+        $result = '';
+        for ($i = 0; $i < count($tab) - 1; $i++) {
+            $result .= $tab[$i] . ' ';
+        }
     }
     else
-	$result = $chaine;
+        $result = $chaine;
 
     return $result;
 }
@@ -2068,14 +2076,14 @@ function getRubriqueByGabarit($gab) {
     $row = GetSingle($sql);
 
     if (!count($row)) {
-	$sql = 'SELECT R.rubrique_id
+        $sql = 'SELECT R.rubrique_id
 					FROM s_rubrique AS R , s_gabarit AS G
 					WHERE G.gabarit_classe LIKE ' . sql($gab) . '
 					AND R.fk_gabarit_id = G.gabarit_id
 					ORDER BY rubrique_id ASC
 					LIMIT 0,1
 					';
-	$row = GetSingle($sql);
+        $row = GetSingle($sql);
     }
 
     return $row['rubrique_id'];
@@ -2102,10 +2110,10 @@ function nbsp($texte) {
 function choose($a) {
     $argc = func_num_args();
     for ($i = 0; $i < $argc; $i++) {
-	$arg = func_get_arg($i);
-	if (($arg) && $arg != "0000-00-00" && $arg != "0000-00-00 00:00:00") {
-	    return $arg;
-	}
+        $arg = func_get_arg($i);
+        if (($arg) && $arg != "0000-00-00" && $arg != "0000-00-00 00:00:00") {
+            return $arg;
+        }
     }
 
     return null;
@@ -2129,7 +2137,7 @@ function isTrue($val) {
  * @return string
  */
 function getServerUrl() {
-    return 'http' . (akev($_SERVER,'HTTPS') == 'on' ? 's' : '') . '://' . $_SERVER['HTTP_HOST'];
+    return 'http' . (akev($_SERVER, 'HTTPS') == 'on' ? 's' : '') . '://' . $_SERVER['HTTP_HOST'];
 }
 
 /**
@@ -2145,8 +2153,8 @@ function includeMail() {
      * Inclusion
      */
     if (!akev($GLOBALS, 'mailIncluded')) {
-	$GLOBALS['mailIncluded'] = true;
-	$GLOBALS['gb_obj']->includeFile('class.phpmailer.php', 'classes/mail');
+        $GLOBALS['mailIncluded'] = true;
+        $GLOBALS['gb_obj']->includeFile('class.phpmailer.php', 'classes/mail');
     }
 
     /**
@@ -2158,11 +2166,11 @@ function includeMail() {
      * Si on est en SMTP
      */
     if (getParam('mail_type') == 'smtp') {
-	$GLOBALS['gb_obj']->includeFile('class.smtp.php', 'classes/mail');
-	$m->IsSMTP();
-	$m->Host = getParam('mail_host');
+        $GLOBALS['gb_obj']->includeFile('class.smtp.php', 'classes/mail');
+        $m->IsSMTP();
+        $m->Host = getParam('mail_host');
     } else {
-	$m->IsMail();
+        $m->IsMail();
     }
 
     /**
@@ -2188,9 +2196,9 @@ function pluginExists($nom) {
 function url($url) {
 
     if (strpos($url, 'http') !== false) {
-	return $url;
+        return $url;
     } else {
-	return 'http://' . $url;
+        return 'http://' . $url;
     }
 }
 
@@ -2203,34 +2211,34 @@ function printDebugs() {
 
     if ($_Gconfig['debugSql']) {
 
-	p('<div id="debugsql" style="border:1px solid;background:#fff;color:#000;position:fixed;bottom:0;left:0;width:800px;height:500px;overflow:auto;text-align:left;padding:5px;font-family:Courier new;monospace;font-size:1.3em;">');
-	p('<a href="#" onclick="javascript:gid(\'debugsql\').style.height= gid(\'debugsql\').style.height == \'20px\' ? \'500px\' : \'20px\' ;" style="float:right;">CLOSE</a>');
-	ksort($h_sqlsI);
-	foreach ($h_sqlsI as $k => $sql) {
-	    print('<div style="padding:5px;">' . $k . ' - ' . $sql . '</div>');
-	}
+        p('<div id="debugsql" style="z-index:10000;border:1px solid;background:#fff;color:#000;position:fixed;bottom:0;left:0;width:800px;height:500px;overflow:auto;text-align:left;padding:5px;font-family:Courier new;monospace;font-size:1.3em;">');
+        p('<a href="#" onclick="javascript:gid(\'debugsql\').style.height= gid(\'debugsql\').style.height == \'20px\' ? \'500px\' : \'20px\' ;" style="float:right;">CLOSE</a>');
+        ksort($h_sqlsI);
+        foreach ($h_sqlsI as $k => $sql) {
+            print('<div style="padding:5px;">' . $k . ' - ' . $sql . '</div>');
+        }
 
-	print('<hr/>');
+        print('<hr/>');
 
-	foreach ($h_sqls as $k => $sql) {
-	    $bg = $k % 2 ? 'white' : 'lightgray';
-	    if (round($sql['time'], 2) >= 0.009) {
-		$bg = 'red;color:white';
-	    }
-	    $info = '';
-	    if (ake($sql['sql'], $donesSql)) {
-		$info = '[<strong style="background:yellow">DEJA FAITE LIGNE :' . $donesSql[$sql['sql']] . '</strong>]';
-	    }
-	    print('<div style="background:' . $bg . ';padding:5px;">' . $k . ' - ' . $info . ' ' . $sql['time'] . ' : ' . $sql['sql'] . '' . $sql['profile'] . '</div>');
-	    $donesSql[$sql['sql']] = $k;
-	}
-	p('</div>');
+        foreach ($h_sqls as $k => $sql) {
+            $bg = $k % 2 ? 'white' : 'lightgray';
+            if (round($sql['time'], 2) >= 0.001) {
+                $bg = 'red;color:white';
+            }
+            $info = '';
+            if (ake($sql['sql'], $donesSql)) {
+                $info = '[<strong style="background:yellow">DEJA FAITE LIGNE :' . $donesSql[$sql['sql']] . '</strong>]';
+            }
+            print('<div style="background:' . $bg . ';padding:5px;">' . $k . ' - ' . $info . ' ' . $sql['time'] . ' : ' . $sql['sql'] . '' . $sql['profile'] . '</div>');
+            $donesSql[$sql['sql']] = $k;
+        }
+        p('</div>');
     }
 
     if (ake($GLOBALS, 'ocms_warnings')) {
-	foreach ($GLOBALS['ocms_warnings'] as $v) {
-	    echo '<div class="ocms_warnings">' . $v . '</div>';
-	}
+        foreach ($GLOBALS['ocms_warnings'] as $v) {
+            echo '<div class="ocms_warnings">' . $v . '</div>';
+        }
     }
 
     /**
@@ -2245,7 +2253,7 @@ function printDebugs() {
     GetStats();
 }
 
-function GetTitleFromTable($table, $separator=" ") {
+function GetTitleFromTable($table, $separator = " ") {
     global $tabForms;
     $fields = getTabField($table);
 
@@ -2253,7 +2261,7 @@ function GetTitleFromTable($table, $separator=" ") {
      * Si on a plusieurs champs titre
      */
     if (!is_array($tabForms[$table]['titre'])) {
-	$tabForms[$table]['titre'] = array($tabForms[$table]['titre']);
+        $tabForms[$table]['titre'] = array($tabForms[$table]['titre']);
     }
 
     $titre = '';
@@ -2262,30 +2270,30 @@ function GetTitleFromTable($table, $separator=" ") {
      */
     foreach ($tabForms[$table]['titre'] as $k => $v) {
 
-	/**
-	 * On ne met le séparateur qu'à partir du second
-	 */
-	$sep = $k == 0 ? '' : $separator;
+        /**
+         * On ne met le séparateur qu'à partir du second
+         */
+        $sep = $k == 0 ? '' : $separator;
 
-	/**
-	 * Si le champ existe c'est un champ normal
-	 */
-	if (isset($fields[$v])) {
-	    $titre .= $sep . '' . $v;
+        /**
+         * Si le champ existe c'est un champ normal
+         */
+        if (isset($fields[$v])) {
+            $titre .= $sep . '' . $v;
 
-	    /**
-	     * sinon c'est un champ de langue
-	     */
-	} else {
-	    /**
-	     * On parcourt toutes les langues
-	     */
-	    global $_Gconfig;
-	    foreach ($_Gconfig['LANGUAGES'] as $lg) {
-		$titre .= $sep . '' . $v . '_' . $lg;
-		$sep = $separator;
-	    }
-	}
+            /**
+             * sinon c'est un champ de langue
+             */
+        } else {
+            /**
+             * On parcourt toutes les langues
+             */
+            global $_Gconfig;
+            foreach ($_Gconfig['LANGUAGES'] as $lg) {
+                $titre .= $sep . '' . $v . '_' . $lg;
+                $sep = $separator;
+            }
+        }
     }
 
 
@@ -2299,18 +2307,21 @@ function GetTitleFromTable($table, $separator=" ") {
  * @param array $tags
  * @return string
  */
+
+/**
+ * strip_selected_tags ( string str [, string strip_tags[, strip_content flag]] )
+ * ---------------------------------------------------------------------
+ * Like strip_tags() but inverse; the strip_tags tags will be stripped, not kept.
+ * strip_tags: string with tags to strip, ex: "<a><p><quote>" etc.
+ * strip_content flag: TRUE will also strip everything between open and closed tag
+ */
 function strip_selected_tags($str, $tags = "", $stripContent = false) {
     preg_match_all("/<([^>]+)>/i", $tags, $allTags, PREG_PATTERN_ORDER);
     foreach ($allTags[1] as $tag) {
-	$replace = "%(<$tag.*?>)(.*?)(<\/$tag.*?>)%is";
-	$replace2 = "%(<$tag.*?>)%is";
-	echo $replace;
-	if ($stripContent) {
-	    $str = preg_replace($replace, '', $str);
-	    $str = preg_replace($replace2, '', $str);
-	}
-	$str = preg_replace($replace, '${2}', $str);
-	$str = preg_replace($replace2, '${2}', $str);
+        if ($stripContent) {
+            $str = preg_replace("/<" . $tag . "[^>]*>.*<\/" . $tag . ">/iU", "", $str);
+        }
+        $str = preg_replace("/<\/?" . $tag . "[^>]*>/iU", "", $str);
     }
     return $str;
 }
@@ -2318,17 +2329,17 @@ function strip_selected_tags($str, $tags = "", $stripContent = false) {
 function isNull($str) {
 
     if ($str == "NULL")
-	return true;
+        return true;
     if ($str == false)
-	return true;
+        return true;
     if ($str == "")
-	return true;
+        return true;
     if ($str == "0")
-	return true;
+        return true;
     if ($str == "0000-00-00")
-	return true;
+        return true;
     if ($str == "0000-00-00 00:00:00")
-	return true;
+        return true;
 
     return false;
 }
@@ -2338,9 +2349,11 @@ function xss($str) {
     return htmlentities($str, ENT_QUOTES, 'utf-8');
 }
 
-function __autoload($classe) {
+function ocmsAutoload($classe) {
     $GLOBALS['gb_obj']->includeFile($classe . '.php', 'autoload');
 }
+
+spl_autoload_register('ocmsAutoload');
 
 /*
   function getRubArticles($rub_id){
@@ -2361,34 +2374,34 @@ function __autoload($classe) {
 
   } */
 
-function getAllPictos($size="32x32") {
+function getAllPictos($size = "32x32") {
     $dir = str_replace(ADMIN_URL, '', ADMIN_PICTOS_FOLDER);
     $pictosDir = array(
-	$dir . '' . $size . '/actions/',
-	$dir . $size . '/apps/',
-	$dir . $size . '/categories/',
-	$dir . $size . '/devices/',
-	$dir . $size . '/emblems/',
-	$dir . $size . '/emotes/',
-	$dir . $size . '/mimetypes/',
-	$dir . $size . '/places/',
-	$dir . $size . '/status/'
+        $dir . '' . $size . '/actions/',
+        $dir . $size . '/apps/',
+        $dir . $size . '/categories/',
+        $dir . $size . '/devices/',
+        $dir . $size . '/emblems/',
+        $dir . $size . '/emotes/',
+        $dir . $size . '/mimetypes/',
+        $dir . $size . '/places/',
+        $dir . $size . '/status/'
     );
     foreach ($pictosDir as $v) {
-	$res = dir($v);
-	//echo '<p>'.$v.'</p>';
-	if ($res) {
-	    while (false !== ($entry = $res->read())) {
-		if (is_file($v . $entry) && substr($entry, -3) == 'png' && filesize($v . $entry) > 0) {
-		    $tab[] = $v . $entry;
-		}
-	    }
-	}
+        $res = dir($v);
+        //echo '<p>'.$v.'</p>';
+        if ($res) {
+            while (false !== ($entry = $res->read())) {
+                if (is_file($v . $entry) && substr($entry, -3) == 'png' && filesize($v . $entry) > 0) {
+                    $tab[] = $v . $entry;
+                }
+            }
+        }
     }
     return $tab;
 }
 
-function getGabaritClass($gab, $param='', $instanciate=true) {
+function getGabaritClass($gab, $param = '', $instanciate = true) {
 
     $className = $gab['gabarit_classe'];
 
@@ -2401,18 +2414,18 @@ function getGabaritClass($gab, $param='', $instanciate=true) {
 
     if (class_exists($className)) {
 
-	if ($instanciate) {
+        if ($instanciate) {
 
-	    if ($gab['gabarit_classe_param']) {
-		$param .= ',' . $gab['gabarit_classe_param'];
-	    }
+            if ($gab['gabarit_classe_param']) {
+                $param .= ',' . $gab['gabarit_classe_param'];
+            }
 
-	    $bddClasse = new $className($GLOBALS['site'], $param . ',' . $gab['gabarit_classe_param']);
-	} else {
-	    return $className;
-	}
+            $bddClasse = new $className($GLOBALS['site'], $param . ',' . $gab['gabarit_classe_param']);
+        } else {
+            return $className;
+        }
     } else {
-	derror('La classe associee n\'existe pas : ' . $className);
+        derror('La classe associee n\'existe pas : ' . $className);
     }
 
     $htTemp = ob_get_contents();
@@ -2428,32 +2441,31 @@ function getObjUrl() {
     $i = akev($_GET, 'curId');
 
     if (!$t || !$i) {
-	return false;
+        return false;
     }
 
     if ($t == 's_rubrique') {
-	$r = getRealForRubrique($i);
-	if (!empty($r['rubrique_id']))
-	    return getUrlFromId($r['rubrique_id'], LG, array(), ('editer'));
+        $r = getRealForRubrique($i);
+        if (!empty($r['rubrique_id']))
+            return getUrlFromId($r['rubrique_id'], LG, array(), ('editer'));
     } else {
-	global $tabForms;
-	if (!empty($tabForms[$t]['view'])) {
-	    $id = getRubFromGabarit($tabForms[$t]['view']['gabarit'], $tabForms[$t]['view']['gabaritparam']);
-	    return getUrlFromId($id, LG, array($tabForms[$t]['view']['clef'] => $i));
-	}
+        global $tabForms;
+        if (!empty($tabForms[$t]['view'])) {
+            $id = getRubFromGabarit($tabForms[$t]['view']['gabarit'], $tabForms[$t]['view']['gabaritparam']);
+            return getUrlFromId($id, LG, array($tabForms[$t]['view']['clef'] => $i));
+        }
     }
 }
 
 function br2nl($string) {
-    $return = eregi_replace('<br[[:space:]]*/?' .
-	    '[[:space:]]*>', "\n ", $string);
+    $return = preg_replace('/\<br(\s*)?\/?\>/i', "\n", $string);
     $return = str_replace('<p', " \n <p", $return);
     $return = str_replace('<div', " \n <div", $return);
 
     return $return;
 }
 
-function myStripTags($str, $allow='') {
+function myStripTags($str, $allow = '') {
     $str = br2nl($str);
     $str = strip_tags($str, $allow);
     return $str;
@@ -2465,42 +2477,43 @@ function xmlencode($str) {
     return $str;
 }
 
-
-
 /**
  * Pour une requete d'image donnée, retourne le fichier de cache si déjà existant
  * sinon la même requete avec le hash de verification
  * @param $src Chemin complet
  */
-function getThumbCacheFile($src,$u=false) {
+function getThumbCacheFile($src, $u = false) {
     global $_Gconfig;
 
-    
+
     $src_clean = str_replace($_Gconfig['CDN'], '', $src);
     $src_clean = urldecode(str_replace('&amp;', '&', $src_clean));
-    
-    $cacheFile = md5($src_clean);
-    $cachePath = path_concat($_SERVER['DOCUMENT_ROOT'],THUMBPATH,'cache',$cacheFile);
 
-    if(!$u) {
+    if (!$u) {
         $u = parse_url($src_clean);
-        parse_str($u['query'],$u);
-        $u = akev($u,'src');
-        if($u && !file_exists($u)) {
-            $u = path_concat($_SERVER['DOCUMENT_ROOT'],$u);
+        parse_str($u['query'], $u);
+        $u = akev($u, 'src');
+        $src_clean = str_replace($u, '', $src_clean);
+        if ($u && !file_exists($u)) {
+            $u = path_concat($_SERVER['DOCUMENT_ROOT'], $u);
         }
     }
 
+    if (!file_exists($u)) {
+        return BU . '/img/logo_video.png';
+    }
+    $cacheFile = md5($src_clean);
+
+    $cachePath = path_concat($_SERVER['DOCUMENT_ROOT'], THUMBPATH, 'cache', $cacheFile, filesize($u), basename($u));
     /**
      * Si le fichier de cache existe
      */
     if (file_exists($cachePath)) {
-	if ($u && filemtime($cachePath) >= filemtime($u)) {
-	    return path_concat(THUMBPATH , 'cache' , $cacheFile);
-	}
+        if ($u && file_exists($u) && filemtime($cachePath) >= filemtime($u)) {
+            return path_concat(THUMBPATH, 'cache', $cacheFile, filesize($u), basename($u));
+        }
     }
 
-    return $src;// . '&hash=' . $hash;
-
+    return $src; // . '&hash=' . $hash;
 }
 

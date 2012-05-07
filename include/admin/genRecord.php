@@ -19,7 +19,7 @@ class genRecord {
     public $table;
     public $row;
 
-    function __construct($table, $id, $fromGenAdmin=0) {
+    function __construct($table, $id, $fromGenAdmin = 0) {
         $this->JustInserted = false;
         $this->table = $table;
         $this->id = $id;
@@ -177,7 +177,7 @@ class genRecord {
         }
 
         if (isset($_REQUEST['genform_downfk'])) {
-            $t = split("__", $_REQUEST['genform_downfk']);
+            $t = explode("__", $_REQUEST['genform_downfk']);
             $ord = new GenOrder($t[0], $t[1], 0, $t[2]);
             $ord->GetDown();
 
@@ -191,8 +191,14 @@ class genRecord {
             $ord->ReOrder();
         }
 
+
+        if (akev($_REQUEST, 'genform_stay') == 'ajaxsave') {
+            echo  $_REQUEST['curId'];
+            die();
+        }
+
         
-        if (akev($_REQUEST,'genform_stay') == 'autosave') {
+        if (akev($_REQUEST, 'genform_stay') == 'autosave') {
             echo '<style>*{font-size:11px;padding:2px;margin:0;border:0;font-family:sans-serif;text-align:right;}</style>' . t('saved_at') . date('H:i:s') . '';
             echo '
         	<script>
@@ -332,12 +338,13 @@ class genRecord {
         //if ($action != 'save')
 
         $status = true;
+
         logAction($action, $this->table, $this->id);
 
         if (is_array($gr_on)) {
 
-
-            if (array_key_exists($action, $gr_on) && array_key_exists($this->table, $gr_on[$action])) {
+            if (array_key_exists($action, $gr_on) &&
+                    array_key_exists($this->table, $gr_on[$action])) {
 
                 if (!is_array($gr_on[$action][$this->table])) {
                     $gr_on[$action][$this->table] = array($gr_on[$action][$this->table]);
@@ -492,7 +499,7 @@ class genRecord {
 
         $isError = false;
         /* Boucle sur le tableau POST */
-        
+
         reset($_POST);
         // debug('New Record');
 
@@ -628,10 +635,15 @@ class genRecord {
                             }
                         }
                     }
-                }else
-                    /**
-                     * Tablerel gérée avec des tags !
-                     */
+
+                     if(isNeeded($this->table, $tab[1]) && !count($value)|| $value == "") {
+                        $isError = 1;
+                        $fieldError[$tab[1]] = 1;
+                    }
+                } else
+                /**
+                 * Tablerel gérée avec des tags !
+                 */
                 if (strstr($key_name, "genform_tagrel") !== false && strstr($key_name, "_temoin") !== false) {
                     $key_name = str_replace("_temoin", "", $key_name);
                     $value = akev($_POST, $key_name);
@@ -660,18 +672,18 @@ class genRecord {
                                 /**
                                  * Nouvel élément
                                  */
-                                if(strpos($k, '-') !== false) {                                    
+                                if (strpos($k, '-') !== false) {
                                     $c = $_Gconfig['tablerelAsTags'][$tab[1]]['allowAdd'];
-                                    if($c) {
-                                       
-                                        $rinsert = array($c=>$v);
+                                    if ($c) {
+
+                                        $rinsert = array($c => $v);
                                         global $co;
-                                        $co->Autoexecute($fk_table,$rinsert,'INSERT');
+                                        $co->Autoexecute($fk_table, $rinsert, 'INSERT');
                                         $v = InsertId();
                                     }
                                 } else {
                                     $v = $k;
-                                }                                
+                                }
                                 $orderField = '';
                                 $orderValue = '';
                                 if (array_key_exists($tab[1], $orderFields)) {
@@ -683,6 +695,10 @@ class genRecord {
                                 $order++;
                             }
                         }
+                    }
+                    if(isNeeded($this->table, $tab[1]) && (!count($value) || $value == "") ) {
+                        $isError = 1;
+                        $fieldError[$tab[1]] = 1;
                     }
                 } else
 
@@ -700,7 +716,7 @@ class genRecord {
                         /* Nombre reel */
                         if ($tab_field[$name]->type == "real") {
                             $val1 = (real) $value;
-                            if (preg_match("/[A-Z,a-z]/", $value)) {
+                            if (preg_match("/[A-Za-z]/", $value)) {
                                 // echo "Found letters";
                                 $isError = 1;
                                 $fieldError[$name] = 1;
@@ -712,7 +728,7 @@ class genRecord {
                             $value = str_replace(" ", "", $value);
                             $value = str_replace(".", "", $value);
                             $value = str_replace(",", "", $value);
-                            if (preg_match("/[A-Z,a-z]/", $value)) {
+                            if (preg_match("/[A-Za-z]/", $value) && $value != "NULL") {
                                 // echo "Found letters";
                                 $isError = 1;
                                 $fieldError[$name] = 1;
@@ -721,7 +737,7 @@ class genRecord {
                             /* DATE */
                         } else if ($tab_field[$name]->type == "date" && false) {
                             $value = $_POST['genform_' . $name . '_year'] . '-' . $_POST['genform_' . $name . '_month'] . '-' . $_POST['genform_' . $name . '_day'];
-                            $dates = split("-", $value);
+                            $dates = explode("-", $value);
 
                             /* TIME */
                         } else if ($tab_field[$name]->type == "time") {
@@ -740,7 +756,7 @@ class genRecord {
 
                             $value = $_POST['genform_' . $name] . ' ' . $_POST['genform_' . $name . '_hh'] . ':' . $_POST['genform_' . $name . '_mm'] . ':' . $_POST['genform_' . $name . '_ss'];
 
-                            $dates = split("-", $value);
+                            $dates = explode("-", $value);
                         }
                     } else if (arrayInWord($mailFields, $name) && 0) {
                         if ($_POST['genform_' . $name . '_beforeat'] && $_POST['genform_' . $name . '_afterat']) {
@@ -759,7 +775,9 @@ class genRecord {
                     if ($value == DEFAULT_URL_VALUE)
                         $value = "";
 
-                    if (($value == "" || $value == "0" || $value == "0.0") && @in_array($name, $neededFields)) {
+                    $value = trim($value);
+                    if (($value == "" || $value == "0" || $value == "0.0" || $value == "NULL" || $value == "::"
+                                || (is_array($value) && count($value) == 0))  && isNeeded($this->table, $name)) {
                         $isError = 1;
                         $fieldError[$name] = 1;
                     }
@@ -901,7 +919,7 @@ class genRecord {
         }
 
         $this->checkDoOn('afterUpdate');
-
+        $GLOBALS['fieldErrorTable'] = $this->table;
         if ($isError)
             return $fieldError;
         else

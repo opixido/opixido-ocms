@@ -107,11 +107,11 @@ class row {
 
                 $sql = 'SELECT T.*
 						FROM ' . $fk_table . ' AS T, ' . $field . ' AS R
-						WHERE ' . getPrimaryKey($fk_table) . ' = ' . $pk2 . '
-						AND ' . $pk1 . ' = ' . sql($this->id) . '';
+						WHERE T.' . getPrimaryKey($fk_table) . ' = R.' . $pk2 . '
+						AND R.' . $pk1 . ' = ' . sql($this->id) . '';
 
                 if (!empty($orderFields[$field])) {
-                    $sql .= ' ORDER BY ' . $orderFields[$field][0];
+                    $sql .= ' ORDER BY R.' . $orderFields[$field][0];
                 }
 
                 $this->$field = GetAll($sql);
@@ -144,7 +144,10 @@ class row {
              */
         } else {
 
-            $type = $this->tabField[$field]->type;
+            $type = '';
+            if(!empty($this->tabField[$field])) {
+                $type = $this->tabField[$field]->type;
+            }
 
             if ($type == 'date' || $type == 'datetime') {
 

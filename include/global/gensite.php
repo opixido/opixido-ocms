@@ -26,31 +26,35 @@ class genSite {
 
     public $rubrique_id;
     public $lg;
+
     /**
      * Gen URL
      *
      * @var genUrl
      */
     public $g_url;
-    
+
     /**
      * Les headers
      *
      * @var genHeaders GenHEaders
      */
     public $g_headers;
+
     /**
      * Gen Menu
      *
      * @var genMenu
      */
     public $g_menu;
+
     /**
      * Objet g_rubrique
      *
      * @var genRubrique
      */
     public $g_rubrique;
+
     /**
      * La page en cours a t'elle été trouvée ?
      * 
@@ -67,12 +71,12 @@ class genSite {
     function __construct() {
 
 
-	global $lg, $otherLg;
-	global $lglocale;
+        global $lg, $otherLg;
+        global $lglocale;
 
-	$GLOBALS['_gensite'] = &$this;
+        $GLOBALS['_gensite'] = &$this;
 
-	loadParams();
+        loadParams();
     }
 
     /**
@@ -82,15 +86,15 @@ class genSite {
      */
     public function initLight() {
 
-	global $_Gconfig;
+        global $_Gconfig;
 
-	if(!defined('LG')) {
-	    define("LG", LG_DEF);
-	    myLocale(LG_DEF);
-	    define("LGDEF", false);
-	}
-	//$GLOBALS['gb_obj']->includeFile($_Gconfig['URL_MANAGER'].'.php','global/ondemand');
-	$this->g_url = new $_Gconfig['URL_MANAGER'](LG);
+        if (!defined('LG')) {
+            define("LG", LG_DEF);
+            myLocale(LG_DEF);
+            define("LGDEF", false);
+        }
+        //$GLOBALS['gb_obj']->includeFile($_Gconfig['URL_MANAGER'].'.php','global/ondemand');
+        $this->g_url = new $_Gconfig['URL_MANAGER'](LG);
     }
 
     /**
@@ -99,37 +103,37 @@ class genSite {
      */
     public function init() {
 
-	global $_Gconfig;
+        global $_Gconfig;
 
-	$this->g_url = new $_Gconfig['URL_MANAGER']();
-	
-	$this->rubrique_id = $this->g_url->getRubId();
+        $this->g_url = new $_Gconfig['URL_MANAGER']();
+
+        $this->rubrique_id = $this->g_url->getRubId();
 
 
-	$this->lg = $this->g_url->getLg();
+        $this->lg = $this->g_url->getLg();
 
-	$lg = $this->lg;
+        $lg = $this->lg;
 
-	if ($lg) {
+        if ($lg) {
 
-	    mylocale($lg);
-	} else {
-	    mylocale(LG_DEF);
-	}
+            mylocale($lg);
+        } else {
+            mylocale(LG_DEF);
+        }
 
-	if (!defined('LG')) {
-	    define("LG", $lg);
-	}
+        if (!defined('LG')) {
+            define("LG", $lg);
+        }
 
-	loadTrads($this->lg);
+        loadTrads($this->lg);
 
-	$this->pluginLoadConf();
+        $this->pluginLoadConf();
 
-	
-	/**
-	 * Liste des menus
-	 */
-	$sql = 'SELECT * FROM s_rubrique
+
+        /**
+         * Liste des menus
+         */
+        $sql = 'SELECT * FROM s_rubrique
 			WHERE 1
 			AND rubrique_type LIKE "' . RTYPE_MENUROOT . '"
 			' . sqlMenuOnlyOnline() . ' 
@@ -137,30 +141,30 @@ class genSite {
 			ORDER BY rubrique_ordre ASC';
 
 
-	$res = GetAll($sql);
+        $res = GetAll($sql);
 
-	$this->menus = array();
-	foreach ($res as $row) {
-	    $this->menus[$row['rubrique_url_' . LG_DEF]] = new genMenu($this, $row['rubrique_url_' . LG_DEF], $row['rubrique_id'], $row);
-	}
-
-
+        $this->menus = array();
+        foreach ($res as $row) {
+            $this->menus[$row['rubrique_url_' . LG_DEF]] = new genMenu($this, $row['rubrique_url_' . LG_DEF], $row['rubrique_id'], $row);
+        }
 
 
-	$baseLgLoc = $lg . '_' . strtoupper($lg);
-	$lglocale = array($baseLgLoc . '.UTF-8', $baseLgLoc . '.utf8', $baseLgLoc . '@euro', $baseLgLoc, $lg);
-
-	mylocale($lglocale);
 
 
-	// Headers HTML
-	$this->g_headers = new genHeaders($this);
+        $baseLgLoc = $lg . '_' . strtoupper($lg);
+        $lglocale = array($baseLgLoc . '.UTF-8', $baseLgLoc . '.utf8', $baseLgLoc . '@euro', $baseLgLoc, $lg);
 
-	// Gestion de la rubrique
-	$this->g_rubrique = new genRubrique($this);
+        mylocale($lglocale);
 
-	$this->plugins = &$this->g_rubrique->plugins;
-	$GLOBALS['plugins'] = &$this->g_rubrique->plugins;
+
+        // Headers HTML
+        $this->g_headers = new genHeaders($this);
+
+        // Gestion de la rubrique
+        $this->g_rubrique = new genRubrique($this);
+
+        $this->plugins = &$this->g_rubrique->plugins;
+        $GLOBALS['plugins'] = &$this->g_rubrique->plugins;
     }
 
     /**
@@ -168,58 +172,57 @@ class genSite {
      */
     function pluginLoadConf() {
 
-	$p = GetPlugins();
+        $p = GetPlugins();
 
-	foreach ($p as $v) {
-	    $GLOBALS['gb_obj']->includeFile('config.php', PLUGINS_FOLDER . '' . $v . '/');
-	}
+        foreach ($p as $v) {
+            $GLOBALS['gb_obj']->includeFile('config.php', PLUGINS_FOLDER . '' . $v . '/');
+        }
     }
 
     /**
      * Gere les actions front office
      */
     function handleAction() {
-	if (strlen($this->g_url->action)) {
-	    $ga = new GenAction($this->g_url->action, 's_rubrique', $this->rubrique_id);
-	    $ga->DoIt();
-	    //debug('valid');
-	}
+        if (strlen($this->g_url->action)) {
+            $ga = new GenAction($this->g_url->action, 's_rubrique', $this->rubrique_id);
+            $ga->DoIt();
+            //debug('valid');
+        }
     }
-    
 
     /**
      * Apres la construction, l'initialisation
      */
     function afterInit() {
-	$this->g_rubrique->afterInit();
+        $this->g_rubrique->afterInit();
     }
 
     function gen() {
 
-	/**
-	 * 	Genere le site
-	 * 	Avec ou sans popup, en PDF ou non, ...
-	 * 	TODO : Gérer de maniere plus dynamique les differents type d'affichage
-	 */
-	$this->g_rubrique->execute('beforeGen');
-	$html = "";
+        /**
+         * 	Genere le site
+         * 	Avec ou sans popup, en PDF ou non, ...
+         * 	TODO : Gérer de maniere plus dynamique les differents type d'affichage
+         */
+        $this->g_rubrique->execute('beforeGen');
+        $html = "";
 
-	if ($this->g_url->TEMPLATE) {
-	    $tpl = $this->g_url->TEMPLATE;
-	} else {
-	    $tpl = 'default';
-	}
-	if (ake($_REQUEST, 'ocms_mode')) {
-	    $mode = str_replace('.', '', niceName($_REQUEST['ocms_mode']));
-	} else {
-	    $mode = 'html';
-	}
+        if ($this->g_url->TEMPLATE) {
+            $tpl = $this->g_url->TEMPLATE;
+        } else {
+            $tpl = 'default';
+        }
+        if (ake($_REQUEST, 'ocms_mode')) {
+            $mode = str_replace('.', '', niceName($_REQUEST['ocms_mode']));
+        } else {
+            $mode = 'html';
+        }
 
-	include($GLOBALS['gb_obj']->getIncludePath($tpl . '.' . $mode . '.php', 'exports'));
+        include($GLOBALS['gb_obj']->getIncludePath($tpl . '.' . $mode . '.php', 'exports'));
 
-	if (akev($_REQUEST, 'ocms_charset')) {
-	    $html = utf8_decode($html);
-	}
+        if (akev($_REQUEST, 'ocms_charset')) {
+            $html = utf8_decode($html);
+        }
     }
 
     /**
@@ -227,7 +230,7 @@ class genSite {
      */
     function getCurId() {
 
-	return $this->rubrique_id;
+        return $this->rubrique_id;
     }
 
     /**
@@ -238,7 +241,7 @@ class genSite {
      */
     function getLgValue($k, $tab, $addspan=true) {
 
-	return getLgValue($k, $tab, $addspan);
+        return getLgValue($k, $tab, $addspan);
     }
 
     /**
@@ -246,7 +249,7 @@ class genSite {
      * */
     function getOtherLgValue($k, $tab) {
 
-	return getOtherLgValue($k, $tab);
+        return getOtherLgValue($k, $tab);
     }
 
     /**
@@ -254,7 +257,7 @@ class genSite {
      */
     function getLg() {
 
-	return $this->lg;
+        return $this->lg;
     }
 
     /**
@@ -262,7 +265,7 @@ class genSite {
      * */
     function getOtherLg() {
 
-	return getOtherLg();
+        return getOtherLg();
     }
 
     /**
@@ -271,15 +274,15 @@ class genSite {
      * @return array Liste de tous les menus root
      */
     function getMenus($under=false) {
-	$sql = 'SELECT * FROM s_rubrique AS R WHERE 1 ' . sqlMenuOnlyOnline('R');
-	if ($under) {
-	    $sql .= ' AND fk_rubrique_id = ' . $under;
-	}
-	$res = GetAll($sql);
+        $sql = 'SELECT * FROM s_rubrique AS R WHERE 1 ' . sqlMenuOnlyOnline('R');
+        if ($under) {
+            $sql .= ' AND fk_rubrique_id = ' . $under;
+        }
+        $res = GetAll($sql);
 
-	#debug($sql);
+        #debug($sql);
 
-	return $res;
+        return $res;
     }
 
     /**
@@ -299,36 +302,37 @@ class genSite {
      */
     function doExport($contenu, $ct='text/plain', $charset='utf-8', $nom='export.csv', $download=true, $sup_headers='', $compress=false) {
 
+        if (ob_get_status()) {
+            ob_end_clean();
+        }
+        if ($compress) {
+            ob_start("ob_gzhandler");
+        }
+        header("HTTP/1.1 200 OK");
+        header('Content-type: ' . $ct . '; charset=' . $charset);
+        header('Cache-Control:');
+        header('Pragma:');
+        header('Content-Length: ' . mb_strlen($contenu));
 
-	ob_end_clean();
-	if ($compress) {
-	    ob_start("ob_gzhandler");
-	}
-	header("HTTP/1.1 200 OK");
-	header('Content-type: ' . $ct . '; charset=' . $charset);
-	header('Cache-Control:');
-	header('Pragma:');
-	header('Content-Length: ' . mb_strlen($contenu));
+        if ($download)
+            header('Content-Disposition: attachment; filename="' . $nom . '"');
 
-	if ($download)
-	    header('Content-Disposition: attachment; filename="' . $nom . '"');
+        if (strlen($sup_headers)) {
 
-	if (strlen($sup_headers)) {
+            $sup_headers = explode("\n", $sup_headers);
+            foreach ($sup_headers as $v)
+                header($v);
+        }
 
-	    $sup_headers = explode("\n", $sup_headers);
-	    foreach ($sup_headers as $v)
-		header($v);
-	}
+        print($contenu);
 
-	print($contenu);
+        if ($compress) {
 
-	if ($compress) {
-
-	    ob_end_flush();
-	}
-	if (!$download && function_exists('saveAgCache'))
-	    saveAgCache($contenu);
-	die();
+            ob_end_flush();
+        }
+        if (!$download && function_exists('saveAgCache'))
+            saveAgCache($contenu);
+        die();
     }
 
 }

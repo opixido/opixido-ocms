@@ -1,6 +1,9 @@
 <?php
 
 
+
+global $_bdd_host,$_bdd_type,$_bdd_pwd,$_bdd_bdd,$_bdd_user;
+
 if(!defined('BU')) {
 	define('BU', substr($_SERVER['SCRIPT_NAME'],0,strpos($_SERVER['SCRIPT_NAME'],'/admin/')));	
 }
