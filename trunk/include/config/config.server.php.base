@@ -6,8 +6,7 @@
 /**
  * Variables globales
  */
-global $sqlTime, $baseWebPath, $_Gconfig;
-
+global $sqlTime, $baseWebPath, $_Gconfig,$_bdd_host,$_bdd_type,$_bdd_pwd,$_bdd_bdd,$_bdd_user;
 /**
  * Tableau général de configuration
  */
