@@ -115,14 +115,14 @@ echo 'var lgs = ' . json_encode($_Gconfig['LANGUAGES']) . ';';
                                 </ul>
                             </div>
                             <style type="text/css">
-        <?php
-        $nb--;
-        echo '.menu_' . $nb . ' , .menu_' . ($nb - 1) . ' {left:auto!important;right:-5px!important;} ';
-        ?>
+				<?php
+				$nb--;
+				echo '.menu_' . $nb . ' , .menu_' . ($nb - 1) . ' {left:auto!important;right:-5px!important;} ';
+				?>
                             </style>
                             <div class="clearer"></div>
                         <?php } ?>
-                        <a class="logoa" href="index.php?home=1" style="height:65px;"><h1>&nbsp;</h1></a>
+                        <a class="logoa" href="index.php?home=1" style="height:65px;"><h1><?php echo ta('base_title') ?> </h1></a>
                     </div>
                 </div>
 
