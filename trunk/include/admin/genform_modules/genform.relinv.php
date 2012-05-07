@@ -32,6 +32,7 @@ if ($_REQUEST['curId'] != 'new') {
 // debug("--->".$fk_table );
     }
     $res = GetAll($sql);
+
 } else {
 
     $res = array();

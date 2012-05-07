@@ -80,7 +80,7 @@ class genMenu {
 	/**
 	 * Cache for menu
 	 */
-	$this->cache2 = new GenCache('arbo' . md5($_SERVER['REQUEST_URI'] . '-' . $this->site->g_url->topRubId . '-' . $this->site->getCurId() . '_' . $this->nom_menu), GetParam('date_update_arbo'));
+	$this->cache2 = new GenCache('arbo' . md5($this->site->g_url->topRubId . '-' . $this->site->getCurId() . '_' . $this->nom_menu), GetParam('date_update_arbo'));
 	if (!$this->cache2->cacheExists()) {
 	    $this->genTab();
 	}
@@ -227,11 +227,11 @@ class genMenu {
 	  @tab Menu auquel ajouter (tabFooter,tabHeader,tabPrincipal)
 	 */
 
-	$t = &$this->$tab;
-	$t[$url]['titre'] = $titre;
-	$t[$url]['url'] = $url;
-	$t[$url]['sub'] = '';
-	$t[$url]['style'] = $style;
+    	$t = &$this->$tab;
+    	$t[$url]['titre'] = $titre;
+    	$t[$url]['url'] = $url;
+    	$t[$url]['sub'] = '';
+    	$t[$url]['style'] = $style;
     }
 
     /**

@@ -77,7 +77,7 @@
     });
   
 
-<?php if ($GLOBALS['rteElements']) { ?>
+<?php if (!empty($GLOBALS['rteElements'])) { ?>
         if(tinyMCE_GZ) {
             tinyMCE_GZ.init({
                 theme : "advanced",

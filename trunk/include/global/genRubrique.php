@@ -246,7 +246,6 @@ class genRubrique {
 
 	    $this->bddClasse = getGabaritClass($this->gabarit, $this->rubrique['rubrique_gabarit_param']);
 
-
 	    $GLOBALS['times']['BDD'] += ( getmicrotime() - $startTimeBdd);
 	    $GLOBALS['times']['Plugins'] += $GLOBALS['times']['BDD'];
 	}

@@ -17,8 +17,8 @@ if ($_GET['nocache']) {
 /**
  * Compression et union des JS et CSS ?
  */
-$_Gconfig['compressCssFiles'] = true;
-$_Gconfig['compressJsFiles'] = true;
+$_Gconfig['compressCssFiles'] = false;
+$_Gconfig['compressJsFiles'] = false;
 
 
 /**
@@ -32,9 +32,11 @@ $_Gconfig['debugSql'] = $_GET['debugSql'] ? true : $_Gconfig['debugSql'];
  * Quel schéma d'URL ?
  * genUrlSimple ou genUrl
  */
-$_Gconfig['URL_MANAGER'] = 'genUrl';
-
-
+if ($_SERVER['REMOTE_ADDR'] == '192.168.1.199') {
+    $_Gconfig['URL_MANAGER'] = 'genUrlV2';
+} else {
+    $_Gconfig['URL_MANAGER'] = 'genUrlV2';
+}
 define('THUMBPATH', BU . '/thumb');
 define('IMG_GENERATOR', BU . '/imgps.php');
 
@@ -50,7 +52,7 @@ $_Gconfig['titre'] = '';
 $_Gconfig['LANGUAGES'] = array('fr');
 $_Gconfig['ADMIN_LANGUAGES'] = array('fr');
 
-$_Gconfig['onlyOneLgForever'] = false;
+$_Gconfig['onlyOneLgForever'] = true;
 
 define('ADMIN_LG_DEF', 'fr');
 
@@ -318,8 +320,8 @@ $_Gconfig['menus']['__default__'] = array(
     'use_premade_images' => false,
     'open_selected' => false,
     'max_open_selected' => 3,
-    'tpl_name'=>'menu.item',
-    'tpl_folder'=>'template',
+    'tpl_name' => 'menu.item',
+    'tpl_folder' => 'template',
     'profile' => 'menu_gauche',
     'rollover' => 'menu_gauche_hover',
     'rollovers' => array(),

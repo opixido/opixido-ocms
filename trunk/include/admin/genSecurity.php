@@ -84,7 +84,7 @@ if (!class_exists('genSecurity')) {
                 $this->clearAuth();
             }
 
-            $_SESSION['gs_adminuser'] = $this->adminuser = ake($_POST, 'gs_adminuser') ? $_POST['gs_adminuser'] : $_SESSION['gs_adminuser'];
+            $_SESSION['gs_adminuser'] = $this->adminuser = ake($_POST, 'gs_adminuser') ? $_POST['gs_adminuser'] : akev($_SESSION,'gs_adminuser');
 
 
             /**
@@ -150,11 +150,7 @@ if (!class_exists('genSecurity')) {
         function checkAuth() {
             /*
               Connexion et verification
-
              */
-
-
-
             if (!$this->checkedAuth) {
 
                 if (strlen($this->adminpassword)) {
@@ -214,7 +210,7 @@ if (!class_exists('genSecurity')) {
          */
         function getRoles() {
 
-
+            global $_Gconfig;
             $this->myroles = array();
 
             $sql = 'SELECT * FROM s_admin_role AS AR, s_role AS R , s_role_table AS RT WHERE
@@ -282,9 +278,9 @@ if (!class_exists('genSecurity')) {
                     $pk = getPrimaryKey($row['role_table_table']);
 
                     $chp = false;
-                    if ($table['ocms_creator']) {
-                        $chp = 'ocms_creator';
-                    } else if ($table['fk_admin_id']) {
+                    if (!empty($table[$_Gconfig['field_creator']])) {
+                        $chp = $_Gconfig['field_creator'];
+                    } else if (!empty($table['fk_admin_id'])) {
                         $chp = 'fk_admin_id';
                     }
 
@@ -370,6 +366,7 @@ if (!class_exists('genSecurity')) {
                     $this->recurvRelTable($row['role_table_table']);
                 }
             }
+
         }
 
         function recurvRelTable($table) {
@@ -416,6 +413,7 @@ if (!class_exists('genSecurity')) {
             global $relinv, $co;
 
             reset($relinv);
+
             /**
              * No relinv ... nothing to do
              */
@@ -444,10 +442,13 @@ if (!class_exists('genSecurity')) {
                             'champs' => 'all',
                             'type' => 'all',
                             'condition' => array('arbo', 'proprio'),
-                            'conditionSqlWhere' => ' AND ' . $tableau[1] . ' IN (' . implode(',', $this->myroles[$table]['rows']) . ') ',
+                            
                             'actions' => array(),
                             'rows' => array()
                         );
+                        if(!empty( $this->myroles[$table]['rows'])) {
+                            $this->myroles[$tableau[0]]['conditionSqlWhere'] = ' AND ' . $tableau[1] . ' IN (' . implode(',', $this->myroles[$table]['rows']) . ') ';
+                        }
                     }
 
                     /**
@@ -578,6 +579,7 @@ if (!class_exists('genSecurity')) {
                 if (!count($tab_default_field)) {
                     $tab_default_field = getRowFromId($table, $id);
                 }
+
                 /**
                  * On ajoute l'action VALIDER / Masquer si l'on est dans une rubrique avec VERSION_FIELD
                  */
@@ -708,7 +710,6 @@ if (!class_exists('genSecurity')) {
 
                 $return = $this->canRow($action, $table, $row, $id);
             } else if (strlen($action) && $table) {
-
                 $return = $this->canTable($action, $table, $champ, $valeur);
             } else if (strlen($action)) {
 
@@ -736,7 +737,6 @@ if (!class_exists('genSecurity')) {
             /*
               Retourne true ou false selon les droits sur une table en particulier
              */
-
             if (@array_key_exists($table, $this->myroles)) {
                 if ($action == "add") {
                     if ($this->myroles[$table]['add']) {
@@ -884,15 +884,13 @@ if (!class_exists('genSecurity')) {
               Du genre checkarbo, chekowner, ...
 
              */
-
+            global $_Gconfig;
             if (@in_array($row[getPrimaryKey($table)], $this->myroles[$table]['rows'])) {
-
                 return true;
             }
-            //debug($condition);
-            if (in_array('proprio', $condition) || ake('proprio', $condition)) {
-
-                if ($row['ocms_creator'] == $this->adminid) {
+            //debug($condition);            
+            if (in_array('proprio', $condition) || ake('proprio', $condition)) {                
+                if ($row[$_Gconfig['field_creator']] == $this->adminid || isNull($row[getPrimaryKey($table)])) {
                     return true;
                 }
             }
@@ -1021,7 +1019,7 @@ if (!class_exists('genSecurity')) {
             if ($this->superAdmin)
                 return '';
 
-            if ($this->myroles[$table]['view']) {
+            if (!empty($this->myroles[$table]['view'])) {
 
                 /**
                  * Ajout de Olivier le 24/11/2010 && count($this->myroles[$table]['rows'])

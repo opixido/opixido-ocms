@@ -12,7 +12,7 @@ if (!is_object($this->gs))
 class genform_tablerel extends genform_base {
 
     public $fk_champ = '';
-
+    public $valuesSelect = '';
     function init() {
 
         global $orderFields, $tablerel, $tabForms, $_Gconfig;
@@ -78,22 +78,100 @@ class genform_tablerel extends genform_base {
 
         if (!empty($_Gconfig['specialListingWhere'][$this->champ])) {
 
-            $this->sqlLeft = 'SELECT T2.*
+            $this->sqlLeft = $this->sqlLeftInit = 'SELECT T2.*
 							  FROM ' . $this->fk_table . ' AS T2  
 							  WHERE 1 ' . ($_Gconfig['specialListingWhere'][$this->champ]($this->gf)) . '
 							  ' . $sqlversioned . '
 							  ORDER BY ' . $this->nomSql;
         } else {
 
-            $this->sqlLeft = 'SELECT T2.*
+            $this->sqlLeft = $this->sqlLeftInit = 'SELECT T2.*
 							  FROM ' . $this->fk_table . ' AS T2  ' . '  
 							  WHERE 1 ' . $sqlversioned . '
 							  ORDER BY ' . $this->nomSql;
         }
     }
 
-    function genAjaxField() {
+    function genFullarbo() {
 
+        $this->sel = $this->getSelectedItems();
+        $this->sel  = explode(',', str_replace(" ", "", $this->sel));
+        
+        global $_Gconfig;
+
+        list($parentTable, $parentField) = $_Gconfig['tablerelAsFullarbo'][$this->champ];
+
+        $nomSql = getTitleFromTable($parentTable, ' , ');
+        if (!empty($_Gconfig['specialListingWhereFullArbo'][$this->champ])) {
+            $sql = 'SELECT * FROM ' . $parentTable . ' WHERE 1 ' . ($_Gconfig['specialListingWhereFullArbo'][$this->champ]($this->gf)) . ' ORDER BY ' . $nomSql;
+        } else {
+            $sql = 'SELECT * FROM ' . $parentTable . ' WHERE 1  ORDER BY ' . $nomSql;
+        }
+        $res = DoSql($sql);
+
+        $this->addBuffer('<ul class="tablerelfullarbo" id="' . $this->champ . '">');
+        
+        foreach ($res as $row) {
+            $this->addBuffer('<li> ' . GetTitleFromRow($parentTable, $row) . ''); //id="fullarbo_'.$this->champ.'_'.$row[getPrimaryKey($parentTable)].'"
+            $this->getSubsWhere($_Gconfig['fullArbo'][$parentTable][$parentField], $_Gconfig['fullArbo'][$parentTable][$parentField][1] . ' = ' . $row[getPrimaryKey($parentTable)] . ' AND ' . $_Gconfig['fullArbo'][$parentTable][$parentField][2] . ' IS NULL ');
+            $this->addBuffer('</li>');
+            $this->addBuffer("\n");
+        }
+
+        $this->addBuffer('</ul>');
+        $this->addBuffer('<input type="hidden" name="genform_rel__' . $this->champ . '__' . $this->pk2 . '_temoin" value="1" />');
+        $this->addBuffer('<script>$(document).ready(function(){
+            $("#'.$this->champ.' input").attr("name","genform_rel__'.$this->champ.'__'.$this->pk2.'[]");
+            $("#' . $this->champ . '").collapsibleCheckboxTree({checkParents : false,uncheckChildren : false});
+            });</script>');
+    }
+
+    function getSubsWhere($config, $where) {
+
+        $sql = 'SELECT * FROM ' . $config[0] . ' WHERE ' . $where;
+        $res = DoSql($sql);
+        $pk = $this->pk2;
+        if ($res->RecordCount() > 0) {
+            $this->addBuffer('<ul>');
+            foreach ($res as $row) {
+                $s = '';
+                if(in_array($row[getPrimaryKey($config[0])], $this->sel)) {
+                    $s = ' checked ';
+                }
+                $this->addBuffer('<li><label><input type="checkbox" '.$s.' value="'.$row[getPrimaryKey($config[0])].'" /> ' . GetTitleFromRow($config[0], $row) . '</label>');
+                $this->getSubsWhere($config, $config[2] . ' = ' . $row[$pk] . '');
+                $this->addBuffer('</li>');
+                $this->addBuffer("\n");
+            }
+            $this->addBuffer('</ul>');
+        }
+    }
+
+    function genCheckBoxField() {
+
+        $r = DoSql($this->sqlLeftInit);
+
+        $sel = $this->getSelectedItems();
+        $sel = explode(',', str_replace(" ", "", $sel));
+
+
+        $pk = getPrimaryKey($this->fk_table);
+        foreach ($r as $v) {
+            $h = '';
+            $id = $this->champ . '_' . $v[$pk];
+            $s = in_array($v[$pk], $sel) ? 'checked="checked"' : '';
+
+            $h .= '<label class="tablerelcheckbox" for="' . $id . '" >
+                    <input ' . $s . ' type="checkbox" name="genform_rel__' . $this->champ . '__' . $this->pk2 . '[]"
+                        id="' . $id . '" value="' . $v[$pk] . '" /> <span>' . GetTitleFromRow($this->fk_table, $v) . '</span></label>';
+            $this->addBuffer($h);
+        }
+
+        $this->addBuffer('<div class="clearer"></div>');
+        $this->addBuffer('<input type="hidden" name="genform_rel__' . $this->champ . '__' . $this->pk2 . '_temoin" value="1" />');
+    }
+
+    function genAjaxField() {
 
         $h = '';
 
@@ -101,7 +179,7 @@ class genform_tablerel extends genform_base {
         global $_Gconfig;
         $fields = $_Gconfig['tablerelAsTags'][$this->champ]['label'];
 
-        $sel = choose($sel,"''");
+        $sel = choose($sel, "''");
         $vals = 'SELECT * FROM ' . $this->fk_table . ' WHERE ' . $this->pk2 . ' IN (' . $sel . ') ';
         $res = DoSql($vals);
 
@@ -113,7 +191,7 @@ class genform_tablerel extends genform_base {
             }
             $assi .= '<input class="tag_' . $this->champ . '" type="text" name="genform_tagrel__' . $this->champ . '__' . $this->pk2 . '[' . $row[$this->pk2] . ']" value=' . alt(implode($t, ' - ')) . ' />';
         }
-        if(!$res->RowCount()) {
+        if (!$res->RowCount()) {
             $assi = $assi .= '<input class="tag_' . $this->champ . '" type="text" name="genform_tagrel__' . $this->champ . '__' . $this->pk2 . '[]" value="" />';
         }
 
@@ -124,10 +202,10 @@ class genform_tablerel extends genform_base {
         $h .= '<script type="text/javascript">
 
            $("input.tag_' . $this->champ . '" ).tagedit({
-                autocompleteURL: "?xhr=tablerelAsTags&table='.$this->fk_table.'&tablerel='.$this->champ.'",                
+                autocompleteURL: "?xhr=tablerelAsTags&table=' . $this->fk_table . '&tablerel=' . $this->champ . '",
                 allowEdit: false,
                 addedPostfix : "",
-                allowAdd:'.$allowAdd.'
+                allowAdd:' . $allowAdd . '
 	   });
             </script>';
 
@@ -140,7 +218,15 @@ class genform_tablerel extends genform_base {
 
         if (isset($_Gconfig['tablerelAsTags'][$this->champ])) {
             return $this->genAjaxField();
+        } else
+        if (isset($_Gconfig['tablerelAsCheckbox'][$this->champ])) {
+            return $this->genCheckBoxField();
+        } else
+        if (isset($_Gconfig['tablerelAsFullarbo'][$this->champ])) {
+            return $this->genFullarbo();
         }
+
+
         $chps = '';
         /**
          * Image d'aide

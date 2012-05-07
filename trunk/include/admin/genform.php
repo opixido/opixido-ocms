@@ -77,8 +77,9 @@ class GenForm {
 
         $this->table = $this->table_name = $_name;
 
-        if (!$_REQUEST['curTable'])
+        if (empty($_REQUEST['curTable'])) {
             $_REQUEST['curTable'] = $_name;
+        }
         // debugtrace();
 
         $action = !$editMode ? 'edit' : 'view';
@@ -399,7 +400,7 @@ class GenForm {
      *
      * @param unknown_type $idH
      */
-    function genHelpImage($idH, $idt='') {
+    function genHelpImage($idH, $idt = '') {
         if ($this->showHelp) {
             if (tradExists('help_' . $idt) && $idt) {
                 $idH = 'help_' . $idt;
@@ -418,7 +419,7 @@ class GenForm {
      * @param unknown_type $attributs
      * @param unknown_type $preValues
      */
-    function genlg($tab_name, $fk_table = "", $traduction = "", $attributs = "", $preValues=array()) {
+    function genlg($tab_name, $fk_table = "", $traduction = "", $attributs = "", $preValues = array()) {
 
 
         global $_Gconfig;
@@ -520,7 +521,7 @@ class GenForm {
         $this->addBuffer(getEditTrad($nom));
     }
 
-    function printLabel($tab_name, $fk_table = "", $traduction = "", $attributs = "", $preValues=array()) {
+    function printLabel($tab_name, $fk_table = "", $traduction = "", $attributs = "", $preValues = array()) {
 
 
         global $_Gconfig, $rteFields, $uploadRep, $neededFields, $neededSymbol, $fieldError, $uploadFields, $mailFields, $restrictedMode, $tabForms, $relations, $arbos, $tablerel, $relinv, $previewField, $orderFields, $specialUpload, $editMode, $functionField, $_Gconfig;
@@ -575,7 +576,7 @@ class GenForm {
                 $this->addBuffer($T);
             }
 
-        if (@in_array($name, $neededFields) && (!$this->editMode ))
+        if (isNeeded($this->table, $name) && (!$this->editMode ))
             $this->addBuffer("" . $neededSymbol);
 
         $this->addBuffer('&nbsp;' . getEditTrad($tab_name));
@@ -598,7 +599,7 @@ class GenForm {
      * @param unknown_type $preValues
      * @return unknown
      */
-    function gen($tab_name, $fk_table = "", $traduction = "", $attributs = "", $preValues=array()) {
+    function gen($tab_name, $fk_table = "", $traduction = "", $attributs = "", $preValues = array()) {
         global $rteFields, $uploadRep, $neededFields, $neededSymbol, $fieldError, $uploadFields, $mailFields, $restrictedMode, $tabForms, $relations, $arbos, $tablerel, $relinv, $previewField, $orderFields, $specialUpload, $editMode, $functionField, $_Gconfig;
 
         $lastBuffer = '';
@@ -612,7 +613,7 @@ class GenForm {
         }
 
 
-        $jsColor = ' onfocus="this.className=\'inputFocus\'" onblur="this.className=\'inputNormal\'" ';
+        $jsColor = '';
 
 
 
@@ -625,9 +626,9 @@ class GenForm {
 
         if ($this->editMode && !$this->onlyData)
             $this->addBuffer('<table class="table_resume"  summary="Details of : ' . t($tab_name) . '" style="margin-left:1px;"><tr><td class="table_resume_label">'); //<label class="genform_txtres"><span >
-        else if (!$this->onlyData && !$fieldError[$name])
+        else if (!$this->onlyData && empty($fieldError[$name]))
             $this->addBuffer('<label class="genform_txt">');
-        else if (!$this->onlyData && $fieldError[$name])
+        else if (!$this->onlyData && !empty($fieldError[$name]))
             $this->addBuffer('<label class="genform_txt_error">');
 
         $this->printLabel($tab_name, $fk_table, $traduction, $attributs, $preValues);
@@ -685,7 +686,7 @@ class GenForm {
      * @param unknown_type $preValues
      * @return unknown
      */
-    function genFields($tab_name, $fk_table = "", $traduction = "", $attributs = "", $preValues=array()) {
+    function genFields($tab_name, $fk_table = "", $traduction = "", $attributs = "", $preValues = array()) {
 
 
         global $rteFields, $uploadRep, $neededFields, $neededSymbol, $fieldError, $uploadFields, $mailFields, $restrictedMode, $tabForms, $relations, $arbos, $tablerel, $relinv, $previewField, $orderFields, $specialUpload, $editMode, $functionField, $_Gconfig;
@@ -731,7 +732,7 @@ class GenForm {
             }
         }
 
-        $jsColor = ' onfocus="this.className=\'inputFocus\'" onblur="this.className=\'inputNormal\'" ';
+        $jsColor = '';
 
 
 
@@ -814,13 +815,11 @@ class GenForm {
              * 	Relation simple
              * * */
             include($gb_obj->getIncludePath('genform.relation.php', 'admin/genform_modules'));
-
-        } else if(!empty($_Gconfig['mapsFields'][$this->table][$name])) {            
+        } else if (!empty($_Gconfig['mapsFields'][$this->table][$name])) {
             /**
              * Champ latitude/longitude avec carto
              */
             include($gb_obj->getIncludePath('genform.maps.php', 'admin/genform_modules'));
-
         } else if (in_array($name, $uploadFields) || in_array(getBaseLgField($name), $uploadFields)) {
             /**
              * UPLOAD DE FICHIERS
@@ -928,7 +927,8 @@ class GenForm {
             }
 
 
-            if (is_array($fieldError)) {
+            if (is_array($fieldError) && empty($_POST['genform_stay']) && (!empty($GLOBALS['fieldErrorTable']) && $GLOBALS['fieldErrorTable'] == $this->table) ) {
+                
                 reset($fieldError);
                 p("<div class='genform_error'><h3>" . t('mal_remplit') . "</h3>");
                 while (list( $k, $v ) = each($fieldError)) {
@@ -958,7 +958,8 @@ class GenForm {
 		<script type="text/javascript">
 			
 			function saveAndReloadForm() {
-				gid("genform_stay").value = 1;
+                            var d = new Date();
+				gid("genform_stay").value = d.getTime();
 				gid("genform_ok").click();
 			}
 			
@@ -1046,7 +1047,20 @@ class GenForm {
             p('
 					
                 function doSaveAllAndStay(func) {
-                       
+                
+                        $("#genform_stay").val("ajaxsave");
+                        $.post("index.php", $("#genform_formulaire").serialize(),function(data) {
+                           // alert(data);
+                            $("#curId").val(data);
+                            if(func) {
+                                func();
+                            }
+                        });
+                        $("#genform_stay").val("");
+
+                        return;
+                        
+                       $("#genform_formulaire")[0].onsubmit = false;
                         $("#genform_stay").val("autosave");
                         if(func) {
                             $("#autosave_frame").load(func);
@@ -1058,7 +1072,6 @@ class GenForm {
                         
                 }
             ');
-            p('</script>');
 
             p('</script>');
 
@@ -1148,6 +1161,10 @@ class GenForm {
             p('
 		<script type="text/javascript">
 			genform_totalPages = ' . count($tabForms[$_REQUEST['curTable']]['pages']) . ';
+                        window.filesUploading = 0;
+                        function beforeUnloadUploading() {
+                            return ' . alt(t('fichiers_en_cours_dupload')) . ';
+                        }
 		</script>
 		');
         }
@@ -1179,7 +1196,7 @@ class GenForm {
             p('</div>');
         }
 
-        p('<div id="genform_header_btn" class="genform_header_btn" >');
+        p('<div id="gen_actions"  >');
 
 
         //onclick="validInsideSubmit(this)"
@@ -1237,7 +1254,7 @@ class GenForm {
     }
 
     // cree les champs cache du formulaire
-    function genHiddenItem($name, $hidden_value, $params="") {
+    function genHiddenItem($name, $hidden_value, $params = "") {
         /* Genere un champ caché */
         if (!strstr($params, 'id='))
             $params .= ' id="' . $name . '" ';
@@ -1306,20 +1323,17 @@ class GenForm {
         }
 
 
-
         /**
          * On parcourt toutes les actions définies pour cette table
          */
         foreach ($actions as $action) {
             if ($action != 'view') {
-
-                if ($GLOBALS['gs_obj']->can($action, $this->table_name, $this->id)) {
+                if ($GLOBALS['gs_obj']->can($action, $this->table_name, $this->id)) {                   
                     $ga = new GenAction($action, $this->table_name, $this->id, $this->tab_default_field);
 
                     if ($ga->checkCondition()) {
 
                         if (method_exists($ga->obj, 'getForm')) {
-
                             $ga->obj->getForm();
                         } else {
 
@@ -1388,7 +1402,7 @@ class GenForm {
         $this->genFooterForm();
     }
 
-    function startFieldset($nom, $open=true) {
+    function startFieldset($nom, $open = true) {
 
         if ($this->editMode) {
             return;
@@ -1418,3 +1432,17 @@ class GenForm {
 
 }
 
+
+
+function isNeeded($table, $champ) {
+    global $neededFields;
+    if (!is_array($neededFields)) {
+        return false;
+    }
+    if(in_array($table.'.'.$champ,$neededFields)) {
+        return true;
+    } else if(in_array($champ, $neededFields)) {
+        return true;
+    }
+    return false;
+}

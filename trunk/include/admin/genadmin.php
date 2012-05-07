@@ -30,12 +30,14 @@ class genAdmin {
      * @var GenSecurity
      */
     var $gs;
+
     /**
      * gencontrolpanel
      *
      * @var genControlPanel
      */
     var $control_panel;
+
     /**
      * Plugins
      *
@@ -47,12 +49,11 @@ class genAdmin {
     var $row = array();
     public $sa;
 
-
-    function genAdmin($table="", $id = 0) {
+    function genAdmin($table = "", $id = 0) {
 
         /* Always do on loading */
 
-
+        $GLOBALS['g_admin'] = $this;
         $this->table = $table;
         $this->id = $id;
         $this->sa = new smallAdmin($this);
@@ -73,6 +74,7 @@ class genAdmin {
             $_REQUEST['resume'] = 1;
         }
 
+
         $this->gs = &$gs_obj;
 
         $this->firstId = $id;
@@ -92,10 +94,12 @@ class genAdmin {
 
         $this->loadPlugins();
 
+
+
         /**
          * Ajout de l'action de géocodage si des champs sont définis
          */
-        if(is_array($_Gconfig['mapsFields']) && count($_Gconfig['mapsFields'])) {
+        if (is_array($_Gconfig['mapsFields']) && count($_Gconfig['mapsFields'])) {
             $_Gconfig['globalActions'][] = 'autoGeocodeAllFields';
         }
 
@@ -124,6 +128,9 @@ class genAdmin {
         $this->doRecord();
 
         $this->FormToInclude = $this->whichForm();
+        if ($_POST && $_REQUEST['curTable'] && $_REQUEST['curId']) {
+            $this->genRecord->checkDoOn('recorded');
+        }
 
         /* On vide la table */
         if (akev($_REQUEST, 'vider') && akev($_REQUEST, 'confirm')) {
@@ -192,6 +199,7 @@ class genAdmin {
         foreach ($plugs as $v) {
 
             $GLOBALS['gb_obj']->includeFile('admin.php', PLUGINS_FOLDER . '' . $v . '/');
+
             $adminClassName = $v . 'Admin';
             if (class_exists($adminClassName)) {
 
@@ -285,7 +293,7 @@ class genAdmin {
 
                 foreach ($_Gconfig['tableActions'][$this->table] as $action) {
 
-                    if ($this->gs->can($action, $this->table) && $action != akev($_REQUEST,'tableAction')) {
+                    if ($this->gs->can($action, $this->table) && $action != akev($_REQUEST, 'tableAction')) {
 
                         p('<a class="abutton" href="?curTable=' . $this->table . '&tableAction=' . $action . '"> <img src="' . ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/actions/' . $action . '.png" alt=""  /> ' . t($action) . '</a>');
                     }
@@ -677,7 +685,7 @@ class genAdmin {
         $_SESSION = "";
         $_SESSION = array();
 
-        header('location:/');
+        header('location:./');
     }
 
     function exportCsv() {
@@ -727,11 +735,15 @@ class genAdmin {
         $this->addMessage(t('table_videe') . " " . t($this->table));
     }
 
-    function GetRecordTitle($table, $id, $sep=" ", $pk="") {
+    function GetRecordTitle($table, $id, $sep = " ", $pk = "") {
         /*
          * Formate proprement le titre d'une table
          *
          * */
+
+        if(!$id || $id == 'new') {
+            return 'Nouveau '.t($table);
+        }
 
         global $tabForms;
         if (strlen($pk) == 0) {
@@ -767,89 +779,93 @@ class genAdmin {
         if ($urlOnline) {
             p('<a style="float:right" href="' . $urlOnline . '" target="_blank"><img src="' . ADMIN_PICTOS_FOLDER . ADMIN_PICTOS_FORM_SIZE . '/actions/document-properties.png" alt=' . alt(t('voir_enligne')) . ' /></a>');
         }
+
+        /**
+         * Nouveau et rechercher
+         */
         if ($this->id && $this->table != 's_rubrique') {
 
             p('<div class="toolsright">
-				<a class="bloc2" title=' . alt(t('add_another') . ' ' . t($_REQUEST['curTable'])) . ' 
-						href="?curTable=' . $this->table . '&curId=new">
-						<img src="' . ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/actions/document-new.png" 
-							alt=""  /></a>
-				<form class="bloc2">
-					<input type="hidden" name="curTable" value=' . alt($_REQUEST['curTable']) . ' /> 
-					<input type="hidden" name="doSimpleSearch" value="1" /> 
-					<input type="text" name="searchTxt" title=' . alt(t('search') . ' ' . t($_REQUEST['curTable'])) . ' /> 
-					<input type="image" style="border:0" src="' . ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/actions/system-search.png" /> 
-				</form>
-			</div>');
+                    <a class="bloc2" title=' . alt(t('add_another') . ' ' . t($_REQUEST['curTable'])) . '
+                                    href="?curTable=' . $this->table . '&curId=new">
+                                    <img src="' . ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/actions/document-new.png"
+                                            alt=""  /></a>
+                    <form class="bloc2">
+                            <input type="hidden" name="curTable" value=' . alt($_REQUEST['curTable']) . ' />
+                            <input type="hidden" name="doSimpleSearch" value="1" />
+                            <input type="text" name="searchTxt" title=' . alt(t('search') . ' ' . t($_REQUEST['curTable'])) . ' />
+                            <input type="image" style="border:0" src="' . ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/actions/system-search.png" />
+                    </form>
+            </div>');
         }
 
-        if (isset($_SESSION[gfuid()]['levels'][0]))
-            $table = !empty($_SESSION[gfuid()]['levels'][0]['curTable']) ? $_SESSION[gfuid()]['levels'][0]['curTable'] : $_REQUEST['curTable'];
-        else if (isset($_REQUEST['table']))
-            $table = $_REQUEST['table'];
-        else
+        //debug($_SESSION[gfuid()]);
+
+        if ($_SESSION[gfuid()]['nbLevels'] > 0) {
+            $table = !empty($_SESSION[gfuid()]['levels'][1]['curTable']) ? $_SESSION[gfuid()]['levels'][1]['curTable'] : $_REQUEST['curTable'];
+            $root_id = !empty($_SESSION[gfuid()]['levels'][1]['curId']) ? $_SESSION[gfuid()]['levels'][1]['curId'] : $_REQUEST['curId'];
+        } else if (isset($_REQUEST['curTable'])) {
+            $table = $_REQUEST['curTable'];
+            $root_id = $_REQUEST['curId'];
+        } else
             $table = false;
 
 
+
+
+        /**
+         * Retour moteur de recherche
+         */
         if ($table) {
             $src = !empty($tabForms[$table]['picto']) ? str_replace(ADMIN_PICTOS_BIG_SIZE, ADMIN_PICTOS_FORM_SIZE, $tabForms[$table]['picto']) : t('src_desktop');
             $src = getPicto($table, ADMIN_PICTOS_FORM_SIZE);
-            p('<a class="titreListe" title=' . alt(t('retour') . ' ' . t($table)) . ' href="?curTable=' . $table . '&amp" ><img class="inputimage" src="' . $src . '"  alt="" /> ');
-            p(' &nbsp;' . t($this->table) . '</a>');
+            p('<a class="titreListe" title=' . alt(t('recherche') . ' ' . t($table)) . ' href="?curTable=' . $table . '&amp" ><img class="inputimage" src="' . $src . '"  alt="" /></a>');
         }
 
-
+        if($root_id && $root_id != 'new') {
+            p('<a class="titreListe" title=' . alt(t('road_fiche_resume').' : '.limitWords(strip_tags($this->GetRecordTitle($table, $root_id)), 10)) . ' href="?curTable=' . $table . '&amp;curId=' . $root_id . '&resume=1" ><img class="inputimage"  src="' . t('src_view') . '" alt="" /></a>');
+        }
         if ($this->id || $this->id == 'new') {
-
-
 
             if (akev($_SESSION[gfuid()], 'nbLevels') > 0) {
 
-                p('<a href="?curTable=' . $_SESSION[gfuid()]['levels'][1]['curTable'] . '&amp;curId=' . $_SESSION[gfuid()]['levels'][1]['curId'] . '&resume=1" ><img class="inputimage" src="' . t('src_first') . '" alt="Retour" /></a> ');
-
-                p('<a href="?' . time() . '" ><img class="inputimage" src="' . t('src_back') . '" alt="Retour" /></a> ');
-
-                while (list($k, $v) = each($_SESSION[gfuid()]['levels'])) {
+                for ($p = 1; $p <= $_SESSION[gfuid()]['nbLevels']+1; $p++) {
+                    $v = $_SESSION[gfuid()]['levels'][$p];
                     if (isset($v['curTable'])) {
-                        p('<span class="titreListe">' . limitWords(strip_tags($this->GetRecordTitle($v["curTable"], $v["curId"], " ", $v["curTableKey"])), 15) . " [" . $v["curId"] . "] </span> &raquo;");
+                        $src = getPicto($v['curTable'], ADMIN_PICTOS_FORM_SIZE);
+                        p('<a class="titreListe" href="?gfuid='.gfuid().'&backToLevel='.$p.'"><img class="inputimage" src="'.$src.'" alt="" />' . limitWords(strip_tags($this->GetRecordTitle($v["curTable"], $v["curId"], " ", $v["curTableKey"])), 15) . " [" . $v["curId"] . "] </a> ");
                     }
                 }
+                $src = getPicto($this->table, ADMIN_PICTOS_FORM_SIZE);
+                p(' <span class="titreListe"><img class="inputimage" src="' .$src . '" alt="" /> '.limitWords(strip_tags($this->GetRecordTitle($this->table, $this->id)), 10).'</span> ');
+                //p('<a href="?' . time() . '" ><img class="inputimage" src="' . t('src_back') . '" alt="Retour" /></a> ');
+
+
+//                while (list($k, $v) = each($_SESSION[gfuid()]['levels'])) {
+//                    if (isset($v['curTable'])) {
+//                        p('<span class="titreListe">' . limitWords(strip_tags($this->GetRecordTitle($v["curTable"], $v["curId"], " ", $v["curTableKey"])), 15) . " [" . $v["curId"] . "] </span> &raquo;");
+//                    }
+//                }
             } else {
 
                 if ($this->FormToInclude == 'resume') {
-                    p('<a href="?curTable=' . $_REQUEST['curTable'] . '" style="margin:0;padding:0"><img style="vertical-align:middle;margin:0;" src="' . t('src_first') . '" alt="Retour" /></a>');
+                    //p('<a href="?curTable=' . $_REQUEST['curTable'] . '" style="margin:0;padding:0"><img style="vertical-align:middle;margin:0;" src="' . t('src_first') . '" alt="Retour" /></a>');
                 } else if ($this->id == 'new') {
-                    p('<a href="?curTable=' . $_REQUEST['curTable'] . '" style="margin:0;padding:0"><img style="vertical-align:middle;margin:0;" src="' . t('src_first') . '" alt="Retour" /></a>');
+                    // p('<a href="?curTable=' . $_REQUEST['curTable'] . '" style="margin:0;padding:0"><img style="vertical-align:middle;margin:0;" src="' . t('src_first') . '" alt="Retour" /></a>');
                 } else {
-                    p('<a href="?curTable=' . $_REQUEST['curTable'] . '&amp;curId=' . $_REQUEST['curId'] . '&resume=1" style="margin:0;padding:0"><img style="vertical-align:middle;margin:0;" src="' . t('src_first') . '" alt="Retour" /></a>');
+                    $src = getPicto($table, ADMIN_PICTOS_FORM_SIZE);
+                    p('<span class="titreListe"><img class="inputimage" src="'.$src.'" alt="" /> ' . limitWords(strip_tags($this->GetRecordTitle($this->table, $this->id, " ")), 15) . "</span>");
                 }
             }
-            //p("  ".t($_REQUEST['curTable']));
-            $t = limitWords(strip_tags($this->GetRecordTitle($this->table, $this->id)), 15);
-            if ($this->id && $t)
-                p(' <span class="titreListe">' . $t . ' [' . $this->id . ']</span> ');
-            else
-                p('<span class="titreListe">Nouveau [' . $this->id . ']</span>');
-
-            // p(' / <span class="titreTable">'.t($this->table).'</span>');
-        } else if ($this->table) {
-            
-        }
-
-
-        p('</div>
-        ');
-
-
-
+        }     
+        p('</div>');
         if (ake('genform_action', $_REQUEST)) {
-            
+
             reset($_REQUEST['genform_action']);
             while (list($action, ) = each($_REQUEST['genform_action'])) {
 
                 $this->action = new GenAction($action, $this->table, $this->id, $this->row);
                 $this->action->GenIt();
-
             }
         }
     }
@@ -866,7 +882,7 @@ class genAdmin {
          * On reste sur le meme formulaire
          * Car il y a un champ mal remplit ou bien on a demander à  rester
          */
-        if (is_array($fieldError) || akev($_POST, 'genform_stay')) {
+        if ((is_array($fieldError) && empty($_REQUEST['newTable'])) || akev($_POST, 'genform_stay')) {
             $gl = new GenLocks();
 
             $gl->setLock($this->table, $this->id);
@@ -1092,7 +1108,7 @@ class smallAdmin {
      * @param unknown_type $nivv
      * @param unknown_type $dolinka
      */
-    function recurserub($id=0, $nivv=0, $dolinka=0) {
+    function recurserub($id = 0, $nivv = 0, $dolinka = 0) {
 
 
         $lighta = "<span style='color:#999'>";

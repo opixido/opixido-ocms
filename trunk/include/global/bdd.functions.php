@@ -372,8 +372,8 @@ $GLOBALS['actionSaved'] = array();
 
 function logAction($action, $table, $id) {
     global $gs_obj;
-
-    if (!in_array($action, $GLOBALS['actionSaved'])) {
+    $ignoredActions = array('recorded','afterupdate','save','edit');
+    if (!in_array($action, $GLOBALS['actionSaved']) && !in_array($action,$ignoredActions) ) {
 	$sql = 'INSERT INTO s_log_action (fk_admin_id, log_action_table, log_action_fk_id, log_action_action, log_action_time)
 				VALUES ("' . $gs_obj->adminid . '","' . $table . '","' . $id . '","' . $action . '",NOW()) ';
 	$GLOBALS['actionSaved'][] = $action;

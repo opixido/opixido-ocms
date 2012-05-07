@@ -325,7 +325,7 @@ class genUrl {
             $this->lg = LG;
             mylocale(LG);
         } else {
-            $templg = $this->parsedUrl[1];
+            $templg = akev($this->parsedUrl,1);
             /**
              * Si on est dans une seconde langue ( /fr-de/ )
              */
@@ -354,9 +354,11 @@ class genUrl {
                 mylocale($this->lg);
             } else {
                 $this->lg = empty($this->lg) ? $this->getBrowserLang() : $this->lg;
-                define("LG", $this->lg);
+                if(!defined('LG')) {
+                    define("LG", $this->lg);                    
+                    define('TRADLG', false);
+                }
                 mylocale($this->lg);
-                define('TRADLG', false);
             }
         }
 
@@ -431,9 +433,6 @@ class genUrl {
         }
 
         if (!$this->rubId) {
-
-
-
 
             if (count($this->parsedUrl) == 0) {
                 /**

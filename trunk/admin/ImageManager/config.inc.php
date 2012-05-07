@@ -7,7 +7,7 @@
  */
 
 ini_set('memory_limit','32M');
-
+define('IN_ADMIN',true);
 require_once('../../include/config/config.server.php');// or die('Mauvaise configuration : Voir /admin/ImageManager/config.inc.php');
 
 clearstatcache() ;

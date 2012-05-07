@@ -127,6 +127,8 @@ $relations['s_paragraphe']['fk_para_type_id'] = 's_para_type';
 $relations['s_gabarit']['fk_default_rubrique_id'] = 's_rubrique';
 
 
+$_Gconfig['specialListing'] = array();
+
 /**
  *  Relations inverses
  *  Toutes les entrees de X table qui pointent vers moi

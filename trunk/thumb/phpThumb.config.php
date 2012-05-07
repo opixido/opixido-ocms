@@ -141,11 +141,11 @@ $PHPTHUMB_CONFIG['output_maxheight'] = 0;      // default maximum thumbnail heig
 $PHPTHUMB_CONFIG['output_interlace'] = true;   // if true: interlaced output for GIF/PNG, progressive output for JPEG; if false: non-interlaced for GIF/PNG, baseline for JPEG.
 
 // * Error message configuration
-$PHPTHUMB_CONFIG['error_image_width']           = 400;      // default width for error images
-$PHPTHUMB_CONFIG['error_image_height']          = 100;      // default height for error images
+$PHPTHUMB_CONFIG['error_image_width']           = !empty($_REQUEST['w']) ? $_REQUEST['w'] : 200 ;      // default width for error images
+$PHPTHUMB_CONFIG['error_image_height']          = !empty($_REQUEST['h']) ? $_REQUEST['h'] : 200;      // default height for error images
 $PHPTHUMB_CONFIG['error_message_image_default'] = '';       // Set this to the name of a generic error image (e.g. '/images/error.png') that you want displayed in place of any error message that may occur. This setting is overridden by the 'err' parameter, which does the same thing.
-$PHPTHUMB_CONFIG['error_bgcolor']               = 'CCCCFF'; // background color of error message images
-$PHPTHUMB_CONFIG['error_textcolor']             = 'FF0000'; // color of text in error messages
+$PHPTHUMB_CONFIG['error_bgcolor']               = 'EEEEEE'; // background color of error message images
+$PHPTHUMB_CONFIG['error_textcolor']             = '000000'; // color of text in error messages
 $PHPTHUMB_CONFIG['error_fontsize']              = 1;        // size of text in error messages, from 1 (smallest) to 5 (largest)
 $PHPTHUMB_CONFIG['error_die_on_error']          = true;     // die with error message on any fatal error (recommended with standalone phpThumb.php)
 $PHPTHUMB_CONFIG['error_silent_die_on_error']   = false;    // simply die with no output of any kind on fatal errors (not recommended)
@@ -194,7 +194,7 @@ $PHPTHUMB_CONFIG['mysql_database'] = '';
 $PHPTHUMB_CONFIG['high_security_enabled']    = false;  // if enabled, requires 'high_security_password' set to be set and requires the use of phpThumbURL() function (at the bottom of phpThumb.config.php) to generate hashed URLs
 $PHPTHUMB_CONFIG['high_security_password']   = '';     // required if 'high_security_enabled' is true, and must be at complex (uppercase, lowercase, numbers, punctuation, etc -- punctuation is strongest, lowercase is weakest; see PasswordStrength() in phpThumb.php). You can use a password generator like http://silisoftware.com/tools/password-random.php to generate a strong password
 $PHPTHUMB_CONFIG['disable_debug']            = true;   // prevent phpThumb from displaying any information about your system. If true, phpThumbDebug and error messages will be disabled
-$PHPTHUMB_CONFIG['allow_src_above_docroot']  = false;  // if true, allow src to be anywhere in filesystem; if false (default) only allow src within document_root
+$PHPTHUMB_CONFIG['allow_src_above_docroot']  = true;  // if true, allow src to be anywhere in filesystem; if false (default) only allow src within document_root
 $PHPTHUMB_CONFIG['allow_src_above_phpthumb'] = true;   // if true (default), allow src to be anywhere in filesystem; if false only allow src within sub-directory of phpThumb installation
 
 

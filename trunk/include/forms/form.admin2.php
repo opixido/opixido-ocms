@@ -24,6 +24,9 @@ p('<table class="table_resume">');
 
 foreach($res as $row) {
 	
+    if($row['role_table_table'] == 'c_programme') {
+        continue;
+    }
 	p('<tr><td class="table_resume_label">');
 	print('<h4>'.$row['role_nom'].'</h4>');
 	

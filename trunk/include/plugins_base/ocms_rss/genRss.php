@@ -111,6 +111,7 @@ class genRss extends ocmsGen {
 		
 		//to generate "on-the-fly"
 		$rss->outputFeed($_REQUEST['format']);
+		
 		die();
 		
 	}

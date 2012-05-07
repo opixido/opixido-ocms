@@ -22,7 +22,7 @@
 # @package ocms
 #
 
-function s_admin_update($id, $row=array()) {
+function s_admin_update($id, $row = array()) {
 
 
     if (!count($row)) {
@@ -105,7 +105,7 @@ function changeTranslations() {
     $_SESSION['cache_tabfield'] = array();
 }
 
-function doTranslations($lg, $action='add') {
+function doTranslations($lg, $action = 'add') {
     $_SESSION['cache'] = array();
 
     $tables = GetTables();
@@ -246,7 +246,7 @@ function mostUsedWords() {
 
 /* User defined functions */
 
-function s_rubrique_createAll($id, $row=array(), $obj='') {
+function s_rubrique_createAll($id, $row = array(), $obj = '') {
 
     /*
       La rubrique vient d'être créée !
@@ -268,7 +268,7 @@ function s_rubrique_createAll($id, $row=array(), $obj='') {
     $_REQUEST['showRub'] = $id;
 
     $_REQUEST['curId'] = $_POST['curId'] = $newId = InsertId();
-    
+
     if (is_object($obj)) {
         $obj->id = $newId;
     }
@@ -285,7 +285,7 @@ function s_rubrique_createAll($id, $row=array(), $obj='') {
     return $newId;
 }
 
-function s_rubrique_beforeDelete($id, $row=array()) {
+function s_rubrique_beforeDelete($id, $row = array()) {
 
     $sql = 'SELECT fk_rubrique_version_id FROM s_rubrique WHERE rubrique_id = "' . mes($id) . '"';
     $row = GetSingle($sql);
@@ -294,34 +294,42 @@ function s_rubrique_beforeDelete($id, $row=array()) {
     $gr->DeleteRow($row['fk_rubrique_version_id']);
 }
 
-function s_rubrique_update($id, $row=array()) {
+function s_rubrique_update($id, $row = array()) {
     $sql = 'UPDATE s_rubrique SET rubrique_date_modif = NOW()  WHERE rubrique_id = "' . $id . '"';
     $res = DoSql($sql);
 }
 
-function t_document_update($id, $row=array()) {
+function t_document_update($id, $row = array()) {
     //debug('update liens');
     DoSql('UPDATE s_param SET param_valeur = "' . time() . '" WHERE param_id = "timestamp_modif_pro"');
 }
 
+
+function du( $dir )
+{
+    $res = `/usr/bin/du -sk $dir`;             // Unix command
+    preg_match( '/\d+/', $res, $KB ); // Parse result
+    $MB = round( $KB[0] / 1024, 1 );  // From kilobytes to megabytes
+    return $MB;
+}
+
+
 function emptyCache() {
     global $_Gconfig;
-
     foreach ($_Gconfig['cachePaths'] as $k => $v) {
-        echo '<li><a href="?globalAction=emptyCache&empty=' . $k . '">' . t($k) . ' (' . (iterator_count(new DirectoryIterator($v)) - 2) . ')</a>';
         if (akev($_REQUEST, 'empty') == $k) {
-            emptyDir($v);
+            emptyDir($v, true);
         }
+        echo '<li><a href="?globalAction=emptyCache&empty=' . $k . '">' . t($k) . ' (' . du($v) . ' Mo)</a>';
         echo '</li>';
     }
-
     /* emptyDir($cachepath,$_REQUEST['deleteThumbs']);
       emptyDir($gb_obj->include_path.'/../imgc/');
       emptyDir($gb_obj->include_path.'/cache_agr/');
      */
 }
 
-function emptyDir($cachepath, $dirsToo=false) {
+function emptyDir($cachepath, $dirsToo = false) {
     if (!is_dir($cachepath)) {
         return;
     }
@@ -330,7 +338,6 @@ function emptyDir($cachepath, $dirsToo=false) {
         $nbfiles = 0;
         /* This is the correct way to loop over the directory. */
         while (false !== ($file = readdir($handle))) {
-
             if ($file != '.' && $file != '..' && (!is_dir($cachepath . $file) || $dirsToo)) { //
                 $nbfiles++;
                 $nbok += rm($cachepath . $file);

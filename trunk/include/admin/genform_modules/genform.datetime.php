@@ -6,7 +6,7 @@ $t = strtotime($this->tab_default_field[$name] );
 
 if($t > 0) {
 	
-	$hh = date('H',$t);
+	$hh = date('h',$t);
 	$mm = date('i',$t);
 	$ss = date('s',$t);
 	

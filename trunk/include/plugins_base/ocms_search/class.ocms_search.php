@@ -537,7 +537,7 @@ class indexSearch {
 					';
         }
 
-        //echo $sql;
+        echo $sql;
         return GetAll($sql);
     }
 

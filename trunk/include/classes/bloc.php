@@ -43,7 +43,7 @@ class bloc {
      */
     function __construct($site) {
 
-	$this->site = $site;
+        $this->site = $site;
     }
 
     /**
@@ -52,9 +52,9 @@ class bloc {
      */
     function afterInit() {
 
-	if ($this->visible) {
-	    
-	}
+        if ($this->visible) {
+            
+        }
     }
 
     /**
@@ -63,8 +63,8 @@ class bloc {
      */
     function hide() {
 
-	$this->visible = false;
-	return $this;
+        $this->visible = false;
+        return $this;
     }
 
     /**
@@ -73,8 +73,8 @@ class bloc {
      */
     function show() {
 
-	$this->visible = true;
-	return $this;
+        $this->visible = true;
+        return $this;
     }
 
     /**
@@ -83,17 +83,17 @@ class bloc {
      */
     function genBloc() {
 
-	if ($this->visible) {
-	    $html = '<div id="bloc_' . $this->nom . '">';
+        if ($this->visible) {
+            $html = '<div id="bloc_' . $this->nom . '">';
 
-	    foreach ($this->contenu as $v) {
+            foreach ($this->contenu as $v) {
 
-		$html .= ( $v);
-	    }
+                $html .= ( $v);
+            }
 
-	    $html .= '</div>';
-	    return $html;
-	}
+            $html .= '</div>';
+            return $html;
+        }
     }
 
     /**
@@ -102,24 +102,24 @@ class bloc {
      * @param string $nom Nom de la boite
      * @param string $html code HTML
      */
-    function add($nom, $html) {
+    function add($nom, $html, $class) {
 
-	if (ake($this->toAddBefore, $nom)) {
+        if (ake($this->toAddBefore, $nom)) {
 
-	    foreach ($this->toAddBefore[$nom] as $k => $v) {
-		$this->contenu[$k] = $v;
-	    }
-	}
+            foreach ($this->toAddBefore[$nom] as $k => $v) {
+                $this->contenu[$k] = $v;
+            }
+        }
 
-	$this->contenu[$nom] = '<div class="bloc" id="bloc_' . $this->nom . '_' . $nom . '">' . $html . '</div>';
+        $this->contenu[$nom] = '<div class="bloc ' . $class . '" id="bloc_' . $this->nom . '_' . $nom . '">' . $html . '</div>';
 
-	if (ake($this->toAddAfter, $nom)) {
+        if (ake($this->toAddAfter, $nom)) {
 
-	    foreach ($this->toAddAfter[$nom] as $k => $v) {
-		$this->contenu[$k] = $v;
-	    }
-	}
-	return $this;
+            foreach ($this->toAddAfter[$nom] as $k => $v) {
+                $this->contenu[$k] = $v;
+            }
+        }
+        return $this;
     }
 
     /**
@@ -131,12 +131,12 @@ class bloc {
      */
     function addAfter($other, $nom, $html) {
 
-	if (ake($other, $this->contenu)) {
-	    
-	} else {
-	    $this->toAddAfter[$other][$nom] = '<div class="bloc" id="col_' . $nom . '">' . $html . '</div>';
-	}
-	return $this;
+        if (ake($other, $this->contenu)) {
+            
+        } else {
+            $this->toAddAfter[$other][$nom] = '<div class="bloc" id="col_' . $nom . '">' . $html . '</div>';
+        }
+        return $this;
     }
 
     /**
@@ -148,12 +148,12 @@ class bloc {
      */
     function addBefore($other, $nom, $html) {
 
-	if (ake($other, $this->contenu)) {
-	    
-	} else {
-	    $this->toAddBefore[$other][$nom] = '<div class="bloc" id="col_' . $nom . '">' . $html . '</div>';
-	}
-	return $this;
+        if (ake($other, $this->contenu)) {
+            
+        } else {
+            $this->toAddBefore[$other][$nom] = '<div class="bloc" id="col_' . $nom . '">' . $html . '</div>';
+        }
+        return $this;
     }
 
     /**
@@ -164,8 +164,8 @@ class bloc {
      */
     function addAtTop($nom, $html) {
 
-	$this->contenu = array_merge(array($nom => '<div class="bloc" id="bloc_' . $this->nom . '_' . $nom . '">' . $html . '</div>'), $this->contenu);
-	return $this;
+        $this->contenu = array_merge(array($nom => '<div class="bloc" id="bloc_' . $this->nom . '_' . $nom . '">' . $html . '</div>'), $this->contenu);
+        return $this;
     }
 
     /**
@@ -174,8 +174,8 @@ class bloc {
      */
     function clean() {
 
-	$this->contenu = array();
-	return $this;
+        $this->contenu = array();
+        return $this;
     }
 
     /**
@@ -184,14 +184,14 @@ class bloc {
      */
     function addSmallDelim($size=6) {
 
-	global $nbDelim;
-	$nbDelim++;
-	$this->addAtEnd('delim_' . $nbDelim, '
+        global $nbDelim;
+        $nbDelim++;
+        $this->addAtEnd('delim_' . $nbDelim, '
 			<div class="clearer">&nbsp;</div>
 			<div class="col_delim">			
 			</div>
 			<div class="clearer">&nbsp;</div>');
-	return $this;
+        return $this;
     }
 
     /**
@@ -199,13 +199,13 @@ class bloc {
      *
      */
     function addBigDelim() {
-	return $this;
+        return $this;
     }
 
     function remove($nom) {
 
-	unset($this->contenu[$nom]);
-	return $this;
+        unset($this->contenu[$nom]);
+        return $this;
     }
 
 }
