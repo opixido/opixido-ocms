@@ -110,8 +110,9 @@ if (!$this->editMode) {
          */
         $this->addBuffer('<input
 							id="genform_' . $name . '"  ' . $jsColor . ' ' . $attributs . ' 
-							type="text" 
-							name="genform_' . $name . '" 
+							type="email"
+							name="genform_' . $name . '"
+                                                            pattern="[^ @]*@[^ @]*"
 							size="60"  
 							value=' . alt($this->tab_default_field[$name]) . '
 							/>  ');
@@ -142,7 +143,7 @@ if (!$this->editMode) {
             $this->addBuffer('
 
 				<a href="#"
-					class="titreListe"
+					class="btn"
 					style="clear:both;"
 					id="generatepassword_' . $name . '" >
 					<img src="' . t('src_random_password') . '"

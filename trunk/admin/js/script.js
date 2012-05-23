@@ -119,11 +119,11 @@ function showLgField(field, lg) {
         return;
 
     $("#lgfield_" + field + "_" + lg).show();
-    gid("lgbtn_" + field + "_" + lg).className = "lgbtn_on";
+    $("#lgbtn_" + field + "_" + lg).addClass('disabled');
 
     if (lgfieldcur[field]) {
         $("#lgfield_" + field + "_" + lgfieldcur[field]).hide();
-        gid("lgbtn_" + field + "_" + lgfieldcur[field]).className = "lgbtn";
+        $("#lgbtn_" + field + "_" + lgfieldcur[field]).removeClass('disabled');
     }
     lgfieldcur[field] = lg;
 
@@ -562,7 +562,7 @@ function toggleRteInline(tarea) {
         vval = '<span class="light">Champ Vide</span>';
     }
 
-    obj.after('<div class="rtePreview" id="preview_' + tarea
+    obj.after('<div class="rtePreview well" id="preview_' + tarea
         + '" title="Cliquez-ici pour modifier ce texte" >' + vval
         + '</div>');
     $('#preview_' + tarea + '').click(function() {
@@ -594,7 +594,7 @@ function FitToContent(id, maxHeight) {
 
 
 function searchSelectMass(co) {
-    $('table.genform_table input[type=checkbox]').attr('checked',co);
+    $('table.table input[type=checkbox]').attr('checked',co);
 }
 
 

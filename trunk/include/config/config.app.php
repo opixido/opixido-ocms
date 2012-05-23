@@ -49,7 +49,7 @@ $_Gconfig['titre'] = '';
 /**
  * Liste des langues par defaut du site
  */
-$_Gconfig['LANGUAGES'] = array('fr');
+$_Gconfig['LANGUAGES'] = array('fr','en');
 $_Gconfig['ADMIN_LANGUAGES'] = array('fr');
 
 $_Gconfig['onlyOneLgForever'] = true;
@@ -351,3 +351,26 @@ $tabForms["s_trad"]["picto"] = ADMIN_PICTOS_FOLDER . ADMIN_PICTOS_BIG_SIZE . "/m
 $tabForms["s_plugin"]["picto"] = ADMIN_PICTOS_FOLDER . ADMIN_PICTOS_BIG_SIZE . "/mimetypes/package-x-generic.png";
 $tabForms["s_param"]["picto"] = ADMIN_PICTOS_FOLDER . ADMIN_PICTOS_BIG_SIZE . "/categories/preferences-system.png";
 $tabForms["s_admin_trad"]["picto"] = ADMIN_PICTOS_FOLDER . ADMIN_PICTOS_BIG_SIZE . "/apps/preferences-desktop-font.png";
+
+
+
+
+/**
+ * Liste des plugins tinyMce à charger
+ */
+$_Gconfig['tinyMce']['plugins'] = array('paste','fullscreen','advimage','xhtmlxtras','contextmenu');
+
+/**
+ * Liste des styles spécifiques
+ *
+ * Sous la forme TinyMce
+ * array('Couleur principale=couleur_1','Couleur secondaire=couleur_2')
+ */
+$_Gconfig['tinyMce']['styles'] = array();
+
+/**
+ * Liste des boutons tinymce par ligne
+ */
+$_Gconfig['tinyMce']['buttons1'] = array('bold','italic','underline','separator','removeformat','separator','hr','image','link','unlink','separator','pastetext','separator','bullist','bullnum','separator','code','cleanup','separator','sub','sup','separator','abbr','acronym','charmap','fullscreen');
+$_Gconfig['tinyMce']['buttons2'] = array('formatselect');
+$_Gconfig['tinyMce']['buttons3'] = array();

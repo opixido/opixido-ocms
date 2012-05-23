@@ -503,6 +503,7 @@ class genRecord {
         reset($_POST);
         // debug('New Record');
 
+
         while (list($key_name, $value) = each($_POST)) {
 
 
@@ -524,9 +525,9 @@ class genRecord {
                 /*
                   On enregistre tout ca, et on va ins?er quelquechose ...
                  */
-                if (strstr($key_name, "genform_modfk_") !== false && !strstr($key_name, "_value") !== false && $value != "") {
+                if (strstr($key_name, "genform_modfk_") !== false && !strstr($key_name, "_value") !== false ) {
                     /* FK SIMPLE */
-                    $tab = explode("__", $key_name);
+                    $tab = explode("__", $key_name);                   
                     // if($this->table != $tab[1]) {
                     $_REQUEST['newTable'] = $tab[1];
                     if (isset($_POST[$key_name . "_value"])) {

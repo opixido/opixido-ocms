@@ -195,9 +195,9 @@ function showPhpInfo() {
     p('
 
  #phpinfo {
- overflow:auto;
+ /*overflow:auto;
 
- height:500px;
+ height:500px;*/
  }
 
   #phpinfo img {
@@ -304,25 +304,30 @@ function t_document_update($id, $row = array()) {
     DoSql('UPDATE s_param SET param_valeur = "' . time() . '" WHERE param_id = "timestamp_modif_pro"');
 }
 
-
-function du( $dir )
-{
+function du($dir) {
     $res = `/usr/bin/du -sk $dir`;             // Unix command
-    preg_match( '/\d+/', $res, $KB ); // Parse result
-    $MB = round( $KB[0] / 1024, 1 );  // From kilobytes to megabytes
+    preg_match('/\d+/', $res, $KB); // Parse result
+    $MB = round($KB[0] / 1024, 1);  // From kilobytes to megabytes
     return $MB;
 }
 
-
 function emptyCache() {
     global $_Gconfig;
+    echo '<ul class="nav nav-list">';
     foreach ($_Gconfig['cachePaths'] as $k => $v) {
-        if (akev($_REQUEST, 'empty') == $k) {
+
+        echo '<li><a href="?globalAction=emptyCache&empty=' . $k . '"><i class="icon-trash"></i>' . t($k) . ' (' . du($v) . ' Mo)</a>';
+       
+        if (akev($_REQUEST, 'empty') == $k || akev($_REQUEST, 'empty') == '_allCaches') {
+            p('<span class="well">');
             emptyDir($v, true);
+            p('</span>');
         }
-        echo '<li><a href="?globalAction=emptyCache&empty=' . $k . '">' . t($k) . ' (' . du($v) . ' Mo)</a>';
-        echo '</li>';
+         echo '</li>';
     }
+
+    echo '<li class="divider"></li><li><a href="?globalAction=emptyCache&empty=_allCaches"><i class="icon-fire"></i>' . t('tout') . '</a></li>';
+    echo '</ul>';
     /* emptyDir($cachepath,$_REQUEST['deleteThumbs']);
       emptyDir($gb_obj->include_path.'/../imgc/');
       emptyDir($gb_obj->include_path.'/cache_agr/');
@@ -344,7 +349,7 @@ function emptyDir($cachepath, $dirsToo = false) {
             }
         }
         closedir($handle);
-        p('<br/>' . $cachepath . ' : ' . $nbok . ' ' . t('files_on') . ' ' . $nbfiles . ' ' . t('have_been_removed'));
+        p('' . $cachepath . ' : ' . $nbok . ' ' . t('files_on') . ' ' . $nbfiles . ' ' . t('have_been_removed'));
     }
 }
 

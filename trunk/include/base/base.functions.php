@@ -1873,7 +1873,7 @@ function addSimpleQuotes($tab) {
     return $newTab;
 }
 
-if(empty($_SESSION['cache']) ){
+if (empty($_SESSION['cache'])) {
     $_SESSION['cache'] = array();
 }
 
@@ -1890,7 +1890,7 @@ if (!ake($_SESSION['cache'][UNIQUE_SITE], 'cache_rubgab')) {
  */
 function getRubFromGabarit($gab, $param = '') {
 
-    if (empty($_SESSION['cache'][UNIQUE_SITE]['cache_rubgab'][ $gab . $param])) {
+    if (empty($_SESSION['cache'][UNIQUE_SITE]['cache_rubgab'][$gab . $param])) {
 
         $sql = 'SELECT rubrique_id , G.* FROM s_rubrique AS R, s_gabarit AS G
 					WHERE G.gabarit_id = R.fk_gabarit_id AND 
@@ -2515,5 +2515,154 @@ function getThumbCacheFile($src, $u = false) {
     }
 
     return $src; // . '&hash=' . $hash;
+}
+
+class pagination {
+
+    public $nbPages = 1;
+    public $requestParamName = 'page';
+    public $tplName = 'pagination';
+    public $tplFolder = 'template';
+
+    public function __construct($nbPages) {
+
+        $this->nbPages = $nbPages;
+
+        /**
+         * Paramètres existants pour ne pas perdre les autres données
+         */
+        $this->params = $GLOBALS['site']->g_url->paramsUrl;
+        $this->params = !empty($GLOBALS['site']->g_url->paramsUrl) ? $GLOBALS['site']->g_url->paramsUrl : !empty($_POST) ? $_POST : $_GET;
+    }
+
+    public function gen() {
+
+        /**
+         * Si une seule page on ne fait rien
+         */
+        if ($this->nbPages <= 1) {
+            return;
+        }
+
+        $page = $_REQUEST[$this->requestParamName] ? $_REQUEST[$this->requestParamName] : 1;
+
+        /**
+         * Template de pagination
+         */
+        $tpl = new genTemplate(true);
+        $tpl->loadTemplate($this->tplName, $this->tplFolder);
+
+
+        /**
+         * Class CSS pour le précédent
+         */
+        if ($page == 1) {
+            $tpl->set('prec_url', '');
+            $tpl->set('prec_class', 'disabled');
+        } else {
+            $tpl->set('prec_url', $this->getUrlWithParams(array_merge($this->params, array('page' => ($page - 1)))));
+            $tpl->set('prec_class', '');
+        }
+
+
+        /**
+         * Class CSS pour le suivant
+         */
+        if (($page == $this->nbPages)) {
+            $tpl->set('suiv_class', 'disabled');
+            $tpl->set('suiv_url', '');
+        } else {
+            $tpl->set('suiv_class', '');
+            $tpl->set('suiv_url', $this->getUrlWithParams(array_merge($this->params, array('page' => ($page + 1)))));
+        }
+
+
+        $tpl->set('suiv', htmlentities(t('suivant'), ENT_QUOTES, 'utf-8'));
+        $tpl->set('prec', htmlentities(t('precedent'), ENT_QUOTES, 'utf-8'));
+
+
+        $num = $tpl->addBlock('NUM');
+        $num->set('num', '&laquo;');
+
+        if ($page == 1) {
+            $num->set('class', 'disabled');
+            $num->set('url', '');
+        } else {
+            $num->set('url', $this->getUrlWithParams(array_merge($this->params, array('page' => ($page - 1)))));
+            $num->class = '';
+        }
+
+
+
+        /**
+         * On parcourt les pages
+         */
+        for ($p = 1; $p <= $this->nbPages; $p++) {
+
+            if ($this->nbPages > 10) {
+                if (( $p == 1 || $p == $this->nbPages || $p == $page || ($p % 10 == 0) || abs($page - $p) < 3)) {
+                    // on affiche ce numéro
+                } else {
+                    if ($lastDotted) {
+                        continue;
+                    } else {
+                        $num = $tpl->addBlock('NUM');
+                        $num->disabled = 'active';
+                        $num->num = '...';
+                        $lastDotted = true;
+                        continue;
+                    }
+                }
+            }
+
+            $num = $tpl->addBlock('NUM');
+            $num->set('num', $p);
+            $num->set('url', $this->getUrlWithParams(array_merge($this->params, array('page' => ($p)))));
+            $num->set('class', ($p == $page ? 'selected' : ''));
+        }
+
+        $num = $tpl->addBlock('NUM');
+        $num->set('num', '&raquo;');
+
+        if (($page == $this->nbPages)) {
+            $num->set('class', 'disabled');
+            $num->set('url', '');
+        } else {
+            $num->set('class', '');
+            $num->set('url', $this->getUrlWithParams(array_merge($this->params, array('page' => ($page + 1)))));
+        }
+
+        return $tpl->gen();
+    }
+
+    function getUrlWithParams($p) {
+        if ($GLOBALS['site']->g_url) {
+            return getUrlWithParams($p);
+        } else {
+            return '?'.http_build_str($p);
+        }
+    }
+
+}
+
+if (!function_exists('http_build_str')) {
+
+    function http_build_str($query, $prefix = '', $arg_separator = '') {
+        if (!is_array($query)) {
+            return null;
+        }
+        if ($arg_separator == '') {
+            $arg_separator = ini_get('arg_separator.output');
+        }
+        $args = array();
+        foreach ($query as $key => $val) {
+            $name = $prefix . $key;
+            if (!is_numeric($name)) {
+                $args[] = rawurlencode($name) . '=' . urlencode($val);
+            }
+        }
+        return implode($arg_separator, $args);
+    }
+
 }
 

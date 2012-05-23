@@ -11,6 +11,7 @@ if ($this->tab_field[$name]->max_length < 2) {
     $sel0 = '';
     $sel1 = '';
     $sel2 = '';
+    $this->addBuffer('<div class="radio">');
     if ($this->tab_default_field[$name] == "-1") {
         $sel0 = 'checked="checked"';
 
@@ -42,6 +43,8 @@ if ($this->tab_field[$name]->max_length < 2) {
                         <label for="genform_' . $name . '_1">' . t('oui') . '</label>');
         $this->addBuffer('<input ' . $attributs . '  type="radio"  ' . $sel2 . ' name="genform_' . $name . '" value="0" id="genform_' . $name . '_0" />
                         <label for="genform_' . $name . '_0">' . t('non') . '</label>');
+
+        $this->addBuffer('</div>');
     } else {
 
         $this->addBuffer(ta('genform_boolean_' . $this->tab_default_field[$name]));

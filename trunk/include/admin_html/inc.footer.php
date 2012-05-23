@@ -11,7 +11,7 @@
 
 
 <script type="text/javascript" >
-
+/*
     $.fn.tipsy.defaults = {
         delayIn: 0.3,
         delayOut: 0.3,
@@ -22,13 +22,13 @@
         opacity: 2,
         title: 'title'
     };
-
+*/
 
     $(document).ready(function() {
         //$('.resizable').TextAreaResizer();
         $('.resizable').each(function() {FitToContent($(this).attr('id'));});	
-        $('input, a, div.rtePreview').tipsy({html: true ,gravity:  $.fn.tipsy.autoWE});
-        $('img.helpimg').tipsy({html: true ,gravity:  $.fn.tipsy.autoWE,title:'alt'});
+        $('input, a, div.rtePreview').tooltip({placement:'right'});//tipsy({html: true ,gravity:  $.fn.tipsy.autoWE});
+        $('.help i').tooltip({placement:'left'});//tipsy({html: true ,gravity:  $.fn.tipsy.autoWE});
     });
 
 
@@ -40,7 +40,7 @@
         if($(this).find("tbody tr").length > 1) {
 		
             $(this).find("tbody tr").prepend('<td class="dragHandle" title=<?= alt(t('relinv_move')); ?>></td>');
-            $(this).find('td.dragHandle').tipsy({html: true ,gravity:  'e'});
+            $(this).find('td.dragHandle').tooltip();//tipsy({html: true ,gravity:  'e'});
             $(this).find("thead th:first").after("<th width='20'></th>");
 		
             $(this).tableDnD({
@@ -60,9 +60,23 @@
 	
 	
     });
-
-    $('#arbo_1').sortable();
-
+/*
+    $('#arbo_NULL').nestedSortable({
+			disableNesting: 'no-nest',
+			forcePlaceholderSize: true,
+			handle: 'a',
+			helper:	'clone',
+			items: 'li',
+			maxLevels: 0,
+			opacity: .6,
+			placeholder: 'placeholder',
+			revert: 250,
+			tabSize: 25,
+			tolerance: 'pointer',
+			toleranceElement: '> a',
+                        listType : 'ul'
+		});
+*/
 
 
     /**
@@ -75,6 +89,8 @@
             }
         });
     });
+
+    $( "div.radio" ).buttonset();
   
 
 <?php if (!empty($GLOBALS['rteElements'])) { ?>
@@ -91,21 +107,23 @@
 
 </script>
 <script type="text/javascript">
-<?php if ($GLOBALS['rteElements']) { //<?=substr($GLOBALS['rteElements'],0,-2)? >         ?>
+<?php 
+    global $_Gconfig;
+    if ($GLOBALS['rteElements']) {      ?>
         function setupTinymce(elementsId) {
             tinyMCE.init({
                 mode : "exact",
                 elements : elementsId,
                 theme : "advanced",
-                skin : "default",
+                skin : "cirkuit",
                 language : "en",
-                plugins : "safari,paste,fullscreen,advimage,xhtmlxtras,contextmenu",
+                plugins : "<?=implode(',',$_Gconfig['tinyMce']['plugins'])?>",
                 entity_encoding : "raw",
                 content_css : "<?= BU ?>/css/baseadmin.css",
-                theme_advanced_styles : "Couleur principale=couleur_1;Couleur secondaire=couleur_2;Miso=miso;MisoLight=misol;MisoBold=misob;Texte plus grand=txtbig",
-                theme_advanced_buttons1 : "styleselect,bold,italic,underline,separator,removeformat,separator,hr,image,link,unlink,separator,pastetext,separator,bullist,bullnum,separator,code,cleanup,separator,sub,sup,separator,abbr,acronym,charmap,fullscreen",
-                theme_advanced_buttons2 : "",
-                theme_advanced_buttons3 : "",
+                theme_advanced_styles : "<?=implode(';',$_Gconfig['tinyMce']['styles'])?>",
+                theme_advanced_buttons1 : "<?=implode(',',$_Gconfig['tinyMce']['buttons1'])?>",
+                theme_advanced_buttons2 : "<?=implode(',',$_Gconfig['tinyMce']['buttons2'])?>",
+                theme_advanced_buttons3 : "<?=implode(',',$_Gconfig['tinyMce']['buttons3'])?>",
                 theme_advanced_toolbar_location : "top",
                 theme_advanced_toolbar_align : "left",
                 theme_advanced_statusbar_location : "",

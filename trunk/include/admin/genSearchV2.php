@@ -11,7 +11,7 @@ class genSearchV2 {
 
         $this->gs = &$gs_obj;
         $this->table = $table;
-        $this->lstart = empty($_REQUEST['lstart']) ? 0 : $_REQUEST['lstart'];
+        $this->lstart = empty($_REQUEST['page']) ? 0 : ($_REQUEST['page']-1)*$this->nbperpage;
     }
 
     /**
@@ -70,8 +70,7 @@ class genSearchV2 {
 
         if ($this->table != 's_rubrique') {
 
-            p('<div style="background:url(./img/fond.bloc2.gif) #ccc;clear:both;margin-bottom:10px;border-right:1px solid #555;border-bottom:1px solid #555;">
-					<h1 style="text-align:center;padding:5px;background:url(./img/fond.bloc2.gif) #eee;border-bottom:1px solid #555">' . t('search') . '</h1>
+            p('<div class="row-fluid"><div class="span3">
 		');
 
             /**
@@ -109,7 +108,7 @@ class genSearchV2 {
                     $this->getFullSearchForm();
                 }
                 
-                $this->doSimpleSearch();
+                $res=$this->doSimpleSearch();
             } //else if($_REQUEST['doFullSearch'] || true) {
             else {
 
@@ -127,25 +126,33 @@ class genSearchV2 {
 
                 $res = $this->doFullSearch();
 
-                $this->printRes($res);
+                
             }
+
+            
+            
+            p('</div>');
+
+            p('<div class="span9">');
+            $this->printRes($res);
+            p('</div></div>');
         }
     }
 
     function getSimpleSearchForm() {
 
 
-        p('<form name="formChooseSearch" method="post" action="index.php" class="fond1" style="float:left;">');
+        p('<form name="formChooseSearch" method="post" action="index.php" class="form-inline well" >');
 
         p('<input type="hidden" name="doSimpleSearch" value="1" />');
 
         p('<input type="hidden" name="curTable" value="' . $this->table . '" />');
 
-        p('<label for="searchTxt" style="margin-top:5px;float:left">' . t('search_txt') . '</label>');
+        p('<div class="control-group"> <div class="controls"> <div class="input-append">');
 
-        p('<input type="text" id="searchTxt" name="searchTxt" value="' . akev($_REQUEST, 'searchTxt') . '" style="float:left;margin-top:5px;" />');
+        echo ('<input  type="text" placeholder='.alt(ta('recherche_rapide')).' id="searchTxt" name="searchTxt" value="' . akev($_REQUEST, 'searchTxt') . '"/>');
 
-        p('<label class="abutton" style="float:left;margin:0;margin-left:10px;"><input type="image" src="' . t('src_search') . '" />' . t('rechercher') . '</label>');
+        p('<button class="btn btn-mini"><img src="' . t('src_search') . '" alt='.alt(t('rechercher')).' /></button></div></div></div>');
 
         p('</form>');
         
@@ -161,7 +168,7 @@ class genSearchV2 {
             return;
 
         // p('<div style="clear:both;">&nbsp;</div>
-        p('<form name="formChooseSel" id="formChooseSel" method="post" action="index.php"  class="fond1" style="float:left;">');
+        p('<form name="formChooseSel" id="formChooseSel" method="post" action="index.php"  class="span12 form-vertical" style="float:left;">');
 
 
         p('<input type="hidden" name="curTable" value="' . $this->table . '" />');
@@ -180,7 +187,7 @@ class genSearchV2 {
         }
         p('</select>');
 
-        p('<label class="abutton" style="float:left;margin:0;margin-left:10px;"><input type="image" src="' . t('src_search') . '" />' . t('go') . '</label>');
+        p('<button class="btn" ><img src="' . t('src_search') . '" /></label>');
         p('</form>');
 
         $this->getSimpleSearchForm();
@@ -193,9 +200,8 @@ class genSearchV2 {
         $table = $this->table;
         $fields = getTabField($table);
 
-        p('<div style="clear:both">&nbsp;</div>
-        
-        	<form id="search" method="post" action="index.php"  class="fond1" style="float:left;padding:5px !important;">');
+        p('
+        	<form id="search" method="post" action="index.php"  class="well form-vertical" >');
 
         p('
         	<script type="text/javascript">
@@ -203,7 +209,6 @@ class genSearchV2 {
         			window.location = "?curTable=' . $_REQUEST['curTable'] . '&curId="+b;        			
         		}
         	</script>
-            <fieldset style="border:0;padding:0;margin:0;"> 	
         ');
 
 
@@ -234,16 +239,13 @@ class genSearchV2 {
                 $size = $v->max_length;
             }
 
-            p('<div class="fond2" style="float:left">');
+
             if ($k != "pk") {
-                ;
-                p('<label  style="float:left;">' . t($k) . '</label>');
-                p('<div class="clearer">&nbsp;</div>');
-                p('<div style="float:left;">');
-
-
+                
+                p('<div>');
                 if (!empty($tablerel[$k])) {
 
+                    p('<label> ' . t($k) . '</label>');
                     reset($tablerel);
                     reset($tablerel[$k]);
                     while (list( $k2, $v2 ) = each($tablerel[$k])) {
@@ -271,18 +273,18 @@ class genSearchV2 {
 
                     $res = GetAll($sql);
 
-                    p('<select style="height:70px;float:left;"  id="' . $k . '" name="' . $k . '[]" multiple="multiple" >');
+                    p('<select class="selectM" id="' . $k . '" name="' . $k . '[]" multiple="multiple" >');
 
                     foreach ($res as $row) {
                         $sel = @in_array($row[$thiskey], $_POST[$k]) ? 'selected="selected"' : '';
                         p('<option ' . $sel . ' value="' . $row[$thiskey] . '">' . limit(GetTitleFromRow($fk_table, $row, " "), 30) . '</option>');
                     }
 
-                    p('</select> <input type="text" class="selectMSearch" id="' . $k . '_search" onkeydown="searchInSelect(this)" />');
+                    p('</select><div class="input-prepend "><span class="add-on add-on-mini"><i class="icon-search"></i></span><input type="text" class="selectMSearch input-mini" id="' . $k . '_search" onkeydown="searchInSelect(this)" /></div>');
                 } else
                 if (!empty($relations[$table][$k])) {
 
-
+                    p('<label class="hide-text"> ' . t($k) . '</label>');
                     $tablenom = $relations[$table][$k];
 
                     $label = 'A.' . GetTitleFromTable($tablenom, " , A.");
@@ -292,45 +294,48 @@ class genSearchV2 {
                     $sql = "SELECT A." . $thiskey . " , " . $label . " FROM " . $tablenom . " AS A  , " . $table . " AS B WHERE B." . $k . " = A." . $thiskey . " " . GetOnlyEditableVersion($tablenom, 'A') . ' GROUP BY  A.' . $thiskey . " ORDER BY " . $label;
                     $res = GetAll($sql);
 
-                    p('<select id="' . $k . '" style="height:70px;float:left;" name="' . $k . '[]" multiple="multiple" >');
-
+                    p('<select class="selectM" id="' . $k . '"  name="' . $k . '[]" multiple="multiple" >');
+                    p('<option value="">'.ta($k).'</option>');
                     foreach ($res as $row) {
                         $sel = @in_array($row[$thiskey], $_POST[$k]) ? 'selected="selected"' : '';
                         p('<option ' . $sel . ' value="' . $row[$thiskey] . '">' . limit(GetTitleFromRow($tablenom, $row, " "), 30) . '</option>');
                     }
-                    p('</select> <input type="text" class="selectMSearch" id="' . $k . '_search" onkeydown="searchInSelect(this)" />');
+                    p('</select><br/><input type="text" class="selectMSearch span2" id="' . $k . '_search" onkeydown="searchInSelect(this)" />');
                 } else {
 
                     if (($type == "int" && $size < 2 ) || $type == "tinyint") {
                         $vv = akev($_POST, $k);
+                        p('<label class="hide-text"> ' . t($k) . '</label>');
                         $sel = $vv == "" ? 'selected="selected"' : '';
                         $sel0 = $vv === "0" ? 'selected="selected"' : '';
                         $sel1 = $vv == 1 ? 'selected="selected"' : '';
                         p('
-                            <select style="float:left;" name="' . $k . '">
-                                <option ' . $sel . ' value="">----------</option>
+                            <select name="' . $k . '">
+                                <option ' . $sel . ' value="">'.ta($k).'</option>
                                 <option ' . $sel0 . '  value="0">' . t('non') . '</option>
                                 <option ' . $sel1 . ' value="1">' . t('oui') . '</option>
                             </select>
                         ');
                     } else if ($type == "datetime" || $type == "date") {
+                        p('<label class=""> ' . t($k) . '</label>');
                         $vv = akev($_POST, $k . '_type');
                         $sel = $vv == "" ? 'selected="selected"' : '';
                         $sel0 = $vv == "inf" ? 'selected="selected"' : '';
                         $sel1 = $vv == "eg" ? 'selected="selected"' : '';
                         $sel2 = $vv == "sup" ? 'selected="selected"' : '';
                         p('
-                            <select style="float:left;" name="' . $k . '_type">
+                            <select  name="' . $k . '_type">
                                 <option ' . $sel . ' value="">-</option>
                                 <option ' . $sel0 . '  value="inf"><</option>
                                 <option ' . $sel1 . ' value="eg">=</option>
                                 <option ' . $sel2 . ' value="sup">></option>
                             </select>
-                            <input style="float:left;width:50px" type="text" name="' . $k . '" value=' . alt(akev($_REQUEST,$k)) . ' />
+                            <input type="text" name="' . $k . '" value=' . alt(akev($_REQUEST,$k)) . ' />
                         ');
                     } else if ($type == 'enum') {
+                        p('<div><label class=""> ' . t($k) . '</label>');
                         $values = getEnumValues($this->table, $v->name);
-                        p('<select  style="height:70px;float:left;" name="' . $k . '[]" multiple="multiple" >');
+                        p('<select  name="' . $k . '[]" multiple="multiple" >');
 
                         foreach ($values as $rowe) {
                             $sel = @in_array($rowe, $_POST[$k]) ? 'selected="selected"' : '';
@@ -338,8 +343,9 @@ class genSearchV2 {
                         }
                         p('</select>');
                     } else {
+                        p('<label class="hide-text"> ' . t($k) . '</label>');
 
-                        p('<input style="float:left;" type="text"
+                        p('<input placeholder='.alt(ta($k)).'  type="text"
                         			id="rech_' . $k . '" name="' . $k . '" 
                         			value="' . akev($_REQUEST, $k) . '" />');
 
@@ -347,10 +353,10 @@ class genSearchV2 {
 
                         <script type="text/javascript">                        
                         jQuery(function(){
-							  options = { serviceUrl:"?xhr=autocompletesearch&table=' . $_REQUEST['curTable'] . '&champ=' . $k . '", onSelect: submitFormRech   };
-							  a = $("#rech_' . $k . '").autocomplete(options);
+                                options = { serviceUrl:"?xhr=autocompletesearch&table=' . $_REQUEST['curTable'] . '&champ=' . $k . '", onSelect: submitFormRech   };
+                                a = $("#rech_' . $k . '").autocomplete(options);
 							});	
-						</script>	
+                         </script>
 						');
                     }
                 }
@@ -360,13 +366,13 @@ class genSearchV2 {
 
                 $i++;
             }
-            p('</div>');
+
         }
 
 
-        p('<label class="abutton" style="float:left;margin:0;margin-left:5px;"><input type="image" src="' . t('src_search') . '" />' . t('rechercher') . '</label>');
+        p('<button class="btn"><img src="' . t('src_search') . '" />' . t('rechercher') . '</button>');
 
-        p('</fieldset>');
+
         p('</form>');
     }
 
@@ -377,9 +383,6 @@ class genSearchV2 {
          * Formate les resultats sous la forme d'un tableau avec des liens pour modifier
          */
 
-
-
-        print('<div class="clearer">&nbsp;</div></div>');
 
         global $searchField, $relations, $tabForms, $tables, $Gconfig, $tablerel;
 
@@ -429,102 +432,15 @@ class genSearchV2 {
         
         ';
 
-        $r .= '<div >
-        
-        <table border="0"  width="100%">
-        <tr><td style="text-align:center;display:block;width:100px;" width="100" class="fond1" >';
 
 
-        /**
-         * Paramètres de tri
-         */
-        $triParams = '';
-        if (!empty($_REQUEST['order'])) {
+        $pagi = new pagination($pageTot);
+        $r .= $pagi->gen();
 
-            $triParams = '&amp;order=' . $_REQUEST['order'];
-
-            if ($_REQUEST['to']) {
-
-                $triParams .= '&amp;to=' . $_REQUEST['to'];
-            }
-        }
-
-        /**
-         * Bouton précédent
-         */
-        if ($lstart > 0) {
-
-            $r .= '<a style="display:block" href="?fromList=1&amp;curTable=' . $this->table . '&amp;lstart=' . ($lstart - $this->nbperpage) . $triParams . '">
-						<img src="' . ADMIN_PICTOS_FOLDER . ADMIN_PICTOS_FORM_SIZE . '/actions/go-previous.png" alt="" /><br/> ' . t('page_precedente') . '
-				   </a>';
-        }
-
-        $r .= '</td>';
+     	$r .= '<div>';
 
 
-        $r .= '<td style="text-align:center" width="80%" colspan="' . count($tablo) . '">';
-
-        /**
-         * Liste de sélection de la page
-         */
-        $r .= '<input type="hidden" name="curTable" value="' . $this->table . '" />';
-        $r .= '<input type="hidden" name="fromList" value="1" />';
-
-        /**
-         * Ajout des paramètres de tri
-         */
-        if (!empty($_REQUEST['order']))
-            $r .= '<input type="hidden" name="order" value="' . $_REQUEST['order'] . '" />';
-
-        if (!empty($_REQUEST['to']))
-            $r .= '<input type="hidden" name="to" value="' . $_REQUEST['to'] . '" />';
-
-        $r .= t('page') . ' ';
-        $r .= '<select name="lstart" onchange="gid(\'formpages\').submit();">';
-        for ($p = 0; $p < $pageTot; $p++) {
-            $curP = ($p * $this->nbperpage);
-            $sel = ($curP == $lstart) ? 'selected="selected"' : '';
-            $r .= '<option value="' . $curP . '" ' . $sel . ' >' . ($p + 1) . '</option>';
-        }
-        $r .= '</select>';
-        $r .= ' / ' . $pageTot;
-        //$r.= '</form>';
-
-        /*
-          $r .= t('page').' '.($pageNo.' / '.$pageTot).'<br/>';
-
-
-
-          for($p=0;$p<$pageTot;$p++) {
-          $curP = ($p*$this->nbperpage);
-
-          $sel =($curP ==$lstart) ? 'style="font-weight:bold;text-decoration:underline;"' : '';
-
-          $r .= '<a '.$sel.' href="?fromList=1&amp;curTable='.$this->table.'&amp;lstart='.$curP.'">'.($p+1).'</a> ';
-          }
-         */
-        $r.= '</td>';
-
-        /**
-         * Bouton suivant
-         */
-        $r .= '<td style="text-align:center;display:block;width:100px;" width="100"  class="fond1" >';
-
-        if ($totRes > $lend) {
-
-            $r .= '<a style="display:block" href="?fromList=1&amp;curTable=' . $this->table . '&amp;lstart=' . ($lend) . $triParams . '">
-						<img src="' . ADMIN_PICTOS_FOLDER . ADMIN_PICTOS_FORM_SIZE . '/actions/go-next.png" alt="" /><br/>' . t('page_suivante') . '
-				   </a>';
-        }
-
-        $r .= '</td>
-     	</tr >
-     	</table>
-     	</div>
-     	<div>';
-
-
-        $r .= '<table style="clear:both" border="0" class="genform_table" width="99%">';
+        $r .= '<table border="0" class="table table-striped table-bordered table-condensed" >';
 
 
         /**
@@ -723,12 +639,14 @@ class genSearchV2 {
 
 
 
+
+
         /**
          * Code javascript qui coche la checkbox en début de ligne lorsqu'on clique sur une ligne
          */
         p('
 	   	<script type="text/javascript">
-	   	$(".genform_table tr").click(function() {
+	   	$("table.table tr").click(function() {
 	   		
 	   		if($(this).find("input[type=checkbox]").is(":checked")) {
 	   		
@@ -744,7 +662,7 @@ class genSearchV2 {
 	   	});
 	   	</script>
 	   	
-	   	<div style="clear:both;text-align:right"  class="fond1">');
+	   	<div style="clear:both;text-align:right" class="well" >');
 
         $html = '';
         $html .= '<a href="#" onclick="searchSelectMass(true);return false;">' . t('select_all') . '</a> / ';
@@ -768,11 +686,16 @@ class genSearchV2 {
 
         $html .= '
 	   	</select>
-	   	<input type="submit" value="' . t('ok') . '" />	   	
+	   	<input class="btn" type="submit" value="' . t('ok') . '" />
 	   	</div>
 	   	</form>';
 
+
+
         echo $html;
+
+
+        p($pagi->gen());
     }
 
     /**
@@ -803,17 +726,17 @@ class genSearchV2 {
 
                 if ($action == 'del') {
 
-                    $r .= '<a class="btn_action" title="' . t($action) . '" href="?genform_action%5B' . $action . '%5D=1&amp;curTable=' . $table . '&amp;curId=' . $id . '&amp;action=' . $action . '&amp;fromList=1" onclick="return confirm(\'' . t('confirm_suppr') . '\')">
+                    $r .= '<a class="btn btn-mini" title="' . t($action) . '" href="?genform_action%5B' . $action . '%5D=1&amp;curTable=' . $table . '&amp;curId=' . $id . '&amp;action=' . $action . '&amp;fromList=1" onclick="return confirm(\'' . t('confirm_suppr') . '\')">
 							<img src="' . $srcBtn . '" alt="' . t($action) . '" title="' . t($action) . '" />
 						   </a>';
                 } else {
 
                     if (method_exists($ga->obj, 'getSmallForm')) {
 
-                        $r .= '<div class="small_form_action">' . $ga->obj->getSmallForm() . '</div>';
+                        $r .= '<div class="btn btn-mini small_form_action">' . $ga->obj->getSmallForm() . '</div>';
                     } else {
 
-                        $r .= '<a class="btn_action" href="?genform_action%5B' . $action . '%5D=1&amp;curTable=' . $table . '&amp;curId=' . $id . '&amp;action=' . $action . '&amp;fromList=1" title="' . t($action) . '">
+                        $r .= '<a class="btn btn-mini '.($action=='edit' ? 'btn-primary' : '').'" href="?genform_action%5B' . $action . '%5D=1&amp;curTable=' . $table . '&amp;curId=' . $id . '&amp;action=' . $action . '&amp;fromList=1" title="' . t($action) . '">
 								<img src="' . $srcBtn . '" alt="' . t($action) . '" title="' . t($action) . '" />
 							   </a>';
                     }
@@ -823,7 +746,7 @@ class genSearchV2 {
             }
         }
 
-        $r = '<div style="width:' . (28 * $nbActions) . 'px;">' . $r . '</div>';
+        $r = '<div style="width:'.(37*$nbActions).'px" class="btn-group">' . $r . '</div>';
 
         return $r;
     }
@@ -1289,8 +1212,15 @@ class genSearchV2 {
 
         $res = DoSql($select . $sql);
 
-
-        $this->printRes($res);
+        return $res;
+       
     }
 
+
+    
+
 }
+
+
+
+

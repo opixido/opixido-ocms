@@ -557,22 +557,11 @@ $_Gconfig['adminMenus'] = array();
 //$_Gconfig['adminMenus'][] = array( 's_rubrique');
 $_Gconfig['bigMenus']['contenu'] = array('s_rubrique');
 
-
-
-
-
-$_Gconfig['adminMenus']['menu_admin'] = array( 's_admin','s_plugin','s_param','s_trad','s_admin_trad') ;
-
-
-
 $_Gconfig['nonMassAction'] = array('edit','view');
-
 
 $_Gconfig['relationToAjaxMinimum'] = 100;
 
-
 define('ADMIN_PICTOS_FOLDER',ADMIN_URL.'pictos_stock/tango/');
-
 
 define('ADMIN_PICTOS_ARBO_SIZE','16x16');
 define('ADMIN_PICTOS_FORM_SIZE','22x22');

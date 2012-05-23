@@ -586,7 +586,7 @@ REPLACE INTO `s_admin_trad` VALUES ('impossible_supprimer_repertoire', 'Le r&eac
 REPLACE INTO `s_admin_trad` VALUES ('impossible_supprimer', 'Ce fichier n''a pas pu &agrave;tre supprim&eacute; : ', '','');
 REPLACE INTO `s_admin_trad` VALUES ('editer_wysiwyg', 'Cliquez ici pour acc&eacute;der &agrave; l''&eacute;diteur WYSIWYG complet pour mettre en forme ce champ', '','');
 REPLACE INTO `s_admin_trad` VALUES ('voir_wysiwyg', 'Cliquez ici pour voir le contenu de ce champ dans une nouvelle fen&ecirc;tre', '','');
-REPLACE INTO `s_admin_trad` VALUES ('edit', 'Cliquez ici pour modifier cet &eacute;l&eacute;ment ', '','');
+REPLACE INTO `s_admin_trad` VALUES ('edit', 'Modifier', '','');
 REPLACE INTO `s_admin_trad` VALUES ('edis_image', '<img src="[ADMIN_PICTOS_FOLDER][ADMIN_PICTOS_FORM_SIZE]/actions/document-properties.png" border="0" alt="Editer" /> Retailler, recadrer, optimiser ... cette image', '','');
 REPLACE INTO `s_admin_trad` VALUES ('deja_fichier', 'Fichier existant', '','');
 REPLACE INTO `s_admin_trad` VALUES ('menu_0', 'Page d''accueil', '','');
@@ -761,3 +761,37 @@ VALUES (
 ), (
 'map_usecenter', 'Enregistrer le centre actuel de la carte', ''
 );
+
+
+REPLACE INTO `s_admin_trad` VALUES ('picto_emptyCache', 'trash', '','');
+
+REPLACE INTO `s_admin_trad` VALUES ('picto_showPhpInfo', 'tasks', '','');
+REPLACE INTO `s_admin_trad` VALUES ('picto_executeSql', 'download-alt', '','');
+REPLACE INTO `s_admin_trad` VALUES ('picto_changeTranslations', 'flag', '','');
+REPLACE INTO `s_admin_trad` VALUES ('picto_recheckTranslations', 'retweet', '','');
+REPLACE INTO `s_admin_trad` VALUES ('picto_setAllUrls', 'globe', '','');
+REPLACE INTO `s_admin_trad` VALUES ('picto_cleanFiles', 'fire', '','');
+REPLACE INTO `s_admin_trad` VALUES ('picto_backupDb', 'share', '','');
+REPLACE INTO `s_admin_trad` VALUES ('picto_o_createPlugin', 'inbox', '','');
+
+REPLACE INTO `s_admin_trad` VALUES ('showPhpInfo', 'phpinfo();', '','');
+REPLACE INTO `s_admin_trad` VALUES ('executeSql', 'Requête SQL', '','');
+REPLACE INTO `s_admin_trad` VALUES ('changeTranslations', 'Gérer les langues', '','');
+REPLACE INTO `s_admin_trad` VALUES ('recheckTranslations', 'Ajouter les champs de langue manquants', '','');
+REPLACE INTO `s_admin_trad` VALUES ('setAllUrls', 'Définir toutes les URLs manquantes', '','');
+REPLACE INTO `s_admin_trad` VALUES ('cleanFiles', 'Supprimer les fichiers inutilisés', '','');
+REPLACE INTO `s_admin_trad` VALUES ('backupDb', 'Sauvegarde de la BDD', '','');
+REPLACE INTO `s_admin_trad` VALUES ('o_createPlugin', 'Créer un Plugin', '','');
+REPLACE INTO `s_admin_trad` VALUES ('lastActions', 'Vos derniers éléments modifiés', '','');
+REPLACE INTO `s_admin_trad` VALUES ('derniere_connexion', 'Dernière connexion le ', '','');
+REPLACE INTO `s_admin_trad` VALUES ('lastActions_none', 'Aucune action effectuée', '','');
+REPLACE INTO `s_admin_trad` VALUES ('add_another', 'Ajouter ', '','');
+REPLACE INTO `s_admin_trad` VALUES ('liste_global_actions', 'Actions administrateur ', '','');
+REPLACE INTO `s_admin_trad` VALUES ('recherche_rapide', 'Recherche rapide ', '','');
+
+
+REPLACE INTO `s_admin_trad` VALUES ('enum_page', 'Page simple', '','');
+REPLACE INTO `s_admin_trad` VALUES ('enum_link', 'Lien', '','');
+REPLACE INTO `s_admin_trad` VALUES ('enum_folder', 'Dossier', '','');
+REPLACE INTO `s_admin_trad` VALUES ('enum_siteroot', 'Racine de site', '','');
+REPLACE INTO `s_admin_trad` VALUES ('enum_menuroot', 'Menu', '','');

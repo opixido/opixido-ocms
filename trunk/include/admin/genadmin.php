@@ -246,11 +246,22 @@ class genAdmin {
         $gb_obj->includeFile('inc.header.php', 'admin_html');
 
 
-        $this->getHeader();
+         
+
+
+        if ($this->isInRubrique()) {
+            p('<div id="menug" class="row-fluid">');
+            p('<div class="well span3">');
+            $this->getArboRubs();
+            p('</div>');
+            p('<div id="contenu" class="span9">');
+        } else {
+            p('<div><div id="contenu">');
+        }
 
 
 
-        p('<div id="contenu">');
+    
 
         $this->GetHeaderTitle();
 
@@ -268,10 +279,9 @@ class genAdmin {
 
         $this->includeForm();
 
-
         p('</div>');
 
-        p('</div>');
+        p('</div></div>');
 
 
         $gb_obj->includeFile('inc.footer.php', 'admin_html');
@@ -284,7 +294,7 @@ class genAdmin {
             p('<div id="tools" >');
 
             if ($this->gs->can('add', $this->table)) {
-                p('<a class="abutton" href="?curTable=' . $this->table . '&amp;curId=new"> <img src="' . ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/actions/document-new.png" alt=""  /> ' . t('ajouter_elem') . '</a>');
+                p('<a class="btn btn-primary btn-large" href="?curTable=' . $this->table . '&amp;curId=new"><img src="' . ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/actions/document-new.png" alt=""  /> ' . t('ajouter_elem') . '</a></div>');
             }
 
             if (ake($_Gconfig['tableActions'], $this->table)) {
@@ -295,7 +305,7 @@ class genAdmin {
 
                     if ($this->gs->can($action, $this->table) && $action != akev($_REQUEST, 'tableAction')) {
 
-                        p('<a class="abutton" href="?curTable=' . $this->table . '&tableAction=' . $action . '"> <img src="' . ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/actions/' . $action . '.png" alt=""  /> ' . t($action) . '</a>');
+                        p('<a class="btn" href="?curTable=' . $this->table . '&tableAction=' . $action . '"> <img src="' . ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/actions/' . $action . '.png" alt=""  /> ' . t($action) . '</a>');
                     }
                 }
             }
@@ -306,7 +316,7 @@ class genAdmin {
             if (!empty($_REQUEST['tableAction']) && in_array($_REQUEST['tableAction'], $_Gconfig['tableActions'][$this->table])) {
 
                 if ($this->gs->can($action, $this->table)) {
-                    p('<div class="tableActions">');
+                    p('<div class="tableActions well">');
 
                     p('<h3>' . t('tableAction') . ' ' . t($_REQUEST['tableAction']) . '</h3>');
 
@@ -323,23 +333,10 @@ class genAdmin {
     function GetHeader() {
 
 
-        p('    <div id="menug">');
+       
 
 
-        if ($this->isInRubrique()) {
-
-            $this->getArboRubs();
-        } else {
-            p('<style type="text/css">
-					#contenu {
-						margin-left:0;
-					}
-					</style>
-				');
-        }
-
-
-        p('    </div>');
+       // p('    </div>');
     }
 
     /**
@@ -404,8 +401,7 @@ class genAdmin {
 
     function getArboRubs() {
 
-        p('<h1>' . t('arborescence') . '</h1>');
-        p('<div id="arbo_rubs">');
+        p('<div id="arbo_rubs" >');
         $this->sa->getArboActions();
         p('<div id="arbo">');
         $this->sa->recurserub('NULL', 0, "1");
@@ -428,7 +424,7 @@ class genAdmin {
             foreach ($v as $m) {
                 if ($this->gs->can('view', $m)) {
                     p('<li>');
-                    $cl = ($this->table == $m) ? "class='mselected'" : "";
+                    $cl = ($this->table == $m) ? "class='badge'" : "";
                     p('<a ' . $cl . ' href="index.php?curTable=' . $m . '&"><img src="' . ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/actions/document-open.png" alt="-" /> ' . t($m) . '</a>');
                     p('</li>');
                 }
@@ -557,6 +553,8 @@ class genAdmin {
 
                 $form->genHeader();
 
+                $form->genActions();
+
                 $form->genPages();
 
                 $form->genFooter();
@@ -566,16 +564,13 @@ class genAdmin {
 
             case "resume":
 
-
-
                 $gl = new GenLocks();
 
                 $gl->unsetAllLocks();
 
                 $GLOBALS['inScreen'] = 'resume';
 
-                p('<div >');
-                p('<div id="genform_navi" style="width:100px;"><div class="genform_onglet"><div class="btnOngletOn"><a>' . t('recapitulatif') . '</a></div></div></div>');
+                p('<div id="resume">');            
 
 
                 $form = new GenForm($this->table, "", $this->id, "");
@@ -583,34 +578,27 @@ class genAdmin {
                 $form->separator = '<br/>';
                 global $editMode;
 
-                p('<style type="text/css">
-				#zegenform {padding:0 !important;margin:0;}
-				#zegenform p ,
-				#zegenform h1  ,
-				#zegenform caption
-				{text-align:center;margin-top:10px;margin-bottom:10px;}
-		
-				.genform_onglet { border-bottom:1px solid #999 !important; margin-bottom:0;}
-		
-				</style>');
+
 
                 $editMode = 1;
 
                 $form->editMode = 1;
 
-                $form->genActions();
+                p('<div class="row-fluid">');
 
-                $form->genHeader();
-
-
+                p('<div class="span9">');
+                //$form->genHeader();
 
                 $form->genPages();
 
-
                 $this->showLog();
 
+               // $form->genFooter();
+                p('</div>');
 
-                $form->genFooter();
+                p('<div class="span3">');
+                $form->genActions();
+                p('</div>');
 
                 p('</div>');
 
@@ -642,7 +630,7 @@ class genAdmin {
 
         $res = GetAll($sql);
 
-        p('<table id="table_log_action" summary="">');
+        p('<table id="table_log_action" summary="" class="table table-striped table-bordered table-condensed">');
         p('<caption>' . t('table_log_action') . '</caption>');
         $k = 0;
         foreach ($res as $row) {
@@ -741,8 +729,8 @@ class genAdmin {
          *
          * */
 
-        if(!$id || $id == 'new') {
-            return 'Nouveau '.t($table);
+        if (!$id || $id == 'new') {
+            return 'Nouveau ' . t($table);
         }
 
         global $tabForms;
@@ -772,29 +760,42 @@ class genAdmin {
 
     function GetHeaderTitle() {
 
-        p('<div id="titre">');
+        if (empty($_REQUEST['curTable'])) {
+            return '';
+        }
+
+        p('<div id="titre" class="well">');
+
+
 
         $urlOnline = getObjUrl();
         global $tabForms;
         if ($urlOnline) {
-            p('<a style="float:right" href="' . $urlOnline . '" target="_blank"><img src="' . ADMIN_PICTOS_FOLDER . ADMIN_PICTOS_FORM_SIZE . '/actions/document-properties.png" alt=' . alt(t('voir_enligne')) . ' /></a>');
+            p('<a class="btn" style="float:right" href="' . $urlOnline . '" target="_blank"><img src="' . ADMIN_PICTOS_FOLDER . ADMIN_PICTOS_FORM_SIZE . '/actions/document-properties.png" alt=' . alt(t('voir_enligne')) . ' /></a>');
         }
 
-        /**
+        /*         * k
          * Nouveau et rechercher
          */
-        if ($this->id && $this->table != 's_rubrique') {
+        if ($this->id && $this->table != 's_rubrique' && $_SESSION[gfuid()]['levels'][1]['curTable'] != 's_rubrique') {
 
-            p('<div class="toolsright">
-                    <a class="bloc2" title=' . alt(t('add_another') . ' ' . t($_REQUEST['curTable'])) . '
-                                    href="?curTable=' . $this->table . '&curId=new">
-                                    <img src="' . ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/actions/document-new.png"
-                                            alt=""  /></a>
-                    <form class="bloc2">
+            p('<div id="toolsright" >
+                   
+                    <form class="form-inline">
+                           
                             <input type="hidden" name="curTable" value=' . alt($_REQUEST['curTable']) . ' />
                             <input type="hidden" name="doSimpleSearch" value="1" />
-                            <input type="text" name="searchTxt" title=' . alt(t('search') . ' ' . t($_REQUEST['curTable'])) . ' />
-                            <input type="image" style="border:0" src="' . ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/actions/system-search.png" />
+                           <div class="control-group">
+                           <div class="controls">
+                           <div class="input-append">
+                            <a class="btn  btn-mini" title=' . alt(t('add_another') . ' ' . t($_REQUEST['curTable'])) . '
+                                    href="?curTable=' . $this->table . '&curId=new">
+                                    <img src="' . ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_FORM_SIZE . '/actions/document-new.png"
+                                            alt=' . alt(t('add_another')) . '  /></a>
+                            <input type="text" class="span2" name="searchTxt" placeholder=' . alt(t('search')) . ' title=' . alt(t('search') . ' ' . t($_REQUEST['curTable'])) . ' /><button class="btn"><img src="' . ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/actions/system-search.png" alt=' . alt(t('search')) . ' /></button>
+                        </div>
+                        </div>
+                        </div>
                     </form>
             </div>');
         }
@@ -819,28 +820,30 @@ class genAdmin {
         if ($table) {
             $src = !empty($tabForms[$table]['picto']) ? str_replace(ADMIN_PICTOS_BIG_SIZE, ADMIN_PICTOS_FORM_SIZE, $tabForms[$table]['picto']) : t('src_desktop');
             $src = getPicto($table, ADMIN_PICTOS_FORM_SIZE);
-            p('<a class="titreListe" title=' . alt(t('recherche') . ' ' . t($table)) . ' href="?curTable=' . $table . '&amp" ><img class="inputimage" src="' . $src . '"  alt="" /></a>');
+            p('<a class="btn btn-mini" title=' . alt(t('recherche') . ' ' . t($table)) . ' href="?curTable=' . $table . '&amp" ><img class="inputimage" src="' . $src . '"  alt="" /></a>');
         }
 
-        if($root_id && $root_id != 'new') {
-            p('<a class="titreListe" title=' . alt(t('road_fiche_resume').' : '.limitWords(strip_tags($this->GetRecordTitle($table, $root_id)), 10)) . ' href="?curTable=' . $table . '&amp;curId=' . $root_id . '&resume=1" ><img class="inputimage"  src="' . t('src_view') . '" alt="" /></a>');
+
+        if (!$_REQUEST['curId']) {
+            p('<h1 style="display:inline;font-size:130%;font-weight:normal;padding:0;margin:0;">' . ta($_REQUEST['curTable']) . '</h1>');
+        }
+        if ($root_id && $root_id != 'new') {
+            p('<a class="btn btn-mini" title=' . alt(t('road_fiche_resume') . ' : ' . limitWords(strip_tags($this->GetRecordTitle($table, $root_id)), 10)) . ' href="?curTable=' . $table . '&amp;curId=' . $root_id . '&resume=1" ><img class="inputimage"  src="' . t('src_view') . '" alt="" /></a>');
         }
         if ($this->id || $this->id == 'new') {
 
             if (akev($_SESSION[gfuid()], 'nbLevels') > 0) {
 
-                for ($p = 1; $p <= $_SESSION[gfuid()]['nbLevels']+1; $p++) {
+                for ($p = 1; $p <= $_SESSION[gfuid()]['nbLevels'] + 1; $p++) {
                     $v = $_SESSION[gfuid()]['levels'][$p];
                     if (isset($v['curTable'])) {
                         $src = getPicto($v['curTable'], ADMIN_PICTOS_FORM_SIZE);
-                        p('<a class="titreListe" href="?gfuid='.gfuid().'&backToLevel='.$p.'"><img class="inputimage" src="'.$src.'" alt="" />' . limitWords(strip_tags($this->GetRecordTitle($v["curTable"], $v["curId"], " ", $v["curTableKey"])), 15) . " [" . $v["curId"] . "] </a> ");
+                        p('<a class="btn btn-mini" href="?gfuid=' . gfuid() . '&backToLevel=' . $p . '"><img class="inputimage" src="' . $src . '" alt="" />' . limitWords(strip_tags($this->GetRecordTitle($v["curTable"], $v["curId"], " ", $v["curTableKey"])), 15) . " [" . $v["curId"] . "] </a> ");
                     }
                 }
                 $src = getPicto($this->table, ADMIN_PICTOS_FORM_SIZE);
-                p(' <span class="titreListe"><img class="inputimage" src="' .$src . '" alt="" /> '.limitWords(strip_tags($this->GetRecordTitle($this->table, $this->id)), 10).'</span> ');
+                p(' <span class="well"><img class="inputimage" src="' . $src . '" alt="" /> ' . limitWords(strip_tags($this->GetRecordTitle($this->table, $this->id)), 10) . '</span> ');
                 //p('<a href="?' . time() . '" ><img class="inputimage" src="' . t('src_back') . '" alt="Retour" /></a> ');
-
-
 //                while (list($k, $v) = each($_SESSION[gfuid()]['levels'])) {
 //                    if (isset($v['curTable'])) {
 //                        p('<span class="titreListe">' . limitWords(strip_tags($this->GetRecordTitle($v["curTable"], $v["curId"], " ", $v["curTableKey"])), 15) . " [" . $v["curId"] . "] </span> &raquo;");
@@ -854,10 +857,10 @@ class genAdmin {
                     // p('<a href="?curTable=' . $_REQUEST['curTable'] . '" style="margin:0;padding:0"><img style="vertical-align:middle;margin:0;" src="' . t('src_first') . '" alt="Retour" /></a>');
                 } else {
                     $src = getPicto($table, ADMIN_PICTOS_FORM_SIZE);
-                    p('<span class="titreListe"><img class="inputimage" src="'.$src.'" alt="" /> ' . limitWords(strip_tags($this->GetRecordTitle($this->table, $this->id, " ")), 15) . "</span>");
+                    p('<span class="well"><img class="inputimage" src="' . $src . '" alt="" /> ' . limitWords(strip_tags($this->GetRecordTitle($this->table, $this->id, " ")), 15) . "</span>");
                 }
             }
-        }     
+        }
         p('</div>');
         if (ake('genform_action', $_REQUEST)) {
 
@@ -1213,7 +1216,7 @@ class smallAdmin {
                         || $version_rub == akev($_REQUEST, 'curId')
                 ) {
 
-                    $cl = 'class="mselected"';
+                    $cl = 'class="badge"';
                     $_SESSION['XHRlastCurId'] = $aff['fk_rubrique_version_id'];
                 }
 
@@ -1408,7 +1411,7 @@ class smallAdmin {
     }
 
     function getArboActions() {
-        p('<div id="arbo_actions">');
+        p('<div id="arbo_actions" class="btn-group">');
 
         $ht = '';
         $bs = '';
@@ -1416,9 +1419,9 @@ class smallAdmin {
 
         if ($this->parent->id) {
 
-            $ht = '&nbsp;&nbsp;&nbsp;<a id="goHautLink" onclick="XHR_menuArbo(this.href,this);return false;" href="index.php?showRub=' . $this->parent->real_rub_id . '&amp;haut_1=1&amp;curTable=' . $this->parent->table . '&amp;curId=' . $this->parent->id . '&amp;rubId=' . $this->parent->real_rub_id . '&amp;resume=1&amp;fkrubId=' . $this->parent->real_fk_rub . '" title="Monter d\'un niveau"><img src="' . ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/actions/go-up.png" alt="" /> ' . t('monter') . ' </a>';
+            $ht = '<a class="btn btn-mini" id="goHautLink" onclick="XHR_menuArbo(this.href,this);return false;" href="index.php?showRub=' . $this->parent->real_rub_id . '&amp;haut_1=1&amp;curTable=' . $this->parent->table . '&amp;curId=' . $this->parent->id . '&amp;rubId=' . $this->parent->real_rub_id . '&amp;resume=1&amp;fkrubId=' . $this->parent->real_fk_rub . '" title="Monter d\'un niveau"><img src="' . ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/actions/go-up.png" alt="" /> ' . t('monter') . ' </a>';
 
-            $bs = '&nbsp;&nbsp;&nbsp;<a id="goBasLink" onclick="XHR_menuArbo(this.href,this);return false;" href="index.php?showRub=' . $this->parent->real_rub_id . '&amp;bas_1=1&amp;curTable=' . $this->parent->table . '&amp;curId=' . $this->parent->id . '&amp;rubId=' . $this->parent->real_rub_id . '&amp;resume=1&amp;fkrubId=' . $this->parent->real_fk_rub . '" title="Descendre d\'un niveau"><img src="' . ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/actions/go-down.png" alt="" /> ' . t('descendre') . '</a>';
+            $bs = '<a class="btn btn-mini"  id="goBasLink" onclick="XHR_menuArbo(this.href,this);return false;" href="index.php?showRub=' . $this->parent->real_rub_id . '&amp;bas_1=1&amp;curTable=' . $this->parent->table . '&amp;curId=' . $this->parent->id . '&amp;rubId=' . $this->parent->real_rub_id . '&amp;resume=1&amp;fkrubId=' . $this->parent->real_fk_rub . '" title="Descendre d\'un niveau"><img src="' . ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/actions/go-down.png" alt="" /> ' . t('descendre') . '</a>';
 
             $ajout = '';
 //
@@ -1446,14 +1449,14 @@ class smallAdmin {
 //		$ajout = ' &nbsp; <a id="addSubLink" href="index.php?curTable=s_rubrique&amp;curId=new&amp;genform__add_sub_table=s_rubrique&amp;genform__add_sub_id=' . $this->parent->real_rub_id . '&amp;genform_default__rubrique_ordre=' . ((count($a) / 2) + 1) . '" title="Ajouter une sous rubrique "><img src="' . ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/actions/document-new.png" alt="" /> ' . t('ajout_sub_rub') . '</a>';
 //	    }
 //	    
-            $ajout = ' &nbsp; <a id="addSubLink" href="index.php?curTable=s_rubrique&amp;curId=new&amp;genform__add_sub_table=s_rubrique&amp;genform__add_sub_id=' . $this->parent->real_rub_id . '" title="Ajouter une sous rubrique "><img src="' . ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/actions/document-new.png" alt="" /> ' . t('ajout_sub_rub') . '</a>';
+            $ajout = '<a id="addSubLink" class="btn btn-mini"  href="index.php?curTable=s_rubrique&amp;curId=new&amp;genform__add_sub_table=s_rubrique&amp;genform__add_sub_id=' . $this->parent->real_rub_id . '" title="Ajouter une sous rubrique " ><img src="' . ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/actions/document-new.png" alt="" /> ' . t('ajout_sub_rub') . '</a>';
         } else {
             $ht = t('select_rub_below');
         }
 
         /* construction simplifiée de l'aroborescence  */
         if (isset($_REQUEST['curId']) && $_REQUEST['curId'] != 'new')
-            $arbo = '&nbsp;&nbsp;&nbsp;<a href="index.php?arbo=1&amp;rubId=' . $this->parent->id . '&amp;fkrubId=' . $this->parent->real_fk_rub . '" title="' . t('arborescence') . '"><img src="' . ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/actions/arbo.png" alt="" /></a>';
+            $arbo = '<a class="btn btn-mini"  href="index.php?arbo=1&amp;rubId=' . $this->parent->id . '&amp;fkrubId=' . $this->parent->real_fk_rub . '" title="' . t('arborescence') . '"><img src="' . ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/actions/arbo.png" alt="" height="16" /></a>';
         else
             $arbo = '';
 
