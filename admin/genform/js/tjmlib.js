@@ -97,7 +97,7 @@ function setPosition(elt,positionername,isPlacedUnder) {
  elt.top = getAbsY(positioner);
  elt.zIndex = 1546;
 }
-
+/*
 genform_totalPages = 0;
 function genform_activatePage(page) {
 	//alert(genform_totalPages);
@@ -127,7 +127,7 @@ function genform_activatePage(page) {
 
 }
 
-
+*/
 
 divHeight = 60;
 divWidth = 150;

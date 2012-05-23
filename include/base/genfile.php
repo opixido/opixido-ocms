@@ -996,7 +996,7 @@ class genFile {
 
 
         if(!strlen($this->valeur)) {
-            return '<div class="genform_uploadfile">&nbsp;</div>';
+            return '<div class="genform_uploadfile">'.t('aucun_fichier').'</div>';
         }
         $chemin = $this->getWebUrl();
         $this->thumbWidth = 300;
@@ -1005,17 +1005,17 @@ class genFile {
         $name = $this->champ;
 
         $h = '';
-        $h .= ('<div class="genform_uploadfile">');
+        $h .= ('<div class="genform_uploadfile well" >');
         /* Nom du fichier */
 
 
-        $h .= (t('deja_fichier') . ' : ');
-        $h .= ('<span style="font-weight:bold;"><img style="vertical-align:middle" src="' . $this->getIcon() . '" alt="' . strtoupper($this->getExtension()) . '"/> [ ' . $this->getNiceSize() . ' ]</span>');
-
+        $h .= '<div class="badge">'.(t('deja_fichier') . ' : ');
+        $h .= ('<span style="font-weight:bold;"><img style="vertical-align:middle" src="' . $this->getIcon() . '" alt="' . strtoupper($this->getExtension()) . '"/> [ ' . $this->getNiceSize() . ' ] </span> ');
+        $h .= '<span class="badge badge-inverse">'.(str_replace($name . "_", "", basename($chemin)).'</span>');
         /* Lien vers le fichier */
-        $h .= (' <a href="' . $chemin . '" target="_blank" >'); //style="width:' . $this->thumbWidth . 'px"
+        $h .= (' <a  href="' . $chemin . '" target="_blank" >'); //style="width:' . $this->thumbWidth . 'px"
 
-        $h .= (str_replace($name . "_", "", basename($chemin)));
+        
 
         $h .= '<br/>';
 
@@ -1080,7 +1080,7 @@ class genFile {
             $h .= ('' . t('voir'));
         }
 
-        $h .= ('</a>');
+        $h .= ('</a></div>');
 
 
         /* Edition via l'ImageManager */
@@ -1088,14 +1088,15 @@ class genFile {
         $ssch = substr($this->getWebUrl(), strlen(BU));
 
         if ($this->isImage($chemin) && $this->useImageEditor) {
-            $h .= ('<a href="ImageManager/editor.php?img=' . $ssch . '&update=imgprev_' . $name . '" onclick="window.open(this.href,\'\',\'width=900,height=700\');return false" >' . t('edis_image') . '</a>');
+            $h .= ('<a class="btn btn-mini" href="ImageManager/editor.php?img=' . $ssch . '&update=imgprev_' . $name . '" onclick="window.open(this.href,\'\',\'width=900,height=700\');return false" >' . t('edis_image') . '</a>');
         }
 
 
-        $h .= ('<label class="abutton"  style="float:none;width:120px;"
-			><input onclick="if(confirm(\'' . t('supprimer_fichier') . '\')) {deleteFile(\''.$this->table.'\',\''.$name.'\',\''.$this->id.'\',this,\'\')} return false" class="inputimage" type="image"
-			value="" src="' . t('src_delete') . '"  name="genform_' . $name . '_del"
-			 /> ' . t('supprimer') . '</label>');
+        $h .= (' <button name="genform_' . $name . '_del"
+                        onclick="if(confirm(\'' . t('supprimer_fichier') . '\')) {deleteFile(\''.$this->table.'\',\''.$name.'\',\''.$this->id.'\',this,\'\')}return false"
+                            class="btn btn-important btn-mini"
+			><img src="' . t('src_delete') . '"  
+			 /> ' . t('supprimer') . '</button>');
 
         $h .= ('</div>');
 

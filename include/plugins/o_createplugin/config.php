@@ -2,6 +2,7 @@
 
 global $_Gconfig;
 
+$_Gconfig['globalActions'][] = 'o_adminer';
 $_Gconfig['globalActions'][] = 'o_createPlugin';
 
 

@@ -32,7 +32,6 @@ if ($_REQUEST['curId'] != 'new') {
 // debug("--->".$fk_table );
     }
     $res = GetAll($sql);
-
 } else {
 
     $res = array();
@@ -62,7 +61,7 @@ if (!$this->editMode) {
 
         $sortable = array_key_exists($fk_table, $orderFields);
 
-        $this->addBuffer('<table rel="' . $fk_table . '__' . $ofield . '" border="0" width="' . ($this->larg - 25) . '" class="genform_table ' . ($sortable ? 'sortable' : '') . ' relinv" ><thead>');
+        $this->addBuffer('<table class="sortable table table-striped table-bordered table-condensed" rel="' . $fk_table . '__' . $ofield . '" border="0" width="' . ($this->larg - 25) . '" class="genform_table ' . ($sortable ? 'sortable' : '') . ' relinv" ><thead>');
         $ml = 1;
         $this->addBuffer('<tr><th width="20">');
 

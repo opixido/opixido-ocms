@@ -945,6 +945,10 @@ function getPicto($nom, $taille="32x32") {
         $p = $nom;
     }
 
+    if($p == $nom) {
+        $p = 'mimetypes/text-x-generic-template.png';
+    }
+
     $a = path_concat(ADMIN_PICTOS_FOLDER, $taille, $p);
 
     return $a;

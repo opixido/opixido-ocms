@@ -247,31 +247,39 @@ class genform_tablerel extends genform_base {
          * Rechercher dans la liste
          */
         if (true) {
-            $this->addBuffer('
-				<input 
-						type="text" 
-						id="qxhr_' . $this->champ . '"
-						value="" 
-						onkeyup="XHR_tablerel(\'' . $this->table . '\',\'' . $this->id . '\',\'' . $this->champ . '\',this);"
-						
-						/> 
-				<img  
-						alt="' . t('search') . '"
-						src="' . t('src_go') . '"
-						style="vertical-align:middle" 
-						class="inputimage"
-						onclick="XHR_tablerel(\'' . $this->table . '\',\'' . $this->id . '\',\'' . $this->champ . '\',gid(\'qxhr_' . $this->champ . '\'));"
-						 />
-						 
-				<img  
-						alt="' . t('cancel') . '"
-						src="' . t('src_undo') . '"
-						style="vertical-align:middle" 
-						class="inputimage"
-						
-						onclick="gid(\'qxhr_' . $this->champ . '\').value=\'\';XHR_tablerel(\'' . $this->table . '\',\'' . $this->id . '\',\'' . $this->champ . '\',gid(\'qxhr_' . $this->champ . '\'));"
-						 />						 
-						 ');
+//            $this->addBuffer('<div class="control-group"><div class="controls"><div class="input-append">
+//				<input class="input-mini"
+//						type="text"
+//						id="qxhr_' . $this->champ . '"
+//						value=""
+//						onkeyup="XHR_tablerel(\'' . $this->table . '\',\'' . $this->id . '\',\'' . $this->champ . '\',this);"
+//
+//						/>
+//				<img  class="btn btn-mini"
+//						alt="' . t('search') . '"
+//						src="' . t('src_go') . '"
+//						style="vertical-align:middle"
+//						class="inputimage"
+//						onclick="XHR_tablerel(\'' . $this->table . '\',\'' . $this->id . '\',\'' . $this->champ . '\',gid(\'qxhr_' . $this->champ . '\'));"
+//						 />
+//
+//				<img  class="btn btn-mini"
+//						alt="' . t('cancel') . '"
+//						src="' . t('src_undo') . '"
+//						style="vertical-align:middle"
+//						class="inputimage"
+//
+//						onclick="gid(\'qxhr_' . $this->champ . '\').value=\'\';XHR_tablerel(\'' . $this->table . '\',\'' . $this->id . '\',\'' . $this->champ . '\',gid(\'qxhr_' . $this->champ . '\'));"
+//						 />
+//                                        </div></div></div>
+//						 ');
+
+ $this->addBuffer('
+            <div class="input-prepend ">
+                <span class="add-on add-on-mini">
+                <i class="icon-search"></i></span><input
+                class="input-mini selectMSearch" type="text" id="qxhr_' . $this->champ . '" value="" onkeyup="XHR_tablerel(\'' . $this->table . '\',\'' . $this->id . '\',\'' . $this->champ . '\',this);">
+            </div>');
         }
 
 

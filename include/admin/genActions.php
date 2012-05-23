@@ -224,7 +224,7 @@ class genActionDel {
 
     public function getForm() {
 
-        p('<a href="#"
+        p('<a class="btn" href="#"
 				onclick="if(prompt(\'' . t('confirm_delete') . '\',\'NON\') == \'OUI\')
 					{ window.location=
 						\'index.php?curTable=' . $this->table . '&curId=' . $this->id . '&genform_action[del]=1\';
@@ -233,7 +233,7 @@ class genActionDel {
 					 else {
 					 	return false;
 					}"
-				class="abutton" >
+				 >
 				<img src="' . t('src_del') . '" alt="" /> ' . t('delete') . '</a>');
     }
 
@@ -282,8 +282,8 @@ class genActionMoveRubrique {
     }
 
     public function getForm() {
-        p('<label for="move_rubrique">' . t('rubrique_deplacer_sous') . '</label>');
-        p('<select id="move_rubrique" name="move_rubrique" style="width:200px;">');
+        p('<div class="btn"><label for="move_rubrique">' . t('rubrique_deplacer_sous') . '</label>');
+        p('<select id="move_rubrique" name="move_rubrique" style="width:160px;">');
         if (!empty($GLOBALS['gs_obj']->myroles['s_rubrique']) && is_array($GLOBALS['gs_obj']->myroles['s_rubrique']['rows'])) {
             $liste = $GLOBALS['gs_obj']->myroles['s_rubrique']['rows'];
             $res = array();
@@ -305,7 +305,7 @@ class genActionMoveRubrique {
         }
 
         p('</select>');
-        p('<input name="genform_action[moveRubrique]" value="Go" type="submit" />');
+        p('<input name="genform_action[moveRubrique]" class="btn" value="Go" type="submit" /></div>');
     }
 
 }
