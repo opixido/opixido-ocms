@@ -1,0 +1,215 @@
+#gen_actions {
+
+}
+
+#toolsright {
+    float:right;
+}
+
+.well {
+    padding:7px;
+
+}
+
+.well .well {
+    padding:3px;
+}
+
+.table th {
+    background:#eee!important;
+}
+
+#contenant {
+    padding-top:30px;
+}
+
+#tools {
+    padding-bottom:10px;
+}
+
+#contenupadd {
+    /* padding-left:20px;
+     padding-right:20px;*/
+}
+
+input.selectMSearch {
+    font-size:10px;
+    margin-top:0;
+    padding-top:0;
+    padding:0!important;
+}
+
+select.selectM {
+    margin-bottom:0!important;
+    height:60px;
+}
+
+.add-on-mini {
+    padding:0 2px 0 2px!important;
+}
+
+input, textarea {
+    color:#000!important;
+}
+
+::-webkit-input-placeholder {
+    color: #777!important;
+}
+
+:-moz-placeholder {
+    color: #777!important;
+}
+
+.tab-content  {
+    border:1px solid #ddd;
+    border-top:0;
+    padding:20px;
+}
+
+#gen_actions {
+    position:fixed;
+    right:20px;
+    top:130px;
+
+    text-align:right;
+}
+
+#resume #gen_actions a {
+    display: block;
+    width:200px;
+
+}
+
+#zegenform {
+    margin-top:-36px;
+}
+
+#genform_formulaire input[type=text],#genform_formulaire  textarea,#genform_formulaire  select,#genform_formulaire  .uneditable-input {
+    width:400px;
+}
+
+.nav-tabs li a {
+    background:#eee!important;
+}
+
+.nav-tabs .active a , .tab-content{
+    background:#ddd!important;
+}
+
+#genform_header_btn_lgs {
+    display: none;
+}
+
+.well .well {
+    background:#eee;
+}
+
+#genform_formulaire label.label {
+    display: inline-block;
+}
+
+.ajaxselect {
+    display: inline-block;
+}
+
+.ajaxselect select {
+    margin-bottom:0;
+}
+
+.genform_uploadfile {
+    text-align:center;
+}
+
+#arbo ul {
+    list-style: none;
+    margin-left:0;
+}
+
+#arbo ul ul {
+    margin-left:10px;
+}
+
+#arbo a {
+    font-size:90%;
+}
+
+#arbo .badge {
+    padding-left:0;
+}
+
+
+td.dragHandle {
+    width: 20px;
+    background: url(../img/move_light.png) no-repeat center center #eee !important;
+    cursor: move;
+}
+
+tr.myDragClass td {
+    background-color: #ddd !important;
+}
+
+tr.myDragClass td.dragHandle {
+    background: url(../img/move.png) no-repeat center center #eee !important;
+}
+
+tr.myDragClass {
+}
+
+.genform_champ_out {
+    position:relative;
+}
+
+.help {
+    position:absolute;
+    right:0;
+    top:0;
+}
+/*
+.genform_champ_out {
+    margin-bottom:0;
+}*/
+/*
+.genform_champ_out table {
+    width:auto!important;
+}*/
+
+.genform_champ table input[type=text] {
+    width:100px!important
+}
+
+#resume .label {
+    white-space: normal;
+}
+/*
+.btn {
+    border-radius:0!important;
+}
+*/
+.navbar-inner {
+    background-color: #2C2C2C;
+    background-image: -moz-linear-gradient(center top ,  #555555,#333333);
+    background-repeat: repeat-x;
+    border-radius: 0px 0px 10px 10px!important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25), 0 -1px 0 rgba(0, 0, 0, 0.1) inset;
+}
+
+.brand {
+    padding-left:25px!important;
+}
+
+#gen_actions .btn {
+    margin-bottom:10px;
+    text-align: left;
+}
+
+.btn-primary {
+    font-weight:bold;
+}
+
+td .well {
+    margin:0;
+}
+
+.light {
+    color:#999;
+}
