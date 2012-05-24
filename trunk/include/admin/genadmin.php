@@ -246,7 +246,7 @@ class genAdmin {
         $gb_obj->includeFile('inc.header.php', 'admin_html');
 
 
-         
+
 
 
         if ($this->isInRubrique()) {
@@ -261,7 +261,7 @@ class genAdmin {
 
 
 
-    
+
 
         $this->GetHeaderTitle();
 
@@ -333,10 +333,10 @@ class genAdmin {
     function GetHeader() {
 
 
-       
 
 
-       // p('    </div>');
+
+        // p('    </div>');
     }
 
     /**
@@ -545,7 +545,7 @@ class genAdmin {
                     $form->editMode = true;
                     //debug($tl);
                 } else {
-                    
+
                 }
 
 
@@ -570,7 +570,7 @@ class genAdmin {
 
                 $GLOBALS['inScreen'] = 'resume';
 
-                p('<div id="resume">');            
+                p('<div id="resume">');
 
 
                 $form = new GenForm($this->table, "", $this->id, "");
@@ -593,7 +593,7 @@ class genAdmin {
 
                 $this->showLog();
 
-               // $form->genFooter();
+                // $form->genFooter();
                 p('</div>');
 
                 p('<div class="span3">');
@@ -623,9 +623,9 @@ class genAdmin {
     function showLog() {
         //if($this->table == 's_rubrique') {
         $sql = 'SELECT * FROM s_log_action
-				 LEFT JOIN s_admin AS A ON fk_admin_id = A.admin_id 
-				 WHERE log_action_fk_id = "' . $this->id . '" 
-					AND log_action_table = "' . $this->table . '"  
+				 LEFT JOIN s_admin AS A ON fk_admin_id = A.admin_id
+				 WHERE log_action_fk_id = "' . $this->id . '"
+					AND log_action_table = "' . $this->table . '"
 				    ORDER BY log_action_time DESC, log_action_id DESC LIMIT 0,30';
 
         $res = GetAll($sql);
@@ -780,9 +780,9 @@ class genAdmin {
         if ($this->id && $this->table != 's_rubrique' && $_SESSION[gfuid()]['levels'][1]['curTable'] != 's_rubrique') {
 
             p('<div id="toolsright" >
-                   
+
                     <form class="form-inline">
-                           
+
                             <input type="hidden" name="curTable" value=' . alt($_REQUEST['curTable']) . ' />
                             <input type="hidden" name="doSimpleSearch" value="1" />
                            <div class="control-group">
@@ -1077,7 +1077,7 @@ class genAdmin {
 
 /**
  * Retourne l'identifiant unique pour l'action en cours
- * @return string 
+ * @return string
  */
 function gfuid() {
     if (akev($_REQUEST, 'gfuid')) {
@@ -1138,11 +1138,11 @@ class smallAdmin {
              */
             $q = "SELECT
 						G.*,
-	        			R1.* , 
-	        			R2.rubrique_ordre as r2_ordre, 
-	        			R2.rubrique_etat AS r2_etat 
+	        			R1.* ,
+	        			R2.rubrique_ordre as r2_ordre,
+	        			R2.rubrique_etat AS r2_etat
 	        			FROM  s_rubrique as R2 , s_rubrique AS R1 LEFT JOIN s_gabarit AS G ON G.gabarit_id = R1.fk_gabarit_id
-	        			WHERE R1.rubrique_id IN(" . implode(',', $this->parent->gs->myroles['s_rubrique']['rows']) . ") " . sqlRubriqueVersions('R2.rubrique_id', 'R1') . " 
+	        			WHERE R1.rubrique_id IN(" . implode(',', $this->parent->gs->myroles['s_rubrique']['rows']) . ") " . sqlRubriqueVersions('R2.rubrique_id', 'R1') . "
 	        			ORDER BY r2_ordre ASC ";
         } else {
             /**
@@ -1150,11 +1150,11 @@ class smallAdmin {
              */
             $q = "SELECT
 	        			G.*,
-	        			R1.* , 
-	        			R2.rubrique_ordre as r2_ordre, 
-	        			R2.rubrique_etat AS r2_etat 
+	        			R1.* ,
+	        			R2.rubrique_ordre as r2_ordre,
+	        			R2.rubrique_etat AS r2_etat
 	        			FROM  s_rubrique as R2 , s_rubrique AS R1 LEFT JOIN s_gabarit AS G ON G.gabarit_id = R1.fk_gabarit_id
-	        			WHERE R1.fk_rubrique_id " . sqlParam($id) . " " . sqlRubriqueVersions('R2.rubrique_id', 'R1') . " 
+	        			WHERE R1.fk_rubrique_id " . sqlParam($id) . " " . sqlRubriqueVersions('R2.rubrique_id', 'R1') . "
 	        			ORDER BY r2_ordre ASC ";
         }
 
@@ -1206,7 +1206,7 @@ class smallAdmin {
                 /**
                  * permet de connaitre pour la rubriqque en cours son niveau maximal
                  */
-                $cl = '';
+                $cls = $cla = $cl = '';
 
                 /**
                  * Cette rubrique est-elle sélectionnée ?
@@ -1216,11 +1216,13 @@ class smallAdmin {
                         || $version_rub == akev($_REQUEST, 'curId')
                 ) {
 
-                    $cl = 'class="badge"';
+                    $cl = 'class="alert alert-info" style="padding:0;margin:0"';
+                    $cla = 'class=""';
+                    $cls = 'class=""';
                     $_SESSION['XHRlastCurId'] = $aff['fk_rubrique_version_id'];
                 }
 
-                p('<li ' . $cl . '><span>');
+                p('<li ' . $cl . '><span ' . $cls . '>');
 
                 /**
                  *  Ancres pour liens directs quand le menu est plus long que la page
@@ -1286,7 +1288,7 @@ class smallAdmin {
 
                 if (isset($this->parent->arboRubs[$real_rub]) && count($this->parent->arboRubs[$real_rub]) > 0) {
                     p('<a class="plusmoins ' . $classColor . '"
-							' . $xhr . ' href="' . $url . '" 
+							' . $xhr . ' href="' . $url . '"
 							>
 							' . $plusmoins . '<img src="' . $picto . '" alt="" /></a>');
                 } else {
@@ -1326,7 +1328,7 @@ class smallAdmin {
                 /**
                  * Lien texte
                  */
-                $linka = '<a ' . $cl . ' href="index.php?curTable=s_rubrique&amp;showRub=' . $real_rub . '&amp;curId=' . $version_rub . '&amp;resume=1"  
+                $linka = '<a ' . $cla . ' href="index.php?curTable=s_rubrique&amp;showRub=' . $real_rub . '&amp;curId=' . $version_rub . '&amp;resume=1"
 			 onmouseover="swapactions(\'imm_' . $real_rub . '\',this)">';
 
 
@@ -1448,7 +1450,7 @@ class smallAdmin {
 //		}
 //		$ajout = ' &nbsp; <a id="addSubLink" href="index.php?curTable=s_rubrique&amp;curId=new&amp;genform__add_sub_table=s_rubrique&amp;genform__add_sub_id=' . $this->parent->real_rub_id . '&amp;genform_default__rubrique_ordre=' . ((count($a) / 2) + 1) . '" title="Ajouter une sous rubrique "><img src="' . ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/actions/document-new.png" alt="" /> ' . t('ajout_sub_rub') . '</a>';
 //	    }
-//	    
+//
             $ajout = '<a id="addSubLink" class="btn btn-mini"  href="index.php?curTable=s_rubrique&amp;curId=new&amp;genform__add_sub_table=s_rubrique&amp;genform__add_sub_id=' . $this->parent->real_rub_id . '" title="Ajouter une sous rubrique " ><img src="' . ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/actions/document-new.png" alt="" /> ' . t('ajout_sub_rub') . '</a>';
         } else {
             $ht = t('select_rub_below');
