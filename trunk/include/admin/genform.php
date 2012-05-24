@@ -502,9 +502,6 @@ class GenForm {
         }
 
         $this->addBuffer('</div>');
-        $this->addBuffer('<br />');
-
-
 
         p($this->getbuffer());
     }
