@@ -14,15 +14,15 @@ function isCurrentFormNew() {
 /**
  * Insert un ID pour le formulaire en cours
  * et rempli le champ curId
- * 
+ *
  * @callBack function
- * 
+ *
  **/
 function insertIdForNewForm(callBack) {
     if(!window.insertingNewIdForForm  && isCurrentFormNew()) {
         window.insertingNewIdForForm = true;
         window.callbackAfterNewId = callBack;
-	
+
         $.post('index.php',{
             xhr:"insertIdForNewForm",
             table:$('#curTable').val(),
@@ -49,8 +49,8 @@ function deleteFile(table,champ,id,obj,small) {
     }
     $(obj).closest('.genform_uploadfile').load('index.php?xhr=deleteFile&curTable='+table+'&curChamp='+champ+'&curId='+id+'&small='+small+' div.genform_uploadfile');
 }
-    
-    
+
+
 function arSaveValue(obj,table,champ,id,curtable) {
 
     if(obj.value) {
@@ -59,7 +59,7 @@ function arSaveValue(obj,table,champ,id,curtable) {
     else {
         v = obj;
     }
-	
+
     //v = espace(v).replace(new RegExp( "\\+", "g" ), "%2B" );
     $.post("index.php", {
         xhr: "ajaxForm",
@@ -68,32 +68,38 @@ function arSaveValue(obj,table,champ,id,curtable) {
         id : id ,
         save : v
     } );
-	
+
     return;
     url = "index.php?xhr=ajaxRelinv&table="+table+"&field="+champ+"&id="+id+"&save="+v+"&curtable="+curtable;
     //alert(url);
     XHR(url);
 }
-			
+
 function arAddValue(obj,table,fake,id) {
+    var tableId = $(obj).closest('table').attr('id');
     if(isCurrentFormNew()) {
         doSaveAllAndStay(function() {
             url = "index.php?xhr=ajaxRelinv&table="+table+"&fake="+fake+"&id="+$('#curId').val();
-            XHR(url,"","","addRowToTable(\'ar_"+table+"-"+fake+"\', http.responseText)");
+            XHR(url,"","","addRowToTable(\'"+tableId+"\', http.responseText)");
         });
     }
     else {
         url = "index.php?xhr=ajaxRelinv&table="+table+"&fake="+fake+"&id="+id;
-        XHR(url,"","","addRowToTable(\'ar_"+table+"-"+fake+"\', http.responseText)");
+        XHR(url,"","","addRowToTable(\'"+tableId+"\', http.responseText)");
     }
 }
 
 function addRowToTable(table,contenu) {
-    var tabl = gid(table);
-    $("#"+table+"").append("<tbody>"+contenu+"</tbody>");
-    checkScripts($("#"+table+" tbody:last")[0]);
-// alert(contenu);	
-}	
+    alert(1);
+    $("#"+table+" tbody").append(""+contenu+"");
+    alert(2);
+    $("#"+table+"").tableDnDUpdate();
+    alert(3);
+    alert($("#"+table+"").html());
+    checkScripts($("#"+table+" tbody tr:last")[0]);
+
+// alert(contenu);
+}
 
 function is_ignorable( nod )
 {
@@ -124,17 +130,20 @@ function node_after( sib )
 }
 
 function arDelete(obj,faketable,id) {
-    url = "index.php?xhr=ajaxRelinv&table="+faketable+"&delete="+id+"&";				
-    obj.parentNode.parentNode.parentNode.parentNode.removeChild(obj.parentNode.parentNode.parentNode);
+    url = "index.php?xhr=ajaxRelinv&table="+faketable+"&delete="+id+"&";
+    //obj.parentNode.parentNode.parentNode.parentNode.removeChild(obj.parentNode.parentNode.parentNode);
     XHR(url);
+    $(obj).closest('tr').hide('normal',function(){
+        $(this).remove()
+    });
 }
 
 function arGoUp(obj) {
     var tbod = obj.parentNode.parentNode.parentNode;
     var tabl = tbod.parentNode;
-	
-    var prev = node_before(tbod);		
-    if(prev) {		
+
+    var prev = node_before(tbod);
+    if(prev) {
         tabl.insertBefore(tbod,prev);
     }
 }
@@ -143,19 +152,19 @@ function arGoDown(obj) {
     var tbod = obj.parentNode.parentNode.parentNode;
     var tabl = tbod.parentNode;
     var nex = node_after(tbod);
-	
+
     if(nex) {
         tabl.insertBefore(nex,tbod);
     }
-	
-}    
 
- 
-    
+}
+
+
+
 // SUPPRESSION D'UN NOEUD
-function FArem(child,nom,id){ 
+function FArem(child,nom,id){
     // si c'est le dernier enfant, on supprimer le UL au dessus
-    if(child.parentNode.parentNode.childNodes.length == 1){ 
+    if(child.parentNode.parentNode.childNodes.length == 1){
         child.parentNode.parentNode.parentNode.removeChild(child.parentNode.parentNode);
     }
     // sinon juste le LI
@@ -164,37 +173,37 @@ function FArem(child,nom,id){
     }
     return false;
 }
-    
+
 // AJOUT D'UN NOEUD
 function FAadd(obj,nom,id){
     var ul = obj.parentNode.getElementsByTagName('ul')[0];
     var newLi = document.createElement("li");
-    ul.appendChild(newLi); 
-	
-    newLi.id = nom+"_"+Math.round(Math.random()*1000000);	
-	
+    ul.appendChild(newLi);
+
+    newLi.id = nom+"_"+Math.round(Math.random()*1000000);
+
     XHR(ajaxActionUrl('add',window.arboFull[nom]['vtable'],id,(window.arboFull[nom])),'',newLi.id,'checkUpDown();');
-	
+
     //newLi.innerHTML = "csddsdfsd";
     return false;
 }
-    
-    
-    
+
+
+
 function FAgoUp(obj,nom,id) {
     var tbod = obj.parentNode;
     var tabl = tbod.parentNode;
-	
-    var prev = node_before(tbod);		
-	
-    if(prev) {		
+
+    var prev = node_before(tbod);
+
+    if(prev) {
         ajaxAction('goup',window.arboFull[nom]['vtable'],id,window.arboFull[nom]);
         tabl.insertBefore(tbod,prev);
         checkUpDown(obj);
     }
-	
+
     return false;
-	
+
 }
 
 
@@ -203,14 +212,14 @@ function FAgoDown(obj,nom,id) {
     var tbod = obj.parentNode;
     var tabl = tbod.parentNode;
     var nex = node_after(tbod);
-	
+
     if(nex) {
         ajaxAction('godown',window.arboFull[nom]['vtable'],id,window.arboFull[nom]);
         tabl.insertBefore(nex,tbod);
         checkUpDown(obj);
     }
     return false;
-}	
+}
 
 function checkUpDown(obj) {
     var objs = getElementsByClassName('FAgoUp','a',gid("racine"));
@@ -219,11 +228,11 @@ function checkUpDown(obj) {
         if( node_before(objs[p].parentNode)) {
             objs[p].style.opacity = "1";
         } else {
-			
+
             objs[p].style.opacity = "0.5";
         }
     }
-	
+
     var objs = getElementsByClassName('FAgoDown','a',gid("racine"));
     for(p in objs) {
         if(node_after(objs[p].parentNode)) {
@@ -239,29 +248,29 @@ function checkUpDown(obj) {
 
 
 function FAdel(obj,nom,id) {
-    //url = "index.php?xhr=ajaxRelinv&table="+faketable+"&delete="+id+"&";	
-    ajaxAction('del',window.arboFull[nom]['vtable'],id);			
+    //url = "index.php?xhr=ajaxRelinv&table="+faketable+"&delete="+id+"&";
+    ajaxAction('del',window.arboFull[nom]['vtable'],id);
     obj.parentNode.parentNode.removeChild(obj.parentNode);
     return false;
 //XHR(url);
-}		
+}
 
 
 function ajaxAction(action,table,id,params) {
-	
-    XHRs(ajaxActionUrl(action,table,id,params));		
-	
-		
+
+    XHRs(ajaxActionUrl(action,table,id,params));
+
+
 }
 
 function ajaxActionUrl(action,table,id,params) {
-    url = "index.php?xhr=ajaxAction&table="+table+"&action="+action+"&id="+id+"&params="+serialize(params);	
+    url = "index.php?xhr=ajaxAction&table="+table+"&action="+action+"&id="+id+"&params="+serialize(params);
     return url;
 }
-			
+
 function serialize( mixed_value ) {
-    // Returns a string representation of variable (which can later be unserialized)  
-    // 
+    // Returns a string representation of variable (which can later be unserialized)
+    //
     // version: 906.1807
     // discuss at: http://phpjs.org/functions/serialize
     // +   original by: Arpad Ray (mailto:arpad@php.net)
@@ -300,10 +309,10 @@ function serialize( mixed_value ) {
             }
         }
         return type;
-    }; 
+    };
     var type = _getType(mixed_value);
     var val, ktype = '';
-    
+
     switch (type) {
         case "function":
             val = "";
@@ -339,7 +348,7 @@ function serialize( mixed_value ) {
                 if (ktype == "function") {
                     continue;
                 }
-                
+
                 okey = (key.match(/^[0-9]+$/) ? parseInt(key, 10) : key);
                 vals += serialize(okey) +
                 serialize(mixed_value[key]);
@@ -396,71 +405,71 @@ function addChild(param){
     var num = param.parentNode.id.substring(3);
     var childrenId = 'ul_'+num;
     var hasChild = document.getElementById(childrenId);
-        
+
     // Le noeud courant n'a pas d'enfant
     if(!hasChild){
-                      
+
         var childTagUl = document.createElement('ul');
-            
+
         childTagUl.setAttribute('id',childrenId);
         param.parentNode.appendChild(childTagUl);
-            
+
         childTagLi = document.createElement('li');
         var liId = 'li_'+num+'_0';
         childTagLi.setAttribute('id',liId);
         childTagUl.appendChild(childTagLi);
-            
-    } 
+
+    }
     // le noeud courant a des enfants
     else {
-        
+
         var numLastChild = document.getElementById(childrenId).lastChild.id.substring(3);
         var next = parseInt(numLastChild.substring(numLastChild.length-1))+1;
         var liId = 'li_'+numLastChild.substring(0,numLastChild.length-2)+'_'+next;
         var childTagLi = document.createElement('li');
         childTagLi.setAttribute('id',liId);
         document.getElementById('ul_'+num).appendChild(childTagLi);
-            
+
     }
-        
-       
-              
+
+
+
     // construction du name de l'input pour le récuprérer facilement ensuite
-    var inputName = 'n[0][fils]'; 
-        
+    var inputName = 'n[0][fils]';
+
     // si le noeud courant n'a pas encore des fils
     if(!hasChild){
-        
+
         for(i=1;i<=(num.length-1)/2;i++){
             n = num.substring(2*i,1 + 2*i);
             inputName = inputName + '['+ n +'][fils]';
         }
-              
+
         inputName = inputName + '[0][value]';
-              
+
     }
     // si le noeud courant a déjà des fils
     else {
-              
+
         for(i=1;i<(numLastChild.length-1)/2;i++){
             n = numLastChild.substring(2*i,1 + 2*i);
             inputName = inputName + '['+ n +'][fils]';
         }
-              
+
         inputName = inputName + '['+ next +'][value]';
-              
+
     }
-        
+
     /**********************************************************************/
-        
-        
-        
+
+
+
     for(k=0; k < lgs.length; k++){
         // flag
         var lagLG = document.createElement('img');
         lagLG.setAttribute('src','./img/flags/' + lgs[k] + '.gif');
         childTagLi.appendChild(lagLG);
-            
+
         // champ de saisie
         var childTagInput = document.createElement('input');
         childTagInput.setAttribute('type','text');
@@ -468,42 +477,42 @@ function addChild(param){
         childTagInput.setAttribute('name',inputNameLG);
         childTagLi.appendChild(childTagInput);
     }
-        
+
     var childTagButton = document.createElement('a');
     childTagButton.setAttribute('href','#');
     childTagButton.setAttribute('class','addChild');
     childTagButton.setAttribute('onclick','addChild(this)');
     childTagLi.appendChild(childTagButton);
-        
+
     var imgAdd = document.createElement('img');
     imgAdd.setAttribute('src','./pictos/list-add.png');
     childTagButton.appendChild(imgAdd);
-        
+
     var childTagButton = document.createElement('a');
     childTagButton.setAttribute('href','#');
     childTagButton.setAttribute('class','delChild');
     childTagButton.setAttribute('onclick','delChild(this)');
     childTagLi.appendChild(childTagButton);
-        
+
     var imgDel = document.createElement('img');
     imgDel.setAttribute('src','./pictos/process-stop.png');
     childTagButton.appendChild(imgDel);
-        
+
 }
-    
-    
+
+
 // SUPPRESSION D'UN NOEUD
 function delChild(child){
-    
+
     // si c'est le dernier enfant, on supprimer le UL au dessus
-    if(child.parentNode.parentNode.childNodes.length == 1){ 
+    if(child.parentNode.parentNode.childNodes.length == 1){
         child.parentNode.parentNode.parentNode.removeChild(child.parentNode.parentNode);
     }
     // sinon juste le LI
     else {
         child.parentNode.parentNode.removeChild(child.parentNode);
     }
-      
+
 }
 
 window.uploaders = new Array();
@@ -513,14 +522,14 @@ function refreshUploaders() {
             if(document.getElementById(window.uploaders[p].settings.container)) {
                 try {
                     window.uploaders[p].refresh();
-                } catch(e) {                  
+                } catch(e) {
                     delete(window.uploaders[p]);
                 }
-            } else {                
+            } else {
 
                 delete(window.uploaders[p]);
             }
         }
-    }   
+    }
 }
 
