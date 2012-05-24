@@ -90,15 +90,9 @@ function arAddValue(obj,table,fake,id) {
 }
 
 function addRowToTable(table,contenu) {
-    alert(1);
     $("#"+table+" tbody").append(""+contenu+"");
-    alert(2);
     $("#"+table+"").tableDnDUpdate();
-    alert(3);
-    alert($("#"+table+"").html());
     checkScripts($("#"+table+" tbody tr:last")[0]);
-
-// alert(contenu);
 }
 
 function is_ignorable( nod )
@@ -516,6 +510,24 @@ function delChild(child){
 }
 
 window.uploaders = new Array();
+function refreshUploaders() {
+    for(p in window.uploaders) {
+        if(window.uploaders[p]) {
+            if(document.getElementById(window.uploaders[p].settings.container)) {
+                try {
+                    window.uploaders[p].refresh();
+                } catch(e) {
+                    delete(window.uploaders[p]);
+                }
+            } else {
+
+                delete(window.uploaders[p]);
+            }
+        }
+    }
+}
+
+
 function refreshUploaders() {
     for(p in window.uploaders) {
         if(window.uploaders[p]) {
