@@ -1,5 +1,5 @@
-function showLoadObj(o) {    
-//    o.css('background','#ccc');    
+function showLoadObj(o) {
+//    o.css('background','#ccc');
 }
 
 function hideLoadObj(o) {
@@ -12,20 +12,20 @@ jQuery.fn.mload = function(url, data, complete) {
     var o = $(this[0]);
     if(!data) {
         data = {};
-    }    
-        
+    }
+
     showLoadObj(o);
-    
+
     /**
      * Chargement Ajax
-     */ 
-    o.load(url, data ,function() {  
+     */
+    o.load(url, data ,function() {
         /**
 			 * Repositionnement au cas où la div de destination aie changée
-			 * Puis disparition			 
-			 */	
+			 * Puis disparition
+			 */
         hideLoadObj(o);
-    		
+
         /**
     		 * Et appel de la fonction du callback
     		 */
@@ -67,10 +67,10 @@ function XHR_editTrad(obj) {
         nom: obj.name ,
         valeur : $(obj).val()
     });
-	
-	
+
+
     //XHR('index.php?xhr=editTrad&nom='+obj.name+'&valeur='+$(obj).val(),'','','handler_editTrad(http.responseText)',obj);
-	
+
     obj.style.display = "none";
 
 }
@@ -98,7 +98,7 @@ function XHRDel404(id,obj) {
 
 
 function handler_filltablerel(val) {
-    if(lastChampRel){		
+    if(lastChampRel){
         gid(lastChampRel).innerHTML = val;
         if(document.all)
             gid(lastChampRel).outerHTML = gid(lastChampRel+"_").outerHTML;
@@ -110,23 +110,23 @@ lastClickedElement = false;
 
 function showLoader(obj) {
     var lood = gid('xhrloader');
-	
+
     if(obj) {
         var poses = findPos(obj);
-		
+
         lood.style.left = (poses[0] -16)+"px";
         lood.style.top = poses[1]+"px";
-		
+
     } else {
         /*else if(lastClickedElement) {
-		
+
 		var poses = findPos(lastClickedElement);
-		
+
 		lood.style.left = (poses[0])+"px";
 		lood.style.top = poses[1]+"px";
-		
+
 	}*/
-		
+
         lood.style.left = (mouseX+20)+"px";
         lood.style.top = (mouseY+20)+"px";
     }
@@ -162,7 +162,7 @@ function replace(string,text,by) {
 
 
 function XHRs(url) {
-	
+
     if(window.XMLHttpRequest) // Firefox
         var http = new XMLHttpRequest();
     else if(window.ActiveXObject) // Internet Explorer
@@ -170,19 +170,19 @@ function XHRs(url) {
     else { // XMLHttpRequest non support矰ar le navigateur
         alert("Votre navigateur ne supporte pas les objets XMLHTTPRequest...");
     }
-	
+
     showLoader();
     (http.open("GET", url, false));
-	
-	
+
+
     http.send(null);
     gid('xhrloader').style.display = "none";
     return (http.responseText);
-	
+
 }
 
 function XHR(url, paramsUrl, divToFill,dosomethingelse,obj) {
-	
+
     if(window.XMLHttpRequest) // Firefox
         var http = new XMLHttpRequest();
     else if(window.ActiveXObject) // Internet Explorer
@@ -190,19 +190,19 @@ function XHR(url, paramsUrl, divToFill,dosomethingelse,obj) {
     else { // XMLHttpRequest non support矰ar le navigateur
         alert("Votre navigateur ne supporte pas les objets XMLHTTPRequest...");
     }
-	
+
     showLoader(obj);
-	
+
     http.open("GET", url+paramsUrl, true);
     addJsEvent('XHR_SENT',url+paramsUrl);
     http.onreadystatechange = function()
     {
         if (http.readyState == 4)
         {
-		
+
             gid('xhrloader').style.display = "none";
             addJsEvent('XHR_RECEIVED',http.responseText);
-	
+
             if(typeof dosomethingelse == 'string') {
                 if(dosomethingelse.length > 0) {
                     //alert(dosomethingelse);
@@ -220,15 +220,15 @@ function XHR(url, paramsUrl, divToFill,dosomethingelse,obj) {
                 if(gid(divToFill))
                     divToFill = gid(divToFill);
             }
-		
+
             var resp = http.responseText;
             if(divToFill) {
                 divToFill.innerHTML = http.responseText;
                 checkScripts(divToFill);
             }
-		
-		
-		
+
+
+
             if(resp.indexOf('//-TOEVAL-') > 0 && resp.indexOf('//-ENDEVAL-') > 0) {
                 var toev1 = resp.split('//-TOEVAL-');
                 var s = '';
@@ -241,14 +241,14 @@ function XHR(url, paramsUrl, divToFill,dosomethingelse,obj) {
                     //alert(toev);
                     eval(toev);
                 }
-			 
-			
+
+
             }
         /*if(scrollto) {
 			scrollToObject(divToFill);
 		}
-		*/	
-	
+		*/
+
         }
     };
     http.send(null);
@@ -256,9 +256,9 @@ function XHR(url, paramsUrl, divToFill,dosomethingelse,obj) {
 
 
 function checkScripts(obj) {
-	
+
     scr = obj.getElementsByTagName('script');
-	
+
     for(p=0;p<scr.length;p++) {
         if(scr[p].src) {
             loadjscssfile(scr[p].src,'js');
@@ -295,52 +295,39 @@ function ajaxSaveValue(obj,table,champ,id) {
 window.ajax_cur_lg = new Array();
 
 function ajaxLgs(divname) {
-	
+
     var div = gid(divname);
-	
+
     var im = '';
     var curlg = window.ajax_cur_lg[divname];
-    /*
-		
-	
-	var im = "";
-	
-	var as = div.getElementsByTagName("a");	
-	as = as[0];
-	
-	
-	for ( p  in imgs ) {
-		im = imgs[p];	
-		im.onclick = function() {
-			
-		}
-	}
-	
-	*/
+
     var sel = div.getElementsByTagName("select");
-		
+
+    if(!sel.length) {
+        return;
+    }
     sel = sel[0];
     sel.onchange = function() {
         window.ajax_cur_lg[divname] = this.value;
         sel.style.background = sel.options[sel.selectedIndex].style.background;
         doAjaxLgs(div,sel.options[sel.selectedIndex].value);
     };
-	
+
     sel.style.background = sel.options[sel.selectedIndex].style.background;
     doAjaxLgs(div,curlg);
 }
 
 
 function doAjaxLgs(div,curlg) {
-	
+
     var spans = div.getElementsByTagName("span");
     for ( p  in spans ) {
         spa = spans[p];
-		
+
         if(!spa.style) {
             continue;
         }
-		
+
         if(spa.className == "lg_"+curlg) {
             spa.style.display = "inline";
         } else {
@@ -348,6 +335,6 @@ function doAjaxLgs(div,curlg) {
 
         }
     }
-	
+
 }
 

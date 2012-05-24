@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with oCMS. If not, see <http://www.gnu.org/licenses/>.
 #
-# @author Celio Conort / Opixido 
+# @author Celio Conort / Opixido
 # @copyright opixido 2009
 # @link http://code.google.com/p/opixido-ocms/
 # @package ocms
@@ -192,9 +192,9 @@ class GenForm {
 
         if (!empty($_SESSION[gfuid()]['nbLevels'])) {
             $inf = $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']];
-            $sql = 'SELECT DISTINCT(fk_langue_id) 
-						FROM s_traduction 
-						WHERE fk_table LIKE "' . $inf['curTable'] . '" 
+            $sql = 'SELECT DISTINCT(fk_langue_id)
+						FROM s_traduction
+						WHERE fk_table LIKE "' . $inf['curTable'] . '"
 						AND fk_id = "' . $inf['curId'] . '"';
             $res = GetAll($sql);
             $lgfields = getTranslatedFields($this->table_name);
@@ -259,8 +259,8 @@ class GenForm {
 
     /**
      * Retourne la traduction d'un champ
-     * essai diff�rentes formes de traductions 
-     * 
+     * essai diff�rentes formes de traductions
+     *
      *
      * @param unknown_type $txt
      * @param unknown_type $rel
@@ -304,7 +304,7 @@ class GenForm {
     }
 
     /**
-     * Alias de IsImage() 
+     * Alias de IsImage()
      * definit si l'extension du fichier est de type image
      *
      * @param unknown_type $str
@@ -332,7 +332,7 @@ class GenForm {
                         $this->gen($k);
                     }
                 }
-            }            
+            }
         } else {
 
             $i = 0;
@@ -461,7 +461,7 @@ class GenForm {
         if (!$this->editMode) {
             $this->addBuffer('</label>');
 
-            //$this->addBuffer('</div>');	
+            //$this->addBuffer('</div>');
 
             reset($lgs);
             $lgdef = $lgs[0];
@@ -480,11 +480,11 @@ class GenForm {
             $lg = !empty($_SESSION['onlyLg']) && $_SESSION['onlyLg'] != 'ALL' ? $_SESSION['onlyLg'] : LG_DEF;
 
             $this->addBuffer('
-			<script type="text/javascript">		
-				' . $toHide . '	
+			<script type="text/javascript">
+				' . $toHide . '
 				lgfieldcur["' . $name . '"] = "";
 				showLgField("' . $name . '","' . $lg . '");
-			</script>	
+			</script>
 			');
         } else {
             $this->addBuffer('</div>');
@@ -630,7 +630,7 @@ class GenForm {
         } else if (!$this->onlyData) {
             $this->addBuffer('</label>');
         }
-        //	
+        //
 
 
         if (!$this->onlyData) {
@@ -668,7 +668,7 @@ class GenForm {
 
     /**
      * GENFIELDS
-     * 
+     *
      *
      * @param unknown_type $tab_name
      * @param unknown_type $fk_table
@@ -901,15 +901,15 @@ class GenForm {
                 }
 
                 echo '<div id="divImgPicto" style="display:none;border:1px solid;background:#eee;padding:5px;width:600px;height:250px;overflow:auto;position:absolute;z-index:10000;" >' . $h . '</div>
-           	
+
            	<script type="text/javascript">
            	$("#divImgPicto img").click(function() {
            		window.fieldToUpdate.value = $(this).attr("rel");
            		$("#divImgPicto").slideUp();
-           		
+
            		$(window.fieldToUpdate).prev("img").attr("src",$(this).attr("rel"));
            		XHR_editTrad(window.fieldToUpdate);
-           		
+
            	});
            	</script>
           ';
@@ -936,7 +936,7 @@ class GenForm {
             $this->genButtons();
             p('</div>');
         } else {
-            
+
         }
         print ("<div id='zegenform' ><br/>");
         // p('<div id="genform_allForm">');
@@ -947,13 +947,12 @@ class GenForm {
 
         p('
 		<script type="text/javascript">
-			
+
 			function saveAndReloadForm() {
-                            var d = new Date();
-				gid("genform_stay").value = d.getTime();
-				gid("genform_ok").click();
+				$("#genform_stay").val("1");
+				$("#genform_formulaire").submit();
 			}
-			
+
 		</script>
 		');
         $this->genHiddenItem('genform_stay', '');
@@ -1036,9 +1035,9 @@ class GenForm {
 
 
             p('
-					
+
                 function doSaveAllAndStay(func) {
-                
+
                         $("#genform_stay").val("ajaxsave");
                         $.post("index.php", $("#genform_formulaire").serialize(),function(data) {
                            // alert(data);
@@ -1050,17 +1049,17 @@ class GenForm {
                         $("#genform_stay").val("");
 
                         return;
-                        
+
                        $("#genform_formulaire")[0].onsubmit = false;
                         $("#genform_stay").val("autosave");
                         if(func) {
                             $("#autosave_frame").load(func);
                         }
                         $("#genform_formulaire").attr("target","autosave_frame").submit().attr("target","");
-                        $("#genform_stay").val("");                                
-                        
+                        $("#genform_stay").val("");
+
                         return false;
-                        
+
                 }
             ');
 
@@ -1262,7 +1261,7 @@ class GenForm {
             p('</button>');
 
             if ($this->gs->can('edit', $this->table, $this->tab_default_field)) {
-                p(' <button class="btn btn-primary" name="genform_ok"  >');
+                p(' <button class="btn btn-primary" id="genform_ok" name="genform_ok"  >');
                 p('<img src="' . ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_FORM_SIZE . '/actions/document-save.png"  alt="" />');
                 p(t('save') . '</button>');
             }
@@ -1320,7 +1319,7 @@ class GenForm {
                                 $srcBtn = ADMIN_PICTOS_FOLDER . ADMIN_PICTOS_FORM_SIZE . '/emblems/emblem-system.png';
                             }
 
-                            p('<a class="btn '.($action == 'edit' ? 'btn-primary':'').'" href="?genform_action%5B' . $action . '%5D=1&amp;curTable=' . $this->table . '&amp;curId=' . $this->id . '"><img src="' . $srcBtn . '" /> ' . t($action) . ' </a>');
+                            p('<a class="btn ' . ($action == 'edit' ? 'btn-primary' : '') . '" href="?genform_action%5B' . $action . '%5D=1&amp;curTable=' . $this->table . '&amp;curId=' . $this->id . '"><img src="' . $srcBtn . '" /> ' . t($action) . ' </a>');
                         }
                     }
                 }
