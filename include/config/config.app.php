@@ -354,23 +354,39 @@ $tabForms["s_admin_trad"]["picto"] = ADMIN_PICTOS_FOLDER . ADMIN_PICTOS_BIG_SIZE
 
 
 
-
 /**
- * Liste des plugins tinyMce à charger
+ * Liste des directives supplémentaires pour tinymce
+ * @example $_Gconfig['tinyMce']['addConf']['theme_advanced_blockformats'] = 'p,div,h1,h2,h3,h4,h5,h6,blockquote,dt,dd,code,samp';
  */
-$_Gconfig['tinyMce']['plugins'] = array('paste','fullscreen','advimage','xhtmlxtras','contextmenu');
-
-/**
- * Liste des styles spécifiques
- *
- * Sous la forme TinyMce
- * array('Couleur principale=couleur_1','Couleur secondaire=couleur_2')
- */
-$_Gconfig['tinyMce']['styles'] = array();
-
-/**
- * Liste des boutons tinymce par ligne
- */
-$_Gconfig['tinyMce']['buttons1'] = array('bold','italic','underline','separator','removeformat','separator','hr','image','link','unlink','separator','pastetext','separator','bullist','bullnum','separator','code','cleanup','separator','sub','sup','separator','abbr','acronym','charmap','fullscreen');
-$_Gconfig['tinyMce']['buttons2'] = array('formatselect');
-$_Gconfig['tinyMce']['buttons3'] = array();
+$_Gconfig['tinyMce']['conf'] = array(
+    'mode' => "exact",
+    'theme' => "advanced",
+    'skin' => "cirkuit",
+    'language' => "en",
+    'plugins' => "paste,fullscreen,advimage,xhtmlxtras,contextmenu",
+    'entity_encoding' => "raw",
+    'content_css' => BU . "/css/baseadmin.css",
+    'theme_advanced_styles' => '',
+    'theme_advanced_buttons1' => "bold,italic,underline,separator,removeformat,separator,hr,image,link,unlink,separator,pastetext,separator,bullist,bullnum,separator,code,cleanup,separator,sub,sup,separator,abbr,acronym,charmap,fullscreen",
+    'theme_advanced_buttons2' => "formatselect",
+    'theme_advanced_buttons3' => "",
+    'theme_advanced_toolbar_location' => "top",
+    'theme_advanced_toolbar_align' => "left",
+    'theme_advanced_statusbar_location' => "",
+    'plugi2n_insertdate_dateFormat' => "%d/%m/%Y",
+    'plugi2n_insertdate_dateFormat' => "%d/%m/%Y",
+    'relative_urls' => 'false',
+    'auto_reset_designmode' => 'true',
+    'file_browser_callback' => "fileBrowserCallBack",
+    'theme_advanced_resize_horizontal' => false,
+    'paste_auto_cleanup_on_paste' => true,
+    'paste_text_use_dialog' => true,
+    'paste_convert_headers_to_strong' => true,
+    'paste_strip_class_attributes' => "all",
+    'paste_remove_spans' => true,
+    'paste_remove_styles' => true,
+    'convert_fonts_to_spans' => true,
+    'verify_html' => false,
+    'forced_root_block' => 'p',
+    'remove_linebreaks' => false
+);
