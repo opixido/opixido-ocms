@@ -98,6 +98,8 @@ class genParagraphes {
 
 	    $tpl->setGFImg('img1', 's_paragraphe', 'paragraphe_img_1', $para);
 
+	    $tpl->setVar('alt_1', GetLgValue('paragraphe_img_1_alt', $para));
+	    $tpl->setVar('alt_2', GetLgValue('paragraphe_img_2_alt', $para));
 	    $tpl->setVar('legend_1', GetLgValue('paragraphe_img_1_legend', $para));
 	    $tpl->setVar('copyright_1', $para['paragraphe_img_1_copyright']);
 	    $tpl->setVar('legend_2', GetLgValue('paragraphe_img_2_legend', $para));

@@ -577,3 +577,5 @@ define('DEFAULT_URL_VALUE','http://www.');
 $GLOBALS['cans']= array();
 
 $_Gconfig['tablerelAsTags'] = array();
+
+$_Gconfig['tinyMce'] = array();
