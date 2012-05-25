@@ -71,6 +71,7 @@ input, textarea {
     right:20px;
     top:130px;
 
+
     text-align:right;
 }
 
@@ -226,4 +227,12 @@ td .well {
 
 #table_log_action caption {
     font-weight:bold;
+}
+
+.icon {
+    text-indent:-9999999px;
+}
+
+.ajax_table td {
+    vertical-align: middle;
 }

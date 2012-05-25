@@ -26,7 +26,7 @@
 
             if(!$(this).find('td.dragHandle').length) {
                 $(this).find("tbody tr").prepend('<td class="dragHandle" title=<?= alt(t('relinv_move')); ?>></td>');
-                $(this).find("thead th:first").after("<th width='20'></th>");
+                //$(this).find("thead th:first").after("<th width='20'></th>");
             }
             $(this).find('td.dragHandle').tooltip();//tipsy({html: true ,gravity:  'e'});
 

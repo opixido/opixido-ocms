@@ -1,97 +1,66 @@
-<?php 
-/**
- * A ajouter uniquement pour avoir le probleme des border-box avec IE
- * echo '<?xml version="1.0" encoding="utf-8" ?>';
- */ 
-?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?=LG?>" lang="<?=LG?>" >
+<!DOCTYPE html>
+<html lang="<?= LG ?>">
+    <head>
+        <meta charset="utf-8"/>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="generator" content="Opixido cms" />
+        <meta name="robots" content="index,follow" />
 
-<head>
+        <link rel="icon" href="<?= BU ?>/favicon.ico" type="image/gif" />
+        <link rel="shortcut icon" type="image/gif" href="<?= BU ?>/favicon.ico" />
+        <link rel="Stylesheet" type="text/css" href="<?= BU ?>/css/print.css" media="print" />
 
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta name="generator" content="Opixido cms" />
-    <meta http-equiv="Content-Script-Type" content="text/javascript"/>
-    <meta http-equiv="Content-Style-Type" content="text/css" />
-    <meta name="robots" content="index,follow" />
+        <script src="<?= BU ?>/js/html5shiv.js" ></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js " ></script>
 
-    <link rel="icon" href="<?=BU?>/favicon.ico" type="image/gif" />
-	<link rel="shortcut icon" type="image/gif" href="<?=BU?>/favicon.ico" />
+        <?php echo $this->g_headers->gen() ?>
 
-	<link rel="Stylesheet" type="text/css" href="<?=BU?>/css/print.css" media="print" />
-	
-    <?php echo $this->g_headers->gen() ?>
+        <script type="text/javascript">
+            window.bu = "<?= BU ?>";
+            window.Trads = new Array();
+        </script>
+    </head>
 
-	<script type="text/javascript">
-		window.bu = "<?=BU?>";
-		window.Trads = new Array();
-	</script>
-</head>
+    <body>
 
-<body>
+        r
 
+        <div id="all">
 
+            <section id="gauche">
+                <div id="gauche_in">
+                    <div id="logo">
+                        <a href="<?= getUrlFromId($this->g_url->rootHomeId) ?>"><img src="<?= BU ?>/img/logo.png" alt=<?= alt(t('alt_logo')) ?> /></a>
+                    </div>
+                    <nav id="menus">
+                        <?php
+                        echo $this->g_rubrique->Execute('genMenuGauche');
+                        ?>
+                    </nav>
 
-<div id="largeur">
+                    <nav id="tools">
+                        <p>
+                            <a id="lien_if" href="<?= t('http://www.institutfrancais.com') ?>" target="_blank" title=<?= alt(t('Site de l\'institut Français - nouvelle fenêtre')) ?>><?= t('www.institutfrancais.com') ?></a>
+                        </p>
+                        <p>
+                            <a href="<?= getUrlFromId(getRubFromGabarit('genContact')) ?>"><img src="<?= BU ?>/img/contact.png" alt=<?= alt(t('Contact')) ?> /></a>
+                            <a id="facebook_link" href=""><img src="<?= BU ?>/img/facebook.png" alt=<?= alt(t('Facebook')) ?> /></a>
+                            <a href="<?= getUrlFromId(getRubFromGabarit('genCredits')) ?>"><img src="<?= BU ?>/img/credits.png" alt=<?= alt(t('Crédits')) ?> /></a>
+                        </p>
+                    </nav>
+                </div>
 
-	<h1 class="cacher"><?=t('base_title')?></h1>
+            </section>
 
+            <section id="droite">
+                <div id="main">
+                    <?php
+                    echo $this->g_rubrique->genMain()
+                    ?>
+                </div>
+            </section>
 
+        </div>
 
-	<div id="logo">
-
-		<a href="<?=getUrlFromId($this->g_url->rootHomeId)?>"><img src="<?=BU?>/img/logo.jpg" alt=<?=alt(t('alt_logo'))?> /></a>
-		
-	</div>
-
-
-	<div id="menus">
-	<?php
-
-
-		/**
-		 * MENUS DE NAVIGATION
-		 * Pour les generer separement :
-		 * $this->menus['NOM_MENU']->getTab();
-		 */
-		$jsMenus = 'ocmsMenus = new Array(';
-
-		foreach($this->menus as $k=>$v) {
-			echo $v->getTab();
-			$jsMenus .= ' "'.$k.'",';
-		}
-
-		$jsMenus  = substr($jsMenus,0,-1).');'."\n";
-		
-	?>
-	</div>
-
-
-
-	<?php 
-		echo $this->g_rubrique->genOutside(); 
-	?>
-
-
-	<?php
-		echo $this->g_rubrique->Execute('gen1');
-	?>
-
-	<div id="main">
-	<?php 
-		echo $this->g_rubrique->genMain() 
-	?>
-	</div>
-	
-	<?php
-		echo $this->g_rubrique->Execute('gen2');
-	?>
-
-	<?php
-		echo $this->g_rubrique->Execute('genLast');
-	?>
-	
-</div>
-
-</body>
+    </body>
 </html>

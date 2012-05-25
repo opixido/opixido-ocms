@@ -363,6 +363,11 @@ class GenForm {
                 if (!$this->editMode) {
                     p('</div>');
                 }
+                if ($this->fieldsDone == 0) {
+                    p('<style>');
+                    p('#genform_page_' . $i . ', #genform_btn_page_' . ($i-1) . ' {display:none;}');
+                    p('</style>');
+                }
             }
             p('</div>');
         }
@@ -1254,17 +1259,19 @@ class GenForm {
             p('<div id="gen_actions">');
 
 
+
+
+            if ($this->gs->can('edit', $this->table, $this->tab_default_field)) {
+                p(' <button class="btn btn-primary" id="genform_ok" name="genform_ok"  >');
+                p('<img src="' . ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_FORM_SIZE . '/actions/document-save.png"  alt="" />');
+                p(t('save') . '</button><br/>');
+            }
+
             //onclick="validInsideSubmit(this)"
             p('<button class="btn btn-warning" name="genform_cancel" >');
             p('<img src="' . t('src_cancel') . '"  alt="" />');
             p(t('cancel'));
             p('</button>');
-
-            if ($this->gs->can('edit', $this->table, $this->tab_default_field)) {
-                p(' <button class="btn btn-primary" id="genform_ok" name="genform_ok"  >');
-                p('<img src="' . ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_FORM_SIZE . '/actions/document-save.png"  alt="" />');
-                p(t('save') . '</button>');
-            }
 
 
             p('</div>');

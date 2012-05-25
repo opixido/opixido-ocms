@@ -111,12 +111,12 @@ class ajaxRelinv {
             $html .= '<td class="dragHandle">&nbsp;</td>';
         }
         $html .= '
-				<td>
-					<a href=""
+				<td width="20">
+					<a class="btn" href="" title=' . alt(t('delete')) . '
 					onclick="arDelete(this,\'' . $this->fk_table . '\',' . $idd . ');return false;"
 					>
-					<img src="' . ADMIN_PICTOS_FOLDER . ADMIN_PICTOS_FORM_SIZE . '/actions/list-remove.png"
-							alt="' . t('delete') . '" />
+                                        <i class="icon icon-trash" >Supprimer</i>
+					
 					</a>
 				</td>';
 
