@@ -614,7 +614,7 @@ class genXhrAdmin {
                 print_r($params);
                 foreach ($params['order'] as $k => $v) {
                     $sql = ('UPDATE ' . $table . ' SET ' . $params['relinv'] . ' = ' . sql($k + 1) . ' WHERE ' . getPrimaryKey($table) . ' = ' . sql($v));
-
+                    echo $sql;
                     Dosql($sql);
                 }
                 die();

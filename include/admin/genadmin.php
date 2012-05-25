@@ -1206,7 +1206,11 @@ class smallAdmin {
                 /**
                  * permet de connaitre pour la rubriqque en cours son niveau maximal
                  */
+
+                $cls=$cla=$cl = '';
+
                 $cls = $cla = $cl = '';
+
 
                 /**
                  * Cette rubrique est-elle sélectionnée ?

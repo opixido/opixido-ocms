@@ -1121,7 +1121,7 @@ class genFile {
         $h .= ('<div class="genform_uploadfile">');
         
         /* Lien vers le fichier */
-        $h .= (' <a href="' . $chemin . '" target="_blank" >'); //style="width:' . $this->thumbWidth . 'px"
+        $h .= (' <a style="display:block;margin:0;" class="well" href="' . $chemin . '" target="_blank" >'); //style="width:' . $this->thumbWidth . 'px"
 
         $h .= (str_replace($name . "_", "", basename($chemin)));
 
@@ -1151,10 +1151,8 @@ class genFile {
         $ssch = substr($this->getWebUrl(), strlen(BU));
      
 
-        $h .= ('<label class="abutton"  style="float:none;width:120px;"
-			><input onclick="if(confirm(\'' . t('supprimer_fichier') . '\')) {deleteFile(\''.$this->table.'\',\''.$name.'\',\''.$this->id.'\',this,1);} return false" class="inputimage" type="image"
-			value="" src="' . t('src_delete') . '"  name="genform_' . $name . '_del"
-			 /> ' . t('supprimer') . '</label>');
+        $h .= ('<div style="text-align:left"><button class="btn btn-mini" onclick="if(confirm(\'' . t('supprimer_fichier') . '\')) {deleteFile(\''.$this->table.'\',\''.$name.'\',\''.$this->id.'\',this,1);} return false" >
+                    <i class="icon icon-trash"></i> ' . t('supprimer') . '</button></div>');
 
         $h .= ('</div>');
 

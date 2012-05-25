@@ -62,14 +62,17 @@ if (!$this->editMode) {
         $sortable = array_key_exists($fk_table, $orderFields);
 
         $this->addBuffer('<table class="sortable table table-striped table-bordered table-condensed" rel="' . $fk_table . '__' . $ofield . '" border="0" width="' . ($this->larg - 25) . '" class="genform_table ' . ($sortable ? 'sortable' : '') . ' relinv" ><thead>');
+        
         $ml = 1;
-        $this->addBuffer('<tr><th width="20">');
+        $cs = $sortable ? 3 : 2;
 
-        $this->addBuffer('<input class="inputimage" type="image" src="' . t('src_new') . '" title="' . $this->trad('ajouter') . $this->trad($fk_table) . '" name="genform_addfk__' . $fk_table . '__' . $name . '" /> ');
+        $this->addBuffer('<tr><th width="20" colspan="'.$cs.'">');
+
+        $this->addBuffer('<button class="btn" title="' . $this->trad('ajouter') . $this->trad($fk_table) . '" name="genform_addfk__' . $fk_table . '__' . $name . '"><img src="' . t('src_new') . '" alt=""  />'.t('Nouveau').'</button>');
 
 
         $this->addBuffer('</th>');
-        $this->addBuffer('<th width="20">&nbsp;</th>');
+
 
         /**
          * Case TH vide pour chaque action supplémentaire
@@ -91,7 +94,7 @@ if (!$this->editMode) {
         /* Collones pour les boutons up down */
         if ($sortable) {
 
-            $this->addBuffer('<th width="20" class="order">&nbsp;</th><th width="20" class="order">&nbsp;</th>');
+            $this->addBuffer('<th width="20" class="order">&nbsp;</th>');
         }
 
 
@@ -148,22 +151,22 @@ if (!$this->editMode) {
             if ($this->gs->can('del', $fk_table, $row, $row[$clef])) {
 
                 $this->addBuffer('
-							<input
+                                    <input
 
-							type="image"
-							src="' . t('src_delete') . '"
-							class="inputimage"
-							name="genform_delfk__' . $fk_table . '"
-							title="' . $this->trad("delete") . '"
-							onclick="if(confirm(\'' . altify($this->trad('confirm_suppr')) . '\')) {document.getElementById(\'genform_delfk__' . $fk_table . '_value_' . $ml . '\').checked = \'checked\'} else { return false;
-							}" /><input ' . $ch . '
-							style="display:none;"
-							name="genform_delfk__' . $fk_table . '_value"
-							type="radio"
-							id="genform_delfk__' . $fk_table . '_value_' . $ml . '"
-							value="' . $row[$clef] . '" />
+                                    type="image"
+                                    src="' . t('src_delete') . '"
+                                    class="inputimage"
+                                    name="genform_delfk__' . $fk_table . '"
+                                    title="' . $this->trad("delete") . '"
+                                    onclick="if(confirm(\'' . altify($this->trad('confirm_suppr')) . '\')) {document.getElementById(\'genform_delfk__' . $fk_table . '_value_' . $ml . '\').checked = \'checked\'} else { return false;
+                                    }" /><input ' . $ch . '
+                                    style="display:none;"
+                                    name="genform_delfk__' . $fk_table . '_value"
+                                    type="radio"
+                                    id="genform_delfk__' . $fk_table . '_value_' . $ml . '"
+                                    value="' . $row[$clef] . '" />
 
-						');
+                            ');
             }
 
             $this->addBuffer('</td>');

@@ -20,12 +20,13 @@ class ajaxUpload {
         $html = $gf->genSmallAdminTag().'
                     <div id="container_' . $name . '" class="upload_container" style="border:0">
 
-                        <a class="abutton" id="pickfiles_' . $name . '" href="javascript:;"><img src="' . path_concat(ADMIN_PICTOS_FOLDER . ADMIN_PICTOS_ARBO_SIZE . '/actions/document-save-as.png') . '" alt="" /> ' . t('upload_parcourir') . ' </a>
+                        <a class="btn btn-mini" id="pickfiles_' . $name . '" href="javascript:;"><img src="' . path_concat(ADMIN_PICTOS_FOLDER . ADMIN_PICTOS_ARBO_SIZE . '/actions/document-save-as.png') . '" alt="" /> ' . t('upload_parcourir') . ' </a>
                         <div id="filelist_' . $name . '" class="upload_filelist"></div>
                             <div class="clearer"></div>
                     </div>
 <script type="text/javascript">
-    $(document).ready(function() {
+    $("#pickfiles_' . $name . '").hover(function() {
+        $(this).unbind("hover");
         window.uploader_' . $name . ' = new plupload.Uploader({
                 runtimes : "gears,flash,html5,silverlight",
                 browse_button : "pickfiles_' . $name . '",
