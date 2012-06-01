@@ -132,9 +132,9 @@ if (!$this->editMode) {
     if (true || $name == 'programme_video_url') {
         $this->addBuffer('
                     <div id="container_' . $name . '" class="upload_container">
-                        
-                        <a class="btn btn-inverse" id="pickfiles_' . $name . '" href="javascript:;"><img src="' . path_concat(ADMIN_PICTOS_FOLDER . ADMIN_PICTOS_ARBO_SIZE . '/actions/document-save-as.png') . '" alt="" /> ' . t('upload_parcourir') . ' </a>
                         <div id="filelist_' . $name . '" class="upload_filelist"></div>
+                        <a class="btn btn-inverse" id="pickfiles_' . $name . '" href="javascript:;"><img src="' . path_concat(ADMIN_PICTOS_FOLDER . ADMIN_PICTOS_ARBO_SIZE . '/actions/document-save-as.png') . '" alt="" /> ' . t('upload_parcourir') . ' </a>
+                        
                             <div class="clearer"></div>
                     </div>
 <script type="text/javascript">
