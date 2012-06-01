@@ -1,4 +1,4 @@
-<?
+<?php
 
 #
 # This file is part of oCMS.
@@ -899,7 +899,6 @@ class genAdmin {
                 /*
                   On stock les infos actuelles dans la session
                  */
-
                 $_SESSION[gfuid()]['nbLevels']++;
                 $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['curTable'] = $_REQUEST['curTable'];
                 $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['curTableKey'] = $_REQUEST['curTableKey'];
@@ -908,8 +907,6 @@ class genAdmin {
                 $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['curPage'] = $_REQUEST['curPage'];
                 $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['tableToUpdate'] = akev($_REQUEST, 'tableToUpdate');
                 $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['insertOtherField'] = $_REQUEST['insertOtherField'];
-
-
 
                 /*
                   Et pour aller sur le nouveau formulaire on fait ca
