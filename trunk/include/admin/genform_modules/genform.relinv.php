@@ -100,7 +100,7 @@ if (!$this->editMode) {
 
         reset($tabForms[$fk_table]['titre']);
         foreach ($tabForms[$fk_table]['titre'] as $titre) {
-            $this->addBuffer('<th>' . $this->trad($titre) . '</th>');
+            $this->addBuffer('<th>' . preg_replace("/\([^\)]+\)/","",$this->trad($titre)) . '</th>');
         }
 
         $this->addBuffer('</tr></thead><tbody>');

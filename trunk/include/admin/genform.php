@@ -1043,7 +1043,7 @@ class GenForm {
 
                 function doSaveAllAndStay(func) {
 
-                        $("#genform_stay").val("ajaxsave");
+                        $("#genform_stay").val("ajaxsave");                        
                         $.post("index.php", $("#genform_formulaire").serialize(),function(data) {
                            // alert(data);
                             $("#curId").val(data);
@@ -1252,7 +1252,7 @@ class GenForm {
          */
         $actions = $this->gs->getActions($this->table_name, $this->id);
 
-        $this->genHeaderForm();
+        //$this->genHeaderForm();
 
         if ($GLOBALS['inScreen'] == 'form') {
 

@@ -78,7 +78,7 @@ $tabForms['s_admin']['titre'] = array('admin_nom');
 
 
 
-$tabForms['s_paragraphe']['pages'] = array('form.paragraphe.type.php');
+$tabForms['s_paragraphe']['pages'] = array('paragraphe'=>array('form.paragraphe.type.php'));
 $tabForms['s_paragraphe']['titre'] = array('paragraphe_titre','paragraphe_contenu','fk_para_type_id','paragraphe_img_1'); //,'paragraphe_ordre'
 
 

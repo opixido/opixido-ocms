@@ -178,13 +178,14 @@ class GenOrder {
         }
     }
 
-    function ReorderRes($res) {
+    function ReorderRes($res=false) {
         if (!$this->DoIt || !$this->fk_id)
             return;
 
         if(!$res) {
             $res = GetAll('SELECT * FROM '.$this->table.' WHERE '.$this->fk_champ.' = '.sql($this->fk_id).' ORDER BY '.$this->order_field);
         }
+        
         $normalOrder = 0;
         foreach ($res as $row) {
             $normalOrder++;
