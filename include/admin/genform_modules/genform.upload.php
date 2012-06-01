@@ -138,11 +138,11 @@ if (!$this->editMode) {
                             <div class="clearer"></div>
                     </div>
 <script type="text/javascript">
-     $("pickfiles_' . $name . '").hover(function() {
+     $("#pickfiles_' . $name . '").hover(function() {
         if(window.uploader_' . $name . ') {
              return;
         }
-        $("pickfiles_' . $name . '").unbind("hover").hover(refreshUploaders);
+        $("#pickfiles_' . $name . '").unbind("hover").hover(refreshUploaders);
         window.uploader_' . $name . ' = new plupload.Uploader({
                 runtimes : "html5,flash,gears,silverlight,html4",
                 browse_button : "pickfiles_' . $name . '",
