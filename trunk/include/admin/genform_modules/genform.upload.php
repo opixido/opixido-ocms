@@ -187,11 +187,11 @@ if (!$this->editMode) {
                 window.filesUploading++;
                 window.onbeforeunload = beforeUnloadUploading;
                 refreshUploaders();
-                $("#filelist_' . $name . '").html("<div id=\'" + files[i].id + "\'>" + files[i].name + " (" + plupload.formatSize(files[i].size) + ") <b>Initialisation du transfert <img src=\"img/loading.gif\" alt=\"\" /></b></div>");
+                $("#filelist_' . $name . '").html("<div class=\'well\' id=\'" + files[i].id + "\'><span class=\'badge\'>" + files[i].name + " (" + plupload.formatSize(files[i].size) + ")  </span> <div class=\'progress progress-striped active\'>Initialisation du transfert <img src=\"img/loading.gif\" alt=\"\" /></div></div>");
         });
 
         window.uploader_' . $name . '.bind("UploadProgress", function(up, file) {
-                $("#"+file.id+" b").html("<span style=\"width:"+(file.percent*2)+"px\">" + file.percent + "%</span>");
+                $("#"+file.id+" div.progress").html("<div class=\'bar\' style=\"width:"+(file.percent)+"%\">" + file.percent + "%</span>");
                 refreshUploaders();
         });
         window.uploader_' . $name . '.init();
