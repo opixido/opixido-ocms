@@ -2618,7 +2618,7 @@ class pagination {
             $num = $tpl->addBlock('NUM');
             $num->set('num', $p);
             $num->set('url', $this->getUrlWithParams(array_merge($this->params, array('page' => ($p)))));
-            $num->set('class', ($p == $page ? 'selected' : ''));
+            $num->set('class', ($p == $page ? 'active' : ''));
         }
 
         $num = $tpl->addBlock('NUM');
