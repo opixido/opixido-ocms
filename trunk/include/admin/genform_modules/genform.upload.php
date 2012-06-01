@@ -138,8 +138,11 @@ if (!$this->editMode) {
                             <div class="clearer"></div>
                     </div>
 <script type="text/javascript">
-    $(document).ready(function() {
-        $("pickfiles_' . $name . '").hover(refreshUploaders);
+     $("pickfiles_' . $name . '").hover(function() {
+        if(window.uploader_' . $name . ') {
+             return;
+        }
+        $("pickfiles_' . $name . '").unbind("hover").hover(refreshUploaders);
         window.uploader_' . $name . ' = new plupload.Uploader({
                 runtimes : "html5,flash,gears,silverlight,html4",
                 browse_button : "pickfiles_' . $name . '",
@@ -165,7 +168,7 @@ if (!$this->editMode) {
                 }
                 window.filesUploading--;
                 if(window.filesUploading == 0) {
-                        window.onbeforeunload = false;
+                        window.onbeforeunload = function(){};
                 }
                 refreshUploaders();
             });
