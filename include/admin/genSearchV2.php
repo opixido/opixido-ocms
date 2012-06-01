@@ -70,8 +70,13 @@ class genSearchV2 {
 
         if ($this->table != 's_rubrique') {
 
-            p('<div class="row-fluid"><div class="span3">
-		');
+            p('<div class="row-fluid">');
+
+            if (!empty($searchField[$this->table])) {
+                p('<div class="span3">');
+            } else {
+                p('<div class="span12">');
+            }
 
             /**
              * Menu déroulant
@@ -130,10 +135,11 @@ class genSearchV2 {
             }
 
             
+            if (!empty($searchField[$this->table])) {
+                p('</div>');
+                p('<div class="span9">');
+            }
             
-            p('</div>');
-
-            p('<div class="span9">');
             $this->printRes($res);
             p('</div></div>');
         }
