@@ -141,7 +141,7 @@ if (!$this->editMode) {
      $("#pickfiles_' . $name . '").hover(function() {
         if(window.uploader_' . $name . ') {
              return;
-        }
+        } 
         $("#pickfiles_' . $name . '").unbind("hover").hover(refreshUploaders);
         window.uploader_' . $name . ' = new plupload.Uploader({
                 runtimes : "html5,flash,gears,silverlight,html4",
