@@ -862,7 +862,7 @@ class genAdmin {
             }
         }
         p('</div>');
-        if (ake('genform_action', $_REQUEST)) {
+        if (ake('genform_action', $_REQUEST) && is_array($_REQUEST['genform_action'])) {
 
             reset($_REQUEST['genform_action']);
             while (list($action, ) = each($_REQUEST['genform_action'])) {
