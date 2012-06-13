@@ -41,7 +41,6 @@ class genUrlV2 {
      * @var bool
      */
     public $minisite;
-
     public $paramsAsIndex = array();
 
     /**
@@ -65,8 +64,8 @@ class genUrlV2 {
      * @var type
      */
     public $parsedUrl = false;
-
     public $rootHomeId = 0;
+
     /**
      *  Constructeur de la classe genUrl
      */
@@ -310,6 +309,7 @@ class genUrlV2 {
         $x_url = $x_url[0];
         $x_url = explode('/_action/', $x_url);
         $this->action = ake($x_url, 1) ? $x_url[1] : '';
+
         $this->splitAction();
 
         $dossiers = str_replace(BU, '', $x_url[0]);
@@ -326,6 +326,7 @@ class genUrlV2 {
             mylocale(LG);
         } else {
             $templg = array_shift($dossiers);
+
             /**
              * Si on est dans une seconde langue ( /fr-de/ )
              */
@@ -338,7 +339,6 @@ class genUrlV2 {
                 $this->tradlg = $templg[1];
                 define('TRADLG', $this->tradlg);
             } else if (count($this->parsedUrl) > 1 && $templg) {
-
                 /**
                  * Si on a a priori la langue en paramètres
                  */
@@ -361,11 +361,10 @@ class genUrlV2 {
                 mylocale($this->lg);
             }
         }
-        
+      
         $this->parsedUrl = $this->trimTab($dossiers);
 
         return $dossiers;
-        
     }
 
     /**
@@ -386,24 +385,23 @@ class genUrlV2 {
     function splitParams($params) {
         $p = array();
         $this->paramsUrl = array();
-        foreach($params as $k=>$v) {
-            $vv = explode('.',$v);
+        foreach ($params as $k => $v) {
+            $vv = explode('.', $v);
             //if(!empty($vv[1])) {
-            if(empty($vv[1]))
+            if (empty($vv[1]))
                 $vv[1] = '';
-                $this->paramsUrl[$vv[0]] = $_REQUEST[$vv[0]] = $_GET[$vv[0]] = urldecode($vv[1]);
+            $this->paramsUrl[$vv[0]] = $_REQUEST[$vv[0]] = $_GET[$vv[0]] = urldecode($vv[1]);
             //}
             /*
-            if($k%2 == 0) {
-                $currentK = $v;
-                $_REQUEST['_param_'.$k] = $_GET['_param_'.$k] = urldecode($v);
-            }
-            else {                
-                $this->paramsUrl[$currentK] = $_REQUEST[$currentK] = $_GET[$currentK] = urldecode($v);
-            }             
+              if($k%2 == 0) {
+              $currentK = $v;
+              $_REQUEST['_param_'.$k] = $_GET['_param_'.$k] = urldecode($v);
+              }
+              else {
+              $this->paramsUrl[$currentK] = $_REQUEST[$currentK] = $_GET[$currentK] = urldecode($v);
+              }
              */
         }
-
     }
 
     /**
@@ -430,7 +428,7 @@ class genUrlV2 {
             $this->lg = LG_DEF;
             return false;
         }
-        
+
         if ($this->rubId) {
             return $this->rubId;
         }
@@ -470,6 +468,7 @@ class genUrlV2 {
                                     rubrique_gabarit_param,
                                     rubrique_option,
                                     rubrique_template,
+                                    fk_rubrique_version_id,
                                     
                                     ';
                     reset($_Gconfig['LANGUAGES']);
@@ -499,7 +498,7 @@ class genUrlV2 {
                              */
                             $where .= ' AND R1.fk_rubrique_id IN ("' . $this->minisite_row['rubrique_id'] . '") ';
                         }
-                    } else { 
+                    } else {
                         /**
                          * Si au moins un parent, on restreint
                          */
@@ -511,9 +510,10 @@ class genUrlV2 {
                     } else {
                         $where .= sqlRubriqueOnlyReal('R1');
                     }
- 
 
+                    print_r($where);
                     $r = GetSingle($select . $where);
+
 
                     /**
                      * Aucun résultat, on est dans les paramètres à partir d'ici ...
@@ -533,7 +533,7 @@ class genUrlV2 {
                         $this->topRubId = $this->rootHomeId = $r['fk_rubrique_id'];
                     }
 
-                    $parentRub = $r['rubrique_id'];
+                    $parentRub = choose($r['fk_rubrique_version_id'],$r['rubrique_id']);
 
                     $GLOBALS['tabUrl'][$r['rubrique_id']] = array(
                         'fkRub' => $r['fk_rubrique_id'],
@@ -577,7 +577,7 @@ class genUrlV2 {
                     $this->rubId = getRubFromGabarit('genSitemap');
 
                     if (!$this->rubId) {
-                       // $this->die404();
+                        // $this->die404();
                     }
 
                     return $this->rubId;
@@ -616,7 +616,6 @@ class genUrlV2 {
      * @return unknown
      */
     function otherLg() {
-
         return getOtherLg();
         global $_Gconfig;
 
@@ -647,13 +646,9 @@ class genUrlV2 {
     function trimTab($tab) {
         $newTab = array();
         global $_Gconfig;
-        if ($_Gconfig['onlyOneLgForever']) {
-            $cpt = 2;
-        } else {
-            $cpt = 1;
-        }
+        
+        $cpt = 2;
         foreach ($tab as $value) {
-
             if (!empty($value)) {
                 if ($cpt > 1) {
                     $newTab[$cpt - 1] = ($value); //nicename ???? @todo 
@@ -799,7 +794,7 @@ class genUrlV2 {
      */
     function addParams($params) {
         if (is_array($params) && count($params) > 0) {
-           // $url = '' . GetParam('fake_folder_param') . '';
+            // $url = '' . GetParam('fake_folder_param') . '';
             $url = '';
             foreach ($params as $k => $v) {
                 if (is_array($v)) {
@@ -807,12 +802,12 @@ class genUrlV2 {
                     //$v = implode('_-_',$v);
                     $v = serialize($v);
                 }
-                if($k && $v) {
-                    $url = path_concat($url,$k.getParam('param_val_sep').$v);
-                } else if($k) {
-                    $url = path_concat($url,$k);
-                } else if($v) {
-                    $url = path_concat($url,$v);
+                if ($k && $v) {
+                    $url = path_concat($url, $k . getParam('param_val_sep') . $v);
+                } else if ($k) {
+                    $url = path_concat($url, $k);
+                } else if ($v) {
+                    $url = path_concat($url, $v);
                 }
             }
             return $url;
