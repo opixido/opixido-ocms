@@ -511,7 +511,7 @@ class genUrlV2 {
                         $where .= sqlRubriqueOnlyReal('R1');
                     }
 
-                    print_r($where);
+                    
                     $r = GetSingle($select . $where);
 
 
