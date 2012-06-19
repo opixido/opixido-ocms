@@ -386,7 +386,7 @@ class genUrlV2 {
         $p = array();
         $this->paramsUrl = array();
         foreach ($params as $k => $v) {
-            $vv = explode('.', $v);
+            $vv = explode(getParam('param_val_sep'), $v);
             //if(!empty($vv[1])) {
             if (empty($vv[1]))
                 $vv[1] = '';
