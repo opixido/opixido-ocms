@@ -543,6 +543,7 @@ class objDuplication {
                 if (arrayInWord($uploadFields, $k)) {
                     $oldfile = new genFile($this->table, $k, $this->id, $v);
                     $oldfiles[] = array('path' => $oldfile->getSystemPath(), 'valeur' => $v, 'champ' => $k);
+                    $record[$k] = $v;
                 } else {
                     $record[$k] = $v;
                 }
