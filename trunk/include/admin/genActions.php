@@ -282,7 +282,10 @@ class genActionMoveRubrique {
     }
 
     public function getForm() {
-        p('<div class="btn"><label for="move_rubrique">' . t('rubrique_deplacer_sous') . '</label>');
+        p('<form style="padding:0;margin:0" method="post" action="index.php">
+                <input type="hidden" name="curId" value="'.$this->id.'" />
+                <input type="hidden" name="curTable" value="'.$this->table.'" />
+                <div class="btn"><label for="move_rubrique">' . t('rubrique_deplacer_sous') . '</label>');
         p('<select id="move_rubrique" name="move_rubrique" style="width:160px;">');
         if (!empty($GLOBALS['gs_obj']->myroles['s_rubrique']) && is_array($GLOBALS['gs_obj']->myroles['s_rubrique']['rows'])) {
             $liste = $GLOBALS['gs_obj']->myroles['s_rubrique']['rows'];
@@ -305,7 +308,7 @@ class genActionMoveRubrique {
         }
 
         p('</select>');
-        p('<input name="genform_action[moveRubrique]" class="btn" value="Go" type="submit" /></div>');
+        p('<input name="genform_action[moveRubrique]" class="btn" value="Go" type="submit" /></div></form>');
     }
 
 }
