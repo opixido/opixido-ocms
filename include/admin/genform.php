@@ -849,7 +849,7 @@ class GenForm {
              * DATE
              */
             include($gb_obj->getIncludePath('genform.date.php', 'admin/genform_modules'));
-        } else if ($this->tab_field[$name]->type == 'datetime') {
+        } else if ($this->tab_field[$name]->type == 'datetime' || $this->tab_field[$name]->type == 'timestamp') {
 
             /**
              * DATE
