@@ -343,7 +343,7 @@ class GenForm {
                 $i++;
                 $this->curPageLooping = $i;
                 if (!$this->editMode) {
-                    p('<div class="tab-pane ' . ($i == 1 || $i == akev($_REQUEST, 'curPage') + 1 ? 'active' : '') . '" id="genform_page_' . $i . '">');
+                    p('<div class="tab-pane" id="genform_page_' . $i . '">');
                 }
 
                 if (!is_array($page)) {
@@ -1036,7 +1036,7 @@ class GenForm {
             }
             $_REQUEST["curPage"] = $_REQUEST["curPage"] ? $_REQUEST["curPage"] : 0;
 
-            //p('genform_activatePage(' . $_REQUEST["curPage"] . ');');
+            p('$("#genform_navi > ul li:eq(' . $_REQUEST["curPage"] . ') a").tab("show");');
 
 
             p('
@@ -1111,12 +1111,12 @@ class GenForm {
             $alt = '';
             p('<ul class="nav nav-tabs">');
             foreach ($tabForms[$this->table]['pages'] as $k => $page) {
-
+/*
                 if ($i == $_REQUEST['curPage']) {
                     $cl = 'active';
                 } else {
                     $cl = '';
-                }
+                }*/
 
                 p('<li class="' . $cl . '" id="genform_btn_page_' . $i . '" >');
 
@@ -1139,7 +1139,7 @@ class GenForm {
                 $img = ('<img ' . $oc . ' style="vertical-align:middle" src="' . $imgu . '" alt="' . $alt . '" />&nbsp;' . $bef);
 
                 //$this->genButton ( "prevPage",  t($_REQUEST['curTable']."_p_".$i) ,$prev." onclick='genform_activatePage(".$i.")'");
-                p('<a href="#genform_page_' . ($i + 1) . '" id="aongl' . $i . '"  data-toggle="tab">');
+                p('<a href="#genform_page_' . ($i + 1) . '" id="aongl' . $i . '" onclick="$(\'#genform_curPage\').val('.$i.')" data-toggle="tab">');
                 p($img);
                 p($this->tradOnglet($_REQUEST['curTable'], $k) . "</a>");
                 p(getEditTrad($_REQUEST['curTable'] . '_p_' . $k));
