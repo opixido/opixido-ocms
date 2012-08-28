@@ -1038,14 +1038,13 @@ class genAdmin {
                 $_REQUEST['curPage'] = isset($_REQUEST['curPage']) ? $_REQUEST['curPage'] : '0';
 
                 /* Enfin on retourne le formulaire */
-                if (isset($_REQUEST['curId'])) {
+                if (!empty($_REQUEST['curId'])) {
                     $this->table = $_REQUEST['curTable'];
                     $this->id = $_REQUEST['curId'];
 
                     $gl = new GenLocks();
 
                     $gl->setLock($this->table, $this->id);
-
                     return "form";
                 }
 
