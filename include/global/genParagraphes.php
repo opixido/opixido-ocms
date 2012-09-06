@@ -124,13 +124,10 @@ class genParagraphes {
 		$tpl->setVar('img', $img->getWebUrl());
 	    }
 
-	    $tpl->setVar('lien_swf', GetLgValue('paragraphe_params', $para, false));
-
-	    $tpl->setVar('lien_popup', $this->site->g_url->getUrlWithParams(array('ocms_mode' => 'popup', 'para' => $para['paragraphe_id'])));
-
 	    $html .= '<a class="cacher" name="para_' . nicename(GetLgValue('paragraphe_titre', $para)) . '"></a>';
 
-
+            $tpl->row = $para;
+            
 	    $html .= '<div id="para_nb_' . $curpara . '" class="paragraphe_simple">';
 
 	    $html .= $tpl->gen();
