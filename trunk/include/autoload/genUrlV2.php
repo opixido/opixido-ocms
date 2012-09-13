@@ -318,6 +318,7 @@ class genUrlV2 {
 
         global $_Gconfig;
         if ($_Gconfig['onlyOneLgForever']) {
+         
             if (!defined('LG')) {
                 define("LG", $_Gconfig['LANGUAGES'][0]);
                 define('TRADLG', false);
@@ -326,6 +327,7 @@ class genUrlV2 {
             mylocale(LG);
         } else {
             $templg = array_shift($dossiers);
+
 
             /**
              * Si on est dans une seconde langue ( /fr-de/ )
@@ -338,12 +340,11 @@ class genUrlV2 {
                 }
                 $this->tradlg = $templg[1];
                 define('TRADLG', $this->tradlg);
-            } else if (count($this->parsedUrl) > 1 && $templg) {
+            } else if (count($dossiers) > 1 && $templg) {
                 /**
                  * Si on a a priori la langue en paramètres
                  */
                 $this->lg = $templg;
-
                 if (!in_array($this->lg, $_Gconfig['LANGUAGES'])) {
                     $this->lg = $this->getBrowserLang();
                 }
@@ -361,10 +362,11 @@ class genUrlV2 {
                 mylocale($this->lg);
             }
         }
-      
+
         $this->parsedUrl = $this->trimTab($dossiers);
 
-        return $dossiers;
+        
+        return $this->parsedUrl;
     }
 
     /**
