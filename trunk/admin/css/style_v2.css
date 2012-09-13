@@ -236,3 +236,9 @@ td .well {
 .ajax_table td {
     vertical-align: middle;
 }
+
+input.hasDatepicker {
+    width:7em!important;
+    text-align: center;
+}
+
