@@ -373,15 +373,15 @@ function niceName($str) {
     $string = str_replace('&rsquo;', '-', $string);
     $string = preg_replace("/&(.)(acute|cedil|circ|ring|tilde|uml|grave);/", "$1", $string);
 
-    $string = preg_replace("/([^a-z0-9_]+)/", "_", html_entity_decode($string));
+    $string = preg_replace("/([^a-z0-9_]+)/", "-", html_entity_decode($string));
 
     $string = trim($string);
-    $str = str_replace("-", "_", $string);
-    $str = str_replace("ndash", "_", $string);
-    $str = str_replace("___", "_", $str);
-    $str = str_replace("__", "_", $str);
+    $str = str_replace("-", "-", $string);
+    $str = str_replace("ndash", "-", $string);
+    $str = str_replace("---", "-", $str);
+    $str = str_replace("--", "-", $str);
 
-    $str = trim($str, '_');
+    $str = trim($str, '-');
 
     return $str;
 
@@ -2658,7 +2658,10 @@ if (!function_exists('http_build_str')) {
         foreach ($query as $key => $val) {
             $name = $prefix . $key;
             if (!is_numeric($name)) {
-                $args[] = rawurlencode($name) . '=' . urlencode($val);
+                if(!is_array($val)) {
+                    $val = urlencode($val);
+                }
+                $args[] = rawurlencode($name) . '=' . ($val);
             }
         }
         return implode($arg_separator, $args);
