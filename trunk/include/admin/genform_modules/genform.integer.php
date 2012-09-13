@@ -41,8 +41,8 @@ if ($this->tab_field[$name]->max_length < 2) {
 
         $this->addBuffer('<input ' . $attributs . ' type="radio" ' . $sel1 . ' name="genform_' . $name . '" value="1" id="genform_' . $name . '_1" />
                         <label for="genform_' . $name . '_1">' . t('oui') . '</label>');
-        $this->addBuffer('<input ' . $attributs . '  type="radio"  ' . $sel2 . ' name="genform_' . $name . '" value="0" id="genform_' . $name . '_0" />
-                        <label for="genform_' . $name . '_0">' . t('non') . '</label>');
+        $this->addBuffer('
+                        <label for="genform_' . $name . '_0">' . t('non') . '</label><input ' . $attributs . '  type="radio"  ' . $sel2 . ' name="genform_' . $name . '" value="0" id="genform_' . $name . '_0" />');
 
         $this->addBuffer('</div>');
     } else {
