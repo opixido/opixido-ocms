@@ -377,9 +377,8 @@ class genAdmin {
         }
 
 
-        if (!empty($_REQUEST['mass_action'])) {
+        if (!empty($_REQUEST['mass_action']) && !empty($_REQUEST['massiveActions'])) {
             foreach ($_REQUEST['massiveActions'] as $k => $v) {
-
                 $action = new GenAction($_REQUEST['mass_action'], $this->table, $v);
                 $action->DoIt();
             }
