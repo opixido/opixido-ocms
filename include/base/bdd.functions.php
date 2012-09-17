@@ -171,7 +171,7 @@ function getRowFromId($table, $id, $onlyOnline = false) {
     global $getRowFromId_cacheRow;
 
     if (!array_key_exists($table . "_-_" . $id, $getRowFromId_cacheRow) || !$getRowFromId_cacheRow[$table . "_-_" . $id] || IN_ADMIN) {
-        $sql = 'SELECT * FROM ' . $table . ' WHERE ' . GetPrimaryKey($table) . ' = ' . sql($id) . ' ' . sqlOnlyOnline($table);
+        $sql = 'SELECT * FROM ' . $table . ' WHERE ' . GetPrimaryKey($table) . ' = ' . sql($id) . ' ' ;//. sqlOnlyOnline($table);
         $row = GetSingle($sql);
         if (IN_ADMIN) {
             return $row;

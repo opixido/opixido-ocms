@@ -185,7 +185,7 @@ if (!$this->editMode) {
                     setTimeout("window.startUpload' . $name . '()",500);
                 }
                 window.filesUploading++;
-                window.onbeforeunload = beforeUnloadUploading;
+                
                 refreshUploaders();
                 $("#filelist_' . $name . '").html("<div class=\'well\' id=\'" + files[i].id + "\'><span class=\'badge\'>" + files[i].name + " (" + plupload.formatSize(files[i].size) + ")  </span> <div class=\'progress progress-striped active\'>Initialisation du transfert <img src=\"img/loading.gif\" alt=\"\" /></div></div>");
         });
