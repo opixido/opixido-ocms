@@ -943,7 +943,7 @@ class GenForm {
         } else {
 
         }
-        print ("<div id='zegenform' ><br/>");
+        print ("<div id='zegenform' >");
         // p('<div id="genform_allForm">');
     }
 

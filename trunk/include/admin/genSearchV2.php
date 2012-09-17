@@ -439,7 +439,7 @@ class genSearchV2 {
         ';
 
 
-
+        
         $pagi = new pagination($pageTot);
         $r .= $pagi->gen();
 

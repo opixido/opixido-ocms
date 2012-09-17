@@ -143,12 +143,6 @@ class genAdmin {
         }
 
 
-
-
-
-
-
-
         $this->arboRubs = $this->sa->getRubs();
 
         $this->insideRealRubId = $this->getRealRubriqueId();
