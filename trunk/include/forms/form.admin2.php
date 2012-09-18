@@ -1,10 +1,12 @@
 <script type="text/javascript">
 
 oldclick = gid('aongl1').onclick;
-gid('aongl1').onclick = function() {
+$('#aongl1').click(function(e) {
 	gid('genform_curPage').value = 1;
 	gid('reloadpage').click();	
-}
+        e.preventDefault();
+        return false;
+});
 
 </script>
 <?php
@@ -16,23 +18,20 @@ $res = GetAll($sql);
 
 if(!$form->editMode) {
 	/*p('<strong>Si vous venez de faire des changements dans les roles attribués, cliquez ci-dessous pour mettre à jour les droits</strong><br/>');*/
-	p('<input type="submit" id="reloadpage" class="button" value="'.t('actualiser_les_droits').'" name="stay_on_form" />');
+	//p('<input type="submit" id="reloadpage" class="button" value="'.t('admin_actualiser_les_droits').'" name="stay_on_form" />');
 }
 
 
-p('<table class="table_resume">');
+
 
 foreach($res as $row) {
 	
     if($row['role_table_table'] == 'c_programme') {
         continue;
     }
-	p('<tr><td class="table_resume_label">');
-	print('<h4>'.$row['role_nom'].'</h4>');
 	
-	p('</td><td  class="genform_champ">');
-	p('<h5> - '.t($row['role_table_table']).' : '.t($row['role_table_type']).'</h5>');
-	
+	print('<h4>'.t($row['role_table_table']).'</h4>');
+        echo '<div class="well">';
 	
 	if($row['role_table_type'] == 'per_user') {
 		
@@ -43,7 +42,7 @@ foreach($res as $row) {
 		$resA = GetAll($sql);
 		
 		$selecteds = array();
-		
+		$droits = array();
 		foreach($resA as $rowA) {
 			$selecteds[] = $rowA['fk_row_id'];
 			$droits[$rowA['fk_row_id']] = true;
@@ -77,7 +76,7 @@ foreach($res as $row) {
 					if($form->editMode && $checked) { 
 						p($row['rubrique_titre_fr'].'<br/>');
 					} else if(!$form->editMode) {
-						p('<input type="checkbox" '.$checked.' name="s_admin_rows[s_rubrique][]" value="'.$row['rubrique_id'].'" /><label>'.$row['rubrique_titre_fr']);
+						p('<label class="checkbox"><input type="checkbox" '.$checked.' name="s_admin_rows[s_rubrique][]" value="'.$row['rubrique_id'].'" />'.$row['rubrique_titre_fr']);
 					}
 					p('<ul>');
 					getRubsArbored($row['rubrique_id'],$lev+1,$droits,$form);
@@ -115,8 +114,8 @@ foreach($res as $row) {
 					}
 				}  else {
 			
-					p('<input type="checkbox" '.(in_array($rowe[$ppk],$selecteds) ? 'checked="checked"': '').' name="s_admin_rows['.$row['role_table_table'].'][]" value="'.$rowe[$ppk].'" id="'.$row['role_table_table'].'__'.$rowe[$ppk].'" /> ');	
-					p('<label for="'.$row['role_table_table'].'__'.$rowe[$ppk].'">'.GetTitleFromRow($row['role_table_table'],$rowe).'</label><br/>');	
+					p('<label class="checkbox" for="'.$row['role_table_table'].'__'.$rowe[$ppk].'"><input type="checkbox" '.(in_array($rowe[$ppk],$selecteds) ? 'checked="checked"': '').' name="s_admin_rows['.$row['role_table_table'].'][]" value="'.$rowe[$ppk].'" id="'.$row['role_table_table'].'__'.$rowe[$ppk].'" /> ');	
+					p(''.GetTitleFromRow($row['role_table_table'],$rowe).'</label>');	
 				}
 			}
 			
@@ -127,13 +126,13 @@ foreach($res as $row) {
 	}
 	
 	
-	p('</td></tr>');
+	echo '</div>';
 	
 	
 }
 
 
-p('</table>');
+
 
 //$form->gen('admin_id');
 p('<!--');
