@@ -12,7 +12,7 @@ $form->gen('admin_email');
 $form->gen('s_admin_role');
 
 if(!$form->editMode) {
-	p('<input type="submit" class="button" value="'.t('actualiser_les_droits').'" name="stay_on_form" />');
+	//p('<input type="submit" class="button" value="'.t('actualiser_les_droits').'" name="stay_on_form" />');
 }
 
 //$form->gen('admin_last_cx');
