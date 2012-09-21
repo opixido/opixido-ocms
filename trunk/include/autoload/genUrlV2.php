@@ -312,7 +312,7 @@ class genUrlV2 {
 
         $this->splitAction();
 
-        $dossiers = str_replace(BU, '', $x_url[0]);
+        $dossiers = substr($x_url[0], strlen(BU));
         $dossiers = trim($dossiers, '/');
         $dossiers = explode('/', $dossiers);
 
