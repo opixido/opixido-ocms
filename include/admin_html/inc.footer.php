@@ -86,7 +86,8 @@ if ($GLOBALS['rteElements']) {
                    elements : elementsId
                     <?php
                     foreach($_Gconfig['tinyMce']['conf'] as $k => $v) {
-                        echo ','.$k.' : '.alt($v)."\n";
+                        $v = $v == 'false' || $v == 'true' ? $v : alt($v);
+                        echo ','.$k.' : '.$v."\n";
                     }
                     ?>
 
