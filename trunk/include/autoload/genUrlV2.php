@@ -312,13 +312,13 @@ class genUrlV2 {
 
         $this->splitAction();
 
-        $dossiers = substr($x_url[0], strlen(BU));
+        $dossiers = str_replace(BU, '', $x_url[0]);
         $dossiers = trim($dossiers, '/');
         $dossiers = explode('/', $dossiers);
 
         global $_Gconfig;
         if ($_Gconfig['onlyOneLgForever']) {
-         
+
             if (!defined('LG')) {
                 define("LG", $_Gconfig['LANGUAGES'][0]);
                 define('TRADLG', false);
@@ -340,7 +340,7 @@ class genUrlV2 {
                 }
                 $this->tradlg = $templg[1];
                 define('TRADLG', $this->tradlg);
-            } else if (count($dossiers) > 1 && $templg) {
+            } else if ($templg) {
                 /**
                  * Si on a a priori la langue en paramètres
                  */
@@ -365,7 +365,7 @@ class genUrlV2 {
 
         $this->parsedUrl = $this->trimTab($dossiers);
 
-        
+
         return $this->parsedUrl;
     }
 
@@ -513,9 +513,9 @@ class genUrlV2 {
                         $where .= sqlRubriqueOnlyReal('R1');
                     }
 
-                    
-                    $r = GetSingle($select . $where);
 
+                    $prevR = $r;
+                    $r = GetSingle($select . $where);
 
                     /**
                      * Aucun résultat, on est dans les paramètres à partir d'ici ...
@@ -534,8 +534,11 @@ class genUrlV2 {
                     if ($k == 0) {
                         $this->topRubId = $this->rootHomeId = $r['fk_rubrique_id'];
                     }
+                    //if ($this->action == 'editer') {
+                    $parentRub = choose($r['fk_rubrique_version_id'], $r['rubrique_id']);
+                    //$parentRub = $r['rubrique_id'];
 
-                    $parentRub = choose($r['fk_rubrique_version_id'],$r['rubrique_id']);
+                    //debug($parentRub);
 
                     $GLOBALS['tabUrl'][$r['rubrique_id']] = array(
                         'fkRub' => $r['fk_rubrique_id'],
@@ -559,6 +562,11 @@ class genUrlV2 {
                         $GLOBALS['tabUrl'][$r['rubrique_id']]['url' . $lg] = $r['rubrique_url_' . $lg];
                     }
                     $k++;
+                }
+
+                if ($this->action == 'editer') {
+                    $r = getSingle('SELECT * FROM s_rubrique WHERE fk_rubrique_version_id = '.sql($parentRub));
+                    $parentRub = $r['rubrique_id'];
                 }
 
                 $this->rubId = $parentRub;
@@ -648,7 +656,7 @@ class genUrlV2 {
     function trimTab($tab) {
         $newTab = array();
         global $_Gconfig;
-        
+
         $cpt = 2;
         foreach ($tab as $value) {
             if (!empty($value)) {
@@ -704,7 +712,7 @@ class genUrlV2 {
         }
 
         if (!array_key_exists($rubId, $GLOBALS['tabUrl'])) {
-            $this->reversRecursRub($rubId);
+            $this->reversRecursRub($rubId,$action=='editer'?false:true);
         }
 
 
@@ -834,7 +842,7 @@ class genUrlV2 {
      * @param unknown_type $rubId
      * @return unknown
      */
-    function reversRecursRub($rubId) {
+    function reversRecursRub($rubId,$onlyOnline=true) {
         global $_Gconfig;
 
         if (!$rubId)
@@ -847,9 +855,11 @@ class genUrlV2 {
 
 				   R2.fk_rubrique_id as p_fkRubId
 				   from s_rubrique as R1, s_rubrique as R2
-				   where R1.fk_rubrique_id = R2.rubrique_id
-				   ' . sqlRubriqueOnlyOnline('R1') . '
+				   where R1.fk_rubrique_id = R2.rubrique_id				   
 				   and R1.rubrique_id = ' . sql($rubId);
+            if($onlyOnline) {
+                $sql .= '' . sqlRubriqueOnlyOnline('R1') . '';
+            }
             $res = GetSingle($sql);
 
 
