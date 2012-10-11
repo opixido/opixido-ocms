@@ -193,11 +193,11 @@ class genRecord {
 
 
         if (akev($_REQUEST, 'genform_stay') == 'ajaxsave') {
-            echo  $_REQUEST['curId'];
+            echo $_REQUEST['curId'];
             die();
         }
 
-        
+
         if (akev($_REQUEST, 'genform_stay') == 'autosave') {
             echo '<style>*{font-size:11px;padding:2px;margin:0;border:0;font-family:sans-serif;text-align:right;}</style>' . t('saved_at') . date('H:i:s') . '';
             echo '
@@ -397,7 +397,7 @@ class genRecord {
             $obj = new GenForm($this->table, '', $id);
 
             while (list($champ, $v) = @each($obj->tab_default_field)) {
-                if (arrayInWord($uploadFields, $champ) && strlen($obj->tab_default_field[$champ])) {
+                if (isUploadField($champ) && strlen($obj->tab_default_field[$champ])) {
                     /**
                      *
                      * @unlink ($uploadRep.$obj->tab_default_field[$champ])
@@ -525,9 +525,9 @@ class genRecord {
                 /*
                   On enregistre tout ca, et on va ins?er quelquechose ...
                  */
-                if (strstr($key_name, "genform_modfk_") !== false && !strstr($key_name, "_value") !== false ) {
+                if (strstr($key_name, "genform_modfk_") !== false && !strstr($key_name, "_value") !== false) {
                     /* FK SIMPLE */
-                    $tab = explode("__", $key_name);                   
+                    $tab = explode("__", $key_name);
                     // if($this->table != $tab[1]) {
                     $_REQUEST['newTable'] = $tab[1];
                     if (isset($_POST[$key_name . "_value"])) {
@@ -637,7 +637,7 @@ class genRecord {
                         }
                     }
 
-                     if(isNeeded($this->table, $tab[1]) && !count($value)|| $value == "") {
+                    if (isNeeded($this->table, $tab[1]) && (!count($value) || $value == "")) {
                         $isError = 1;
                         $fieldError[$tab[1]] = 1;
                     }
@@ -697,7 +697,7 @@ class genRecord {
                             }
                         }
                     }
-                    if(isNeeded($this->table, $tab[1]) && (!count($value) || $value == "") ) {
+                    if (isNeeded($this->table, $tab[1]) && (!count($value) || $value == "")) {
                         $isError = 1;
                         $fieldError[$tab[1]] = 1;
                     }
@@ -778,7 +778,7 @@ class genRecord {
 
                     $value = trim($value);
                     if (($value == "" || $value == "0" || $value == "0.0" || $value == "NULL" || $value == "::"
-                                || (is_array($value) && count($value) == 0))  && isNeeded($this->table, $name)) {
+                            || (is_array($value) && count($value) == 0)) && isNeeded($this->table, $name)) {
                         $isError = 1;
                         $fieldError[$name] = 1;
                     }
