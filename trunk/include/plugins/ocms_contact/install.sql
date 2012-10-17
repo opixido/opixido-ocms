@@ -59,3 +59,4 @@ NULL , 'Formulaire de contact', '', '', '', '0', 'genContact', '', '', '', '0','
 
 ALTER TABLE `s_paragraphe` ADD `fk_contact_id` INT NOT NULL ;
 
+ALTER TABLE  `plug_contact_field` CHANGE  `contact_field_type`  `contact_field_type` ENUM(  'text',  'select',  'radio',  'textarea',  'email',  'submit',  'hidden',  'selectm',  'html',  'file',  'fieldset', 'endfieldset',  'checkbox' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
