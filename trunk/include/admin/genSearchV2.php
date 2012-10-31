@@ -37,7 +37,7 @@ class genSearchV2 {
             $sql .= ' AND ( ' . $_Gconfig['arboredTable'][$this->table] . ' = 0 OR ' . $_Gconfig['arboredTable'][$this->table] . ' IS NULL )';
         }
 
-        $sqlCount = 'SELECT COUNT(' . getPrimaryKey($this->table) . ') AS NB , ' . $sql . ' ';
+        $sqlCount = 'SELECT COUNT(' . getPrimaryKey($this->table) . ') AS NB , ' . $sql . ' GROUP BY ' . getPrimaryKey($this->table) . '';
         $rCount = DoSql($sqlCount);
         $rCount = $rCount->FetchRow();
         $this->count = $rCount['NB'];
