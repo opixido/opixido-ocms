@@ -176,7 +176,7 @@ if (!$this->editMode) {
     if ($this->tab_default_field[$tab_name]) {
         /* Uniquement si on a dï¿½ï¿½une valeur */
 
-        if (!isset($_SESSION['cache'][UNIQUE_SITE][$fk_table]) && !isset($_SESSION['cache'][UNIQUE_SITE][$fk_table][$this->tab_default_field[$tab_name]])) {
+        if (!isset($_SESSION['cache'][UNIQUE_SITE][$fk_table]) || !isset($_SESSION['cache'][UNIQUE_SITE][$fk_table][$this->tab_default_field[$tab_name]])) {
             $sql = 'SELECT ' . $nomSql . ' FROM ' . $fk_table . ' AS G WHERE ' . $clef . ' = "' . $this->tab_default_field[$tab_name] . '" ';
             //ORDER BY G.' . $nomSql;
             $result = GetSingle($sql);
