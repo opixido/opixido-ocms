@@ -24,4 +24,5 @@ L'affichage et la gestion de l'arborescence se fera sur la gauche de cette page.
   # Renseignez le nom de la rubrique, puis sélectionnez le type "Page simple" (ou "Dossier" si vous ne souhaitez pas que cette page renvoie vers sa première sous-rubrique)
   # Votre première rubrique (de niveau 1) est désormais créée.
 
-
+Pour créer une rubrique de niveau n, il suffit de cliquer sur le même bouton "Nouveau" mais en sélectionnant la rubrique parent.
+Vous pouvez créer autant de sous-rubriques que souhaité.
