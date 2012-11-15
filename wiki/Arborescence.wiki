@@ -13,19 +13,15 @@ L'affichage et la gestion de l'arborescence se fera sur la gauche de cette page.
 
 
   # Cliquez sur la racine du site (son nom).
-
   # Sélectionnez le bouton "Nouveau" (en haut)
-
-  # Entrez ensuite le nom du menu, puis sélectionnez en bas le type "Menu"
-
+  # Entrez ensuite le nom du menu, puis sélectionnez en bas le type
   # Votre premier menu est créé. Vous pouvez en créer autant que désiré
 
 === Création de rubriques ===
 
   # Sélectionnez sur un menu
-
   # Cliquez ensuite sur "Nouveau"
-
   # Renseignez le nom de la rubrique, puis sélectionnez le type "Page simple" (ou "Dossier" si vous ne souhaitez pas que cette page renvoie vers sa première sous-rubrique)
-
   # Votre première rubrique (de niveau 1) est désormais créée.
+
+
