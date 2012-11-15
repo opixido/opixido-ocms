@@ -3,13 +3,13 @@
 
 OCMS permet tout d’abord de créer l’arborescence du site, c’est-à-dire l’arbre des rubriques et sous-rubriques, puis de la modifier : ajout, suppression, déplacement de rubriques, etc.
 
-= Fonctionnement =
+== Fonctionnement ==
 
 Rendez-vous dans la partie "Gestion du contenu".
 
 L'affichage et la gestion de l'arborescence se fera sur la gauche de cette page.
 
-== Création d'un menu ==
+=== Création d'un menu ===
 
 
   # Cliquez sur la racine du site (son nom).
@@ -17,3 +17,15 @@ L'affichage et la gestion de l'arborescence se fera sur la gauche de cette page.
   # Sélectionnez le bouton "Nouveau" (en haut)
 
   # Entrez ensuite le nom du menu, puis sélectionnez en bas le type "Menu"
+
+  # Votre premier menu est créé. Vous pouvez en créer autant que désiré
+
+=== Création de rubriques ===
+
+  # Sélectionnez sur un menu
+
+  # Cliquez ensuite sur "Nouveau"
+
+  # Renseignez le nom de la rubrique, puis sélectionnez le type "Page simple"
+
+
