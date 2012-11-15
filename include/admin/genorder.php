@@ -1,5 +1,26 @@
 <?php
 
+#
+# This file is part of oCMS.
+#
+# oCMS is free software: you cgan redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# oCMS is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with oCMS. If not, see <http://www.gnu.org/licenses/>.
+#
+# @author Celio Conort / Opixido 
+# @copyright opixido 2012
+# @link http://code.google.com/p/opixido-ocms/
+# @package ocms
+#
 /*
  *
  * GenOrder
@@ -22,7 +43,6 @@ class GenOrder {
                 $v = array_pop($v);
                 $_Gconfig['fullArboRev'][$v[0]] = array($v[1], $v[2]);
             }
-
         }
 
         global $orderFields;
@@ -80,7 +100,7 @@ class GenOrder {
         	' . $this->specialClause() . '
         	ORDER BY ' . $this->order_field . ' DESC LIMIT 0,1';
 
-     //echo $sql;
+        //echo $sql;
         $row = GetSingle($sql);
         //debug($row[$this->pk] ." -> ".$this->curOrderValue);
         //debug($this->id ." -> ".$row[$this->order_field]);
@@ -178,14 +198,14 @@ class GenOrder {
         }
     }
 
-    function ReorderRes($res=false) {
+    function ReorderRes($res = false) {
         if (!$this->DoIt || !$this->fk_id)
             return;
 
-        if(!$res) {
-            $res = GetAll('SELECT * FROM '.$this->table.' WHERE '.$this->fk_champ.' = '.sql($this->fk_id).' ORDER BY '.$this->order_field);
+        if (!$res) {
+            $res = GetAll('SELECT * FROM ' . $this->table . ' WHERE ' . $this->fk_champ . ' = ' . sql($this->fk_id) . ' ORDER BY ' . $this->order_field);
         }
-        
+
         $normalOrder = 0;
         foreach ($res as $row) {
             $normalOrder++;
@@ -193,7 +213,7 @@ class GenOrder {
             if ($row[$this->order_field] != $normalOrder) {
                 $sql = 'UPDATE ' . $this->table . ' SET ' . $this->order_field . ' = ' . $normalOrder . ' WHERE ' . $this->pk . ' = "' . $row[$this->pk] . '"';
                 $res = DoSql($sql);
-               // echo $sql . '<br/>';
+                // echo $sql . '<br/>';
             }
         }
     }

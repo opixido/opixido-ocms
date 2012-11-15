@@ -1,5 +1,26 @@
-<?
+<?php
 
+#
+# This file is part of oCMS.
+#
+# oCMS is free software: you cgan redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# oCMS is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with oCMS. If not, see <http://www.gnu.org/licenses/>.
+#
+# @author Celio Conort / Opixido 
+# @copyright opixido 2012
+# @link http://code.google.com/p/opixido-ocms/
+# @package ocms
+#
 /* AS USUAL ... IE NEEDS A FIX .... */
 if (count($_POST)) {
     reset($_POST);
@@ -49,11 +70,11 @@ function getTableListing($table) {
 
     global $_Gconfig;
 
-    if(!empty($GLOBALS['tableListing'][$table])) {
+    if (!empty($GLOBALS['tableListing'][$table])) {
         return $GLOBALS['tableListing'][$table];
     }
 
-    $liste = akev($_Gconfig['specialListing'],$table);
+    $liste = akev($_Gconfig['specialListing'], $table);
 
     if ($liste) {
 
@@ -73,9 +94,8 @@ function getTableListing($table) {
         $result = GetAll($sql);
 
         $GLOBALS['tableListing'][$table] = $result;
-        
+
         return $GLOBALS['tableListing'][$table];
-        
     }
 }
 
@@ -104,7 +124,7 @@ function getNomForValue($titre, $row) {
     return $nomSee;
 }
 
-function tradAdmin($txt, $rel, $table='') {
+function tradAdmin($txt, $rel, $table = '') {
     /* Real name forced : TABLE_NAME.FIELD_NAME */
 
     // $t1 = t( $this->table_name . '.' . $txt );
@@ -144,7 +164,7 @@ function rubriqueIsAPage($rubtype) {
     return in_array($rubtype, array('siteroot', 'page'));
 }
 
-function GetTitleFromTableOLD($table, $separator=" ") {
+function GetTitleFromTableOLD($table, $separator = " ") {
     global $tabForms;
     $fields = getTabField($table);
 
@@ -205,7 +225,7 @@ function GetTitleFromTableOLD($table, $separator=" ") {
     return $titre;
 }
 
-function truncate($str, $len=100) {
+function truncate($str, $len = 100) {
     $sstr = strip_tags($str);
     if (strlen($sstr) > $len)
         return substr($sstr, 0, $len) . " ...";
@@ -226,7 +246,7 @@ function truncate($str, $len=100) {
   }
  */
 
-function GetOnlyEditableVersion($table, $aliase='') {
+function GetOnlyEditableVersion($table, $aliase = '') {
 
     global $multiVersionField, $_Gconfig;
     if (strlen($aliase))
@@ -240,7 +260,7 @@ function GetOnlyEditableVersion($table, $aliase='') {
     }
 }
 
-function GetOnlyVisibleVersion($table, $aliase='') {
+function GetOnlyVisibleVersion($table, $aliase = '') {
 
     global $multiVersionField, $_Gconfig;
     if (strlen($aliase))
@@ -254,7 +274,7 @@ function GetOnlyVisibleVersion($table, $aliase='') {
     }
 }
 
-function mymail($to, $sujet='', $text='', $headers='') {
+function mymail($to, $sujet = '', $text = '', $headers = '') {
     mail($to, $sujet, $text, $headers);
 }
 
@@ -273,7 +293,7 @@ function isMultiVersion($table) {
     return (in_array($table, $_Gconfig['multiVersionTable']));
 }
 
-function tradExists($str, $lg= false) {
+function tradExists($str, $lg = false) {
     global $admin_trads;
     if ($lg) {
         return (array_key_exists($str, $admin_trads) && $admin_trads[$str][$lg] != '');
@@ -395,7 +415,7 @@ function importSqlFile($FILENAME) {
     $_REQUEST["totalqueries"] = 0;
     $_REQUEST["fn"] = $FILENAME;
     $QUERIESTODO = array();
-    if (!$error && isset($_REQUEST["start"]) && isset($_REQUEST["foffset"]) ) {
+    if (!$error && isset($_REQUEST["start"]) && isset($_REQUEST["foffset"])) {
 
         $gzipmode = false;
 
@@ -482,10 +502,10 @@ function importSqlFile($FILENAME) {
 
                 // Execute query if end of query detected (; as last character) AND NOT in parents
 
-                if (preg_match('/'.preg_quote($delimiter).'$/',trim($dumpline)) && !$inparents) {
-                    
+                if (preg_match('/' . preg_quote($delimiter) . '$/', trim($dumpline)) && !$inparents) {
+
                     $QUERIESTODO[] = str_replace('[LG]', (defined('LG_TEMP') ? LG_TEMP : LG_DEF), $query);
-                    
+
                     /*
                       if (!DoSql(trim($query)))
                       { echo ("<p class=\"error\">Error at the line $linenumber: ". trim($dumpline)."</p>\n");
@@ -524,7 +544,7 @@ function importSqlFile($FILENAME) {
     return $QUERIESTODO;
 }
 
-function getArboOrdered($start='NULL', $maxlevel=99999, $curlevel=0, $tab=array()) {
+function getArboOrdered($start = 'NULL', $maxlevel = 99999, $curlevel = 0, $tab = array()) {
 
     if ($curlevel == 0) {
         $r = getRowFromId('s_rubrique', $start);
@@ -868,7 +888,7 @@ class MySQLDump {
         return $dump;
     }
 
-    function sendAttachFile($data, $contenttype = 'text/html', $filename = 'mysqldump.sql', $write=false) {
+    function sendAttachFile($data, $contenttype = 'text/html', $filename = 'mysqldump.sql', $write = false) {
         if ($write) {
             $path = getcwd();
             $handle = fopen($path . '/' . date('mdY') . "$filename", 'w');
@@ -922,7 +942,7 @@ function setAllUrls() {
     echo $f->gen();
 }
 
-function getPicto($nom, $taille="32x32") {
+function getPicto($nom, $taille = "32x32") {
     global $tabForms;
     if (!$nom) {
         return;
@@ -932,12 +952,12 @@ function getPicto($nom, $taille="32x32") {
         $p = $tabForms[$nom]['picto'];
     } else if (tradExists($nom)) {
         $p = t($nom);
-    } 
-/*
-    $pos = strpos($p, 'http');
-    if ($pos !== false) {
-        return $p;
-    }*/
+    }
+    /*
+      $pos = strpos($p, 'http');
+      if ($pos !== false) {
+      return $p;
+      } */
     $pos = strpos($p, ADMIN_PICTOS_FOLDER);
     if ($pos !== false) {
         $p = substr($p, $pos + strlen(ADMIN_PICTOS_FOLDER) + 5);
@@ -945,7 +965,7 @@ function getPicto($nom, $taille="32x32") {
         $p = $nom;
     }
 
-    if($p == $nom) {
+    if ($p == $nom) {
         $p = 'mimetypes/text-x-generic-template.png';
     }
 
@@ -1028,7 +1048,7 @@ function cleanFiles() {
 }
 
 function autoGeocodeAllFields() {
-    global $_Gconfig,$co;
+    global $_Gconfig, $co;
 
     if ($_REQUEST['table'] && count($_REQUEST['table'])) {
 
@@ -1036,7 +1056,7 @@ function autoGeocodeAllFields() {
 
             $code = $_Gconfig['mapsFields'][$table];
             foreach ($code as $chps) {
-               
+
                 if (!$chps) {
                     continue;
                 }
@@ -1057,27 +1077,27 @@ function autoGeocodeAllFields() {
                 echo '<table class="genform_table"><caption>' . t($table) . '</caption>';
                 foreach ($res as $row) {
                     $r = new row($table, $row);
-                    echo '<tbody><tr><th><a target="_blank" href="?curTable='.$table.'&curId='.$r->id.'">' . $r->id . '</a></th>';
+                    echo '<tbody><tr><th><a target="_blank" href="?curTable=' . $table . '&curId=' . $r->id . '">' . $r->id . '</a></th>';
                     $v = '';
                     foreach ($chps as $chp) {
                         $val = $r->{$chp};
-                        if($val === false) {
+                        if ($val === false) {
                             $val = $chp;
                         }
-                        $v .= $val.' ';
-                        echo '<td>'.$val.'</td>';
+                        $v .= $val . ' ';
+                        echo '<td>' . $val . '</td>';
                     }
 
                     usleep(250000);
-                    $res = file_get_contents('http://maps.googleapis.com/maps/api/geocode/json?sensor=false&address='.urlencode($v));
+                    $res = file_get_contents('http://maps.googleapis.com/maps/api/geocode/json?sensor=false&address=' . urlencode($v));
                     $res = json_decode($res);
-                    if($res->status == 'OK') {
-                        $lat= $res->results[0]->geometry->location->lat;
+                    if ($res->status == 'OK') {
+                        $lat = $res->results[0]->geometry->location->lat;
                         $lng = $res->results[0]->geometry->location->lng;
-                        echo '<td>'.$res->status.'</td><td><a target="_blank" href="http://maps.google.com/?q=('.$lat.','.$lng.')">'.$lat.','.$lng.'</a></td>';
-                        DoSql('UPDATE '.$table.' SET '.$chp_lat.' = '.sql($lat).' , '.$chp_lng.' = '.sql($lng).' WHERE '.getPrimaryKey($table).' = '.$r->id);
+                        echo '<td>' . $res->status . '</td><td><a target="_blank" href="http://maps.google.com/?q=(' . $lat . ',' . $lng . ')">' . $lat . ',' . $lng . '</a></td>';
+                        DoSql('UPDATE ' . $table . ' SET ' . $chp_lat . ' = ' . sql($lat) . ' , ' . $chp_lng . ' = ' . sql($lng) . ' WHERE ' . getPrimaryKey($table) . ' = ' . $r->id);
                     } else {
-                        echo '<td style="background:red;color:white;font-weight:bold">'.$res->status.'</td>';
+                        echo '<td style="background:red;color:white;font-weight:bold">' . $res->status . '</td>';
                     }
                     echo '</tr></tbody>';
                     ob_flush();

@@ -1,5 +1,25 @@
 <?php
 
+#
+# This file is part of oCMS.
+#
+# oCMS is free software: you cgan redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# oCMS is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with oCMS. If not, see <http://www.gnu.org/licenses/>.
+#
+# @copyright opixido 2012
+# @link http://code.google.com/p/opixido-ocms/
+# @package ocms
+#
 # ***** BEGIN LICENSE BLOCK *****
 # Copyright (c) 2004 Olivier Meunier. All rights reserved.
 #
@@ -19,171 +39,150 @@
 #
 # ***** END LICENSE BLOCK *****
 
-class crypto
-{
-	var $cipher;
-	var $mode;
-	var $key;
+class crypto {
 
-	function crypto($cipher,$mode,$key)
-	{
-		$this->_setCipher($cipher);
-		$this->_setMode($mode);
-		$this->_setKey($key);
-	}
+    var $cipher;
+    var $mode;
+    var $key;
 
-	function createIV()
-	{
-		if (($td = $this->_openModule()) !== false)
-		{
-			if (($iv = @mcrypt_create_iv(mcrypt_enc_get_iv_size($td),MCRYPT_RAND)) === false) {
-				trigger_error('Impossible de créer le vecteur d\initialisation',E_USER_ERROR);
-			}
+    function crypto($cipher, $mode, $key) {
+        $this->_setCipher($cipher);
+        $this->_setMode($mode);
+        $this->_setKey($key);
+    }
 
-			$this->_closeModule($td);
-			return $iv;
-		}
-		else
-		{
-			return false;
-		}
-	}
+    function createIV() {
+        if (($td = $this->_openModule()) !== false) {
+            if (($iv = @mcrypt_create_iv(mcrypt_enc_get_iv_size($td), MCRYPT_RAND)) === false) {
+                trigger_error('Impossible de créer le vecteur d\initialisation', E_USER_ERROR);
+            }
 
-	function encrypt($str)
-	{
-		if (($iv = $this->createIV()) === false) {
-			return false;
-		}
+            $this->_closeModule($td);
+            return $iv;
+        } else {
+            return false;
+        }
+    }
 
-		if (($td = $this->_openModule()) !== false)
-		{
-			mcrypt_generic_init($td,$this->key,$iv);
+    function encrypt($str) {
+        if (($iv = $this->createIV()) === false) {
+            return false;
+        }
 
-			$res = mcrypt_generic($td,$str);
+        if (($td = $this->_openModule()) !== false) {
+            mcrypt_generic_init($td, $this->key, $iv);
 
-			mcrypt_generic_deinit($td);
-			$this->_closeModule($td);
+            $res = mcrypt_generic($td, $str);
 
-			# On retourne une chaine en base 64 contenant :
-			# taille de la chaine en binaire sur 32 caractère
-			# IV
-			# chaine encryptée
-			$bsize = sprintf('%032b',strlen($str));
-			return base64_encode($bsize.$iv.$res);
-		}
-		else
-		{
-			return false;
-		}
-	}
+            mcrypt_generic_deinit($td);
+            $this->_closeModule($td);
 
-	function decrypt($str)
-	{
-		if (($td = $this->_openModule()) !== false)
-		{
-			$ivsize = mcrypt_enc_get_iv_size($td);
+            # On retourne une chaine en base 64 contenant :
+            # taille de la chaine en binaire sur 32 caractère
+            # IV
+            # chaine encryptée
+            $bsize = sprintf('%032b', strlen($str));
+            return base64_encode($bsize . $iv . $res);
+        } else {
+            return false;
+        }
+    }
 
-			$str = base64_decode($str);
+    function decrypt($str) {
+        if (($td = $this->_openModule()) !== false) {
+            $ivsize = mcrypt_enc_get_iv_size($td);
 
-			# On récupère la taille de la chaîne
-			$bsize = substr($str,0,32);
-			$str_size = bindec($bsize);
-			$str = substr($str,32);
+            $str = base64_decode($str);
 
-			# On récupère l'IV de la chaîne
-			$iv = substr($str,0,$ivsize);
-			$str = substr($str,$ivsize);
-			
-			@mcrypt_generic_init($td,$this->key,$iv);
+            # On récupère la taille de la chaîne
+            $bsize = substr($str, 0, 32);
+            $str_size = bindec($bsize);
+            $str = substr($str, 32);
 
-			$res = @mdecrypt_generic ($td,$str);
+            # On récupère l'IV de la chaîne
+            $iv = substr($str, 0, $ivsize);
+            $str = substr($str, $ivsize);
 
-			mcrypt_generic_deinit($td);
-			$this->_closeModule($td);
+            @mcrypt_generic_init($td, $this->key, $iv);
 
-			# On corrige la taille de la chaîne.
-			$res = substr($res,0,$str_size);
+            $res = @mdecrypt_generic($td, $str);
 
-			return $res;
-		}
-		else
-		{
-			return false;
-		}
-	}
+            mcrypt_generic_deinit($td);
+            $this->_closeModule($td);
 
-	function getModes()
-	{
-		$res = '';
-		foreach (mcrypt_list_modes() as $v) {
-			$res .= $v."\n";
-		}
-		return $res;
-	}
+            # On corrige la taille de la chaîne.
+            $res = substr($res, 0, $str_size);
 
-	function getCiphers()
-	{
-		$res = '';
-		foreach (mcrypt_list_algorithms() as $v) {
-			$res .= $v."\n";
-		}
-		return $res;
-	}
+            return $res;
+        } else {
+            return false;
+        }
+    }
 
+    function getModes() {
+        $res = '';
+        foreach (mcrypt_list_modes() as $v) {
+            $res .= $v . "\n";
+        }
+        return $res;
+    }
 
-	/* --------------------------------------------------------
-	Méthodes privées
-	-------------------------------------------------------- */
+    function getCiphers() {
+        $res = '';
+        foreach (mcrypt_list_algorithms() as $v) {
+            $res .= $v . "\n";
+        }
+        return $res;
+    }
 
+    /* --------------------------------------------------------
+      Méthodes privées
+      -------------------------------------------------------- */
 
-	function _setCipher($cipher)
-	{
-		if (in_array($cipher,mcrypt_list_algorithms())) {
-			$this->cipher = $cipher;
-		} else {
-			trigger_error('Crypto : impossible d\'initialiser l\'algorithme '.$cipher,E_USER_ERROR);
-			return false;
-		}
-	}
+    function _setCipher($cipher) {
+        if (in_array($cipher, mcrypt_list_algorithms())) {
+            $this->cipher = $cipher;
+        } else {
+            trigger_error('Crypto : impossible d\'initialiser l\'algorithme ' . $cipher, E_USER_ERROR);
+            return false;
+        }
+    }
 
-	function _setMode($mode)
-	{
-		
-		if (in_array($mode,mcrypt_list_modes())) {
-			$this->mode = $mode;
-		} else {
-			trigger_error('Crypto : impossible d\'initialiser le mode '.$mode,E_USER_ERROR);
-			return false;
-		}
-	}
+    function _setMode($mode) {
 
-	function _setKey($key)
-	{
-		$keysize = mcrypt_get_key_size ($this->cipher, $this->mode);
+        if (in_array($mode, mcrypt_list_modes())) {
+            $this->mode = $mode;
+        } else {
+            trigger_error('Crypto : impossible d\'initialiser le mode ' . $mode, E_USER_ERROR);
+            return false;
+        }
+    }
 
-		if ((strlen($key) < 32) && ($keysize >= 32)) {
-			$this->key = md5($key);
-		} elseif ((strlen($key) > $keysize) && ($keysize == 32)) {
-			$this->key = md5($key);
-		} else {
-			$this->key = substr($key, 0, $keysize);
-		}
-	}
+    function _setKey($key) {
+        $keysize = mcrypt_get_key_size($this->cipher, $this->mode);
 
-	function _openModule()
-	{
-		if (($td = mcrypt_module_open($this->cipher,'',$this->mode,'')) !== false) {
-			return $td;
-		} else {
-			trigger_error('Crypto : impossible de d\'initialiser le module',E_USER_ERROR);
-			return false;
-		}
-	}
+        if ((strlen($key) < 32) && ($keysize >= 32)) {
+            $this->key = md5($key);
+        } elseif ((strlen($key) > $keysize) && ($keysize == 32)) {
+            $this->key = md5($key);
+        } else {
+            $this->key = substr($key, 0, $keysize);
+        }
+    }
 
-	function _closeModule($td)
-	{
-		@mcrypt_module_close($td);
-	}
+    function _openModule() {
+        if (($td = mcrypt_module_open($this->cipher, '', $this->mode, '')) !== false) {
+            return $td;
+        } else {
+            trigger_error('Crypto : impossible de d\'initialiser le module', E_USER_ERROR);
+            return false;
+        }
+    }
+
+    function _closeModule($td) {
+        @mcrypt_module_close($td);
+    }
+
 }
 
 ?>

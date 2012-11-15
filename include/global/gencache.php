@@ -31,7 +31,7 @@ class genCache {
     private $strCache = '';
     private $cacheChecked = false;
 
-    function genCache($cache_id, $cache_time, $cache_path='') {
+    function genCache($cache_id, $cache_time, $cache_path = '') {
 
         global $gb_obj;
 

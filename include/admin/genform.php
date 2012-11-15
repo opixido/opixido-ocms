@@ -365,7 +365,7 @@ class GenForm {
                 }
                 if ($this->fieldsDone == 0) {
                     p('<style>');
-                    p('#genform_page_' . $i . ', #genform_btn_page_' . ($i-1) . ' {display:none;}');
+                    p('#genform_page_' . $i . ', #genform_btn_page_' . ($i - 1) . ' {display:none;}');
                     p('</style>');
                 }
             }
@@ -941,7 +941,7 @@ class GenForm {
             $this->genButtons();
             p('</div>');
         } else {
-
+            
         }
         print ("<div id='zegenform' >");
         // p('<div id="genform_allForm">');
@@ -1111,12 +1111,12 @@ class GenForm {
             $alt = '';
             p('<ul class="nav nav-tabs">');
             foreach ($tabForms[$this->table]['pages'] as $k => $page) {
-/*
-                if ($i == $_REQUEST['curPage']) {
-                    $cl = 'active';
-                } else {
-                    $cl = '';
-                }*/
+                /*
+                  if ($i == $_REQUEST['curPage']) {
+                  $cl = 'active';
+                  } else {
+                  $cl = '';
+                  } */
 
                 p('<li class="' . $cl . '" id="genform_btn_page_' . $i . '" >');
 
@@ -1139,7 +1139,7 @@ class GenForm {
                 $img = ('<img ' . $oc . ' style="vertical-align:middle" src="' . $imgu . '" alt="' . $alt . '" />&nbsp;' . $bef);
 
                 //$this->genButton ( "prevPage",  t($_REQUEST['curTable']."_p_".$i) ,$prev." onclick='genform_activatePage(".$i.")'");
-                p('<a href="#genform_page_' . ($i + 1) . '" id="aongl' . $i . '" onclick="$(\'#genform_curPage\').val('.$i.')" data-toggle="tab">');
+                p('<a href="#genform_page_' . ($i + 1) . '" id="aongl' . $i . '" onclick="$(\'#genform_curPage\').val(' . $i . ')" data-toggle="tab">');
                 p($img);
                 p($this->tradOnglet($_REQUEST['curTable'], $k) . "</a>");
                 p(getEditTrad($_REQUEST['curTable'] . '_p_' . $k));

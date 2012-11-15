@@ -1,5 +1,27 @@
 <?php
 
+#
+# This file is part of oCMS.
+#
+# oCMS is free software: you cgan redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# oCMS is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with oCMS. If not, see <http://www.gnu.org/licenses/>.
+#
+# @author Celio Conort / Opixido 
+# @copyright opixido 2012
+# @link http://code.google.com/p/opixido-ocms/
+# @package ocms
+#
+
 /**
  * Gestion des URLs du site
  * Rappatriement / renvoi
@@ -13,42 +35,51 @@ class genUrl {
      * @var array
      */
     public $tabUrl;
+
     /**
      * Langue en cours
      * @var string
      */
     private $lg;
+
     /**
      * Liste des sous rubriques virtuelles supplémentaires
      * @var array
      */
     public $roadSup;
+
     /**
      * Si les paramètres passés doivent être différents dans une autre langue
      */
     private $otherLgParamsUrl;
+
     /**
      * Liste des paramètres passés dans l'URL
      */
     public $paramsUrl = array();
+
     /**
      * Rubrique de niveau 0
      */
     public $topRubId;
+
     /**
      * Est-ce un minisite ?
      * @var bool
      */
     public $minisite;
+
     /**
      *
      * @var array Rubriques parentes sélectionnées
      */
     private $selectedArbo = array();
+
     /**
      * Recursion deja effectuées
      */
     private $recursDones = array();
+
     /**
      * Identifiant de la rubrique en cours
      */
@@ -57,7 +88,7 @@ class genUrl {
     /**
      *  Constructeur de la classe genUrl 
      */
-    function __construct($lg='') {
+    function __construct($lg = '') {
 
 
         $this->lg = $lg;
@@ -325,7 +356,7 @@ class genUrl {
             $this->lg = LG;
             mylocale(LG);
         } else {
-            $templg = akev($this->parsedUrl,1);
+            $templg = akev($this->parsedUrl, 1);
             /**
              * Si on est dans une seconde langue ( /fr-de/ )
              */
@@ -354,8 +385,8 @@ class genUrl {
                 mylocale($this->lg);
             } else {
                 $this->lg = empty($this->lg) ? $this->getBrowserLang() : $this->lg;
-                if(!defined('LG')) {
-                    define("LG", $this->lg);                    
+                if (!defined('LG')) {
+                    define("LG", $this->lg);
                     define('TRADLG', false);
                 }
                 mylocale($this->lg);
@@ -691,7 +722,7 @@ class genUrl {
      * @param array $action
      * @return string
      */
-    function buildUrlFromId($rubId=0, $lg='', $params=array(), $action='') {
+    function buildUrlFromId($rubId = 0, $lg = '', $params = array(), $action = '') {
 
         global $_Gconfig;
 
@@ -1004,7 +1035,7 @@ class genUrl {
      * @param int $maxLevel Combien de récursion atteindre ?
      * @return array Tableau 
      */
-    function recursRub($rubId, $curLevel=1, $maxLevel=99) {
+    function recursRub($rubId, $curLevel = 1, $maxLevel = 99) {
 
         if (!$rubId)
             return false;
@@ -1170,7 +1201,7 @@ class genUrl {
 
     /* Methode permettant de construire le "chemin de fer" de la page en-cours */
 
-    function buildRoad($curId=0, $includeMenuRoot=false) {
+    function buildRoad($curId = 0, $includeMenuRoot = false) {
         //global $rootId;
 
         if (!$curId) {
@@ -1255,7 +1286,7 @@ class genUrl {
 
     /* Methode qui retourne le niveau de profondeur */
 
-    function getDepth($rubid=0) {
+    function getDepth($rubid = 0) {
         $rubid = $rubid ? $rubid : $this->getRubId();
 
         if (!array_key_exists($curId, $GLOBALS['tabUrl']))

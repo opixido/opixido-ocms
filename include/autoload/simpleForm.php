@@ -1,5 +1,27 @@
 <?php
 
+#
+# This file is part of oCMS.
+#
+# oCMS is free software: you cgan redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# oCMS is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with oCMS. If not, see <http://www.gnu.org/licenses/>.
+#
+# @author Celio Conort / Opixido 
+# @copyright opixido 2012
+# @link http://code.google.com/p/opixido-ocms/
+# @package ocms
+#
+
 class simpleForm {
 
     public $badFields = array();
@@ -12,7 +34,7 @@ class simpleForm {
     public $addDivSeparation = TRUE;
     public $simpleformNeeded = NULL;
 
-    function __construct($action='', $method='get', $id='') {
+    function __construct($action = '', $method = 'get', $id = '') {
 
         $this->action = $action;
         $this->method = $method;
@@ -293,61 +315,60 @@ class simpleForm {
     function isValid() {
 
 
-            $isvalid = True;
-            reset($this->fields);
-            foreach ($this->fields as $field) {
-                if ($field['needed']) {
-                    $v = akev($_REQUEST, $field['name']);
+        $isvalid = True;
+        reset($this->fields);
+        foreach ($this->fields as $field) {
+            if ($field['needed']) {
+                $v = akev($_REQUEST, $field['name']);
 
-                    if ($field['type'] == 'text' && !strlen(trim($v))) {
-                        $this->badFields[$field['name']] = $field;
-                    } else if ($field['type'] == 'password' && !strlen(trim($v))) {
-                        $this->badFields[$field['name']] = $field;
-                    } else if ($field['type'] == 'email' && !checkEmail($v)) {
-                        $this->badFields[$field['name']] = $field;
-                    } else if ($field['type'] == 'textarea' && !strlen(trim($v))) {
-                        $this->badFields[$field['name']] = $field;
-                    } else if (( $field['type'] == 'email_conf' ) && (!checkEmail($v) || $v != $_REQUEST[$field['name'] . '_confirmation'])) {
-                        $this->badFields[$field['name']] = $field;
-                    } else if ($field['type'] == 'select' && $v === "") {
+                if ($field['type'] == 'text' && !strlen(trim($v))) {
+                    $this->badFields[$field['name']] = $field;
+                } else if ($field['type'] == 'password' && !strlen(trim($v))) {
+                    $this->badFields[$field['name']] = $field;
+                } else if ($field['type'] == 'email' && !checkEmail($v)) {
+                    $this->badFields[$field['name']] = $field;
+                } else if ($field['type'] == 'textarea' && !strlen(trim($v))) {
+                    $this->badFields[$field['name']] = $field;
+                } else if (( $field['type'] == 'email_conf' ) && (!checkEmail($v) || $v != $_REQUEST[$field['name'] . '_confirmation'])) {
+                    $this->badFields[$field['name']] = $field;
+                } else if ($field['type'] == 'select' && $v === "") {
 
-                        $this->badFields[$field['name']] = $field;
-                    } else if ($field['type'] == 'checkbox' && count($v) == 0) {
+                    $this->badFields[$field['name']] = $field;
+                } else if ($field['type'] == 'checkbox' && count($v) == 0) {
 
-                        $this->badFields[$field['name']] = $field;
-                    }
-                    if ($field['type'] == 'captcha') {
-                        if (($v == "" || strtolower($v) != strtolower($_SESSION['CAPTCHAString'])) && !$GLOBALS['CAPTCHAOK']) {
-                            $this->badFields[$field['name']] = $field;
-                            $GLOBALS['CAPTCHAOK'] = true;
-                        } else {
-                            $_SESSION['CAPTCHAString'] = '';
-                        }
-                    } else if ($field['type'] == 'file') {
-
-                        if (($_FILES[$field['name']]['error'])) {
-                            $this->badFields[$field['name']] = $field;
-                        }
-                    }
+                    $this->badFields[$field['name']] = $field;
                 }
-
-                if ($field['type'] == 'captcha_question') {
-                    if (empty($_REQUEST['captchaq_uniq'])) {
-                        $_REQUEST['captchaq_uniq'] = false;
-                    }
-                    if (!$_REQUEST['captchaq_uniq'] || !$_REQUEST['captchaq'] || $_REQUEST['captchaq'] != $_SESSION['captchaQuestion'][$_REQUEST['captchaq_uniq']]) {
+                if ($field['type'] == 'captcha') {
+                    if (($v == "" || strtolower($v) != strtolower($_SESSION['CAPTCHAString'])) && !$GLOBALS['CAPTCHAOK']) {
                         $this->badFields[$field['name']] = $field;
-
-                        $_SESSION['captchaQuestion'][$_REQUEST['captchaq_uniq']] = '';
+                        $GLOBALS['CAPTCHAOK'] = true;
+                    } else {
+                        $_SESSION['CAPTCHAString'] = '';
                     }
-                    $_SESSION['captchaQuestion'][$_REQUEST['captchaq_uniq']] = '';
+                } else if ($field['type'] == 'file') {
+
+                    if (($_FILES[$field['name']]['error'])) {
+                        $this->badFields[$field['name']] = $field;
+                    }
                 }
             }
 
-            if (count($this->badFields))
-                $isvalid = false;
-            return $isvalid;
+            if ($field['type'] == 'captcha_question') {
+                if (empty($_REQUEST['captchaq_uniq'])) {
+                    $_REQUEST['captchaq_uniq'] = false;
+                }
+                if (!$_REQUEST['captchaq_uniq'] || !$_REQUEST['captchaq'] || $_REQUEST['captchaq'] != $_SESSION['captchaQuestion'][$_REQUEST['captchaq_uniq']]) {
+                    $this->badFields[$field['name']] = $field;
 
+                    $_SESSION['captchaQuestion'][$_REQUEST['captchaq_uniq']] = '';
+                }
+                $_SESSION['captchaQuestion'][$_REQUEST['captchaq_uniq']] = '';
+            }
+        }
+
+        if (count($this->badFields))
+            $isvalid = false;
+        return $isvalid;
     }
 
     /**
@@ -382,7 +403,7 @@ class simpleForm {
      *
      * @param array $field
      */
-    function getSelect($field, $ismultiple=false) {
+    function getSelect($field, $ismultiple = false) {
 
         $s = '' . "\n";
         $multi = false;
@@ -711,7 +732,7 @@ class simpleForm {
      * @param mixed $id Identifiant pour javascript/css
      * @param boolean $needed Champ obligatoire ?
      */
-    function add($type='text', $value='', $label='', $name='', $id=false, $needed=false, $selected=array(), $disabled=false, $tag = '') {
+    function add($type = 'text', $value = '', $label = '', $name = '', $id = false, $needed = false, $selected = array(), $disabled = false, $tag = '') {
         if (!$id || !strlen($id)) {
             $id = $this->getNextId();
         }

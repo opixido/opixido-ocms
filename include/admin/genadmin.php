@@ -538,7 +538,7 @@ class genAdmin {
                     $form->editMode = true;
                     //debug($tl);
                 } else {
-
+                    
                 }
 
 
@@ -1195,8 +1195,7 @@ class smallAdmin {
                 /**
                  * permet de connaitre pour la rubriqque en cours son niveau maximal
                  */
-
-                $cls=$cla=$cl = '';
+                $cls = $cla = $cl = '';
 
                 $cls = $cla = $cl = '';
 

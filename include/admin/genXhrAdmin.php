@@ -1,5 +1,26 @@
 <?php
 
+#
+# This file is part of oCMS.
+#
+# oCMS is free software: you cgan redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# oCMS is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with oCMS. If not, see <http://www.gnu.org/licenses/>.
+#
+# @author Celio Conort / Opixido 
+# @copyright opixido 2012
+# @link http://code.google.com/p/opixido-ocms/
+# @package ocms
+#
 /* * *********************
  *
  *   Popup d'administration via le front office
@@ -166,13 +187,13 @@ class genXhrAdmin {
 
     function deleteFile() {
         global $gs_obj;
-        if ($gs_obj->can('edit', $_REQUEST['curTable'], array(), $_REQUEST['curId'],$_REQUEST['curChamp'])) {
+        if ($gs_obj->can('edit', $_REQUEST['curTable'], array(), $_REQUEST['curId'], $_REQUEST['curChamp'])) {
             $gf = new genFile($_REQUEST['curTable'], $_REQUEST['curChamp'], $_REQUEST['curId']);
             $gf->deleteFile(true);
             global $getRowFromId_cacheRow;
             $getRowFromId_cacheRow = array();
             $gf = new genFile($_REQUEST['curTable'], $_REQUEST['curChamp'], $_REQUEST['curId']);
-            if(!empty($_REQUEST['small'])) {
+            if (!empty($_REQUEST['small'])) {
                 echo $gf->genSmallAdminTag();
             } else {
                 echo $gf->genAdminTag();
@@ -190,7 +211,7 @@ class genXhrAdmin {
         header("Cache-Control: post-check=0, pre-check=0", false);
         header("Pragma: no-cache");
         global $gs_obj;
-        if (!$gs_obj->can('edit', $_REQUEST['curTable'], array(), $_REQUEST['curId'],$_REQUEST['champ'])) {
+        if (!$gs_obj->can('edit', $_REQUEST['curTable'], array(), $_REQUEST['curId'], $_REQUEST['champ'])) {
             die('access denied');
         }
 
@@ -869,5 +890,5 @@ class genXhrAdmin {
 }
 
 class object {
-
+    
 }

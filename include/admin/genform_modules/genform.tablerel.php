@@ -1,5 +1,26 @@
 <?php
 
+#
+# This file is part of oCMS.
+#
+# oCMS is free software: you cgan redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# oCMS is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with oCMS. If not, see <http://www.gnu.org/licenses/>.
+#
+# @author Celio Conort / Opixido 
+# @copyright opixido 2012
+# @link http://code.google.com/p/opixido-ocms/
+# @package ocms
+#
 if (!is_object($this->gs))
     die();
 
@@ -13,6 +34,7 @@ class genform_tablerel extends genform_base {
 
     public $fk_champ = '';
     public $valuesSelect = '';
+
     function init() {
 
         global $orderFields, $tablerel, $tabForms, $_Gconfig;
@@ -95,8 +117,8 @@ class genform_tablerel extends genform_base {
     function genFullarbo() {
 
         $this->sel = $this->getSelectedItems();
-        $this->sel  = explode(',', str_replace(" ", "", $this->sel));
-        
+        $this->sel = explode(',', str_replace(" ", "", $this->sel));
+
         global $_Gconfig;
 
         list($parentTable, $parentField) = $_Gconfig['tablerelAsFullarbo'][$this->champ];
@@ -110,7 +132,7 @@ class genform_tablerel extends genform_base {
         $res = DoSql($sql);
 
         $this->addBuffer('<ul class="tablerelfullarbo" id="' . $this->champ . '">');
-        
+
         foreach ($res as $row) {
             $this->addBuffer('<li> ' . GetTitleFromRow($parentTable, $row) . ''); //id="fullarbo_'.$this->champ.'_'.$row[getPrimaryKey($parentTable)].'"
             $this->getSubsWhere($_Gconfig['fullArbo'][$parentTable][$parentField], $_Gconfig['fullArbo'][$parentTable][$parentField][1] . ' = ' . $row[getPrimaryKey($parentTable)] . ' AND ' . $_Gconfig['fullArbo'][$parentTable][$parentField][2] . ' IS NULL ');
@@ -121,7 +143,7 @@ class genform_tablerel extends genform_base {
         $this->addBuffer('</ul>');
         $this->addBuffer('<input type="hidden" name="genform_rel__' . $this->champ . '__' . $this->pk2 . '_temoin" value="1" />');
         $this->addBuffer('<script>$(document).ready(function(){
-            $("#'.$this->champ.' input").attr("name","genform_rel__'.$this->champ.'__'.$this->pk2.'[]");
+            $("#' . $this->champ . ' input").attr("name","genform_rel__' . $this->champ . '__' . $this->pk2 . '[]");
             $("#' . $this->champ . '").collapsibleCheckboxTree({checkParents : false,uncheckChildren : false});
             });</script>');
     }
@@ -135,10 +157,10 @@ class genform_tablerel extends genform_base {
             $this->addBuffer('<ul>');
             foreach ($res as $row) {
                 $s = '';
-                if(in_array($row[getPrimaryKey($config[0])], $this->sel)) {
+                if (in_array($row[getPrimaryKey($config[0])], $this->sel)) {
                     $s = ' checked ';
                 }
-                $this->addBuffer('<li><label><input type="checkbox" '.$s.' value="'.$row[getPrimaryKey($config[0])].'" /> ' . GetTitleFromRow($config[0], $row) . '</label>');
+                $this->addBuffer('<li><label><input type="checkbox" ' . $s . ' value="' . $row[getPrimaryKey($config[0])] . '" /> ' . GetTitleFromRow($config[0], $row) . '</label>');
                 $this->getSubsWhere($config, $config[2] . ' = ' . $row[$pk] . '');
                 $this->addBuffer('</li>');
                 $this->addBuffer("\n");
@@ -274,7 +296,7 @@ class genform_tablerel extends genform_base {
 //                                        </div></div></div>
 //						 ');
 
- $this->addBuffer('
+            $this->addBuffer('
             <div class="input-prepend ">
                 <span class="add-on add-on-mini">
                 <i class="icon-search"></i></span><input

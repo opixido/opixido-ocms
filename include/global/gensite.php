@@ -239,7 +239,7 @@ class genSite {
      * 	@tab = Tableau avec les differentes valeurs
      * 	@addspan = Par defaut on ajoute <span lang="XX">TRAD</span> pour definir si on change de langue
      */
-    function getLgValue($k, $tab, $addspan=true) {
+    function getLgValue($k, $tab, $addspan = true) {
 
         return getLgValue($k, $tab, $addspan);
     }
@@ -273,7 +273,7 @@ class genSite {
      *
      * @return array Liste de tous les menus root
      */
-    function getMenus($under=false) {
+    function getMenus($under = false) {
         $sql = 'SELECT * FROM s_rubrique AS R WHERE 1 ' . sqlMenuOnlyOnline('R');
         if ($under) {
             $sql .= ' AND fk_rubrique_id = ' . $under;
@@ -300,7 +300,7 @@ class genSite {
      * @param string $sup_headers	Headers supplémentaires
      * @param bool $compress	Compression gzip utilisée ou non
      */
-    function doExport($contenu, $ct='text/plain', $charset='utf-8', $nom='export.csv', $download=true, $sup_headers='', $compress=false) {
+    function doExport($contenu, $ct = 'text/plain', $charset = 'utf-8', $nom = 'export.csv', $download = true, $sup_headers = '', $compress = false) {
 
         if (ob_get_status()) {
             ob_end_clean();

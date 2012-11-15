@@ -1,5 +1,28 @@
 <?php
 
+#
+# This file is part of oCMS.
+#
+# oCMS is free software: you cgan redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# oCMS is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with oCMS. If not, see <http://www.gnu.org/licenses/>.
+#
+# @author Celio Conort / Opixido 
+# @copyright opixido 2012
+# @link http://code.google.com/p/opixido-ocms/
+# @package ocms
+#
+
+
 /* * ******
  *  CLEF EXTERNE
  *  La clef se trouve dans cette table
@@ -143,7 +166,7 @@ if (!$this->editMode) {
         //if(gid(\'genform_'.$name.'\').options[gid(\'genform_'.$name.'\').selectedIndex] == \'\' ) { alert(\'Veuillez choisir un element a modifier\');return false;}"
     }
 
-        /* On a le droit d'ajouter */
+    /* On a le droit d'ajouter */
     if ($this->gs->can('add', $fk_table) && !$restrictedMode) {
         $this->addBuffer('<button class="btn btn-mini"  title="' . $this->trad("ajouter") . $this->trad($fk_table) . '"  name="genform_add_-_' . $fk_table . '_-_' . $name . '"><img src="' . t('src_new') . '"  alt="' . $this->trad("ajouter") . $this->trad($fk_table) . '" /></button>');
     }

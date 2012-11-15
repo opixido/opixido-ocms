@@ -1,5 +1,27 @@
 <?php
 
+#
+# This file is part of oCMS.
+#
+# oCMS is free software: you cgan redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# oCMS is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with oCMS. If not, see <http://www.gnu.org/licenses/>.
+#
+# @author Celio Conort / Opixido 
+# @copyright opixido 2012
+# @link http://code.google.com/p/opixido-ocms/
+# @package ocms
+#
+
 class fullArbo {
 
     function __construct($table, $id, $conf, $field) {
@@ -15,7 +37,7 @@ class fullArbo {
         $this->vpk = getPrimaryKey($this->vtable);
 
 
-        
+
         $this->addlink = ' <a onclick="return FAadd(this,\'' . $this->field . '\',\'[ID]\')" class="FAadd" href=""><img alt="add" src="./pictos/list-add.png"/></a>';
         $this->remlink = ' <a onclick="return FAdel(this,\'' . $this->field . '\',\'[ID]\')" class="FAdel" href=""><img alt="remove" src="./pictos/process-stop.png"/></a>';
         $this->getup = ' <a onclick="return FAgoUp(this,\'' . $this->field . '\',\'[ID]\')" class="FAgoUp" href=""><img alt="up" src="./pictos/go-up.png"/></a>';
@@ -62,7 +84,7 @@ class fullArbo {
         $this->html .= '' . str_replace('[ID]', '', $this->addlink) . '<ul id="racine">
 		
 		';
-        $go = new genOrder($this->vtable,0,$this->id,$this->vfk1);
+        $go = new genOrder($this->vtable, 0, $this->id, $this->vfk1);
         $go->ReOrderRes($res);
 
         foreach ($res as $row) {
@@ -76,7 +98,7 @@ class fullArbo {
 
     function getSubs($id) {
 
-        $go = new genOrder($this->vtable,0,$id,$this->vfk2);
+        $go = new genOrder($this->vtable, 0, $id, $this->vfk2);
         $go->ReOrder();
 
         $sql = 'SELECT * FROM ' . $this->vtable . ' WHERE ' . $this->vfk2 . ' = ' . sql($id) . ' ORDER BY ' . $this->order;
@@ -87,7 +109,6 @@ class fullArbo {
             $this->getLine($row);
         }
         $this->html .= '</ul>';
-        
     }
 
     function getLine($row, $doli = true) {
