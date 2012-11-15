@@ -1,5 +1,27 @@
 <?php
 
+#
+# This file is part of oCMS.
+#
+# oCMS is free software: you cgan redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# oCMS is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with oCMS. If not, see <http://www.gnu.org/licenses/>.
+#
+# @author Celio Conort / Opixido 
+# @copyright opixido 2012
+# @link http://code.google.com/p/opixido-ocms/
+# @package ocms
+#
+
 class genUrlV2 {
 
     /**
@@ -537,7 +559,6 @@ class genUrlV2 {
                     //if ($this->action == 'editer') {
                     $parentRub = choose($r['fk_rubrique_version_id'], $r['rubrique_id']);
                     //$parentRub = $r['rubrique_id'];
-
                     //debug($parentRub);
 
                     $GLOBALS['tabUrl'][$r['rubrique_id']] = array(
@@ -565,7 +586,7 @@ class genUrlV2 {
                 }
 
                 if ($this->action == 'editer') {
-                    $r = getSingle('SELECT * FROM s_rubrique WHERE fk_rubrique_version_id = '.sql($parentRub));
+                    $r = getSingle('SELECT * FROM s_rubrique WHERE fk_rubrique_version_id = ' . sql($parentRub));
                     $parentRub = $r['rubrique_id'];
                 }
 
@@ -712,7 +733,7 @@ class genUrlV2 {
         }
 
         if (!array_key_exists($rubId, $GLOBALS['tabUrl'])) {
-            $this->reversRecursRub($rubId,$action=='editer'?false:true);
+            $this->reversRecursRub($rubId, $action == 'editer' ? false : true);
         }
 
 
@@ -842,7 +863,7 @@ class genUrlV2 {
      * @param unknown_type $rubId
      * @return unknown
      */
-    function reversRecursRub($rubId,$onlyOnline=true) {
+    function reversRecursRub($rubId, $onlyOnline = true) {
         global $_Gconfig;
 
         if (!$rubId)
@@ -857,7 +878,7 @@ class genUrlV2 {
 				   from s_rubrique as R1, s_rubrique as R2
 				   where R1.fk_rubrique_id = R2.rubrique_id				   
 				   and R1.rubrique_id = ' . sql($rubId);
-            if($onlyOnline) {
+            if ($onlyOnline) {
                 $sql .= '' . sqlRubriqueOnlyOnline('R1') . '';
             }
             $res = GetSingle($sql);

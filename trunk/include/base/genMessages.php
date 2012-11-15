@@ -17,7 +17,7 @@
 # along with oCMS. If not, see <http://www.gnu.org/licenses/>.
 #
 # @author Celio Conort / Opixido
-# @copyright opixido 2009
+# @copyright opixido 2012
 # @link http://code.google.com/p/opixido-ocms/
 # @package ocms
 #

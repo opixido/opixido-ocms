@@ -1,5 +1,27 @@
 <?php
 
+#
+# This file is part of oCMS.
+#
+# oCMS is free software: you cgan redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# oCMS is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with oCMS. If not, see <http://www.gnu.org/licenses/>.
+#
+# @author Celio Conort / Opixido 
+# @copyright opixido 2012
+# @link http://code.google.com/p/opixido-ocms/
+# @package ocms
+#
+
 class genSearchV2 {
 
     var $nbperpage = 20;
@@ -11,7 +33,7 @@ class genSearchV2 {
 
         $this->gs = &$gs_obj;
         $this->table = $table;
-        $this->lstart = empty($_REQUEST['page']) ? 0 : ($_REQUEST['page']-1)*$this->nbperpage;
+        $this->lstart = empty($_REQUEST['page']) ? 0 : ($_REQUEST['page'] - 1) * $this->nbperpage;
     }
 
     /**
@@ -48,7 +70,7 @@ class genSearchV2 {
 
         if (isset($_REQUEST['order']) && array_key_exists($_REQUEST['order'], getTabField($this->table))) {
             $sql .= 'T.' . $_REQUEST['order'] . ' ';
-            if (akev($_GET,'to') == 'asc') {
+            if (akev($_GET, 'to') == 'asc') {
                 $sql .= ' ASC , ';
             } else {
                 $sql .= ' DESC , ';
@@ -109,11 +131,11 @@ class genSearchV2 {
                 $_SESSION['LastSearchQuery'][$this->table] = $_REQUEST['searchTxt'];
 
                 $this->getSimpleSearchForm();
-                 if (!empty($searchField[$this->table])) {
+                if (!empty($searchField[$this->table])) {
                     $this->getFullSearchForm();
                 }
-                
-                $res=$this->doSimpleSearch();
+
+                $res = $this->doSimpleSearch();
             } //else if($_REQUEST['doFullSearch'] || true) {
             else {
 
@@ -130,16 +152,14 @@ class genSearchV2 {
                 }
 
                 $res = $this->doFullSearch();
-
-                
             }
 
-            
+
             if (!empty($searchField[$this->table])) {
                 p('</div>');
                 p('<div class="span9">');
             }
-            
+
             $this->printRes($res);
             p('</div></div>');
         }
@@ -156,12 +176,11 @@ class genSearchV2 {
 
         p('<div class="control-group"> <div class="controls"> <div class="input-append">');
 
-        echo ('<input  type="text" placeholder='.alt(ta('recherche_rapide')).' id="searchTxt" name="searchTxt" value="' . akev($_REQUEST, 'searchTxt') . '"/>');
+        echo ('<input  type="text" placeholder=' . alt(ta('recherche_rapide')) . ' id="searchTxt" name="searchTxt" value="' . akev($_REQUEST, 'searchTxt') . '"/>');
 
-        p('<button class="btn btn-mini"><img src="' . t('src_search') . '" alt='.alt(t('rechercher')).' /></button></div></div></div>');
+        p('<button class="btn btn-mini"><img src="' . t('src_search') . '" alt=' . alt(t('rechercher')) . ' /></button></div></div></div>');
 
         p('</form>');
-        
     }
 
     function getSelect() {
@@ -201,7 +220,7 @@ class genSearchV2 {
 
     function getFullSearchForm() {
 
-        global $searchField, $relations, $tablerel, $tabForms,$gs_obj;
+        global $searchField, $relations, $tablerel, $tabForms, $gs_obj;
 
         $table = $this->table;
         $fields = getTabField($table);
@@ -247,7 +266,7 @@ class genSearchV2 {
 
 
             if ($k != "pk") {
-                
+
                 p('<div>');
                 if (!empty($tablerel[$k])) {
 
@@ -266,11 +285,11 @@ class genSearchV2 {
                     $label = GetTitleFromTable($fk_table, " , ");
                     $thiskey = GetPrimaryKey($fk_table);
 
-                    if(!empty($gs_obj->myroles[$fk_table]['rows'])) {
+                    if (!empty($gs_obj->myroles[$fk_table]['rows'])) {
                         $sql = "SELECT * FROM " . $fk_table . " 
                             WHERE 1 " . GetOnlyEditableVersion($fk_table) . " 
-                                AND ".  getPrimaryKey($fk_table)."
-                                    IN (".implode(",",$gs_obj->myroles[$fk_table]['rows']).")
+                                AND " . getPrimaryKey($fk_table) . "
+                                    IN (" . implode(",", $gs_obj->myroles[$fk_table]['rows']) . ")
                                 ORDER BY " . $label;
                     } else {
                         $sql = "SELECT * FROM " . $fk_table . " WHERE 1 " . GetOnlyEditableVersion($fk_table) . "
@@ -301,7 +320,7 @@ class genSearchV2 {
                     $res = GetAll($sql);
 
                     p('<select class="selectM" id="' . $k . '"  name="' . $k . '[]" multiple="multiple" >');
-                    p('<option value="">'.ta($k).'</option>');
+                    p('<option value="">' . ta($k) . '</option>');
                     foreach ($res as $row) {
                         $sel = @in_array($row[$thiskey], $_POST[$k]) ? 'selected="selected"' : '';
                         p('<option ' . $sel . ' value="' . $row[$thiskey] . '">' . limit(GetTitleFromRow($tablenom, $row, " "), 30) . '</option>');
@@ -317,7 +336,7 @@ class genSearchV2 {
                         $sel1 = $vv == 1 ? 'selected="selected"' : '';
                         p('
                             <select name="' . $k . '">
-                                <option ' . $sel . ' value="">'.ta($k).'</option>
+                                <option ' . $sel . ' value="">' . ta($k) . '</option>
                                 <option ' . $sel0 . '  value="0">' . t('non') . '</option>
                                 <option ' . $sel1 . ' value="1">' . t('oui') . '</option>
                             </select>
@@ -336,7 +355,7 @@ class genSearchV2 {
                                 <option ' . $sel1 . ' value="eg">=</option>
                                 <option ' . $sel2 . ' value="sup">></option>
                             </select>
-                            <input type="text" name="' . $k . '" value=' . alt(akev($_REQUEST,$k)) . ' />
+                            <input type="text" name="' . $k . '" value=' . alt(akev($_REQUEST, $k)) . ' />
                         ');
                     } else if ($type == 'enum') {
                         p('<div><label class=""> ' . t($k) . '</label>');
@@ -351,7 +370,7 @@ class genSearchV2 {
                     } else {
                         p('<label class="hide-text"> ' . t($k) . '</label>');
 
-                        p('<input placeholder='.alt(ta($k)).'  type="text"
+                        p('<input placeholder=' . alt(ta($k)) . '  type="text"
                         			id="rech_' . $k . '" name="' . $k . '" 
                         			value="' . akev($_REQUEST, $k) . '" />');
 
@@ -372,7 +391,6 @@ class genSearchV2 {
 
                 $i++;
             }
-
         }
 
 
@@ -439,11 +457,11 @@ class genSearchV2 {
         ';
 
 
-        
+
         $pagi = new pagination($pageTot);
         $r .= $pagi->gen();
 
-     	$r .= '<div>';
+        $r .= '<div>';
 
 
         $r .= '<table border="0" class="table table-striped table-bordered table-condensed" >';
@@ -742,7 +760,7 @@ class genSearchV2 {
                         $r .= '<div class="btn btn-mini small_form_action">' . $ga->obj->getSmallForm() . '</div>';
                     } else {
 
-                        $r .= '<a class="btn btn-mini '.($action=='edit' ? 'btn-primary' : '').'" href="?genform_action%5B' . $action . '%5D=1&amp;curTable=' . $table . '&amp;curId=' . $id . '&amp;action=' . $action . '&amp;fromList=1" title="' . t($action) . '">
+                        $r .= '<a class="btn btn-mini ' . ($action == 'edit' ? 'btn-primary' : '') . '" href="?genform_action%5B' . $action . '%5D=1&amp;curTable=' . $table . '&amp;curId=' . $id . '&amp;action=' . $action . '&amp;fromList=1" title="' . t($action) . '">
 								<img src="' . $srcBtn . '" alt="' . t($action) . '" title="' . t($action) . '" />
 							   </a>';
                     }
@@ -752,13 +770,13 @@ class genSearchV2 {
             }
         }
 
-        $r = '<div style="width:'.(37*$nbActions).'px" class="btn-group">' . $r . '</div>';
+        $r = '<div style="width:' . (37 * $nbActions) . 'px" class="btn-group">' . $r . '</div>';
 
         return $r;
     }
 
     function getTableActions() {
-
+        
     }
 
     /**
@@ -768,7 +786,7 @@ class genSearchV2 {
      * @param string $clauseSql
      * @return array liste de résultats MySQL
      */
-    function doFullSearch($searchTxt = '', $clauseSql='', $onlyEditable=true) {
+    function doFullSearch($searchTxt = '', $clauseSql = '', $onlyEditable = true) {
 
         global $searchField, $relations, $tablerel, $_Gconfig, $tabForms;
 
@@ -836,7 +854,7 @@ class genSearchV2 {
             /**
              * Dans tous les cas on ajoute le sens de tri
              */
-            if (akev($_GET,'to') == 'asc') {
+            if (akev($_GET, 'to') == 'asc') {
 
                 $addToORDER .= ' ASC , ';
             } else {
@@ -1219,14 +1237,7 @@ class genSearchV2 {
         $res = DoSql($select . $sql);
 
         return $res;
-       
     }
 
-
-    
-
 }
-
-
-
 

@@ -1,5 +1,27 @@
 <?php
 
+#
+# This file is part of oCMS.
+#
+# oCMS is free software: you cgan redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# oCMS is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with oCMS. If not, see <http://www.gnu.org/licenses/>.
+#
+# @author Celio Conort / Opixido 
+# @copyright opixido 2012
+# @link http://code.google.com/p/opixido-ocms/
+# @package ocms
+#
+
 class ajaxRelinv {
 
     var $cur_table;
@@ -36,7 +58,7 @@ class ajaxRelinv {
     }
 
     function addOne() {
-
+        
     }
 
     function getValue() {
@@ -59,22 +81,22 @@ class ajaxRelinv {
         $html = '<div class="ajaxRelinv">';
 
         $ofield = $sort = '';
-        if(!empty($orderFields[$this->fk_table][0])) {
+        if (!empty($orderFields[$this->fk_table][0])) {
             $ofield = $orderFields[$this->fk_table][0];
             $sort = 'sortable';
         }
         $html .= '
 
-		<table width="590" rel="' . $this->fk_table . '__' . $ofield . '" class="'.$sort.' genform_table ajax_table table table-striped table-bordered table-condensed" id="ar_' . $this->cur_table . '-' . '' . $this->fake_name . '">';
+		<table width="590" rel="' . $this->fk_table . '__' . $ofield . '" class="' . $sort . ' genform_table ajax_table table table-striped table-bordered table-condensed" id="ar_' . $this->cur_table . '-' . '' . $this->fake_name . '">';
 
         global $restrictedMode;
         $restrictedMode = true;
         //$this->nbLines = count($liste);
         $colspan = '1';
         if (ake($this->fk_table, $orderFields)) {
-           $colspan = '2';
+            $colspan = '2';
         }
-        $html .= '<thead><tr><th colspan="'.$colspan.'"><a class="btn" href="" onclick="arAddValue(this,\'' . $this->cur_table . '\',\'' . $this->fake_name . '\',$(\'#curId\').val());$(this).closest(\'table\').tableDnDUpdate();return false;">
+        $html .= '<thead><tr><th colspan="' . $colspan . '"><a class="btn" href="" onclick="arAddValue(this,\'' . $this->cur_table . '\',\'' . $this->fake_name . '\',$(\'#curId\').val());$(this).closest(\'table\').tableDnDUpdate();return false;">
 		<img src="' . ADMIN_PICTOS_FOLDER . ADMIN_PICTOS_FORM_SIZE . '/actions/list-add.png" alt="" />' . t('nouveau') . '</a></th>';
 
         foreach ($fields as $v) {
@@ -102,7 +124,7 @@ class ajaxRelinv {
         /**
          * TR
          */
-        $html .= "\n" . '<tr id="ar_' . $idd . '" rel="'.$idd.'">';
+        $html .= "\n" . '<tr id="ar_' . $idd . '" rel="' . $idd . '">';
 
         /**
          * Cellule Delete

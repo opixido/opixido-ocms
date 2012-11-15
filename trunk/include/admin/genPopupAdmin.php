@@ -1,149 +1,152 @@
 <?php
 
+#
+# This file is part of oCMS.
+#
+# oCMS is free software: you cgan redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# oCMS is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with oCMS. If not, see <http://www.gnu.org/licenses/>.
+#
+# @author Celio Conort / Opixido 
+# @copyright opixido 2012
+# @link http://code.google.com/p/opixido-ocms/
+# @package ocms
+#
 
-/***********************
-  *
-  *   Popup d'administration via le front office
-  *
-  **********************/
-
-
-
+/* * *********************
+ *
+ *   Popup d'administration via le front office
+ *
+ * ******************** */
 
 class genPopupAdmin {
 
-
-    function genPopupAdmin($table,$id) {
+    function genPopupAdmin($table, $id) {
 
         $this->table = $table;
         $this->id = $id;
-        $this->admin = new GenAdmin($table,$id);
+        $this->admin = new GenAdmin($table, $id);
 
-	$this->table = $this->admin->table;
-	$this->id = $this->admin->id;
+        $this->table = $this->admin->table;
+        $this->id = $this->admin->id;
 
-        $this->field = strstr($_REQUEST['field'],"_-_") ? explode("_-_",$_REQUEST['field']) : $_REQUEST['field'];
-        if(!$this->field) {
-        	$this->field = $_SESSION['lastUsedField'];
+        $this->field = strstr($_REQUEST['field'], "_-_") ? explode("_-_", $_REQUEST['field']) : $_REQUEST['field'];
+        if (!$this->field) {
+            $this->field = $_SESSION['lastUsedField'];
         } else {
-        	$_SESSION['lastUsedField'] = $this->field;
+            $_SESSION['lastUsedField'] = $this->field;
         }
-
-
-
     }
 
-
     /*
-        Dispatcher des actions
-        */
+      Dispatcher des actions
+     */
+
     function gen() {
 
         global $rteFields;
-	//debug($_POST);
-	//debug($_SESSION['nbLevels']);
+        //debug($_POST);
+        //debug($_SESSION['nbLevels']);
 
 
 
-        if($_REQUEST['getUp'] || $_REQUEST['getDown']) {
+        if ($_REQUEST['getUp'] || $_REQUEST['getDown']) {
             $this->doOrder();
-        }
-
-        else if(false && in_array($this->field,$rteFields)) {
+        } else if (false && in_array($this->field, $rteFields)) {
             /* Champ RTE -> On inclue le RTE directement */
             $gl = new GenLocks();
-            $gl->setLock($this->table,$this->id,$this->field);
+            $gl->setLock($this->table, $this->id, $this->field);
 
             $this->doRte();
-        }
-        else
+        } else
 
 
         /* Suppression */
         /* && count($_SESSION['levels']) < 1 */
-        if((count($_POST) && ( $_POST['genform_cancel'] != '' ||  $_POST['genform_ok_close'] != '' || $_POST['genform_cancel_x'] != ''||  $_POST['genform_ok_close_x'] != '' )) && !array_key_exists('genform_stay',$_REQUEST) && $_SESSION['previousLevel'] == 0 ) {
+        if ((count($_POST) && ( $_POST['genform_cancel'] != '' || $_POST['genform_ok_close'] != '' || $_POST['genform_cancel_x'] != '' || $_POST['genform_ok_close_x'] != '' )) && !array_key_exists('genform_stay', $_REQUEST) && $_SESSION['previousLevel'] == 0) {
 
             $this->reload();
 
             die();
+        } else {
+            //debug($_SESSION['nbLevels']);
+            //debug($this->table);
 
-        }
-        else {
-        	//debug($_SESSION['nbLevels']);
-        	//debug($this->table);
+            $gl = new GenLocks();
+            $gl->setLock($this->table, $this->id, $this->field);
 
-             $gl = new GenLocks();
-             $gl->setLock($this->table,$this->id,$this->field);
-
-        	if($_SESSION['nbLevels'] > 0) {
-        		$this->doRealForm();
-        	} else {
-        		$this->doForm();
-        	}
+            if ($_SESSION['nbLevels'] > 0) {
+                $this->doRealForm();
+            } else {
+                $this->doForm();
+            }
 
 
 
-        	//debug($_SESSION['nbLevels']);
-        	//$this->admin->whichForm();
-
+            //debug($_SESSION['nbLevels']);
+            //$this->admin->whichForm();
         }
         $_SESSION['previousLevel'] = $_SESSION['nbLevels'];
         p('<script type="text/javascript"> window.focus(); </script>');
-
-
     }
 
+    function doRealForm() {
+        global $form, $gb_obj;
 
-	function doRealForm() {
-		global $form,$gb_obj;
+        $gb_obj->includeFile('inc.header.php', 'admin_html');
 
-		$gb_obj->includeFile( 'inc.header.php','admin_html');
-
-		p('<style type="text/css">body {margin:5px;} #bandeau {display:none}');
-		p('</style>');
+        p('<style type="text/css">body {margin:5px;} #bandeau {display:none}');
+        p('</style>');
 
 
-		$form = new GenForm($this->admin->table,'',$this->admin->id);
+        $form = new GenForm($this->admin->table, '', $this->admin->id);
 
-		$form->GenHeader();
-		$form->genHiddenItem('gfa',$_REQUEST['gfa']);
-		$form->genPages();
-		$form->GenFooter();
-		$gb_obj->includeFile( 'inc.footer.php','admin_html');
-
-	}
-
+        $form->GenHeader();
+        $form->genHiddenItem('gfa', $_REQUEST['gfa']);
+        $form->genPages();
+        $form->GenFooter();
+        $gb_obj->includeFile('inc.footer.php', 'admin_html');
+    }
 
     function doForm() {
-	global $form,$gb_obj;
+        global $form, $gb_obj;
 
-	//include('header.popup.php');
+        //include('header.popup.php');
 
-/*  p(' <link rel="stylesheet" type="text/css" href="css/style.css" />
-	<link rel="StyleSheet" href="genform/css/genform.css" />
-	<script language="JavaScript1.2" src="genform/js/tjmlib.js"></script>
-<script language="JavaScript1.2" src="js/script.js"></script>
-	');*/
+        /*  p(' <link rel="stylesheet" type="text/css" href="css/style.css" />
+          <link rel="StyleSheet" href="genform/css/genform.css" />
+          <script language="JavaScript1.2" src="genform/js/tjmlib.js"></script>
+          <script language="JavaScript1.2" src="js/script.js"></script>
+          '); */
 
-	if($_POST['cancel']) {
-			echo '<script type="text/javascript">top.location = top.location</script>';
-			die();
-	}
+        if ($_POST['cancel']) {
+            echo '<script type="text/javascript">top.location = top.location</script>';
+            die();
+        }
 
-	$gb_obj->includeFile( 'inc.header.php','admin_html');
+        $gb_obj->includeFile('inc.header.php', 'admin_html');
 
         $gl = new GenLocks();
 
-        $gl->setLock($this->admin->table,$this->admin->id);
+        $gl->setLock($this->admin->table, $this->admin->id);
 
 
-	$form = new GenForm($this->admin->table,'',$this->admin->id);
+        $form = new GenForm($this->admin->table, '', $this->admin->id);
 
-	$field = $this->field;
+        $field = $this->field;
 
-	p('<style type="text/css">body {margin:0px;} #bandeau {display:none}');
-	if($field != 'all') {
-		p('
+        p('<style type="text/css">body {margin:0px;} #bandeau {display:none}');
+        if ($field != 'all') {
+            p('
 		.genform_onglet {display:none;} 
 		#genform_navi , .helpimg{
 			display:none;
@@ -177,7 +180,7 @@ class genPopupAdmin {
 			background:0;
 		}
 		
-		#genform_div_'.$field.' {
+		#genform_div_' . $field . ' {
 			
 			left:2px;
 			top:0px;
@@ -220,58 +223,55 @@ class genPopupAdmin {
 			filter:alpha(opacity=30);
 		}
 		');
-	}
-	p('</style>');
+        }
+        p('</style>');
 
-	$form->GenHeader();
-	if(is_array($field))
-		$form->genHiddenItem('field[]',implode(',',$field));
-	else
-		$form->genHiddenItem('field',$field);
+        $form->GenHeader();
+        if (is_array($field))
+            $form->genHiddenItem('field[]', implode(',', $field));
+        else
+            $form->genHiddenItem('field', $field);
 
-	if(is_array($field)) {
-		foreach($field as $f) {
-			$form->gen($f);
-		}
-	}else if($field == 'all') {
+        if (is_array($field)) {
+            foreach ($field as $f) {
+                $form->gen($f);
+            }
+        } else if ($field == 'all') {
 
-		$form->genPages();
+            $form->genPages();
+        } else {
+            if (isBaseLgField($field, $this->table)) {
+                $form->genlg($field);
+            } else {
+                $form->gen($field);
+            }
+        }
 
-	} else {
-		if(isBaseLgField($field,$this->table)) {
-			 $form->genlg($field);
-		} else {
-			$form->gen($field);
-		}
-	}
+        if ($_REQUEST['genhidden']) {
 
-	if($_REQUEST['genhidden']) {
+            $form->tab_default_field[$_REQUEST['genhidden']] = $_REQUEST[$_REQUEST['genhidden']];
 
-		$form->tab_default_field[$_REQUEST['genhidden']]=$_REQUEST[$_REQUEST['genhidden']];
+            $form->genHiddenField($_REQUEST['genhidden']);
+        }
 
-		$form->genHiddenField($_REQUEST['genhidden']);
-	}
-	
-	echo '
+        echo '
 	<div id="small_submit">
 	<input type="image" name="save" src="./pictos/document-save.png" />
-	<input type="image" name="cancel" src="'.BU.'/admin/pictos/process-stop.png" />
+	<input type="image" name="cancel" src="' . BU . '/admin/pictos/process-stop.png" />
 	</div>
 	';
-	
-	
-	$form->GenFooter();
 
 
-	$gb_obj->includeFile( 'inc.footer.php','admin_html');
+        $form->GenFooter();
 
+
+        $gb_obj->includeFile('inc.footer.php', 'admin_html');
     }
 
-
     function reload() {
-    	global $genMessages;
+        global $genMessages;
 
-    	$genMessages->gen();
+        $genMessages->gen();
 
         $gl = new GenLocks();
 
@@ -281,11 +281,11 @@ class genPopupAdmin {
     }
 
     function doRte() {
-    	global $gb_obj;
+        global $gb_obj;
         /* Affichage du Wysiwyg */
-       // p('<html><body style="padding:0;margin:0">');
-       $gb_obj->includeFile( 'inc.header.php','admin_html');
-       p('<style type="text/css">#bandeau {display:none}</style>');
+        // p('<html><body style="padding:0;margin:0">');
+        $gb_obj->includeFile('inc.header.php', 'admin_html');
+        p('<style type="text/css">#bandeau {display:none}</style>');
         $_REQUEST['table'] = $this->table;
         $_REQUEST['id'] = $this->id;
         $_REQUEST['champ'] = $this->field;
@@ -296,9 +296,9 @@ class genPopupAdmin {
         $rte = new genRte();
         $rte->createRte();
 
-		//p('</body></html>');
-		$gb_obj->includeFile( 'inc.footer.php','admin_html');
-        if(count($_POST) ) {
+        //p('</body></html>');
+        $gb_obj->includeFile('inc.footer.php', 'admin_html');
+        if (count($_POST)) {
             $this->reload();
         }
 
@@ -309,24 +309,21 @@ class genPopupAdmin {
 
     function doOrder() {
 
-            $ord = new GenOrder($this->table,$this->id);
-            if($_REQUEST['getUp'])
-                $ord->GetUp();
-            else if($_REQUEST['getDown'])
-                $ord->GetDown();
+        $ord = new GenOrder($this->table, $this->id);
+        if ($_REQUEST['getUp'])
+            $ord->GetUp();
+        else if ($_REQUEST['getDown'])
+            $ord->GetDown();
 
-            $ord->ReOrder();
+        $ord->ReOrder();
 
 
-            debug($ord);
-            $this->reload();
+        debug($ord);
+        $this->reload();
 
-            die();
+        die();
     }
 
-
-
 }
-
 
 ?>

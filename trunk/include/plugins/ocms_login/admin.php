@@ -1,14 +1,35 @@
 <?php
 
+#
+# This file is part of oCMS.
+#
+# oCMS is free software: you cgan redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# oCMS is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with oCMS. If not, see <http://www.gnu.org/licenses/>.
+#
+# @author Celio Conort / Opixido 
+# @copyright opixido 2012
+# @link http://code.google.com/p/opixido-ocms/
+# @package ocms
+#
 global $tabForms;
 
 foreach ($tabForms as $table => $vals) {
     $t = getTabField($table);
-    if(!empty($t['privee'])) {
-	if (!empty($tabForms[$table]['pages']) && !is_array($tabForms[$table]['pages'])) {
-	    $tabForms[$table]['pages'] = array($tabForms[$table]['pages']);
-	}
-	$tabForms[$table]['pages']['ocms_login'] = '../plugins/ocms_login/form.ocms_login.php';
+    if (!empty($t['privee'])) {
+        if (!empty($tabForms[$table]['pages']) && !is_array($tabForms[$table]['pages'])) {
+            $tabForms[$table]['pages'] = array($tabForms[$table]['pages']);
+        }
+        $tabForms[$table]['pages']['ocms_login'] = '../plugins/ocms_login/form.ocms_login.php';
     }
 }
 
@@ -25,117 +46,117 @@ function laSaveFormRub($id) {
     $sql = 'SELECT * FROM e_groupe_contenu WHERE fk_id = ' . sql($id) . ' AND fk_table = "s_rubrique"';
     $res = GetAll($sql);
     foreach ($res as $row) {
-	DoSql('REPLACE INTO e_groupe_contenu SET fk_groupe_id = ' . sql($row['fk_groupe_id']) . ' , fk_table = "s_rubrique", fk_id = ' . sql($r['rubrique_id']));
+        DoSql('REPLACE INTO e_groupe_contenu SET fk_groupe_id = ' . sql($row['fk_groupe_id']) . ' , fk_table = "s_rubrique", fk_id = ' . sql($r['rubrique_id']));
     }
 
     $sql = 'SELECT * FROM e_utilisateur_contenu WHERE fk_id = ' . sql($id) . ' AND fk_table = "s_rubrique"';
     $res = GetAll($sql);
     foreach ($res as $row) {
-	DoSql('REPLACE INTO e_utilisateur_contenu SET fk_utilisateur_id = ' . sql($row['fk_utilisateur_id']) . ' , fk_table = "s_rubrique", fk_id = ' . sql($r['rubrique_id']));
+        DoSql('REPLACE INTO e_utilisateur_contenu SET fk_utilisateur_id = ' . sql($row['fk_utilisateur_id']) . ' , fk_table = "s_rubrique", fk_id = ' . sql($r['rubrique_id']));
     }
 }
 
 class ocms_loginAdmin {
 
     function __construct() {
-	$xhr = akev($_REQUEST, 'xhr');
-	if ($xhr == 'laSearchUser') {
+        $xhr = akev($_REQUEST, 'xhr');
+        if ($xhr == 'laSearchUser') {
 
 
-	    $sql = 'SELECT * FROM e_utilisateur_contenu WHERE 
+            $sql = 'SELECT * FROM e_utilisateur_contenu WHERE 
 						fk_id = ' . sql($_GET['id']) . ' 
 						AND fk_table = ' . sql($_GET['table']);
-	    $res = GetAll($sql);
-	    $users = array();
-	    foreach ($res as $row) {
-		$users[] = $row['fk_utilisateur_id'];
-	    }
+            $res = GetAll($sql);
+            $users = array();
+            foreach ($res as $row) {
+                $users[] = $row['fk_utilisateur_id'];
+            }
 
-	    if ($_REQUEST['laSearchText'] != "") {
+            if ($_REQUEST['laSearchText'] != "") {
 
-		$sql = 'SELECT * FROM e_utilisateur WHERE utilisateur_nom 
+                $sql = 'SELECT * FROM e_utilisateur WHERE utilisateur_nom 
 							LIKE "%' . $_REQUEST['laSearchText'] . '%" OR 
 							utilisateur_prenom LIKE "%' . $_REQUEST['laSearchText'] . '%"';
 
-		$res = GetAll($sql);
+                $res = GetAll($sql);
 
-		foreach ($res as $row) {
+                foreach ($res as $row) {
 
-		    echo '<li 
+                    echo '<li 
 							' . (!in_array($row['utilisateur_id'], $users) ?
-			    'onclick="laAddUser(' . $row['utilisateur_id'] . ',this)" >
+                            'onclick="laAddUser(' . $row['utilisateur_id'] . ',this)" >
 								<img src="./pictos/go-last.png" alt="Ajouter" />
 								' : '><img src="./pictos/media-playback-stop.png" alt="Delete" />') . ' 
 								 ' . $row['utilisateur_nom'] . ' ' . $row['utilisateur_prenom'] .
-		    '</li>';
-		}
+                    '</li>';
+                }
 
 
-		if (!count($res)) {
-		    echo '<li>Aucun résultat</li>';
-		}
-	    } else {
+                if (!count($res)) {
+                    echo '<li>Aucun résultat</li>';
+                }
+            } else {
 
-		echo '<li>Saisissez un texte ci-dessus pour rechercher un utilisateur</li>';
-	    }
+                echo '<li>Saisissez un texte ci-dessus pour rechercher un utilisateur</li>';
+            }
 
-	    die();
-	} else if ($xhr == 'laAddUser') {
+            die();
+        } else if ($xhr == 'laAddUser') {
 
-	    if ($_REQUEST['laUserId']) {
+            if ($_REQUEST['laUserId']) {
 
-		$sql = 'REPLACE INTO e_utilisateur_contenu SET 
+                $sql = 'REPLACE INTO e_utilisateur_contenu SET 
 							fk_table = ' . sql($_REQUEST['table']) . ' , 
 							fk_id = ' . sql($_REQUEST['id']) . ' , 
 							fk_utilisateur_id = ' . sql($_REQUEST['laUserId']) . ' ';
-		DoSql($sql);
+                DoSql($sql);
 
-		echo laGetSelectedUsers($_REQUEST['table'], $_REQUEST['id']);
-		die();
-	    }
-	} else if ($xhr == 'laDelUser') {
+                echo laGetSelectedUsers($_REQUEST['table'], $_REQUEST['id']);
+                die();
+            }
+        } else if ($xhr == 'laDelUser') {
 
-	    if ($_REQUEST['laUserId']) {
+            if ($_REQUEST['laUserId']) {
 
-		$sql = 'DELETE FROM e_utilisateur_contenu WHERE 
+                $sql = 'DELETE FROM e_utilisateur_contenu WHERE 
 							fk_table = ' . sql($_REQUEST['table']) . ' AND
 							fk_id = ' . sql($_REQUEST['id']) . ' AND
 							fk_utilisateur_id = ' . sql($_REQUEST['laUserId']) . ' ';
-		DoSql($sql);
+                DoSql($sql);
 
 
-		echo laGetSelectedUsers($_REQUEST['table'], $_REQUEST['id']);
-		die();
-	    }
-	}
+                echo laGetSelectedUsers($_REQUEST['table'], $_REQUEST['id']);
+                die();
+            }
+        }
     }
 
     public static function ocms_getParams() {
 
-	global $form;
+        global $form;
 
-	if (akev($form->tab_default_field, 'privee') < 1) {
-	    return array();
-	}
+        if (akev($form->tab_default_field, 'privee') < 1) {
+            return array();
+        }
 
-	$params = array();
+        $params = array();
 
-	$params['canCreate'] = array('select', array(1 => 'yes', 0 => 'no'));
-	$sql = 'SELECT groupe_type FROM e_groupe';
+        $params['canCreate'] = array('select', array(1 => 'yes', 0 => 'no'));
+        $sql = 'SELECT groupe_type FROM e_groupe';
 
-	$res = GetAll($sql);
+        $res = GetAll($sql);
 
-	$tab = array();
-	foreach ($res as $row) {
-	    $tab[] = $row['groupe_type'];
-	}
+        $tab = array();
+        foreach ($res as $row) {
+            $tab[] = $row['groupe_type'];
+        }
 
-	$params['createGroup'] = array('select', $tab);
-	$params['createType'] = array('text', 'simple');
-	$params['validation'] = array('select', array('none', 'email', 'admin', 'both'));
-	$params['condition'] = array('textarea');
+        $params['createGroup'] = array('select', $tab);
+        $params['createType'] = array('text', 'simple');
+        $params['validation'] = array('select', array('none', 'email', 'admin', 'both'));
+        $params['condition'] = array('textarea');
 
-	return $params;
+        return $params;
     }
 
 }
@@ -160,7 +181,7 @@ function laGetResume($table, $id) {
 			AND R.fk_groupe_id = groupe_id';
     $res = GetAll($sql);
     foreach ($res as $row) {
-	$html .= $row['groupe_nom'] . ' - ';
+        $html .= $row['groupe_nom'] . ' - ';
     }
 
     $html .= '</div>
@@ -189,7 +210,7 @@ function laGetResume($table, $id) {
 				<div class="genform_champ">';
 
     foreach ($res as $row) {
-	$html .= $row['utilisateur_nom'] . ' ' . $row['utilisateur_prenom'] . ' - ';
+        $html .= $row['utilisateur_nom'] . ' ' . $row['utilisateur_prenom'] . ' - ';
     }
 
     $html .= '</div>
@@ -223,7 +244,7 @@ function laGetUserResume($table, $id) {
 			AND R.fk_groupe_id = groupe_id';
     $res = GetAll($sql);
     foreach ($res as $row) {
-	$html .= $row['groupe_nom'] . ' - ';
+        $html .= $row['groupe_nom'] . ' - ';
     }
 
     $html .= '</div>
@@ -238,7 +259,7 @@ function laGetUserResume($table, $id) {
     return $html;
 }
 
-function laGetArboGroupes($fk_id = 0, $checked=array(), $level=1) {
+function laGetArboGroupes($fk_id = 0, $checked = array(), $level = 1) {
 
     $sql = 'SELECT * FROM e_groupe WHERE fk_groupe_id = ' . sql($fk_id);
     $res = GetAll($sql);
@@ -246,10 +267,10 @@ function laGetArboGroupes($fk_id = 0, $checked=array(), $level=1) {
     $html = '';
     foreach ($res as $row) {
 
-	$html .= str_repeat('&nbsp;', $level * 5) . '
+        $html .= str_repeat('&nbsp;', $level * 5) . '
 					<input ' . (@in_array($row['groupe_id'], $checked) ? 'checked="checked"' : '') . ' type="checkbox" name="laGroupes[]" value="' . $row['groupe_id'] . '" /> <label for="" >' . $row['groupe_nom'] . '</label> <br/>';
 
-	$html .= laGetArboGroupes($row['groupe_id'], $checked, $level + 1);
+        $html .= laGetArboGroupes($row['groupe_id'], $checked, $level + 1);
     }
 
 
@@ -370,11 +391,11 @@ function laGetSelectedUsers($table, $id) {
     $res = GetAll($sql);
     foreach ($res as $row) {
 
-	$html .= '<li onclick="laDelUser(' . $row['utilisateur_id'] . ',this)"><img src="./pictos/edit-delete.png" alt="Supprimer"/> ' . $row['utilisateur_nom'] . ' ' . $row['utilisateur_prenom'] . '</li>';
+        $html .= '<li onclick="laDelUser(' . $row['utilisateur_id'] . ',this)"><img src="./pictos/edit-delete.png" alt="Supprimer"/> ' . $row['utilisateur_nom'] . ' ' . $row['utilisateur_prenom'] . '</li>';
     }
 
     if (!count($res)) {
-	$html .= '<li>Aucun utilisateur associé</li>';
+        $html .= '<li>Aucun utilisateur associé</li>';
     }
 
     return $html;
@@ -385,37 +406,37 @@ function laSaveForm($id, $row, $gr, $table) {
 
     if ($table == 'e_utilisateur') {
 
-	DoSql('DELETE FROM e_utilisateur_groupe WHERE fk_utilisateur_id = ' . sql($id) . '');
+        DoSql('DELETE FROM e_utilisateur_groupe WHERE fk_utilisateur_id = ' . sql($id) . '');
 
-	if (is_array($_POST['laGroupes'])) {
-	    foreach ($_POST['laGroupes'] as $k => $v) {
-		DoSql('REPLACE INTO e_utilisateur_groupe 
+        if (is_array($_POST['laGroupes'])) {
+            foreach ($_POST['laGroupes'] as $k => $v) {
+                DoSql('REPLACE INTO e_utilisateur_groupe 
 						SET fk_utilisateur_id = ' . sql($id) . ' ,  fk_groupe_id = ' . sql($v) . '');
-	    }
-	}
+            }
+        }
     } else {
-	//DoSql('DELETE FROM e_utilisateur_contenu WHERE fk_table = '.sql($table).' AND fk_id = '.sql($id));
-	DoSql('DELETE FROM e_groupe_contenu WHERE fk_table = ' . sql($table) . ' AND fk_id = ' . sql($id));
+        //DoSql('DELETE FROM e_utilisateur_contenu WHERE fk_table = '.sql($table).' AND fk_id = '.sql($id));
+        DoSql('DELETE FROM e_groupe_contenu WHERE fk_table = ' . sql($table) . ' AND fk_id = ' . sql($id));
 
 
 
 
-	if (!empty($_POST['laGroupes']) && is_array($_POST['laGroupes'])) {
-	    foreach ($_POST['laGroupes'] as $k => $v) {
-		DoSql('REPLACE INTO e_groupe_contenu 
+        if (!empty($_POST['laGroupes']) && is_array($_POST['laGroupes'])) {
+            foreach ($_POST['laGroupes'] as $k => $v) {
+                DoSql('REPLACE INTO e_groupe_contenu 
 						SET fk_table = ' . sql($table) . ' , fk_id = ' . sql($id) . ' ,  fk_groupe_id = ' . sql($v) . '');
-	    }
-	}
+            }
+        }
 
 
-	/* if(is_array($_POST['laUsers'])) {
-	  foreach($_POST['laUsers'] as $k=>$v) {
-	  DoSql('REPLACE INTO e_utilisateur_contenu
-	  SET fk_table = '.sql($table).' ,
-	  fk_id = '.sql($id).' ,
-	  fk_utilisateur_id = '.sql($v).'');
-	  }
-	  } */
+        /* if(is_array($_POST['laUsers'])) {
+          foreach($_POST['laUsers'] as $k=>$v) {
+          DoSql('REPLACE INTO e_utilisateur_contenu
+          SET fk_table = '.sql($table).' ,
+          fk_id = '.sql($id).' ,
+          fk_utilisateur_id = '.sql($v).'');
+          }
+          } */
     }
 }
 
@@ -426,7 +447,7 @@ function laGetUserForm($table, $id) {
     $res = GetAll($sql);
     $groupes = array();
     foreach ($res as $row) {
-	$groupes[] = $row['fk_groupe_id'];
+        $groupes[] = $row['fk_groupe_id'];
     }
 
 
@@ -457,7 +478,7 @@ function laGetForm($table, $id) {
     $html = '';
     $groupes = array();
     foreach ($res as $row) {
-	$groupes[] = $row['fk_groupe_id'];
+        $groupes[] = $row['fk_groupe_id'];
     }
 
     $html .= '

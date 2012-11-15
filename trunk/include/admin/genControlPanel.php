@@ -28,11 +28,11 @@ class genControlPanel {
 
 
         $strAction = $this->GlobalAction();
-        if(!empty($_REQUEST['userAction'])) {
+        if (!empty($_REQUEST['userAction'])) {
             $this->userAction();
         }
 
-        if (!isset($_REQUEST['globalAction'])&& !isset($_REQUEST['userAction'])) {
+        if (!isset($_REQUEST['globalAction']) && !isset($_REQUEST['userAction'])) {
 
 
             $this->tpl_cp = new genTemplate();
@@ -61,33 +61,30 @@ class genControlPanel {
             $this->tpl_cp = $this->tpl_cp;
 
             return $this->tpl_cp->gen();
-            
         }
     }
 
+    public function getLastActions() {
 
-    public function getLastActions() {        
-
-        $sql = 'SELECT * FROM s_log_action WHERE fk_admin_id = '.sql($GLOBALS['gs_obj']->adminid).'
+        $sql = 'SELECT * FROM s_log_action WHERE fk_admin_id = ' . sql($GLOBALS['gs_obj']->adminid) . '
                     AND log_action_action = "update" 
                     GROUP BY CONCAT(log_action_table,log_action_fk_id)
                     ORDER BY log_action_time DESC LIMIT 0, 10';
         $res = DoSql($sql);
 
-        
 
-        $h = '<ul class="nav nav-list"><li class="nav-header">'.ta('lastActions').'</li>';
-        if($res->NumRows() == 0) {
-            $h .= '<li><span class="badge">'.ta('lastActions_none').'</span></li>';
+
+        $h = '<ul class="nav nav-list"><li class="nav-header">' . ta('lastActions') . '</li>';
+        if ($res->NumRows() == 0) {
+            $h .= '<li><span class="badge">' . ta('lastActions_none') . '</span></li>';
         } else {
-            foreach($res as $row) {
-                $h .= '<li><a href="?curTable='.$row['log_action_table'].'&curId='.$row['log_action_fk_id'].'">
-                        <img src="'.  getPicto($row['log_action_table'],'16x16').'" alt="" />  '.  limit(strip_tags(getTitleFromRow($row['log_action_table'], getRowFromId($row['log_action_table'], $row['log_action_fk_id'])))).'</a></li>';
+            foreach ($res as $row) {
+                $h .= '<li><a href="?curTable=' . $row['log_action_table'] . '&curId=' . $row['log_action_fk_id'] . '">
+                        <img src="' . getPicto($row['log_action_table'], '16x16') . '" alt="" />  ' . limit(strip_tags(getTitleFromRow($row['log_action_table'], getRowFromId($row['log_action_table'], $row['log_action_fk_id'])))) . '</a></li>';
             }
         }
         $h .= '</ul>';
         return $h;
-
     }
 
     function globalAction() {
@@ -100,7 +97,7 @@ class genControlPanel {
             p('<a class="btn" href="?">&laquo; ' . t('retour') . '</a>');
             p('<h3>' . t($action) . '</h3>');
             p('<div class="well" >');
-            
+
             $action();
             p('</div>');
         }
@@ -113,7 +110,7 @@ class genControlPanel {
         global $_Gconfig, $gs_obj;
         $action = akev($_REQUEST, 'userAction');
         //ob_start();
-        if ( $gs_obj->can('edit',$action)) {
+        if ($gs_obj->can('edit', $action)) {
 
             p('<h3><a href="?">&laquo; ' . t('retour') . '</a></h3><div class="info" >');
             p('<h3>' . t($action) . '</h3>');
@@ -133,10 +130,10 @@ class genControlPanel {
         foreach ($_Gconfig['globalActions'] as $action) {
             if ($gs_obj->can($action)) {
                 $i = '';
-                if(tradExists('picto_'.$action)) {
-                    $i = '<i class="icon-'.t('picto_'.$action).'"></i>';
+                if (tradExists('picto_' . $action)) {
+                    $i = '<i class="icon-' . t('picto_' . $action) . '"></i>';
                 }
-                $html .= '<li><a  href="?globalAction=' . $action . '">'.$i.'' . t($action) . '</a></li>';
+                $html .= '<li><a  href="?globalAction=' . $action . '">' . $i . '' . t($action) . '</a></li>';
             }
         }
         $html .= '</ul>';

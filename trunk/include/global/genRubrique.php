@@ -30,6 +30,7 @@ class genRubrique {
      * @var gensite
      */
     private $site;
+
     /**
      * identifiant en cours
      *
@@ -50,12 +51,14 @@ class genRubrique {
     public $fk_rubrique_version_id = 0;
     public $params = array();
     public $bddClasse = '';
+
     /**
      * Liste des objets plugins
      *
      * @var array
      */
     var $plugins = array();
+
     /**
      * $row du gabarit
      *
@@ -84,101 +87,101 @@ class genRubrique {
      */
     function __construct(genSite $site) {
 
-	global $gb_obj, $co;
+        global $gb_obj, $co;
 
-	$this->site = &$site;
-	$this->doGenMain = true;
-	$this->html_after_paras = '';
-	$this->showParagraphes = true;
-	$this->showBoxLexique = false;
-	$this->showBoxDwl = true;
-	$this->showBoxLinks = true;
-	$this->hasBddInfo = false;
+        $this->site = &$site;
+        $this->doGenMain = true;
+        $this->html_after_paras = '';
+        $this->showParagraphes = true;
+        $this->showBoxLexique = false;
+        $this->showBoxDwl = true;
+        $this->showBoxLinks = true;
+        $this->hasBddInfo = false;
 
-	$this->contextBoxes = array();
+        $this->contextBoxes = array();
 
-	/* Recuperation de l'ID */
-	$this->rubrique_id = $this->site->getCurId();
+        /* Recuperation de l'ID */
+        $this->rubrique_id = $this->site->getCurId();
 
-	/* Et de son contenu */
-	$this->rubrique = GetRowFromId('s_rubrique', $this->rubrique_id);
+        /* Et de son contenu */
+        $this->rubrique = GetRowFromId('s_rubrique', $this->rubrique_id);
 
-	$this->fk_rubrique_version_id = $this->rubrique['fk_rubrique_version_id'];
+        $this->fk_rubrique_version_id = $this->rubrique['fk_rubrique_version_id'];
 
-	$_REQUEST['para'] = ake($_REQUEST, 'para') ? $_REQUEST['para'] : '';
+        $_REQUEST['para'] = ake($_REQUEST, 'para') ? $_REQUEST['para'] : '';
 
-	/* Si elle a un gabarit (plutot conseille pour afficher quelque chose */
-	if ($this->rubrique['fk_gabarit_id'] > 0) {
-	    $this->gabarit = GetRowFromId('s_gabarit', $this->rubrique['fk_gabarit_id'], 1);
-	}
+        /* Si elle a un gabarit (plutot conseille pour afficher quelque chose */
+        if ($this->rubrique['fk_gabarit_id'] > 0) {
+            $this->gabarit = GetRowFromId('s_gabarit', $this->rubrique['fk_gabarit_id'], 1);
+        }
 
-	if (strlen(trim($this->gabarit['gabarit_classe']))) {
-	    $this->hasBddInfo = true;
-	} else if (GABARIT_DEF) {
-	    $this->gabarit = GetRowFromId('s_gabarit', GABARIT_DEF, 1);
-	    $this->rubrique['fk_gabarit_id'] = $this->gabarit['gabarit_id'];
-	    $this->hasBddInfo = true;
-	}
+        if (strlen(trim($this->gabarit['gabarit_classe']))) {
+            $this->hasBddInfo = true;
+        } else if (GABARIT_DEF) {
+            $this->gabarit = GetRowFromId('s_gabarit', GABARIT_DEF, 1);
+            $this->rubrique['fk_gabarit_id'] = $this->gabarit['gabarit_id'];
+            $this->hasBddInfo = true;
+        }
 
-	$this->params = SplitParams($this->rubrique['rubrique_gabarit_param']);
-
-
-
-
-
-
-	/* Definition des Headers de la page relatifs a cette rubrique */
-
-	$this->road = $this->site->g_url->buildRoad($this->rubrique_id);
-
-	$title = $this->getFullTitle();
-
-
-	$this->site->g_headers->setTitle($title);
-
-	$this->site->g_headers->setMetaKeywords($this->site->GetLgValue('rubrique_keywords', $this->rubrique, false));
-
-	$this->site->g_headers->setMetaDescription($this->site->GetLgValue('rubrique_desc', $this->rubrique, false));
-
-	$this->date_publi = strtotime($this->rubrique['rubrique_date_publi']);
+        $this->params = SplitParams($this->rubrique['rubrique_gabarit_param']);
 
 
 
 
 
-	/*
-	 * ***************
-	  Cache ou pas ?
-	 */
-	$this->cache_id = 'rub_' . $this->rubrique_id . '.' . $_REQUEST['para'] . '_' . $this->fk_rubrique_version_id . '_main';
-	$this->cache = new genCache($this->cache_id, $this->date_publi);
 
-	/* Les paragraphes */
-	if ($this->hasBddInfo) {
+        /* Definition des Headers de la page relatifs a cette rubrique */
 
-	    $this->use_cache = false;
-	    $this->use_cache_contexte = false;
-	    $this->getParagraphes();
+        $this->road = $this->site->g_url->buildRoad($this->rubrique_id);
 
-	    //	$this->getSubRubs();
-	} else {
+        $title = $this->getFullTitle();
 
 
-	    $this->cache_id_contexte = 'rub_' . $this->rubrique_id . '_' . $this->fk_rubrique_version_id . '_contexte';
+        $this->site->g_headers->setTitle($title);
 
-	    $this->cache_contexte = new genCache($this->cache_id_contexte, $this->date_publi);
+        $this->site->g_headers->setMetaKeywords($this->site->GetLgValue('rubrique_keywords', $this->rubrique, false));
 
-	    $this->use_cache = true;
-	    $this->use_cache_contexte = true;
+        $this->site->g_headers->setMetaDescription($this->site->GetLgValue('rubrique_desc', $this->rubrique, false));
 
-	    if (!$this->cache->cacheExists()) {
-		$this->use_cache = false;
-		$this->getParagraphes();
-	    }
-	    if (!$this->cache_contexte->cacheExists()) {
-		$this->use_cache_contexte = false;
-	    }
-	}
+        $this->date_publi = strtotime($this->rubrique['rubrique_date_publi']);
+
+
+
+
+
+        /*
+         * ***************
+          Cache ou pas ?
+         */
+        $this->cache_id = 'rub_' . $this->rubrique_id . '.' . $_REQUEST['para'] . '_' . $this->fk_rubrique_version_id . '_main';
+        $this->cache = new genCache($this->cache_id, $this->date_publi);
+
+        /* Les paragraphes */
+        if ($this->hasBddInfo) {
+
+            $this->use_cache = false;
+            $this->use_cache_contexte = false;
+            $this->getParagraphes();
+
+            //	$this->getSubRubs();
+        } else {
+
+
+            $this->cache_id_contexte = 'rub_' . $this->rubrique_id . '_' . $this->fk_rubrique_version_id . '_contexte';
+
+            $this->cache_contexte = new genCache($this->cache_id_contexte, $this->date_publi);
+
+            $this->use_cache = true;
+            $this->use_cache_contexte = true;
+
+            if (!$this->cache->cacheExists()) {
+                $this->use_cache = false;
+                $this->getParagraphes();
+            }
+            if (!$this->cache_contexte->cacheExists()) {
+                $this->use_cache_contexte = false;
+            }
+        }
     }
 
     /**
@@ -186,26 +189,26 @@ class genRubrique {
      */
     function loadPlugins() {
 
-	$p = GetPlugins();
+        $p = GetPlugins();
 
-	$t = getmicrotime();
+        $t = getmicrotime();
 
-	$GLOBALS['times']['Plugins'] = 0;
+        $GLOBALS['times']['Plugins'] = 0;
 
 
-	foreach ($p as $v) {
-	    $GLOBALS['gb_obj']->includeFile('front.php', PLUGINS_FOLDER . '' . $v . '/');
-	}
+        foreach ($p as $v) {
+            $GLOBALS['gb_obj']->includeFile('front.php', PLUGINS_FOLDER . '' . $v . '/');
+        }
 
-	foreach ($p as $v) {
-	    $adminClassName = $v . 'Front';
-	    if (class_exists($adminClassName)) {
-		$this->plugins[$v] = new $adminClassName($this->site);
-	    }
-	}
-	$GLOBALS['times']['LoadingPlugins'] = getmicrotime() - $t;
-	$GLOBALS['times']['Plugins'] += $GLOBALS['times']['LoadingPlugins'];
-	reset($p);
+        foreach ($p as $v) {
+            $adminClassName = $v . 'Front';
+            if (class_exists($adminClassName)) {
+                $this->plugins[$v] = new $adminClassName($this->site);
+            }
+        }
+        $GLOBALS['times']['LoadingPlugins'] = getmicrotime() - $t;
+        $GLOBALS['times']['Plugins'] += $GLOBALS['times']['LoadingPlugins'];
+        reset($p);
     }
 
     /**
@@ -215,7 +218,7 @@ class genRubrique {
      * @return : true si le plugin est actif, false sinon
      */
     public function isActivePlugin($plugin) {
-	return isset($this->plugins[$plugin]);
+        return isset($this->plugins[$plugin]);
     }
 
     /**
@@ -224,74 +227,74 @@ class genRubrique {
     function isRealRubrique() {
 
 
-	if ($this->site->g_url->action == "editer") {
-	    return false;
-	}
-	return true;
+        if ($this->site->g_url->action == "editer") {
+            return false;
+        }
+        return true;
     }
 
     /**
       Gestion des classes externes
      */
     function afterInit() {
-	global $co, $gb_obj;
+        global $co, $gb_obj;
 
 
-	$this->loadPlugins();
+        $this->loadPlugins();
 
-	$GLOBALS['times']['BDD'] = 0;
-	if ($this->hasBddInfo) {
-	    $startTimeBdd = getmicrotime();
-	    //debug($startTimeBdd);
+        $GLOBALS['times']['BDD'] = 0;
+        if ($this->hasBddInfo) {
+            $startTimeBdd = getmicrotime();
+            //debug($startTimeBdd);
 
-	    $this->bddClasse = getGabaritClass($this->gabarit, $this->rubrique['rubrique_gabarit_param']);
+            $this->bddClasse = getGabaritClass($this->gabarit, $this->rubrique['rubrique_gabarit_param']);
 
-	    $GLOBALS['times']['BDD'] += ( getmicrotime() - $startTimeBdd);
-	    $GLOBALS['times']['Plugins'] += $GLOBALS['times']['BDD'];
-	}
+            $GLOBALS['times']['BDD'] += ( getmicrotime() - $startTimeBdd);
+            $GLOBALS['times']['Plugins'] += $GLOBALS['times']['BDD'];
+        }
 
-	/*
-	  if(is_object($this->g_boxAdmin))
-	  $this->site->g_headers->addFirstBody($this->g_boxAdmin->gen());
-
-
-	  $this->cache_road = new genCache('road_'.$this->rubrique_id,GetParam('date_update_arbo'));
-	  gen
-	  if(!$this->cache_road->cacheExists() || $this->hasBddInfo) {
-	  $this->road = $this->site->g_url->buildRoad($this->site->getCurId());
-
-	  $this->rubrique_niveau = count($this->road) - 1;
-	  }
-	 */
+        /*
+          if(is_object($this->g_boxAdmin))
+          $this->site->g_headers->addFirstBody($this->g_boxAdmin->gen());
 
 
-	$this->Execute('init');
-	$this->Execute('afterInit');
-	$this->Execute('postInit');
+          $this->cache_road = new genCache('road_'.$this->rubrique_id,GetParam('date_update_arbo'));
+          gen
+          if(!$this->cache_road->cacheExists() || $this->hasBddInfo) {
+          $this->road = $this->site->g_url->buildRoad($this->site->getCurId());
+
+          $this->rubrique_niveau = count($this->road) - 1;
+          }
+         */
+
+
+        $this->Execute('init');
+        $this->Execute('afterInit');
+        $this->Execute('postInit');
     }
 
     function Execute($what) {
 
-	$p = GetPlugins();
+        $p = GetPlugins();
 
-	$html = '';
+        $html = '';
 
-	$t = getmicrotime();
+        $t = getmicrotime();
 
-	foreach ($p as $v) {
-	    if (ake($this->plugins, $v) && method_exists($this->plugins[$v], $what)) {
-		$html .= $this->plugins[$v]->{$what}();
-	    }
-	}
+        foreach ($p as $v) {
+            if (ake($this->plugins, $v) && method_exists($this->plugins[$v], $what)) {
+                $html .= $this->plugins[$v]->{$what}();
+            }
+        }
 
-	if (method_exists($this->bddClasse, $what)) {
-	    $html .= $this->bddClasse->{$what}();
-	}
+        if (method_exists($this->bddClasse, $what)) {
+            $html .= $this->bddClasse->{$what}();
+        }
 
-	$GLOBALS['times']['Execute' . $what] = getmicrotime() - $t;
-	$GLOBALS['times']['Plugins'] += $GLOBALS['times']['Execute' . $what];
+        $GLOBALS['times']['Execute' . $what] = getmicrotime() - $t;
+        $GLOBALS['times']['Plugins'] += $GLOBALS['times']['Execute' . $what];
 
-	return $html;
+        return $html;
     }
 
     /**
@@ -300,7 +303,7 @@ class genRubrique {
      */
     function genTop() {
 
-	return $this->Execute('genTop');
+        return $this->Execute('genTop');
     }
 
     /**
@@ -310,7 +313,7 @@ class genRubrique {
      */
     function genOutside() {
 
-	return $this->Execute('genOutside');
+        return $this->Execute('genOutside');
     }
 
     /**
@@ -321,49 +324,49 @@ class genRubrique {
      */
     function gen1() {
 
-	return $this->Execute('gen1');
+        return $this->Execute('gen1');
     }
 
     function getFullTitle() {
 
 
-	$i = 1;
+        $i = 1;
 
 
-	$revRoad = array_reverse($this->road);
+        $revRoad = array_reverse($this->road);
 
-	$html = '';
+        $html = '';
 
-	$revRoad = array_slice($revRoad, 0, -2);
+        $revRoad = array_slice($revRoad, 0, -2);
 
-	$nbr = count($this->road);
-	/* On the road again ... */
-	foreach ($revRoad as $k => $v) {
+        $nbr = count($this->road);
+        /* On the road again ... */
+        foreach ($revRoad as $k => $v) {
 
-	    if (akev($v, 'id')) {
-		$row = getRowFromId('s_rubrique', $v['id']);
-		$titre = getLgValue('rubrique_titre', $row);
-	    } else {
-		$titre = $v['titre'];
-	    }
-
-
-	    if ($i < $nbr || $nbr == 1) {
-		$html .= '' . $titre . '';
-		$html .= ' - '; // Separateur
-	    } else {
-		
-	    }
-
-	    $i++;
-	}
+            if (akev($v, 'id')) {
+                $row = getRowFromId('s_rubrique', $v['id']);
+                $titre = getLgValue('rubrique_titre', $row);
+            } else {
+                $titre = $v['titre'];
+            }
 
 
-	return substr($html, 0, -2);
+            if ($i < $nbr || $nbr == 1) {
+                $html .= '' . $titre . '';
+                $html .= ' - '; // Separateur
+            } else {
+                
+            }
+
+            $i++;
+        }
+
+
+        return substr($html, 0, -2);
     }
 
     function genBeforePara() {
-	return $this->Execute('genBeforePara');
+        return $this->Execute('genBeforePara');
     }
 
     /**
@@ -374,44 +377,44 @@ class genRubrique {
 
 
 
-	if (!$this->doGenMain) {
-	    return;
-	}
+        if (!$this->doGenMain) {
+            return;
+        }
 
-	global $co;
+        global $co;
 
-	$html = '';
-
-
-	if ($this->showParagraphes) {
-
-	    if ($this->hasBddInfo || !$this->cache->cacheExists()) {
+        $html = '';
 
 
-		if (method_exists($this->bddClasse, 'genParagraphes')) {
+        if ($this->showParagraphes) {
 
-		    $html .= $this->bddClasse->genParagraphes();
-		} else {
-
-		    $par = new genParagraphes($this->site, $this->paragraphes);
-		    $html .= $par->gen();
-		}
-
-		/* Liens de nav en bas */
-		$html .= $this->html_after_paras;
-	    } else {
-		/**
-		 * Recuperation du cache
-		 *
-		 */
-		$html = $this->cache->getCache();
-	    }
-	}
-
-	$html .= $this->Execute('gen');
+            if ($this->hasBddInfo || !$this->cache->cacheExists()) {
 
 
-	return $html;
+                if (method_exists($this->bddClasse, 'genParagraphes')) {
+
+                    $html .= $this->bddClasse->genParagraphes();
+                } else {
+
+                    $par = new genParagraphes($this->site, $this->paragraphes);
+                    $html .= $par->gen();
+                }
+
+                /* Liens de nav en bas */
+                $html .= $this->html_after_paras;
+            } else {
+                /**
+                 * Recuperation du cache
+                 *
+                 */
+                $html = $this->cache->getCache();
+            }
+        }
+
+        $html .= $this->Execute('gen');
+
+
+        return $html;
     }
 
     /**
@@ -420,14 +423,14 @@ class genRubrique {
     function getParagraphes() {
 
 
-	$sql = 'SELECT * FROM s_paragraphe AS P LEFT JOIN s_para_type AS PT ON P.fk_para_type_id = PT.para_type_id
+        $sql = 'SELECT * FROM s_paragraphe AS P LEFT JOIN s_para_type AS PT ON P.fk_para_type_id = PT.para_type_id
 				WHERE P.fk_rubrique_id = ' . sql($this->rubrique_id, 'int') . '
 
 				ORDER BY paragraphe_ordre ASC
 				';
 
-	// debug($sql);
-	$this->paragraphes = GetAll($sql);
+        // debug($sql);
+        $this->paragraphes = GetAll($sql);
     }
 
     /**
@@ -436,22 +439,22 @@ class genRubrique {
      */
     function getSubRubs() {
 
-	if ($this->isRealRubrique()) {
-	    $tid = $this->rubrique_id;
-	} else {
-	    $tid = $this->rubrique['fk_rubrique_version_id'];
-	}
+        if ($this->isRealRubrique()) {
+            $tid = $this->rubrique_id;
+        } else {
+            $tid = $this->rubrique['fk_rubrique_version_id'];
+        }
 
-	if ($this->site->g_url->minisite && $this->site->g_url->rootHomeId == $tid) {
-	    return array();
-	}
+        if ($this->site->g_url->minisite && $this->site->g_url->rootHomeId == $tid) {
+            return array();
+        }
 
-	$sql = 'SELECT * FROM s_rubrique WHERE fk_rubrique_id = "' . mes($tid) . '" ' . sqlRubriqueOnlyReal() . '  ' . sqlRubriqueOnlyOnline() . ' order by rubrique_ordre';
-	$res = GetAll($sql);
+        $sql = 'SELECT * FROM s_rubrique WHERE fk_rubrique_id = "' . mes($tid) . '" ' . sqlRubriqueOnlyReal() . '  ' . sqlRubriqueOnlyOnline() . ' order by rubrique_ordre';
+        $res = GetAll($sql);
 
-	$this->subRubs = $res;
+        $this->subRubs = $res;
 
-	return $res;
+        return $res;
     }
 
 }

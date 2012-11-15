@@ -3,7 +3,7 @@
 #
 # This file is part of oCMS.
 #
-# oCMS is free software: you can redistribute it and/or modify
+# oCMS is free software: you cgan redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
@@ -17,7 +17,7 @@
 # along with oCMS. If not, see <http://www.gnu.org/licenses/>.
 #
 # @author Celio Conort / Opixido 
-# @copyright opixido 2009
+# @copyright opixido 2012
 # @link http://code.google.com/p/opixido-ocms/
 # @package ocms
 #
@@ -219,7 +219,7 @@ class baseGen extends baseObj {
 }
 
 class ocmsGen extends baseGen {
-
+    
 }
 
 class rubrique extends row {
@@ -351,9 +351,9 @@ class rubrique extends row {
      * 
      * @return array Paragaphs
      */
-    public function getParagraphes() {        
-        $sql = 'SELECT * FROM s_paragraphe, s_para_type WHERE fk_rubrique_id = '.sql($this->id).' AND fk_para_type_id = para_type_id ORDER BY paragraphe_ordre ASC ';
-        return getAll($sql);        
+    public function getParagraphes() {
+        $sql = 'SELECT * FROM s_paragraphe, s_para_type WHERE fk_rubrique_id = ' . sql($this->id) . ' AND fk_para_type_id = para_type_id ORDER BY paragraphe_ordre ASC ';
+        return getAll($sql);
     }
 
 }

@@ -17,7 +17,7 @@
 # along with oCMS. If not, see <http://www.gnu.org/licenses/>.
 #
 # @author Celio Conort / Opixido 
-# @copyright opixido 2009
+# @copyright opixido 2012
 # @link http://code.google.com/p/opixido-ocms/
 # @package ocms
 #
@@ -41,11 +41,11 @@ class ajaxForm {
     }
 
     function gen() {
-
+        
     }
 
     function genLabel() {
-
+        
     }
 
     function genField($champ) {
@@ -89,7 +89,7 @@ class ajaxForm {
 
         global $relations, $uploadFields;
 
-        if (( in_array($champ, $uploadFields) || in_array(getBaseLgField($champ), $uploadFields) )) {
+        if (( in_array($champ, $uploadFields) || in_array(getBaseLgField($champ), $uploadFields))) {
 
             $GLOBALS['gb_obj']->includeFile('ajax.upload.php', 'admin/af_modules');
 

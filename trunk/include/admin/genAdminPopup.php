@@ -1,4 +1,5 @@
 <?php
+
 #
 # This file is part of oCMS.
 #
@@ -21,13 +22,12 @@
 # @package ocms
 #
 
+class genAdminPopup {
 
-class genAdminPopup{
+    function gen() {
+        global $gb_obj;
 
-	function gen(){
-		global $gb_obj;
-
-		print '
+        print '
 		<html>
 			<head>
 			<link rel=stylesheet type="text/css" type="screen" href="css/style.css"/>
@@ -54,70 +54,67 @@ class genAdminPopup{
 			<div id="tooltip"></div>';
 
 
-		if($_REQUEST['preview']) {
+        if ($_REQUEST['preview']) {
 
-			global $editMode,$onlyData;
-		   	$editMode = true;
-			//$onlyData = true;
-			$form = new GenForm($_REQUEST['curTable'], "", $_REQUEST['curId'], "");
+            global $editMode, $onlyData;
+            $editMode = true;
+            //$onlyData = true;
+            $form = new GenForm($_REQUEST['curTable'], "", $_REQUEST['curId'], "");
 
-			//$form->genHeader();
+            //$form->genHeader();
 
-			$ch = explode(";",$_REQUEST['champs']);
-			
-			foreach($ch as $v) {
+            $ch = explode(";", $_REQUEST['champs']);
 
-				if(isBaseLgField($v,$_REQUEST['curTable']))
-					$form->genlg($v);
-				else
-					$form->gen($v);
-			}
-			die();
+            foreach ($ch as $v) {
 
+                if (isBaseLgField($v, $_REQUEST['curTable']))
+                    $form->genlg($v);
+                else
+                    $form->gen($v);
+            }
+            die();
+        } else
+        if ($_REQUEST['doRte']) {
+            $gRte = new genRte;
+            $gRte->gen();
+        } else
+        if ($_REQUEST['doCsv']) {
 
-		} else
-		if($_REQUEST['doRte']){
-			$gRte = new genRte;
-			$gRte->gen();
-		}
-		else
-		if($_REQUEST['doCsv']){
+            $gCsv = new Csv($_FILES['txt_csvFile']['tmp_name'], $_REQUEST['txt_summary'], $_REQUEST['txt_caption'], $_REQUEST['txt_delimiter'], $_REQUEST['txt_topHeader'], $_REQUEST['txt_leftHeader']);
+            //print $gCsv->showCsvContent($gCsv->openCsvFile()) ;
 
-			$gCsv = new Csv($_FILES['txt_csvFile']['tmp_name'], $_REQUEST['txt_summary'],$_REQUEST['txt_caption'],$_REQUEST['txt_delimiter'],$_REQUEST['txt_topHeader'],$_REQUEST['txt_leftHeader']);
-			//print $gCsv->showCsvContent($gCsv->openCsvFile()) ;
+            $langue = substr($_REQUEST['champ'], -3, 3);
+            $champ_csv = substr($_REQUEST['champ'], 0, -3);
+            $champ_csv .= '_csv' . $langue;
 
-			$langue = substr($_REQUEST['champ'], -3, 3);
-			$champ_csv = substr($_REQUEST['champ'], 0, -3);
-			$champ_csv .= '_csv' .$langue;
-
-			if($_REQUEST['id'] != 'new'){
+            if ($_REQUEST['id'] != 'new') {
 
 
-				$sql = 'UPDATE ' .$_REQUEST['table'] .' SET ' .$_REQUEST['champ'] .'="' .addslashes($gCsv->gen()) .'", ' .$champ_csv .'="' .addslashes($gCsv->showCsvContent($gCsv->openCsvFile()))  .'" WHERE ' .$_REQUEST['pk'] .'=' .$_REQUEST['id'] .' ';
-				$exec = doSql($sql);
+                $sql = 'UPDATE ' . $_REQUEST['table'] . ' SET ' . $_REQUEST['champ'] . '="' . addslashes($gCsv->gen()) . '", ' . $champ_csv . '="' . addslashes($gCsv->showCsvContent($gCsv->openCsvFile())) . '" WHERE ' . $_REQUEST['pk'] . '=' . $_REQUEST['id'] . ' ';
+                $exec = doSql($sql);
 
-				$gRte = new genRte;
-			}else{
+                $gRte = new genRte;
+            } else {
 
-				$_SESSION["genform_".$_REQUEST['table']][$champ_csv] = addslashes($gCsv->showCsvContent($gCsv->openCsvFile()));
-				$_SESSION[gfuid()]['curFields'][] = $_REQUEST['champ'];
-				$gRte = new genRte('Default', $gCsv->gen());
-			}
+                $_SESSION["genform_" . $_REQUEST['table']][$champ_csv] = addslashes($gCsv->showCsvContent($gCsv->openCsvFile()));
+                $_SESSION[gfuid()]['curFields'][] = $_REQUEST['champ'];
+                $gRte = new genRte('Default', $gCsv->gen());
+            }
 
-			return $gRte->gen();
-		}
-		else
-		if($_REQUEST['formCsv']){
-			$tpl = new genTemplate();
-			$tpl->loadTemplate('csv.form.import');
-			
-			print $tpl->gen();
-		}
+            return $gRte->gen();
+        } else
+        if ($_REQUEST['formCsv']) {
+            $tpl = new genTemplate();
+            $tpl->loadTemplate('csv.form.import');
 
-		print '
+            print $tpl->gen();
+        }
+
+        print '
 		</body>
 			</html>';
-	}
+    }
+
 }
 
 ?>

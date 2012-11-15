@@ -17,7 +17,7 @@
 # along with oCMS. If not, see <http://www.gnu.org/licenses/>.
 #
 # @author Celio Conort / Opixido 
-# @copyright opixido 2009
+# @copyright opixido 2012
 # @link http://code.google.com/p/opixido-ocms/
 # @package ocms
 #
@@ -46,7 +46,7 @@ class genAction {
 
             $cname = 'genAction' . ucfirst($action);
             if (class_exists($cname)) {
-                
+
                 $this->obj = new $cname($this->action, $this->table, $this->id, $this->row);
             } else {
                 global $genMessages;
@@ -64,7 +64,7 @@ class genAction {
                 $gr = new genRecord($this->table, $this->id);
                 $gr->checkDoOn($this->action);
                 logAction($this->action, $this->table, $this->id);
-                DoSql('UPDATE s_param SET param_valeur = '.sql(time()).' WHERE param_id = "date_update_'.$this->table.'" ');
+                DoSql('UPDATE s_param SET param_valeur = ' . sql(time()) . ' WHERE param_id = "date_update_' . $this->table . '" ');
                 return $this->obj->doIt();
             } else {
                 return false;
@@ -162,7 +162,7 @@ class genActionEdit {
     }
 
     public function doIt() {
-
+        
     }
 
 }
@@ -186,7 +186,7 @@ class genActionView {
     }
 
     public function doIt() {
-
+        
     }
 
 }
@@ -283,8 +283,8 @@ class genActionMoveRubrique {
 
     public function getForm() {
         p('<form style="padding:0;margin:0" method="post" action="index.php">
-                <input type="hidden" name="curId" value="'.$this->id.'" />
-                <input type="hidden" name="curTable" value="'.$this->table.'" />
+                <input type="hidden" name="curId" value="' . $this->id . '" />
+                <input type="hidden" name="curTable" value="' . $this->table . '" />
                 <div class="btn"><label for="move_rubrique">' . t('rubrique_deplacer_sous') . '</label>');
         p('<select id="move_rubrique" name="move_rubrique" style="width:160px;">');
         if (!empty($GLOBALS['gs_obj']->myroles['s_rubrique']) && is_array($GLOBALS['gs_obj']->myroles['s_rubrique']['rows'])) {
@@ -452,8 +452,8 @@ class genActionShowObject {
         if (count($errors)) {
             dinfo(t('show_merci_de_remplir_les_champs_suivants'));
             $h = '';
-            foreach($errors as $v) {
-                $h .= t($v).'<br/>';
+            foreach ($errors as $v) {
+                $h .= t($v) . '<br/>';
             }
             dinfo($h);
             return false;
@@ -537,7 +537,7 @@ class objDuplication {
                  * On met à jour le champ
                  * @old $sql .= ' '.$k.' = '.getNullValue(($v),$k,$this->table).' ,';
                  */
-                 //getNullValue(($v),$k,$this->table);
+                //getNullValue(($v),$k,$this->table);
 
                 /**
                  * Si c'est un champ d'upload 
@@ -559,9 +559,9 @@ class objDuplication {
          */
         if (count($oldfiles)) {
             foreach ($oldfiles as $oldfile) {
-                $newfile = new genFile($this->table, $oldfile['champ'], $newId, basename($oldfile['valeur']),false);
+                $newfile = new genFile($this->table, $oldfile['champ'], $newId, basename($oldfile['valeur']), false);
                 if (file_exists($oldfile['path']) && is_file($oldfile['path'])) {
-                    $newfile->uploadFile($oldfile['path'],true);
+                    $newfile->uploadFile($oldfile['path'], true);
                 }
             }
         }
@@ -578,7 +578,7 @@ class objDuplication {
          */
         global $co;
         $co->autoExecute($this->table, $record, 'UPDATE', getPrimaryKey($this->table) . ' = ' . sql($newId, 'int'));
-        
+
 
         /**
          * On duplique les traduction supplémentaires
@@ -961,7 +961,7 @@ class genActionValidate {
 class genActionVoir_modifs {
 
     function doIt() {
-
+        
     }
 
     function checkCondition() {
@@ -1436,7 +1436,7 @@ class genActionShowMV extends baseAction {
     }
 
     function doIt() {
-
+        
     }
 
     public function getForm() {
@@ -1486,7 +1486,7 @@ class genActionShowMV extends baseAction {
     }
 
     function getSmallForm() {
-
+        
     }
 
 }
@@ -1512,7 +1512,7 @@ class genActionDuplicateMV extends baseAction {
     }
 
     function getSmallForm() {
-
+        
     }
 
     function oldgetForm() {
@@ -1558,7 +1558,7 @@ class genActionValidateMV extends baseAction {
     }
 
     function getSmallForm() {
-
+        
     }
 
 }
@@ -1583,7 +1583,7 @@ class genActionUnvalidateMV extends baseAction {
     }
 
     function getSmallForm() {
-
+        
     }
 
 }
@@ -1616,7 +1616,7 @@ class genActionPublishMV extends baseAction {
     }
 
     function getSmallForm() {
-
+        
     }
 
 }
@@ -1642,7 +1642,7 @@ class genActionUnpublishMV extends baseAction {
     }
 
     function getSmallForm() {
-
+        
     }
 
 }
@@ -1654,11 +1654,11 @@ class genActionDelete extends baseAction {
     }
 
     function doIt() {
-
+        
     }
 
     function getSmallForm() {
-
+        
     }
 
 }
@@ -1670,7 +1670,7 @@ class genActionDeleteMv extends baseAction {
     }
 
     function doIt() {
-
+        
     }
 
 }
@@ -1714,7 +1714,7 @@ class genActionMoveTableRowUp extends baseAction {
     }
 
     function getForm() {
-
+        
     }
 
 }
@@ -1766,7 +1766,7 @@ class genActionMoveTableRowDown extends baseAction {
     }
 
     function getForm() {
-
+        
     }
 
 }

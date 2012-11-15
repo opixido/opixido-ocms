@@ -1,5 +1,28 @@
 <?php
 
+#
+# This file is part of oCMS.
+#
+# oCMS is free software: you cgan redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# oCMS is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with oCMS. If not, see <http://www.gnu.org/licenses/>.
+#
+# @author Celio Conort / Opixido 
+# @copyright opixido 2012
+# @link http://code.google.com/p/opixido-ocms/
+# @package ocms
+#
+
+
 /* La clef se trouve dans l'autre table */
 
 /*
@@ -62,13 +85,13 @@ if (!$this->editMode) {
         $sortable = array_key_exists($fk_table, $orderFields);
 
         $this->addBuffer('<table class="sortable table table-striped table-bordered table-condensed" rel="' . $fk_table . '__' . $ofield . '" border="0" width="' . ($this->larg - 25) . '" class="genform_table ' . ($sortable ? 'sortable' : '') . ' relinv" ><thead>');
-        
+
         $ml = 1;
         $cs = $sortable ? 3 : 2;
 
-        $this->addBuffer('<tr><th width="20" colspan="'.$cs.'">');
+        $this->addBuffer('<tr><th width="20" colspan="' . $cs . '">');
 
-        $this->addBuffer('<button class="btn" title="' . $this->trad('ajouter') . $this->trad($fk_table) . '" name="genform_addfk__' . $fk_table . '__' . $name . '"><img src="' . t('src_new') . '" alt=""  />'.t('Nouveau').'</button>');
+        $this->addBuffer('<button class="btn" title="' . $this->trad('ajouter') . $this->trad($fk_table) . '" name="genform_addfk__' . $fk_table . '__' . $name . '"><img src="' . t('src_new') . '" alt=""  />' . t('Nouveau') . '</button>');
 
 
         $this->addBuffer('</th>');
@@ -100,7 +123,7 @@ if (!$this->editMode) {
 
         reset($tabForms[$fk_table]['titre']);
         foreach ($tabForms[$fk_table]['titre'] as $titre) {
-            $this->addBuffer('<th>' . preg_replace("/\([^\)]+\)/","",$this->trad($titre)) . '</th>');
+            $this->addBuffer('<th>' . preg_replace("/\([^\)]+\)/", "", $this->trad($titre)) . '</th>');
         }
 
         $this->addBuffer('</tr></thead><tbody>');

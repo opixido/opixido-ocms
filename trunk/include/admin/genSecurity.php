@@ -84,7 +84,7 @@ if (!class_exists('genSecurity')) {
                 $this->clearAuth();
             }
 
-            $_SESSION['gs_adminuser'] = $this->adminuser = ake($_POST, 'gs_adminuser') ? $_POST['gs_adminuser'] : akev($_SESSION,'gs_adminuser');
+            $_SESSION['gs_adminuser'] = $this->adminuser = ake($_POST, 'gs_adminuser') ? $_POST['gs_adminuser'] : akev($_SESSION, 'gs_adminuser');
 
 
             /**
@@ -103,7 +103,7 @@ if (!class_exists('genSecurity')) {
             return $this->crypto->decrypt($str);
         }
 
-        function recurseArbo($rubrique_id=0, $fk_rub = 0) {
+        function recurseArbo($rubrique_id = 0, $fk_rub = 0) {
             /*
               On stock toutes les rubriques auquelles on a acc�
              */
@@ -359,14 +359,11 @@ if (!class_exists('genSecurity')) {
                      */
                     $this->recurvRelInv($row['role_table_table']);
                     $this->recurvRelTable($row['role_table_table']);
-
-
                 } else if ($row['role_table_type'] == 'all') {
                     $this->recurvRelInv($row['role_table_table']);
                     $this->recurvRelTable($row['role_table_table']);
                 }
             }
-
         }
 
         function recurvRelTable($table) {
@@ -442,11 +439,10 @@ if (!class_exists('genSecurity')) {
                             'champs' => 'all',
                             'type' => 'all',
                             'condition' => array('arbo', 'proprio'),
-                            
                             'actions' => array(),
                             'rows' => array()
                         );
-                        if(!empty( $this->myroles[$table]['rows'])) {
+                        if (!empty($this->myroles[$table]['rows'])) {
                             $this->myroles[$tableau[0]]['conditionSqlWhere'] = ' AND ' . $tableau[1] . ' IN (' . implode(',', $this->myroles[$table]['rows']) . ') ';
                         }
                     }
@@ -529,7 +525,7 @@ if (!class_exists('genSecurity')) {
          * @param string $champ
          * @param mixed $valeur
          */
-        function logAction($action, $table, $row = array(), $id=0, $champ="", $valeur) {
+        function logAction($action, $table, $row = array(), $id = 0, $champ = "", $valeur) {
 
             $this->doneActions[] = array($action, $table, $row, $id, $champ, $valeur);
         }
@@ -542,7 +538,7 @@ if (!class_exists('genSecurity')) {
          * @param array $tab_default_field
          * @return array Actions
          */
-        function getActions($table, $id=0, $tab_default_field=array()) {
+        function getActions($table, $id = 0, $tab_default_field = array()) {
 
             global $_Gconfig;
 
@@ -676,7 +672,7 @@ if (!class_exists('genSecurity')) {
          ', E_USER_ERROR); //,'rubrique_url_fr','rubrique_url_en'
         }
 
-        function can($action, $table="", $row = array(), $id="0", $champ="", $valeur = 0) {
+        function can($action, $table = "", $row = array(), $id = "0", $champ = "", $valeur = 0) {
 
 
             $tmpcans = $action . '-' . $table . '-' . $id . '-' . $champ . '-' . $valeur;
@@ -733,7 +729,7 @@ if (!class_exists('genSecurity')) {
             return false;
         }
 
-        function canTable($action, $table, $champ="", $valeur="") {
+        function canTable($action, $table, $champ = "", $valeur = "") {
             /*
               Retourne true ou false selon les droits sur une table en particulier
              */
@@ -756,7 +752,7 @@ if (!class_exists('genSecurity')) {
             return false;
         }
 
-        function canRow($action, $table, $row = array(), $id=0) {
+        function canRow($action, $table, $row = array(), $id = 0) {
 
             /*
               Verifie dans l'ordre si on peut modifier la table, puis la ligne en question
@@ -802,7 +798,7 @@ if (!class_exists('genSecurity')) {
             return false;
         }
 
-        function canChamp($action, $table, $row = array(), $id=0, $champ, $valeur) {
+        function canChamp($action, $table, $row = array(), $id = 0, $champ, $valeur) {
 
 
 
@@ -889,7 +885,7 @@ if (!class_exists('genSecurity')) {
                 return true;
             }
             //debug($condition);            
-            if (in_array('proprio', $condition) || ake('proprio', $condition)) {                
+            if (in_array('proprio', $condition) || ake('proprio', $condition)) {
                 if ($row[$_Gconfig['field_creator']] == $this->adminid || isNull($row[getPrimaryKey($table)])) {
                     return true;
                 }
@@ -921,7 +917,7 @@ if (!class_exists('genSecurity')) {
             return false;
         }
 
-        function reverseRecurseArbo($table, $row=array(), $id=0) {
+        function reverseRecurseArbo($table, $row = array(), $id = 0) {
 
             global $relinv;
             reset($relinv);
@@ -1010,7 +1006,7 @@ if (!class_exists('genSecurity')) {
          * @param string $alias
          * @return string
          */
-        function sqlCanRow($table, $alias='') {
+        function sqlCanRow($table, $alias = '') {
             $a = '';
             if ($alias) {
                 $a = $alias . '.';

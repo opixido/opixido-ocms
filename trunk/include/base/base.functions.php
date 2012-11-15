@@ -17,7 +17,7 @@
 # along with oCMS. If not, see <http://www.gnu.org/licenses/>.
 #
 # @author Celio Conort / Opixido 
-# @copyright opixido 2009
+# @copyright opixido 2012
 # @link http://code.google.com/p/opixido-ocms/
 # @package ocms
 #
@@ -2639,7 +2639,7 @@ class pagination {
         if ($GLOBALS['site']->g_url) {
             return getUrlWithParams($p);
         } else {
-            return '?'.http_build_str($p);
+            return '?' . http_build_str($p);
         }
     }
 
@@ -2658,7 +2658,7 @@ if (!function_exists('http_build_str')) {
         foreach ($query as $key => $val) {
             $name = $prefix . $key;
             if (!is_numeric($name)) {
-                if(!is_array($val)) {
+                if (!is_array($val)) {
                     $val = urlencode($val);
                 }
                 $args[] = rawurlencode($name) . '=' . ($val);

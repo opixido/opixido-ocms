@@ -17,7 +17,7 @@
 # along with oCMS. If not, see <http://www.gnu.org/licenses/>.
 #
 # @author Celio Conort / Opixido 
-# @copyright opixido 2009
+# @copyright opixido 2012
 # @link http://code.google.com/p/opixido-ocms/
 # @package ocms
 #
@@ -229,7 +229,7 @@ class genFile {
             $this->systemPath = $this->addSlashPath($this->systemPath);
 
             $this->webPath = path_concat(BU, $this->addSlashPath($this->webPath));
-	    $this->systemPath = $this->getSystemPath();
+            $this->systemPath = $this->getSystemPath();
         }
     }
 
@@ -508,7 +508,7 @@ class genFile {
      * @return true ou false si l'opération s'est bien déroulée
      *
      */
-    function deleteFile($updateDb=false) {
+    function deleteFile($updateDb = false) {
 
 
         if (strlen($this->fileName) && strlen($this->valeur)) {
@@ -519,12 +519,11 @@ class genFile {
                  * On ne supprime pas les fichiers du dossier partagé
                  */
                 $res = unlink($this->systemPath);
-                if($updateDb) {
-                   $sql = ('UPDATE ' . $this->table . ' SET ' . $this->champ . ' = "" WHERE ' . getPrimaryKey($this->table) . ' = ' . sql($this->id));
-                   DoSql($sql);
+                if ($updateDb) {
+                    $sql = ('UPDATE ' . $this->table . ' SET ' . $this->champ . ' = "" WHERE ' . getPrimaryKey($this->table) . ' = ' . sql($this->id));
+                    DoSql($sql);
                 }
                 $this->valeur = '';
-                
             } else {
                 return true;
             }
@@ -573,7 +572,7 @@ class genFile {
         }
 
         /* Création de l'arborescence */
-	$F = dirname($this->systemPath);
+        $F = dirname($this->systemPath);
         $t = explode("/", $F); //$specialUpload[$this->table][$name]
 
         if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
@@ -582,7 +581,7 @@ class genFile {
             $reconst = '/';
         }
         if (!file_exists($F)) {
-           mkdir($F, 0777, true);
+            mkdir($F, 0777, true);
         }
 
         foreach ($t as $folder) {
@@ -611,8 +610,8 @@ class genFile {
             file_put_contents($fullpath, $tmpname);
         } else {
             $cop = copy($tmpname, $fullpath);
-            if (!$cop) {              
-                $cop = move_uploaded_file($tmpname, $fullpath);                
+            if (!$cop) {
+                $cop = move_uploaded_file($tmpname, $fullpath);
             }
         }
 
@@ -995,8 +994,8 @@ class genFile {
     public function genAdminTag() {
 
 
-        if(!strlen($this->valeur)) {
-            return '<div class="genform_uploadfile">'.t('aucun_fichier').'</div>';
+        if (!strlen($this->valeur)) {
+            return '<div class="genform_uploadfile">' . t('aucun_fichier') . '</div>';
         }
         $chemin = $this->getWebUrl();
         $this->thumbWidth = 300;
@@ -1009,13 +1008,13 @@ class genFile {
         /* Nom du fichier */
 
 
-        $h .= '<div class="badge">'.(t('deja_fichier') . ' : ');
+        $h .= '<div class="badge">' . (t('deja_fichier') . ' : ');
         $h .= ('<span style="font-weight:bold;"><img style="vertical-align:middle" src="' . $this->getIcon() . '" alt="' . strtoupper($this->getExtension()) . '"/> [ ' . $this->getNiceSize() . ' ] </span> ');
-        $h .= '<span class="badge badge-inverse">'.(str_replace($name . "_", "", basename($chemin)).'</span>');
+        $h .= '<span class="badge badge-inverse">' . (str_replace($name . "_", "", basename($chemin)) . '</span>');
         /* Lien vers le fichier */
         $h .= (' <a  href="' . $chemin . '" target="_blank" >'); //style="width:' . $this->thumbWidth . 'px"
 
-        
+
 
         $h .= '<br/>';
 
@@ -1033,23 +1032,23 @@ class genFile {
         // <param name="FlashVars" value="clip=' . $this->getWebUrl() . '&amp;margin=2&amp;bgcolor1=000000&amp;bgcolor2=000000&amp;showstop=1&amp;loadingcolor=555555&amp;showvolume=1&amp;showtime=1&amp;showfullscreen=1&amp;playercolor=ffffff&amp;buttoncolor=000000&amp;showiconplay=1&amp;iconplaybgcolor=ffffff&amp;videobgcolor=ffffff&amp;loadonstop=0" />
         else if ($this->getExtension() == 'flv' || $this->getExtension() == 'mp4' || $this->getExtension() == 'm4v' || strstr($this->getWebUrl(), 'rtmp')) {
             global $_Gconfig;
-            if(strstr($this->getWebUrl(), 'rtmp')) {
+            if (strstr($this->getWebUrl(), 'rtmp')) {
                 $file = str_replace($_Gconfig['rtmpServeur'], '', $this->getWebUrl());
-                $stream =$_Gconfig['rtmpServeur'];
+                $stream = $_Gconfig['rtmpServeur'];
             } else {
                 $file = $this->getWebUrl();
                 $stream = '';
             }
-            
-            
-            $id=  uniqid();
+
+
+            $id = uniqid();
             $h .= ('
 <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="470" height="290" id="single1" name="single1">
 <param name="movie" value="player.swf">
 <param name="allowfullscreen" value="true">
 <param name="allowscriptaccess" value="always">
 <param name="wmode" value="transparent">
-<param name="flashvars" value="file='.$rtmp.'&streamer='.$_Gconfig['rtmpServeur'].'">
+<param name="flashvars" value="file=' . $rtmp . '&streamer=' . $_Gconfig['rtmpServeur'] . '">
 <embed
   id="single2"
   name="single2"
@@ -1059,7 +1058,7 @@ class genFile {
   bgcolor="#000000"
   allowscriptaccess="always"
   allowfullscreen="true"
-  flashvars="file='.$file.'&streamer='.$stream.'"
+  flashvars="file=' . $file . '&streamer=' . $stream . '"
 />
 </object>
 </a>
@@ -1067,14 +1066,13 @@ class genFile {
 ');
             /*
              *
-<object type="application/x-shockwave-flash" data="flowplayer.swf" width="300" height="200">
-				    <param name="movie" value="flowplayer.swf" />
-				    <param name="allowFullScreen" value="true" />
+              <object type="application/x-shockwave-flash" data="flowplayer.swf" width="300" height="200">
+              <param name="movie" value="flowplayer.swf" />
+              <param name="allowFullScreen" value="true" />
 
-				    <param name="FlashVars" value="config={plugins:{influxis:{url:\'' . BU . '/admin/flowplayer.rtmp-3.2.8.swf\',netConnectionUrl:\'' . $_Gconfig['rtmpServeur'] . '\'}},clip:{url:\'' . $rtmp . '\',provider:\'influxis\'}}" />
-				</object>
+              <param name="FlashVars" value="config={plugins:{influxis:{url:\'' . BU . '/admin/flowplayer.rtmp-3.2.8.swf\',netConnectionUrl:\'' . $_Gconfig['rtmpServeur'] . '\'}},clip:{url:\'' . $rtmp . '\',provider:\'influxis\'}}" />
+              </object>
              */
-
         } else {
             /* Sinon juste lien */
             $h .= ('' . t('voir'));
@@ -1093,7 +1091,7 @@ class genFile {
 
 
         $h .= (' <button name="genform_' . $name . '_del"
-                        onclick="if(confirm(\'' . t('supprimer_fichier') . '\')) {deleteFile(\''.$this->table.'\',\''.$name.'\',\''.$this->id.'\',this,\'\')}return false"
+                        onclick="if(confirm(\'' . t('supprimer_fichier') . '\')) {deleteFile(\'' . $this->table . '\',\'' . $name . '\',\'' . $this->id . '\',this,\'\')}return false"
                             class="btn btn-important btn-mini"
 			><img src="' . t('src_delete') . '"  
 			 /> ' . t('supprimer') . '</button>');
@@ -1104,8 +1102,8 @@ class genFile {
     }
 
     public function genSmallAdminTag() {
-        
-        if(!strlen($this->valeur)) {
+
+        if (!strlen($this->valeur)) {
             return '<div class="genform_uploadfile">&nbsp;</div>';
         }
 
@@ -1119,7 +1117,7 @@ class genFile {
 
         $h = '';
         $h .= ('<div class="genform_uploadfile">');
-        
+
         /* Lien vers le fichier */
         $h .= (' <a style="display:block;margin:0;" class="well" href="' . $chemin . '" target="_blank" >'); //style="width:' . $this->thumbWidth . 'px"
 
@@ -1138,7 +1136,7 @@ class genFile {
             else
                 $h .= (' <img src="' . $chemin . '" alt="' . t($name) . '" width="' . $this->thumbWidth . '" />');
         }
-         else {
+        else {
             /* Sinon juste lien */
             $h .= ('' . t('voir'));
         }
@@ -1149,9 +1147,9 @@ class genFile {
         /* Edition via l'ImageManager */
 
         $ssch = substr($this->getWebUrl(), strlen(BU));
-     
 
-        $h .= ('<div style="text-align:left"><button class="btn btn-mini" onclick="if(confirm(\'' . t('supprimer_fichier') . '\')) {deleteFile(\''.$this->table.'\',\''.$name.'\',\''.$this->id.'\',this,1);} return false" >
+
+        $h .= ('<div style="text-align:left"><button class="btn btn-mini" onclick="if(confirm(\'' . t('supprimer_fichier') . '\')) {deleteFile(\'' . $this->table . '\',\'' . $name . '\',\'' . $this->id . '\',this,1);} return false" >
                     <i class="icon icon-trash"></i> ' . t('supprimer') . '</button></div>');
 
         $h .= ('</div>');

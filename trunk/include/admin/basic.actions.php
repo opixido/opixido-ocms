@@ -17,7 +17,7 @@
 # along with oCMS. If not, see <http://www.gnu.org/licenses/>.
 #
 # @author Celio Conort / Opixido
-# @copyright opixido 2009
+# @copyright opixido 2012
 # @link http://code.google.com/p/opixido-ocms/
 # @package ocms
 #
@@ -317,13 +317,13 @@ function emptyCache() {
     foreach ($_Gconfig['cachePaths'] as $k => $v) {
 
         echo '<li><a href="?globalAction=emptyCache&empty=' . $k . '"><i class="icon-trash"></i>' . t($k) . ' (' . du($v) . ' Mo)</a>';
-       
+
         if (akev($_REQUEST, 'empty') == $k || akev($_REQUEST, 'empty') == '_allCaches') {
             p('<span class="well">');
             emptyDir($v, true);
             p('</span>');
         }
-         echo '</li>';
+        echo '</li>';
     }
 
     echo '<li class="divider"></li><li><a href="?globalAction=emptyCache&empty=_allCaches"><i class="icon-fire"></i>' . t('tout') . '</a></li>';

@@ -3,7 +3,7 @@
 #
 # This file is part of oCMS.
 #
-# oCMS is free software: you can redistribute it and/or modify
+# oCMS is free software: you cgan redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
@@ -17,7 +17,7 @@
 # along with oCMS. If not, see <http://www.gnu.org/licenses/>.
 #
 # @author Celio Conort / Opixido 
-# @copyright opixido 2009
+# @copyright opixido 2012
 # @link http://code.google.com/p/opixido-ocms/
 # @package ocms
 #
@@ -171,7 +171,7 @@ function getRowFromId($table, $id, $onlyOnline = false) {
     global $getRowFromId_cacheRow;
 
     if (!array_key_exists($table . "_-_" . $id, $getRowFromId_cacheRow) || !$getRowFromId_cacheRow[$table . "_-_" . $id] || IN_ADMIN) {
-        $sql = 'SELECT * FROM ' . $table . ' WHERE ' . GetPrimaryKey($table) . ' = ' . sql($id) . ' ' ;//. sqlOnlyOnline($table);
+        $sql = 'SELECT * FROM ' . $table . ' WHERE ' . GetPrimaryKey($table) . ' = ' . sql($id) . ' '; //. sqlOnlyOnline($table);
         $row = GetSingle($sql);
         if (IN_ADMIN) {
             return $row;
@@ -254,8 +254,8 @@ function GetSingle($sql, $cache = 0, $connexion = '') {
     if (!$co) {
         return false;
     }
-    if($cache != 2)
-    $cache = false;
+    if ($cache != 2)
+        $cache = false;
     $t = getmicrotime();
     $nbRSql++;
     $cache = 0;

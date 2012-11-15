@@ -1,4 +1,26 @@
 <?php
+#
+# This file is part of oCMS.
+#
+# oCMS is free software: you cgan redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# oCMS is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with oCMS. If not, see <http://www.gnu.org/licenses/>.
+#
+# @author Celio Conort / Opixido 
+# @copyright opixido 2012
+# @link http://code.google.com/p/opixido-ocms/
+# @package ocms
+#
+
 $conf = $_Gconfig['mapsFields'][$this->table][$name];
 $chp_lat = $conf[0];
 $chp_lon = $conf[1];
@@ -25,10 +47,10 @@ if (!$this->editMode) {
         }
     }
 
-    if(isNull($this->tab_default_field[$chp_lat])) {
+    if (isNull($this->tab_default_field[$chp_lat])) {
         $this->tab_default_field[$chp_lat] = $conf[3][0];
     }
-    if(isNull($this->tab_default_field[$chp_lon])) {
+    if (isNull($this->tab_default_field[$chp_lon])) {
         $this->tab_default_field[$chp_lon] = $conf[3][1];
     }
 
@@ -101,7 +123,7 @@ if (!$this->editMode) {
             position: latlng,
             draggable:true
         });
-            
+                
         google.maps.event.addListener(marker, 'position_changed', function() {
             $('#genform_<?php echo $chp_lat ?>').val(marker.getPosition().lat());
             $('#genform_<?php echo $chp_lon ?>').val(marker.getPosition().lng());
@@ -111,22 +133,22 @@ if (!$this->editMode) {
         var geocoder = new google.maps.Geocoder();
 
 
-        
+            
         function codeAddress(address) {
             geocoder.geocode( { 'address': address}, function(results, status) {
                 if (status == google.maps.GeocoderStatus.OK) {
 
                     map.setCenter(results[0].geometry.location);
                     marker.setPosition(results[0].geometry.location);
-                   /* marker = new google.maps.Marker({
+                    /* marker = new google.maps.Marker({
                         map: map,
                         position: results[0].geometry.location
                     });
-                    
+                        
 
                     $('#genform_<?php echo $chp_lat ?>').val(results[0].geometry.location.lat());
                     $('#genform_<?php echo $chp_lon ?>').val(results[0].geometry.location.lng());
-                    */
+                     */
                 } else {
                     alert("Geocode was not successful for the following reason: " + status);
                 }

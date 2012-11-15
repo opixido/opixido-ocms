@@ -393,7 +393,7 @@ class genTemplate {
     }
 
     public function getFile() {
-
+        
     }
 
     /**
@@ -470,7 +470,7 @@ class genTemplate {
      * @param string $nom
      */
     public function delBlock($nom, $replace = "") {
-        if(!strlen($replace)) {
+        if (!strlen($replace)) {
             $replace = " ";
         }
         if (!is_array(akev($this->blocks, $nom))) {
