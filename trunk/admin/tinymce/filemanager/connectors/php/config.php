@@ -96,10 +96,10 @@ $fckphp_config['auth']['Handler']['SharedKey']="->Sh4red_K3y-FoR*5enD1NG^auth3nt
 //First area options are commented
 
 //File Area
-$fckphp_config['ResourceAreas']['File'] =array(
+$fckphp_config['ResourceAreas']['files'] =array(
 	
 	//Files(identified by extension) that may be uploaded to this area
-	'AllowedExtensions'	=>	array("jpg","gif","jpeg","png","tiff","tif","doc","pdf","xls","zip","exe"),
+	'AllowedExtensions'	=>	array("jpg","gif","jpeg","png","tiff","tif","doc","pdf","xls","zip","exe",'docx','xls','xlsx','ppt','pptx','ods'),
 	
 	//Not implemented yet
 	'AllowedMIME'		=>	array(),
@@ -124,7 +124,7 @@ $fckphp_config['ResourceAreas']['File'] =array(
 $fckphp_config['ResourceAreas']['images'] =array(
 	'AllowedExtensions'	=>	array("jpg","gif","jpeg","png","tiff","tif",),
 	'AllowedMIME'		=>	array(),
-	'MaxSize'		=>	1024,
+	'MaxSize'		=>	10024,
 	'DiskQuota'		=>	-1,
 	'HideFolders'		=>	array("^\."),
 	'HideFiles'		=>	array("^\."),
@@ -200,7 +200,7 @@ $fckphp_config['Debug_Output']=true;
 /*	ResourceTypes :: Array of valid resource areas				*/
 /*	Commands :: Array of valid commands accepted by the connector		*/
 /*------------------------------------------------------------------------------*/
-$fckphp_config['ResourceTypes'] = array('File','images','Flash','Media');
+$fckphp_config['ResourceTypes'] = array('files','images','Flash','Media');
 $fckphp_config['Commands'] = array(
 				"CreateFolder",
 				"GetFolders",
