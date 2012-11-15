@@ -26,3 +26,13 @@ L'affichage et la gestion de l'arborescence se fera sur la gauche de cette page.
 
 Pour créer une rubrique de niveau n, il suffit de cliquer sur le même bouton "Nouveau" mais en sélectionnant la rubrique parent.
 Vous pouvez créer autant de sous-rubriques que souhaité.
+
+
+=== Modification de l'ordre des rubriques ===
+
+Pour monter ou descendre une rubrique, sélectionnez celle qui est à modifier, puis sélectionnez "Monter" pour la monter ou "Descendre" pour la descendre.
+
+
+
+
+
