@@ -5,12 +5,15 @@ OCMS permet tout d’abord de créer l’arborescence du site, c’est-à-dire l
 
 = Fonctionnement =
 
-== Création d'un menu ==
-
 Rendez-vous dans la partie "Gestion du contenu".
 
 L'affichage et la gestion de l'arborescence se fera sur la gauche de cette page.
 
+== Création d'un menu ==
+
+
   # Cliquez sur la racine du site (son nom).
 
   # Sélectionnez le bouton "Nouveau" (en haut)
+
+  # Entrez ensuite le nom du menu, puis sélectionnez en bas le type "Menu"
