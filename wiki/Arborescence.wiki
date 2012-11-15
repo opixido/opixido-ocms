@@ -1,0 +1,7 @@
+#labels arborescence,ocms,opixido
+
+= L'arborescence =
+
+OCMS permet tout d’abord de créer l’arborescence du site, c’est-à-dire l’arbre des rubriques et sous-rubriques, puis de la modifier : ajout, suppression, déplacement de rubriques, etc.
+
+= Le fonctionnement =
