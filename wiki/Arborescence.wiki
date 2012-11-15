@@ -11,6 +11,6 @@ Rendez-vous dans la partie "Gestion du contenu".
 
 L'affichage et la gestion de l'arborescence se fera sur la gauche de cette page.
 
-# Cliquez sur la racine du site (son nom).
+  # Cliquez sur la racine du site (son nom).
 
-# Sélectionnez le bouton "Nouveau" (en haut)
+  # Sélectionnez le bouton "Nouveau" (en haut)
