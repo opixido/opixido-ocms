@@ -1,26 +1,26 @@
 <?php
 
-#
-# This file is part of oCMS.
-#
-# oCMS is free software: you cgan redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# oCMS is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with oCMS. If not, see <http://www.gnu.org/licenses/>.
-#
-# @author Celio Conort / Opixido 
-# @copyright opixido 2012
-# @link http://code.google.com/p/opixido-ocms/
-# @package ocms
-#
+/**
+ * This file is part of oCMS.
+ *
+ * oCMS is free software: you cgan redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * oCMS is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with oCMS. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @author Celio Conort / Opixido 
+ * @copyright opixido 2012
+ * @link http://code.google.com/p/opixido-ocms/
+ * @package ocms
+ **/
 
 class genRteInline {
 
@@ -71,7 +71,7 @@ class genRteInline {
 						cType = "Flash";
 						break;
 					case "file":
-						cType = "File";
+						cType = "files";
 						break;
 				}
 			
@@ -106,7 +106,7 @@ class genRteInline {
           plugins : "safari,paste,searchreplace",
           entity_encoding : "raw",
           content_css : "'.BU.'/css/baseadmin.css",
-          theme_advanced_styles : "Texte clair=light;Texte important=important;Texte très important=timportant",
+          theme_advanced_styles : "Texte clair=light;Texte important=important;Texte tr??s important=timportant",
           theme_advanced_buttons1 : "styleselect,bold,italic,underline,separator,removeformat,separator,hr,image,link,unlink,separator,pastetext,separator,search,replace,separator,bullist,bullnum,separator,code,cleanup,separator,sub,sup,separator,abbr,acronym,charmap",
           theme_advanced_buttons2 : "",
           theme_advanced_buttons3 : "",
