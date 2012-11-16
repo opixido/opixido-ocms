@@ -24,10 +24,10 @@ Pour ajouter par exemple le champ _paragraphe_titre_ , affichez dans le template
 Faites de même pour les autres champs :
 
  * _ paragraphe_contenu _ : @@text@@
- * _paragraphe_img_1_ : ##1##
- * _paragraphe_img_1_alt_ : @@alt_1@@
- * _paragraphe_legend_1_ : @@legend_1@@
- * _paragraphe_copyright_1_ : @@copyright_1@@
- * _paragraphe_link_1_ : @@link1@@
- * _paragraphe_file_1 : @@file1@@
+ * _ paragraphe_img_1 _ : ##1##
+ * _ paragraphe_img_1_alt _ : @@alt_1@@
+ * _ paragraphe_legend_1 _ : @@legend_1@@
+ * _ paragraphe_copyright_1 _ : @@copyright_1@@
+ * _ paragraphe_link_1 _ : @@link1@@
+ * _ paragraphe_file_1 _ : @@file1@@
  * Autres : @@file1_url@@, @@file1_size@@, @@file1_type@@, @@file1_name@@, @@file1_legend@@, @@lien_popup@@
