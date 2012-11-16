@@ -7,7 +7,7 @@ Les textes paramétrables sont des mots/textes que vous pouvez ajouter dans gaba
 
 == Fonctionnement ==
 
-Pour ajouter un texte paramétrable dans du code, il suffit simplement d'appeler une fonction en lui ajoutant en paramètre l'_id_ du texte (une chaîne de caractère).
+Pour ajouter un texte paramétrable dans du code, il suffit simplement d'appeler la fonction _t()_ en lui ajoutant en paramètre l'_id_ du texte (une chaîne de caractère).
 
 Ensuite, 
 
