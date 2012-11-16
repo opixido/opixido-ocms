@@ -38,3 +38,8 @@ Faites de même pour les autres champs :
 || _ paragraphe_file_1 _ || @@file1@@ ||
 
 Autres : @@file1_url@@, @@file1_size@@, @@file1_type@@, @@file1_name@@, @@file1_legend@@, @@lien_popup@@
+
+=== Paragraphes de base ===
+
+ * Titre + texte
+ * Titre + texte + image à gauche
