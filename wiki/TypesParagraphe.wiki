@@ -14,6 +14,8 @@
 Vous vous trouvez à présent dans l'onglet de création d'un paragraphe.
 Cliquez sur le bouton "Ajouter" à droite du premier champ pour créer un nouveau type de paragraphe
 
+[http://www.opixido.com/ocms/screen/paragraphe/nouveau-type.png]
+
   # Rentrez un titre
   # Dans le champ "Type Template", ajoutez le code source HTML/PHP du nouveau type de paragraphe *(1)*
   # Définissez ensuite avec les boutons si ce nouveau type de paragraphe utilisera une image, un fichier, une table, du text ou un lien
@@ -40,6 +42,10 @@ Faites de même pour les autres champs :
 || _ paragraphe_file_1 _ || @@file1@@ ||
 
 Autres : @@file1_url@@, @@file1_size@@, @@file1_type@@, @@file1_name@@, @@file1_legend@@, @@lien_popup@@
+
+Exemple de template : 
+
+[http://www.opixido.com/ocms/screen/paragraphe/nouveau-template.png]
 
 === Paragraphes de base ===
 
