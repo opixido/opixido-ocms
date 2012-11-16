@@ -55,8 +55,8 @@ Nous allons voir dans cet exemple comment créer un gabarit simple mais très ut
  * Créez-y une classe genActualites héritant de la classe ocmsGen
 (class genActualites extends ocmsGen {})
   # ...
- * Créez :
-  # un fichier "front.php" dans le dossier "actualites"
+ * Créez dans le dossier de votre plugin :
+  # un fichier "front.php"
   # un fichier "config.php"
   # un dossier "tpl" (contient le template)
   # dans le dossier "tpl", untemplate "actualites.php"
