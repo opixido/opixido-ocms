@@ -1,0 +1,18 @@
+#labels Documentation
+= Les textes paramétrables =
+
+== Introduction ==
+
+Les textes paramétrables sont des mots/textes que vous pouvez ajouter dans gabarits et vos templates, et qui seront modifiables via l'interface d'administration. De plus, le texte pourra différer en fonction de la langue du site.
+
+== Fonctionnement ==
+
+Pour ajouter un texte paramétrable dans du code, il suffit simplement d'appeler une fonction en lui ajoutant en paramètre l'_id_ du texte (une chaîne de caractère).
+
+Ensuite, 
+
+== Exemple et démonstration ==
+
+Imaginons que dans votre template, vous souhaitiez mettre un lien vers les actus :
+
+[http://www.opixido.com/ocms/screen/textesParam/texte.png]
