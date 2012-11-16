@@ -11,7 +11,7 @@ Il est possible de vider ce cache à partir du back-office.
 Pour cela, sur la page d'administration, cliquez sur le lien "Vider le cache" sur la colonne de droite.
 Sélectionnez ensuite le type de cache à vider.
 
-[http://www.opixido.com/ocms/screen/viderCache.png]
+[http://www.opixido.com/ocms/screen/vider-cache.png]
 
  * CMS : fichiers qui génèrent le CMS
  * Pages : contenu des pages
