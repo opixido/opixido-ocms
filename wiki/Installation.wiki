@@ -1,0 +1,12 @@
+#labels Documentation
+= Installation =
+
+== Pré-requis ==
+
+[http://code.google.com/p/opixido-ocms/wiki/PreRequis Voir cette page]
+
+== Etapes ==
+
+(1)
+
+[http://www.opixido.com/ocms/screen/ocms_11.gif]
