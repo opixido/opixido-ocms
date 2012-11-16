@@ -9,6 +9,8 @@
   # Rendez-vous dans l'onglet "Contenu" de la page où vous souhaitez insérer le nouveau type de paragraphe
   # Dans la liste des paragraphes constituant la rubrique, cliquez sur le bouton "Nouveau" pour ajouter un paragraphe
 
+[http://www.opixido.com/ocms/screen/paragraphe/nouveau.png]
+
 Vous vous trouvez à présent dans l'onglet de création d'un paragraphe.
 Cliquez sur le bouton "Ajouter" à droite du premier champ pour créer un nouveau type de paragraphe
 
