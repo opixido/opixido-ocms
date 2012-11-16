@@ -2,6 +2,8 @@
 
 = Introduction =
 
+[http://code.google.com/p/opixido-ocms/wiki/ScreenShots ScreenShots]
+
 [http://code.google.com/p/opixido-ocms/wiki/Database Tables principales]
 
 = Details =
