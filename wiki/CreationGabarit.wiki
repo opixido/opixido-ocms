@@ -17,6 +17,8 @@
  * Créez, toujours dans le même dossier, un dossier qui va contenir le template du gabarit ("tpl" par exemple).
  * Créez dans le dossier "tpl" le template PHP ("nomDuPlugin.php" par exemple)
 
+[http://www.opixido.com/ocms/screen/gabarit/gabarit-arbo.png]
+
 === Insertion dans la base de données ===
 
  * Dans la table "s_gabarit" de votre base de données, créez une nouvelle ligne.
