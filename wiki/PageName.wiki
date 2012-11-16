@@ -14,7 +14,7 @@ Cliquez sur le bouton "Ajouter" à droite du premier champ pour créer un nouvea
 
   # Rentrez un titre
   # Dans le champ "Type Template", ajoutez le code source HTML/PHP du nouveau type de paragraphe *(1)*
-  # Définissez ensuite avec les boutons si ce nouveau type de paragraphe utilisera une image, un fichier, une table, du text et un lien
+  # Définissez ensuite avec les boutons si ce nouveau type de paragraphe utilisera une image, un fichier, une table, du text ou un lien
 
 
 *(1)*
