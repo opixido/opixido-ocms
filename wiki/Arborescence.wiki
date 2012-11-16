@@ -1,4 +1,4 @@
-#labels Featured
+#labels Documentation
 = L'arborescence =
 
 OCMS permet tout d’abord de créer l’arborescence du site, c’est-à-dire l’arbre des rubriques et sous-rubriques, puis de la modifier : ajout, suppression, déplacement de rubriques, etc.
@@ -31,8 +31,6 @@ Vous pouvez créer autant de sous-rubriques que souhaité.
 === Modification de l'ordre des rubriques ===
 
 Pour monter ou descendre une rubrique, sélectionnez celle qui est à modifier, puis sélectionnez "Monter" pour la monter ou "Descendre" pour la descendre.
-
-
 
 
 
