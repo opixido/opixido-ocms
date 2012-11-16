@@ -18,5 +18,4 @@
 = Autres =
 
  * [http://code.google.com/p/opixido-ocms/wiki/TextesParam Textes paramétrables]
-
  * [http://code.google.com/p/opixido-ocms/wiki/GestionLangues Gestion des langues]
