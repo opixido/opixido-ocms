@@ -5,45 +5,58 @@
 
 === Attributs ===
 
+
 //titre de la page
 
 private $title;
+
 
 //Meta Keywords
 
 private $meta_keywords;
 
+
 //Meta description
 
 private $meta_description;
 
+
 private $html_headers;
+
 
 public $titleSep = ' - ';
 
+
 public $firstBody = '';
 
+
 public $getAllCss = false;
+
 
 //text CSS
 
 public $cssTexts = '';
 
+
 //Liste des fichiers CSS
 
 public $cssFiles = array();
+
 
 //Liste des fichiers Javascript
 
 public $jsFiles = array();
 
+
 //Durée du cache
 
 public $fCacheTime = 86400;
 
+
 //Dossier du cache
 
 public $fCacheFolder = 'c';
+
 
 //Dossier à ajouter devant les CSS et JS
 
