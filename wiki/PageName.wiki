@@ -61,3 +61,46 @@ public $fCacheFolder = 'c';
 //Dossier à ajouter devant les CSS et JS
 
 public $addFolder = '';
+
+
+=== Methodes ===
+
+//Constructeur
+
+public function __construct($site)
+
+
+public function gen()
+
+
+public function getJsPath($fichiers)
+
+
+public function getCssPath($fichiers)
+
+
+public function addScript($nom, $addBase='', $group='base')
+
+public function addFirstBody($str)
+
+public function addCss($name, $group='page')
+
+public function addCssText($value)
+
+public function setTitle($str)
+
+public function addTitle($str)
+
+public function getTitle()
+
+public function setMetaKeywords($str)
+
+public function getMetaKeywords()
+
+public function setMetaDescription($str)
+
+public function getMetaDescription()
+
+public function addHtmlHeaders($str)
+
+public function getHtmlHeaders()
