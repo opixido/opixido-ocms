@@ -19,7 +19,7 @@
 
 = Rubriques =
 
- * [http://code.google.com/p/opixido-ocms/wiki/PrevisualisationPage Prévisualisation d'une page]
+ * [http://code.google.com/p/opixido-ocms/wiki/PageActions Actions sur une page]
 
 = Gestion des utilisateurs =
 
