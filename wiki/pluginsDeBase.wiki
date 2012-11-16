@@ -1,0 +1,16 @@
+#labels Documentation
+= Les plugins de base d'OCMS =
+
+ * Ocms_contact : création simple et rapide de formulaires de contact
+ * Ocms_download : ajout et gestion de documents à télécharger pour une page donnée
+ * Ocms_forum : création et gestion d’un forum
+ * Ocms_login : création et gestion d’un espace sécurisé pour les utilisateurs
+ * Ocms_news : création et gestion d’un système d’actualités
+ * Ocms_reaction : possibilité pour les visiteurs de commenter n’importe quelle rubrique
+ * Ocms_road : affichage du fil d’ariane
+ * Ocms_RSS : possibilité d’ajouter un flux RSS sur une ou plusieurs rubriques
+ * Ocms_search : recherche personnalisée (avec indexation du site)
+ * Ocms_sendToFriend : possibilité pour un visiteur de partager une page
+ * Ocms_siteMap : création automatique du plan du site
+ * Ocms_title : affichage automatique du titre de la page
+ * Ocms_vote : possibilité pour un utilisateur de voter 
