@@ -5,4 +5,4 @@ Lors de l’intégration du contenu, le contributeur est averti de ses modificat
 
 Ces messages permettent de confirmer au contributeur que ses modifications sont bien enregistrées et sont désormais visibles en ligne. Il en est de même lors de la suppression d’un article, d’une rubrique…Toutes actions nécessitent un enregistrement et une validation au préalable.
 
-[http://www.opiwido.com/ocms/screen/validation-modifs.png]
+[http://www.opixido.com/ocms/screen/validation-modifs.png]
