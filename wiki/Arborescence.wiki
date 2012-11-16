@@ -34,3 +34,5 @@ Vous pouvez créer des rubriques/sous-rubriques plus rapidement en sélectionnan
 === Modification de l'ordre des rubriques ===
 
 Pour monter ou descendre une rubrique, sélectionnez celle qui est à modifier, puis sélectionnez "Monter" pour la monter ou "Descendre" pour la descendre.
+
+[http://www.opixido.com/ocms/screen/arborescence/arbo-monter.png]
