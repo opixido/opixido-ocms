@@ -32,3 +32,4 @@
  * [http://code.google.com/p/opixido-ocms/wiki/GestionLangues Gestion des langues]
  * [http://code.google.com/p/opixido-ocms/wiki/Images Recadrage et accessibilité des images]
  * [http://code.google.com/p/opixido-ocms/wiki/SystemeCache Système de cache]
+ * [http://code.google.com/p/opixido-ocms/wiki/GestionnaireMAJ Les gestionnaire de mises à jour]
