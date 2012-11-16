@@ -1,8 +1,0 @@
-#labels Documentation
-= La prévisualisation d'une page et les autres actions =
-
-Une fois une page créée et enregistrée, il est possible de réaliser différentes actions :
-
-[http://www.opixido.com/ocms/screen/page-validation.png]
-
-La mise en ligne d’ajouts ou de modifications apportées à une rubrique n’est effectuée qu'une fois la rubrique concernée validée. Cette validation est accessible à l’administrateur, en fonction de son statut et de ses droits (cf. [http://code.google.com/p/opixido-ocms/wiki/GestionUtilisateurs page Gestion des utilisateurs]). Enfin il est possible de masquer temporairement une rubrique et de la réactiver quand vous le souhaitez. Ce système permet d’archiver vos contenus.
