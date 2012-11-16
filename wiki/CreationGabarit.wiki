@@ -79,6 +79,6 @@ Vous devriez obtenir cette arborescence :
 
 === Ajouter le gabarit dans une rubrique ===
 
-[http://www.opixido.com/ocms/screen/gabarit/gabarit-actu.png]
+[http://www.opixido.com/ocms/screen/gabarit/gabarit-actus.png]
 
   
