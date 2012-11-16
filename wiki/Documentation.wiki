@@ -17,6 +17,6 @@
 
 = Autres =
 
- * [Les plugins de base]
+ * [http://code.google.com/p/opixido-ocms/wiki/pluginsDeBase Les plugins de base]
  * [http://code.google.com/p/opixido-ocms/wiki/TextesParam Textes paramétrables]
  * [http://code.google.com/p/opixido-ocms/wiki/GestionLangues Gestion des langues]
