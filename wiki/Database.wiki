@@ -1,5 +1,8 @@
-#Base de donnée
+#Structure de la base de données du CMS
 
+[http://www.opixido.com/ocms/screen/ocms-structure.png]
+
+#Base de donnée
 
 [http://www.opixido.com/ocms/screen/droits.png]
 
