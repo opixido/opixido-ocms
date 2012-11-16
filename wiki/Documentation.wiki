@@ -30,3 +30,4 @@
 
  * [http://code.google.com/p/opixido-ocms/wiki/TextesParam Textes paramétrables]
  * [http://code.google.com/p/opixido-ocms/wiki/GestionLangues Gestion des langues]
+ * [http://code.google.com/p/opixido-ocms/wiki/Images Recadrage et accessibilité des images]
