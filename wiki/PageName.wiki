@@ -20,7 +20,11 @@ Dans le template, rentrez toute les balises HTML qui composeront votre paragraph
 Pour connaître tous les champs (et leur nom) que possède un paragraphe, reportez-vous à la section [http://code.google.com/p/opixido-ocms/wiki/Database Base de données]
 
 Pour ajouter par exemple le champ _paragraphe_titre_ , affichez dans le template le code : @@titre@@
+
 Faites de même pour les autres champs :
+
  * _paragraphe_contenu_ : @@text@@
  * _paragraphe_img_1_ : ##1##
  * _paragraphe_img_1_alt_ : @@alt_1@@
+ * _paragraphe_legend_1_ : @@legend_1@@
+ * _paragraphe_copyright_1_ : @@copyright_1@@
