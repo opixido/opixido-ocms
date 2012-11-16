@@ -30,9 +30,10 @@ Faites de même pour les autres champs :
 || _ paragraphe_img_1 _ || ##1## ||
 || _ paragraphe_img_1_alt _ || @@alt_1@@ ||
 || ... || ... ||
-|| _ paragraphe_legend_1 _ || @@legend_1@@ ||
+|| _ paragraphe_file_1_legend_1 _ || @@legend_1@@ ||
 || ... || ... ||
-|| _ paragraphe_copyright_1 _ || @@copyright_1@@ ||
+|| _ paragraphe_img_1_copyright_1 _ || @@copyright_1@@ ||
+|| ... || ... ||
 || _ paragraphe_link_1 _ || @@link1@@ ||
 || _ paragraphe_file_1 _ || @@file1@@ ||
 
