@@ -25,6 +25,7 @@ Pour ajouter par exemple le champ _paragraphe_titre_ , affichez dans le template
 
 Faites de même pour les autres champs :
 || *Attribut BD* || *nom dans le template* ||
+|| _ paragraphe_titre _ || @@titre@@ ||
 || _ paragraphe_contenu _ || @@text@@ ||
 || _ paragraphe_img_1 _ || ##1## ||
 || _ paragraphe_img_1_alt _ || @@alt_1@@ ||
