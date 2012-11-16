@@ -64,6 +64,7 @@ Nous allons voir dans cet exemple comment créer un gabarit simple mais très ut
   # dans le dossier "forms", un fichier "actualites.forms.php"
 
 Vous devriez obtenir cette arborescence :
+
 [http://www.opixido.com/ocms/screen/gabarit/gabarit-arbo-actualites.png]
 
  ...
