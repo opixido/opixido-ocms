@@ -9,3 +9,5 @@ L’identification se fait par login/mot de passe et est sécurisée (mot de pas
 Selon vos besoins, nous créerons différents profils avec différentes restrictions (accès ou non à certaines rubriques, les validations obligatoires…).
 
 [http://www.opixido.com/ocms/screen/droits/droits-utilisateurs.png]
+
+== Créer un rôle ==
