@@ -9,7 +9,9 @@ Les textes paramétrables sont des mots/textes que vous pouvez ajouter dans gaba
 
 Pour ajouter un texte paramétrable dans du code, il suffit simplement d'appeler la fonction _t()_ en lui ajoutant en paramètre l'_id_ du texte (une chaîne de caractère).
 
-Ensuite, 
+Pour définir le texte, rendez-vous dans la partie administration, sélectionnez "Textes paramétrables".
+
+[http://www.opixido.com/ocms/screen/textesParam/lien.png]
 
 == Exemple et démonstration ==
 
