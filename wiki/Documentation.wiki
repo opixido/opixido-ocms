@@ -20,6 +20,7 @@
 = Rubriques =
 
  * [http://code.google.com/p/opixido-ocms/wiki/PageActions Actions sur une page]
+ * [http://code.google.com/p/opixido-ocms/wiki/Referencement Le référencement]
 
 = Gestion des utilisateurs =
 
