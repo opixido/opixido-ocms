@@ -15,6 +15,14 @@
   * [http://code.google.com/p/opixido-ocms/wiki/CreationGabarit Création d'un nouveau gabarit de page]
   * Création d'un plugin complet
 
+= Rubriques =
+
+ * [http://code.google.com/p/opixido-ocms/wiki/PrevisualisationPage Prévisualisation d'une page]
+
+= Gestion des utilisateurs =
+
+ * [http://code.google.com/p/opixido-ocms/wiki/GestionUtilisateurs Gestion des utilisateurs]
+
 = Autres =
 
  * [http://code.google.com/p/opixido-ocms/wiki/pluginsDeBase Les plugins de base]
