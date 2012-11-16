@@ -1,5 +1,5 @@
 #labels Documentation
-= Outils de redimensionnement, de découpage net de recadrage des images  =
+= Les images  =
 
 == Vos images valorisées ==
 
