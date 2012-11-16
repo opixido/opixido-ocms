@@ -7,7 +7,7 @@ Si un contenu n’existe pas dans une langue, l'OCMS va chercher automatiquement
 
 [http://www.opixido.com/ocms/screen/gestion-langues.png]
 
-== Gestion multilingue/UTF-8 par défaut ==
+== Gestion multilingue / UTF-8 par défaut ==
 
 [http://www.opixido.com/ocms/screen/ocms_9.gif]
 
