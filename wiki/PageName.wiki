@@ -28,3 +28,7 @@ Faites de même pour les autres champs :
  * _paragraphe_img_1_alt_ : @@alt_1@@
  * _paragraphe_legend_1_ : @@legend_1@@
  * _paragraphe_copyright_1_ : @@copyright_1@@
+ * _paragraphe_link_1_ : @@link1@@
+ * _paragraphe_file_1 : @@file1@@
+ * Autres : @@file1_url@@, @@file1_size@@, @@file1_type@@, @@file1_name@@, @@file1_legend@@, @@lien_popup@@
+
