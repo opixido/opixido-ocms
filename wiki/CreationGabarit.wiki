@@ -2,6 +2,8 @@
 
 == Mise en place ==
 
+=== Création des dossiers et fichiers PHP ===
+
  * Commencez par vous rendre dans le dossier "plugins" (nomDuProjet/include/plugins) de votre projet
 
  * Créez-y un dossier, avec pour nom le nom de votre futur plugin(pas d'espace ni de caractère spécial)
@@ -11,8 +13,17 @@
 
  * Créez un fichier PHP front.php qui sera automatiquement parcouru. Vous pourrez y déclarer vos classes utiles au fonctionnement du plugin.
 
- * Créez un dossier contenant le template du gabarit ("tpl" par exemple).
-puis créez-y le template PHP ("nomDuPlugin.php" par exemple)
+ * Créez, toujours dans le même dossier, un dossier qui va contenir le template du gabarit ("tpl" par exemple).
+ * Créez dans le dossier "tpl" le template PHP ("nomDuPlugin.php" par exemple)
+
+=== Insertion dans la base de données ===
+
+ * Dans la table "s_gabarit" de votre base de données, créez une nouvelle ligne.
+
+ * Insérez les champs suivants :
+  # _ gabarit_titre _ : un titre pour le plugin
+  # _ gabarit_classe _ : la classe déclarée dans votre fichier générant le template ("genNomDuPlugin")
+  # _ gabarit_plugin _ : le nom du premier dossier créé.
 
 
 == Un exemple : Actualités == 
