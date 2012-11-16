@@ -22,8 +22,8 @@
  * Dans la table "s_gabarit" de votre base de données, créez une nouvelle ligne.
 
  * Insérez les champs suivants :
-|| gabarit_titre || gabarit_classe || gabarit_plugin ||
-|| titre du gabarit || titre de la classe || nom du dossier ||
+|| ... || gabarit_titre || ... || gabarit_classe || ... || gabarit_plugin ||
+|| ... || titre du gabarit || ... || titre de la classe || ... || nom du dossier ||
 
 === Ajouter le gabarit dans une rubrique ===
 
