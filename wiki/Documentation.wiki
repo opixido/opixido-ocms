@@ -6,7 +6,7 @@
 
 = Details =
 
-  * Installation
+  * [http://code.google.com/p/opixido-ocms/wiki/Installation Installation]
   * [http://code.google.com/p/opixido-ocms/wiki/Arborescence Création de l'arborescence]
   * Création d'un template/thème
   * [http://code.google.com/p/opixido-ocms/wiki/TypesParagraphe Création des types de paragraphes]
