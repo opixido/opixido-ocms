@@ -14,3 +14,7 @@
   * [http://code.google.com/p/opixido-ocms/wiki/TypesParagraphe Création des types de paragraphes]
   * [http://code.google.com/p/opixido-ocms/wiki/CreationGabarit Création d'un nouveau gabarit de page]
   * Création d'un plugin complet
+
+= Autres =
+
+ * [http://code.google.com/p/opixido-ocms/wiki/TextesParam Textes paramétrables]
