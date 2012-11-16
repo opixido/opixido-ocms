@@ -9,7 +9,7 @@
  * Créez-y un dossier, avec pour nom le nom de votre futur plugin(pas d'espace ni de caractère spécial)
  * Créez-y le fichier PHP qui va générer le gabarit. De préférence un nom évocateur comme "genNomDuPlugin".
   # Dans ce fichier, déclarez votre classe ("genNomDuPlugin")
-*ATTENTION : le fichier PHP générant le gabarit doit porter le même nom que la classe déclarée.*
+  # ATTENTION : le fichier PHP générant le gabarit doit porter le même nom que la classe déclarée.*
 
  * Créez un fichier PHP front.php qui sera automatiquement parcouru. Vous pourrez y déclarer vos classes utiles au fonctionnement du plugin.
 
@@ -27,13 +27,18 @@
 
 === Ajouter le gabarit dans une rubrique ===
 
- * Rendez-vous sur la page d'administration du site (monSite/admin)
+ * Rendez-vous sur la page d'administration de votre site (monSite/admin)
  * Cliquez sur le lien "Plugins" dans "Dev".
- * Sélectionnez ensuite "Ajouter un élément", sélectionnez votre nouveau plugin, puis enregistrez. Cliquez ensuite sur "Installer".
+ * Sélectionnez "Ajouter un élément", sélectionnez votre nouveau plugin, puis enregistrez. Cliquez ensuite sur "Installer".
  * Rendez-vous ensuite dans la gestion du contenu et sélectionnez la page où vous souhaitez insérer votre nouveau gabarit.
  * Cliquez sur "Modifer"
  * Dans l'onglet "Paramètres", sélectionnez votre nouveau gabarit (champ "gabarit spécial"), puis enregistrez et validez.
 
 
 == Un exemple : Actualités == 
+
+
+
+
+
   
