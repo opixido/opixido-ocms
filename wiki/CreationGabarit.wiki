@@ -77,4 +77,8 @@ Vous devriez obtenir cette arborescence :
 || gabarit_titre || gabarit_classe || gabarit_plugin ||
 || Actualités || genActualites || actualites ||
 
+=== Ajouter le gabarit dans une rubrique ===
+
+[http://www.opixido.com/ocms/screen/gabarit/gabarit-actu.png]
+
   
