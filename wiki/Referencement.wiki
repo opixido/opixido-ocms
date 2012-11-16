@@ -1,0 +1,5 @@
+= Le référencement =
+
+A chaque rubrique peuvent être associés des mots-clés et une description du contenu, permettant aux moteurs de recherche d’indexer au mieux le site. En outre les urls sont construites dynamiquement à partir du titre des rubriques, de manière à ce qu'elles soient explicites, ce qui améliore également le référencement.
+
+[http://www.opiwido.com/ocms/screen/referencement.png]
