@@ -25,6 +25,15 @@
   # _ gabarit_classe _ : la classe déclarée dans votre fichier générant le template ("genNomDuPlugin")
   # _ gabarit_plugin _ : le nom du premier dossier créé.
 
+=== Ajouter le gabarit dans une rubrique ===
+
+ * Rendez-vous sur la page d'administration du site (monSite/admin)
+ * Cliquez sur le lien "Plugins" dans "Dev".
+ * Sélectionnez ensuite "Ajouter un élément", sélectionnez votre nouveau plugin, puis enregistrez. Cliquez ensuite sur "Installer".
+ * Rendez-vous ensuite dans la gestion du contenu et sélectionnez la page où vous souhaitez insérer votre nouveau gabarit.
+ * Cliquez sur "Modifer"
+ * Dans l'onglet "Paramètres", sélectionnez votre nouveau gabarit (champ "gabarit spécial"), puis enregistrez et validez.
+
 
 == Un exemple : Actualités == 
   
