@@ -89,6 +89,7 @@ Vous devriez obtenir cette arborescence :
   # Un identifiant : "actualite_id" (INT (11) en auto-incrémente)
   # Le nom de l'actualité : "actualite_nom_fr" (VARCHAR) (ajoutez de même "actualite_nom_en" pour la version anglaise. Plus d'infos sur la gestion multilingue [http://code.google.com/p/opixido-ocms/w/ ici])
   # Le contenu de l'actualité : "actualite_contenu_fr" (TEXT)
+  # Une image ! "actualite_img" (VARCHAR)
   # Une date : "actualite_date" (DATETIME)
   # Un booléen pour la mise en ligne : "en_ligne" (TINYINT(1))
 
@@ -97,6 +98,7 @@ Vous devriez obtenir cette arborescence :
 || actualite_titre_en || VARCHAR(250) ||
 || actualite_contenu_fr || TEXT ||
 || actualite_contenu_en || TEXT ||
+|| actualite_img || VARCHAR(250) ||
 || actualite_date || DATETIME ||
 || en_ligne || TINYINT(1) ||
 
