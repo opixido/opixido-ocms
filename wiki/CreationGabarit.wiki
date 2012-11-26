@@ -212,7 +212,7 @@ class genActualites extends ocmsGen
     $tpl = new genTemplate();
     $tpl->loadTemplate('actualites', 'plugins/actualites/tpl');
 
-    //On récupère les données de lta ble a_actualite
+    //On récupère les données de la table a_actualite
     $actualites = doSql(' SELECT * FROM a_actualite WHERE en_ligne=1 ORDER BY actualite_date');
 
     if($actualites->recordCount()>0)
