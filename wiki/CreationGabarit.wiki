@@ -1,7 +1,7 @@
 #labels Documentation
 = Création d'un nouveau gabarit de page =
 
-<h2><a href="#mise_en_place">Mise en place</a</h2>
+<h2><a href="#mise_en_place">Mise en place</a></h2>
 
 
 
