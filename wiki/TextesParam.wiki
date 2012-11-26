@@ -9,7 +9,7 @@ Les textes paramétrables sont des mots/textes que vous pouvez ajouter dans gaba
 
 Pour ajouter un texte paramétrable dans du code, il suffit simplement d'appeler la fonction _t()_ en lui ajoutant en paramètre l'_id_ du texte (une chaîne de caractère).
 
-Pour définir le texte, rendez-vous dans la partie administration, sélectionnez "Textes paramétrables".
+Pour définir ou modifier le texte, rendez-vous dans la partie administration, sélectionnez "Textes paramétrables".
 
 [http://www.opixido.com/ocms/screen/textesParam/lien.png]
 
@@ -24,22 +24,3 @@ Ensuite, rendez-vous dans la partie admin, "Textes paramétrables", et cliquez s
 Rentrez l'_id_ de votre texte paramétrable (_ voir_les_actus _) et entrez la traduction du texte. Vous pouvez le traduire en autant de langues que disponibles :
 
 [http://www.opixido.com/ocms/screen/textesParam/id.png]
-
-== Appel et insertion dans le développement ==
-
-=== Fonction _t()_ ===
-
-Pour afficher un texte paramétrable, il suffit simplement d'afficher le résultat de la fonction _t()_.
-Cette fonction prend en paramètre l'identifiant du texte paramétrable.
-
-=== Exemple ===
-
- * Insérez dans votre code l'appel de la fonction
-
-<code language="PHP">
-<div class="titre"><h1><?php echo t('page_accueil'); ?></h1></div>
-</code>
-
- * Ajoutez l'identifiant (ici '_page`_`accueil_') dans le back-office.
-
- * En fonction de la langue, le texte s'affichera
