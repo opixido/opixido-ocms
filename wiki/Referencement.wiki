@@ -16,3 +16,8 @@ A chaque rubrique peuvent être associés des mots-clés et une description du c
 Comme vous pouvez le voir sur l'image ci-dessous, les mots clés et la description ont bien été intégrés dans l'entête de la page.
 
 [http://www.opixido.com/ocms/screen/referencement-code-source.png]
+
+== modification des entêtes (Header) ==
+
+Il est possible, lors de la création d'un Gabarit/plugin, de modifier les entêtes HTML du site (balises Meta, Titre de page, ...).
+Plus d'informations [http://code.google.com/p/opixido-ocms/wiki/Divers#Header_de_page sur cette page]
