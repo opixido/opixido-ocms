@@ -66,6 +66,8 @@ $this->genlg('nomTable_contenu');
 ?>
 </code>
 
+<h3>Options</h3>
+
  * Pour ajouter un WYSIWYG au champ contenu, insérez la ligne suivante dans le _config.php_ : 
 
 <code>$rteFields[] = 'nomTable_contenu';</code>
@@ -99,6 +101,36 @@ $neededFields[] = "nomTable_titre";
 
  * Les champs de type mail  :
 <code>$mailFields[] = 'nonChamp_mail'</code>
+
+
+<h3>les relations en tables</h3>
+
+ * Pour ajouter une relation de simple clé externe :
+
+<code>
+$relations['nomTable']['fk_champ'] = 'fk_nomTable';
+
+//Exemple :
+$relations['a_actualite']['fk_image_id'] = 'a_image';
+</code>
+
+ * Relation inverse (les entrées de x tables qui pointent vers ma table) :
+
+<code>
+$relinv['table_parente']['NOM_DU_FAUX_CHAMP'] = array('table_fille','CLEF EXTERNE');
+
+//Exemple :
+$relinv['a_actualite']['PARAGRAPHES'] = array('s_paragraphe','fk_actualite_id');
+</code>
+
+ * les tables de relation (n, n) :
+
+<code>
+$tablerel['r_table_relation'] = array('FK_CHAMP1'=>'FK_TABLE1','FK_CHAMP2'=>'FK_TABLE2');
+
+//Exemple :
+$tablerel['actualite_theme'] = array('fk_actualite_id'=>'a_actualite','fk_theme_id'=>'a_theme');
+</code>
 
 
 <h2><u>Un exemple : gestion des actualités</u></h2>
