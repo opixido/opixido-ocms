@@ -60,7 +60,7 @@ $tabForms['a_actualite']['pages']['Actualité'] = array('../plugins/actualites/f
 //Le tableau doit contenir le chemin vers notre fichier de formulaire
 </code>
 
- * dans le fichier créé (_actualite.form.php_), générez chaque champ utile comme ceci :
+ * Dans le fichier créé (_actualite.form.php_), générez chaque champ utile comme ceci :
 
 <code>
 <?php
@@ -78,6 +78,10 @@ $this->gen('en_ligne');
 
 <code>$rteFields[] = 'actualite_contenu';</code>
 
- * pour ajouter l'upload d'image au champ 'actualite_img' : 
+ * Pour ajouter l'upload d'image au champ 'actualite_img' : 
 
 <code>$uploadFields[] = 'actualite_img';</code>
+
+ * Pour ajouter des champs de recherche :
+
+<code>$searchField['a_actualite'] = array('actualite_date', 'actualite_titre', 'actualite_img','actualite_contenu','en_ligne');</code>
