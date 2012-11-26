@@ -76,6 +76,14 @@ $this->genlg('nomTable_contenu');
 
 <code>$uploadFields[] = 'nomTable_img';</code>
 
+  # Pour recadrer automatiquement une image (en pixels) :
+
+  <code>$_Gconfig['imageAutoResize'] = array('nomChamp_img'=>array(maxWidth,maxHeight));</code>
+
+ * Pour ajouter un champ de couleur :
+
+<code>$_Gconfig['colorFields'][] = 'nomChamp_color';</code>
+
  * Pour ajouter des champs de recherche :
 
 <code>
@@ -90,7 +98,7 @@ $admin_trads["nomTable.nomTable_titre_fr"]["fr"] = "Titre";
 // ...
 </code>
 
- * les champs obligatoires : 
+ * Les champs obligatoires : 
 
 <code>
 $neededFields[] = "nomTable_titre";
@@ -102,8 +110,18 @@ $neededFields[] = "nomTable_titre";
  * Les champs de type mail  :
 <code>$mailFields[] = 'nonChamp_mail'</code>
 
+ * Les champs de type Password :
 
-<h3>les relations en tables</h3>
+<code>$_Gconfig['passwordFields'][] = 'nomChamp_password';</code>
+
+ * Les champs de type ordre :
+
+<code>$orderFields['nomTable'] = array('nomChamp_ordre'</code>
+
+
+
+
+<h3>Les relations en tables</h3>
 
  * Pour ajouter une relation de simple clé externe :
 
@@ -112,6 +130,15 @@ $relations['nomTable']['fk_champ'] = 'fk_nomTable';
 
 //Exemple :
 $relations['a_actualite']['fk_image_id'] = 'a_image';
+</code>
+
+ * les tables de relation (n, n) :
+
+<code>
+$tablerel['r_table_relation'] = array('FK_CHAMP1'=>'FK_TABLE1','FK_CHAMP2'=>'FK_TABLE2');
+
+//Exemple :
+$tablerel['actualite_theme'] = array('fk_actualite_id'=>'a_actualite','fk_theme_id'=>'a_theme');
 </code>
 
  * Relation inverse (les entrées de x tables qui pointent vers ma table) :
@@ -123,14 +150,6 @@ $relinv['table_parente']['NOM_DU_FAUX_CHAMP'] = array('table_fille','CLEF EXTERN
 $relinv['a_actualite']['PARAGRAPHES'] = array('s_paragraphe','fk_actualite_id');
 </code>
 
- * les tables de relation (n, n) :
-
-<code>
-$tablerel['r_table_relation'] = array('FK_CHAMP1'=>'FK_TABLE1','FK_CHAMP2'=>'FK_TABLE2');
-
-//Exemple :
-$tablerel['actualite_theme'] = array('fk_actualite_id'=>'a_actualite','fk_theme_id'=>'a_theme');
-</code>
 
 
 <h2><u>Un exemple : gestion des actualités</u></h2>
