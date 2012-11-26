@@ -1,0 +1,3 @@
+<h1>Créer la gestion d'un gabarit/plugin dans le back-office</h1>
+
+<h2></h2>
