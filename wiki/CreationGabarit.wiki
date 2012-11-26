@@ -112,4 +112,14 @@ Les types de champs et attributs générés automatiquement par OCMS sont listé
  * Voici à quoi devrait finalement ressembler votre template :
 [http://www.opixido.com/ocms/screen/gabarit/gabarit-actualites-template.png]
   
-===  ===
+=== Développement ===
+
+ * Ouvrez le fichier genActualites.php
+ * Si ce n'est pas encore fait, définissez-y la classe _genActualites_ héritant d'_ocmsGen_
+ * Créez une fonction _gen()_
+
+C'est dans la fonction _gen()_ que nous développerons tout le traitement.
+ * Déclarez le template précédemment créé :
+<code>$tpl = new genTemplate();
+$tpl->loadTemplate('actualites', 'plugins/actualites/tpl');
+</code>
