@@ -314,7 +314,7 @@ public function genActualite()
   {
     //On charge le nouvau template
     $tpl = new genTemplate();
-    $tpl->loadTemplate('actualite', 'plugins/actualite/tpl');
+    $tpl->loadTemplate('actualite', 'plugins/actualites/tpl');
 
     //On affecte les valeurs aux variables du template
     $tpl->img = $this->actualite->getImg();
@@ -357,6 +357,13 @@ class genActualites extends ocmsGen
          $this->actualite = new Actualite($res);
        }
     }
+  }
+
+  function gen()
+  {
+    //On vérifie si une actualite existe
+    if($this->actualite) return $this->genActualite();
+    else return $this->genListeActualites();
   }
 
   //...
