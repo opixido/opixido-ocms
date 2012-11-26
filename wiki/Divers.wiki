@@ -44,6 +44,11 @@ $this->site->g_headers->getJsPath($listeFichiers);
  * Récupérer l'Id de la rubrique
 <code>echo $this->site->g_rubrique->rubrique_id;</code>
 
- * Récupérer
-<code>echo $this->site->g_rubrique;</code>
+ * Récupérer les paragraphes de la rubrique
+<code>$this->site->g_rubrique->getParagraphes();</code>
 
+ * Afficher ou masquer les paragraphes de la rubrique
+<code>
+$this->site->g_rubrique->showParagraphes=false;
+$this->site->g_rubrique->showParagraphes=true;
+</code>
