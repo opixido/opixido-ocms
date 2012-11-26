@@ -12,7 +12,7 @@
 global $tabForms,$uploadFields,$_Gconfig,$relinv,$orderFields,$admin_trads, $gs_roles, $rteFields, $relations, $tablerel, $basePath, $admin_trads,$searchField;
 </code>
 
- * Pour ajouter un lien vers la gestion dans le back-office : 
+ * Pour ajouter un lien/bouton vers la gestion dans le back-office : 
 
 <code>
 $_Gconfig['bigMenus']['nomGabarit'][] = 'nomTable';
