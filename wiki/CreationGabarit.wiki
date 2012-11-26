@@ -370,3 +370,5 @@ class genActualites extends ocmsGen
   //...
 }
 </code>
+
+Pour ajouter ensuite dans le back-office la gestion des Actualités, rendez-vous sur [GabaritBO cette page]
