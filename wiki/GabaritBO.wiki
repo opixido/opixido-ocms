@@ -76,7 +76,10 @@ $this->genlg('nomTable_contenu');
 
  * Pour ajouter des champs de recherche :
 
-<code>$searchField['nomTable'] = array('nomTable_titre');</code>
+<code>
+//Listez tous les champs de recherche
+$searchField['nomTable'] = array('nomTable_titre');
+</code>
 
  * Les traductions :
 
