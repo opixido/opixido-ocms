@@ -40,6 +40,6 @@ Cette fonction prend en paramètre l'identifiant du texte paramétrable.
 <div class="titre"><h1><?php echo t('page_accueil'); ?></h1></div>
 </code>
 
- * Ajoutez l'identifiant (ici 'page_accueil') dans le back-office.
+ * Ajoutez l'identifiant (ici '_page`_`accueil_') dans le back-office.
 
  * En fonction de la langue, le texte s'affichera
