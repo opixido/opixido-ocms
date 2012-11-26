@@ -1,0 +1,11 @@
+<h1>Divers</h1>
+
+<h2>Header de page</h2>
+
+ * Dans le init() ou afterinit() du plugin :
+
+  # Ajouter un fichier CSS : 
+<code>$this->site->g_headers->addCss('fichier.css');</code>
+
+  # Ajouter un fichier Javasript :
+<code></code>
