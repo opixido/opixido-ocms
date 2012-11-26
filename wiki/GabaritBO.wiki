@@ -39,7 +39,7 @@ $tabForms["a_actualite"]["picto"] = ADMIN_PICTOS_FOLDER."32x32/apps/internet-new
 
 *Important: n'oubliez pas de rajouter le plugin dans le back-office et de l'installer!*
 
-<h2>Afficher la liste des actualités</h2>
+<h3>Afficher la liste des actualités</h3>
 
  * Cliquez sur le bouton pour afficher la liste des actualités.
 
@@ -51,7 +51,7 @@ $tabForms['a_actualite']['titre'] = array('actualite_date', 'actualite_titre', '
 //'titre' : pour définir les champs à lister
 </code>
 
-<h2>Créer le formulaire d'ajout</h2> 
+<h3>Créer le formulaire d'ajout</h3> 
 
  * Dans le dossier "_forms_", créez, si ce n'est pas déjà fait, un fichier PHP nommé "_actualite.form.php_".(_include/plugins/actualites/forms/actualite.form.php_).
 Il contiendra la liste des attributs de la base de données à générer dans le formulaire
