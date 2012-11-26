@@ -282,8 +282,9 @@ class genActualites extends ocmsGen
 === Développement de l'affichage d'une actualité ===
 
  * Créez un nouveau template "_actualite.php_" dans le dossier "tpl".
+[http://www.opixido.com/ocms/screen/gabarit/gabarit-actualite-template.png]
 
- * Rajoutez dans la classe Actualite (front.php) une fonction permettant de récupérer l'url de l'actualité : 
+ * Rajoutez dans la classe Actualite déclarée précédemment une fonction permettant de récupérer l'url de l'actualité : 
 
 <code language="php">
 class Actualite extends ocmsGen
@@ -296,7 +297,9 @@ class Actualite extends ocmsGen
     return getUrlFromId(getRubriqueByGabarit('genActualites'), LG, array('actualite'=>$this->actualite_id));
   } 
 
-  //...
+  //getUrlFromId permet de récupérer l'Url complet d'une page grâce à son Id. On peut rajouter la langue et d'autres paramètres.
+  //getRubriqueByGabarit permet de récupérer l'id de la page grâce au gabarit
+  //On ajoute la langue (constante LG) et une actualite en paramètres
 }
 </code>
 
