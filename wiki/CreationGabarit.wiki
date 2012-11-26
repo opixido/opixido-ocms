@@ -112,15 +112,23 @@ Vous pouvez trouver la liste des attributs OCMS : ocms_date_online, ocms_date_of
  * Voici à quoi devrait finalement ressembler votre template :
 <code language="html">
 <div id="actualites">
+
 <h1>Actualités</h1>
+
 <!-- Debut de la boucle -->
 <ACTUALITE>
+
 <div class="actualite">
+
 <h2>@@titre@@</h2>
+
 <p>@@contenu@@</p>
+
 </div>
+
 </ACTUALITE>
 <!-- Fin de la boucle -->
+
 </div>
 </code>
   
