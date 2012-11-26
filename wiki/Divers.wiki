@@ -17,15 +17,23 @@
 <code>$this->site->g_headders->addScript('monScript.js')</code>
 
  * Ajouter du texte HTML :
-<code>$this->site->g_headers->addHtmlHeaders($text)</code>
+<code>$this->site->g_headers->addHtmlHeaders($text);</code>
 
  * Modifier le titre de la page
 <code>$this->site->g_headers->setTitle('Nouveau Titre');</code>
 
  * Modifier la balise Meta de description :
-<code>$this->site->g-headers->setMetaDescription('Nouvelle description')</code>
+<code>$this->site->g-headers->setMetaDescription('Nouvelle description');</code>
 
  * Modifier la balise Meta de mots-clés :
-<code>$this->site->g_headers->setMetaKeywords('nouveau, mot, clé')</code>
+<code>$this->site->g_headers->setMetaKeywords('nouveau, mot, clé');</code>
 
- * 
+ * Récupérer le titre de la page, la description, les mots-clés, le HTML du header et les chemins CSS et JS de fichiers :
+<code>
+$this->site->g_headers->getTitle();
+$this->site->g_headers->getMetaDescription();
+$this->site->g_headers->getMetaKeywords();
+$this->site->g_headers->getHtmlHeaders();
+$this->site->g_headers->getCssPath($listeFichiers);
+$this->site->g_headers->getJsPath($listeFichiers);
+</code>
