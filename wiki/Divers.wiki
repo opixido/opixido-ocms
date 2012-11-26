@@ -35,19 +35,26 @@ $this->site->g_headers->getMetaDescription();
 $this->site->g_headers->getMetaKeywords();
 $this->site->g_headers->getHtmlHeaders();
 $this->site->g_headers->getCssPath($listeFichiers);
-$this->site->g_headers->getJsPath($listeFichiers);
-</code>
+$this->site->g_headers->getJsPath($listeFichiers);</code>
 
 
 == Rubrique ==
 
- * Récupérer l'Id de la rubrique
-<code>echo $this->site->g_rubrique->rubrique_id;</code>
+ * Récupérer l'Id de la rubrique :
+<code>$this->site->g_rubrique->rubrique_id;</code>
 
- * Récupérer les paragraphes de la rubrique
+ * Récupérer les paragraphes de la rubrique :
 <code>$this->site->g_rubrique->getParagraphes();</code>
 
- * Afficher ou masquer les paragraphes de la rubrique
+ * Récupérer le chemin complet et le titre de la rubrique :
+<code>$this->site->g_rubrique->getFullTitle();</code>
+
+ * Récupérer toutes les sous-rubriques de la rubrique (ligne de la table _s_rubrique_) :
+<code>$this->site->g_rubrique->getSubRubs()</code>
+
+ * Afficher ou masquer les paragraphes de la rubrique :
 <code>
 $this->site->g_rubrique->showParagraphes=false;
 $this->site->g_rubrique->showParagraphes=true;</code>
+
+ * 
