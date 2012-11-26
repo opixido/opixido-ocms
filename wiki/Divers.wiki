@@ -1,6 +1,6 @@
 <h1>Divers</h1>
 
-<h2>Header de page</h2>
+==Header de page==
 
 *Dans le init() ou afterinit() du plugin :*
 
