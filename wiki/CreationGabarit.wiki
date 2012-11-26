@@ -102,17 +102,7 @@ Vous devriez obtenir cette arborescence :
 || actualite_date || DATETIME ||
 || en_ligne || TINYINT(1) ||
 
-Les attributs gérés automatiquement par OCMS : 
-|| *ocms_date_modif* || Date de modification ||
-|| *ocms_date_crea* || Date de création de la ligne ||
-|| *ocms_date_online* || Date de mise en ligne (date à partir de laquelle la ligne est prise en compte) ||
-|| *ocms_date_offline* || Date à partir de laquelle la ligne n'est plus prise en compte ||
-|| *ocms_creator* || Identifiant de l'administrateur qui a créé la ligne ||
-
-Les types de champs :
-|| *Type* || *Fin* ||
-|| Mail || `_mail`, `_couriel`, `_email` ||
-|| Url || `_url`, `_url_`, `_link_1`, `_link`, `_lien_` ||
+Les types de champs et attributs générés automatiquement par OCMS sont listés [http://code.google.com/p/opixido-ocms/wiki/configurationBO sur cette page]
 
 === Création du template de la liste des actualités ===
 
