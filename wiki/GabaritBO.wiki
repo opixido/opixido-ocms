@@ -5,6 +5,12 @@
 
 
 
+ * Les champs de type url : 
+<code>$urlFields[] = 'nomChamp_url';</code>
+
+ * Les champs de type mail  :
+<code>$mailFields[] = 'nonChamp_mail'</code>
+
 <h2><u>Un exemple : gestion des actualités</u></h2>
 
 <h3>Ajouter les actualités dans le back-office</h3>
@@ -85,3 +91,23 @@ $this->gen('en_ligne');
  * Pour ajouter des champs de recherche :
 
 <code>$searchField['a_actualite'] = array('actualite_date', 'actualite_titre', 'actualite_img','actualite_contenu','en_ligne');</code>
+
+ * Les traductions :
+
+<code>
+$admin_trads["a_actualite.actualite_titre_fr"]["fr"] = "Titre de l'actualité (FR)";
+$admin_trads["a_actualite.actualite_titre_en"]["fr"] = "Titre de l'actualité (EN)";
+$admin_trads["a_actualite.actualite_contenu_fr"]["fr"] = "Contenu de l'actualité (FR)";
+$admin_trads["a_actualite.actualite_contenu_en"]["fr"] = "Contenu de l'actualité (EN)";
+$admin_trads["a_actualite.actualite_img"]["fr"] = "Image de l'actualité";
+$admin_trads["a_actualite.actualite_date"]["fr"] = "Date de l'actualité";
+$admin_trads["a_actualite.en_ligne"]["fr"] = "En ligne";
+</code>
+
+ * les champs obligatoires : 
+
+<code>
+$neededFields[] = "actualite_titre";
+$neededFields[] = "actualite_contenu";
+$neededFields[] = "en_ligne";
+</code>
