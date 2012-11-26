@@ -127,7 +127,7 @@ Plus d'infos sur la fonction _t()_ et les textes paramétrables [http://code.goo
 class Actualite extends row 
 {
   function __construct( $roworid) {  
-    parent::__construct('p_actualite', $roworid);
+    parent::__construct('a_actualite', $roworid);
   }
 
   function getTitle() 
@@ -151,6 +151,8 @@ class Actualite extends row
   
 }
 </code>
+
+Vous pouvez déclarer cette classe dans _genActualités.php_ ou même dans _config.php_
 
 === Développement de la liste des actualités ===
 
@@ -279,7 +281,7 @@ class genActualites extends ocmsGen
 
 === Développement de l'affichage d'une actualité ===
 
-
+ * Créez un nouveau template "_actualite.php_" dans le dossier "tpl".
 
  * Rajoutez dans la classe Actualite (front.php) une fonction permettant de récupérer l'url de l'actualité : 
 
@@ -294,6 +296,37 @@ class Actualite extends ocmsGen
     return getUrlFromId(getRubriqueByGabarit('genActualites'), LG, array('actualite'=>$this->actualite_id));
   } 
 
-  //
+  //...
+}
+</code>
+
+ * Dans la classe genActualites, renommez la fonction _gen()_ en _genListeActualites()_ par exemple.
+ * Ajoutez une fonction _genActualite()_ pour l'affichage d'une seule actualité
+
+<code language="PHP">
+public function genActualite()
+{
+  //On vérifie que l'actualité est en paramètre et existe (explication plus bas)
+  if($this->actualite)
+  {
+    //On charge le nouvau template
+    $tpl = new genTemplate();
+    $tpl->loadTemplate('actualite', 'plugins/actualite/tpl');
+
+    //On affecte les valeurs aux variables du template
+    $tpl->img = $this->actualite->getImg();
+    $tpl->titre = $this->actualite->actualite_titre;
+    $tpl->date = $this->actualite->actualite_date;
+    $tpl->contenu = $this->actualite->actualite_contenu;
+  }
+}
+</code>
+
+ * Redéclarez une fonction _gen()_ comme ceci :
+
+<code language="PHP">
+public function gen()
+{
+  return $this->genListeActualites();
 }
 </code>
