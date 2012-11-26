@@ -93,7 +93,7 @@ Vous devriez obtenir cette arborescence :
   # Une date : "actualite_date" (DATETIME)
   # Un booléen pour la mise en ligne : "en_ligne" (TINYINT(1))
 
-|| actualite_id || INT(11), auto-incremente ||
+|| <u>actualite_id</u> || INT(11), auto-incremente ||
 || actualite_titre_fr || VARCHAR(250) ||
 || actualite_titre_en || VARCHAR(250) ||
 || actualite_contenu_fr || TEXT ||
