@@ -73,3 +73,11 @@ $this->gen('actualite_img');
 $this->gen('en_ligne');
 ?>
 </code>
+
+ * Pour ajouter un WYSIWYG au champ contenu, insérez la ligne suivante dans le _config.php_ : 
+
+<code>$rteFields[] = 'actualite_contenu';</code>
+
+ * pour ajouter l'upload d'image au champ 'actualite_img' : 
+
+<code>$uploadFields[] = 'actualite_img';</code>
