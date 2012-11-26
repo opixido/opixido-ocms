@@ -1,15 +1,101 @@
 #labels Documentation
 <h1>Créer la gestion d'un gabarit/plugin dans le back-office</h1>
 
-<h2></h2>
+<h2>Fonctionnement</h2>
 
+<h3>Ajout dans le back-office</h3>
 
+ * Ouvrez le fichier de configuration "_config.php_".
+
+ * Déclarez toutes ces variables globales qui nous seront utiles plus tard : 
+<code>
+global $tabForms,$uploadFields,$_Gconfig,$relinv,$orderFields,$admin_trads, $gs_roles, $rteFields, $relations, $tablerel, $basePath, $admin_trads,$searchField;
+</code>
+
+ * Pour ajouter un lien vers la gestion dans le back-office : 
+
+<code>
+$_Gconfig['bigMenus']['nomGabarit'][] = 'nomTable';
+</code>
+
+ * pour modifier le titre du bouton et ajouter un icône :
+<code>
+//traduction du texte
+$admin_trads["cp_txt_nomTable"]["fr"] = "Nom de mon gabarit";
+
+//Ajout de l'icône
+$tabForms["nomTable"]["picto"] = ADMIN_PICTOS_FOLDER."32x32/apps/internet-news-reader.png";
+</code>
+
+*Important: n'oubliez pas de rajouter le plugin dans le back-office et de l'installer!*
+
+<h3>Afficher la liste</h3>
+
+ * Cliquez sur le bouton pour afficher la liste.
+
+ * Pour définir quels champs afficher dans le back-office :
+
+<code>
+$tabForms['nomTable']['titre'] = array('nomTable_titre', 'nomTable_contenu');
+//'titre' : pour définir les champs à lister
+</code>
+
+<h3>Créer le formulaire d'ajout</h3> 
+
+ * Dans le dossier "_forms_", créez, si ce n'est pas déjà fait, un fichier PHP nommé "_nomPlugin.form.php_".(_include/plugins/nomPlugin/forms/nomPlugin.form.php_).
+Il contiendra la liste des attributs de la base de données à générer dans le formulaire
+
+ * Faites appel à ce fichier dans le _config.php_ : 
+
+<code>
+$tabForms['nomTable']['pages']['Nom'] = array('../plugins/nomPlugin/forms/nomPlugin.form.php');
+//'pages' : pour définir où se trouve le fichier de formulaire
+//Le tableau doit contenir le chemin vers votre fichier de formulaire
+</code>
+
+ * Dans le fichier créé (_nomPlugin.form.php_), générez chaque attribut de la talbe :
+
+<code>
+<?php
+$this->gen('nomTable_date');
+// ...
+$this->genlg('nomTable_titre');
+//genlg va servir à générer le contenu multilingue
+$this->genlg('nomTable_contenu');
+?>
+</code>
+
+ * Pour ajouter un WYSIWYG au champ contenu, insérez la ligne suivante dans le _config.php_ : 
+
+<code>$rteFields[] = 'nomTable_contenu';</code>
+
+ * Pour ajouter l'upload d'image au champ 'nomTable_img' : 
+
+<code>$uploadFields[] = 'nomTable_img';</code>
+
+ * Pour ajouter des champs de recherche :
+
+<code>$searchField['nomTable'] = array('nomTable_titre');</code>
+
+ * Les traductions :
+
+<code>
+$admin_trads["nomTable.nomTable_titre_fr"]["fr"] = "Titre";
+// ...
+</code>
+
+ * les champs obligatoires : 
+
+<code>
+$neededFields[] = "nomTable_titre";
+</code>
 
  * Les champs de type url : 
 <code>$urlFields[] = 'nomChamp_url';</code>
 
  * Les champs de type mail  :
 <code>$mailFields[] = 'nonChamp_mail'</code>
+
 
 <h2><u>Un exemple : gestion des actualités</u></h2>
 
