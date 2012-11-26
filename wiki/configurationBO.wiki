@@ -1,4 +1,8 @@
+= La configuration du Back-Office =
 
+fichiers config.php ...
+
+Doc : _include/config/config.base.php_
 
 == Les attributs gérés automatiquement par OCMS ==
 
