@@ -31,4 +31,14 @@ $admin_trads["cp_txt_a_actualite"]["fr"] = "Actualités";
 $tabForms["a_actualite"]["picto"] = ADMIN_PICTOS_FOLDER."32x32/apps/internet-news-reader.png";
 </code>
 
-*Important ! n'oubliez pas de rajouter le plugin dans le back-office et de l'installer.*
+*Important: n'oubliez pas de rajouter le plugin dans le back-office et de l'installer!*
+
+<h2></h2>
+
+ * Cliquez sur le bouton pour afficher la liste des actualités.
+
+ * Pour définir quels champs afficher dans le back-office :
+
+<code>
+$tabForms['a_actualite']['titre'] = array('actualite_date', 'actualite_titre', 'actualite_img','actualite_contenu','en_ligne');
+</code>
