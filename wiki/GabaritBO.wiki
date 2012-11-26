@@ -45,7 +45,7 @@ $tabForms['a_actualite']['titre'] = array('actualite_date', 'actualite_titre', '
 //'titre' : pour définir les champs à lister
 </code>
 
-<h2>Ajouter le formulaire d'ajout</h2> 
+<h2>Créer le formulaire d'ajout</h2> 
 
  * Dans le dossier "_forms_", créez, si ce n'est pas déjà fait, un fichier PHP nommé "_actualite.form.php_".(_include/plugins/actualites/forms/actualite.form.php_).
 Il contiendra la liste des attributs de la base de données à générer dans le formulaire
