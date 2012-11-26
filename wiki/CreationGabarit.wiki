@@ -86,6 +86,6 @@ Vous devriez obtenir cette arborescence :
 
  * Ouvrez votre template actualites.php qui se trouve dans le dossier "tpl"
  * Introduisez-y votre code HTML et vos variables ( sous la forme @@maVariable@@ )
-  # Si vous souhaitez boucler un bloc, placez celui-ci entre une balise XML (exemple : <ACTUALITE><div>...</div></ACTUALITE>)
+  # Si vous souhaitez boucler un bloc, placez celui-ci entre une balise XML : <ACTUALITE><div>...</div></ACTUALITE>
  * Voici à quoi devrait finalement ressembler votre template :
   
