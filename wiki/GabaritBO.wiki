@@ -19,5 +19,5 @@ global $tabForms, $_Gconfig, $relinv,$orderFields,$uploadFields, $rteFields;
  * Pour ajouter un lien vers la gestion des actualités dans le back-office : 
 
 <code>
-$_Gconfig['bigMenus']['Actualités'] = array('a_actualite');
+$_Gconfig['bigMenus']['Actualités'][] = 'a_actualite';
 </code>
