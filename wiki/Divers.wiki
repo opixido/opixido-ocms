@@ -2,10 +2,22 @@
 
 <h2>Header de page</h2>
 
- * Dans le init() ou afterinit() du plugin :
+*Dans le init() ou afterinit() du plugin :*
 
-  # Ajouter un fichier CSS : 
+ * Ajouter un titre de page
+<code>$this->site->g_headers->addTitle('Sous-titre');</code>
+
+ * Ajouter un fichier CSS (dossier css/) : 
 <code>$this->site->g_headers->addCss('fichier.css');</code>
 
-  # Ajouter un fichier Javasript :
+ * Ajouter du texte CSS : 
+<code>$this->site->g_headers->addCssText('border:none;');</code>
+
+ * Ajouter un fichier Javasript (dossier js/) :
+<code>$this->site->g_headders->addScript('monScript.js')</code>
+
+ * Ajouter du texte HTML :
+<code>$this->site->g_headers->addHtmlHeaders($text)</code>
+
+ * Modifier la balise Meta de description :
 <code></code>
