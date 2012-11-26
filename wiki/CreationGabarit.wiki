@@ -112,6 +112,8 @@ Les types de champs et attributs générés automatiquement par OCMS sont listé
  * Voici à quoi devrait finalement ressembler votre template :
 [http://www.opixido.com/ocms/screen/gabarit/gabarit-actualites-template.png]
   
+[http://code.google.com/p/opixido-ocms/wiki/TextesParam Plus d'infos sur la fonction _t()_ et les textes paramétrables]
+
 === Développement ===
 
  * Ouvrez le fichier genActualites.php
@@ -147,4 +149,13 @@ $actualites = doSql(' SELECT * FROM a_actualite WHERE en_ligne=1 ORDER BY actual
 <code language="php">
 //La fonction recordCount() compte le nombre de lignes obtenues
 if($actualites->recordCount()>0)
+{
+
+}
+//Si on obtient aucun résultat, on supprime le bloc
+else
+{
+  $tpl->delBlock('ACTUALITE');
+  echo t('aucune_actualite');
+}
 </code>
