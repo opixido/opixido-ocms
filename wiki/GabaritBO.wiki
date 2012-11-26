@@ -36,6 +36,7 @@ $tabForms["nomTable"]["picto"] = ADMIN_PICTOS_FOLDER."32x32/apps/internet-news-r
  * Pour définir quels champs afficher dans le back-office :
 
 <code>
+//Listez tous les champs de la table que vous souhaitez afficher
 $tabForms['nomTable']['titre'] = array('nomTable_titre', 'nomTable_contenu');
 //'titre' : pour définir les champs à lister
 </code>
