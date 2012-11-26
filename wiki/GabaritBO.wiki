@@ -132,7 +132,7 @@ $relations['nomTable']['fk_champ'] = 'fk_nomTable';
 $relations['a_actualite']['fk_image_id'] = 'a_image';
 </code>
 
- * les tables de relation (n, n) :
+ * Les tables de relation (n, n) :
 
 <code>
 $tablerel['r_table_relation'] = array('FK_CHAMP1'=>'FK_TABLE1','FK_CHAMP2'=>'FK_TABLE2');
