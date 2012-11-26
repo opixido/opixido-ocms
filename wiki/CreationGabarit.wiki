@@ -291,8 +291,9 @@ class Actualite extends ocmsGen
   //Renvoie la lien pour visionner l'actualité
   function getUrl()
   {
-    return getUrlFromId(getRubriqueByGabarit('genActualites'), LG,    array('actualite'=>$this->actualite_id));
+    return getUrlFromId(getRubriqueByGabarit('genActualites'), LG, array('actualite'=>$this->actualite_id));
   } 
 
+  //
 }
 </code>
