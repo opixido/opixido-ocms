@@ -124,7 +124,7 @@ Plus d'infos sur la fonction _t()_ et les textes paramétrables [http://code.goo
 === Création de la classe Actualite ===
 
 <code language="php">
-class p_actualite extends row 
+class Actualite extends row 
 {
   function __construct( $roworid) {  
     parent::__construct('p_actualite', $roworid);
@@ -274,5 +274,25 @@ class genActualites extends ocmsGen
     //On retourne et génère template
     return $tpl->gen();
   }
+}
+</code>
+
+=== Développement de l'affichage d'une actualité ===
+
+
+
+ * Rajoutez dans la classe Actualite (front.php) une fonction permettant de récupérer l'url de l'actualité : 
+
+<code language="php">
+class Actualite extends ocmsGen
+{
+  //...
+
+  //Renvoie la lien pour visionner l'actualité
+  function getUrl()
+  {
+    return getUrlFromId(getRubriqueByGabarit('genActualites'), LG,    array('actualite'=>$this->actualite_id));
+  } 
+
 }
 </code>
