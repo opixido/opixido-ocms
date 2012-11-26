@@ -48,7 +48,7 @@
   ( C'est dans ce fichier que vous configurerez l'affichage et la gestion du plugin dans le back-office )
 
 
-Pour ajouter ensuite dans le back-office la gestion de votre gabarit/plugin, rendez-vous sur [GabaritBO cette page]
+*Pour ajouter ensuite dans le back-office la gestion de votre gabarit/plugin, rendez-vous sur <u>[GabaritBO cette page]</u>*
 
 
 <h2><u>Un exemple : Actualités</u></h2> 
