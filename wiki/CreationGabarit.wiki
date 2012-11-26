@@ -46,8 +46,9 @@
 
  * Créez dans le dossier de votre plugin le fichier PHP "config.php".
   ( C'est dans ce fichier que vous configurerez l'affichage et la gestion du plugin dans le back-office )
- * 
 
+
+Pour ajouter ensuite dans le back-office la gestion de votre gabarit/plugin, rendez-vous sur [GabaritBO cette page]
 
 
 <h2><u>Un exemple : Actualités</u></h2> 
