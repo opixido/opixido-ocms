@@ -122,6 +122,11 @@ $neededFields[] = "nomTable_titre";
 
 <code>$_Gconfig['hideableTable'][] = 'nomTable';</code>
 
+ * Rendre visible
+
+ * Recharger la page lors de la sélection d'un champ : 
+
+<code>$_Gconfig['reloadOnChange'] = array('nomChamp');</code>
 
 <h3>Les relations en tables</h3>
 
