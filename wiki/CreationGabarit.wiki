@@ -49,7 +49,7 @@
 
 
 
-== Un exemple : Actualités == 
+<h2 style="color:blue;"><strong>Un exemple : Actualités</strong></h2> 
 
 Nous allons voir dans cet exemple comment créer un gabarit simple mais très utile : les actualités.
 
@@ -351,8 +351,8 @@ class genActualites extends ocmsGen
       //getSingle() retourne une seule ligne, et sous forme de tableau
       //La fonction sql() permet de convertir proprement une variable en string
       $res = getSingle('SELECT * FROM a_actualite WHERE en_ligne=1 AND actualite_id='.sql($_REQUEST['actualite']));
-       //Su on obtient un résultat, c'est qu'elle existe
-       if($res>0)
+       //Si on obtient un résultat, c'est qu'elle existe
+       if($res)
        {
          $this->actualite = new Actualite($res);
        }
