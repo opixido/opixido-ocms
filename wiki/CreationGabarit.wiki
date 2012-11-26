@@ -3,6 +3,7 @@
 
 == Mise en place ==
 
+
 === Création des dossiers et fichiers PHP ===
 
  * Commencez par vous rendre dans le dossier "plugins" (nomDuProjet/include/plugins) de votre projet
@@ -20,6 +21,7 @@
 
 [http://www.opixido.com/ocms/screen/gabarit/gabarit-arbo.png]
 
+
 === Insertion dans la base de données ===
 
  * Dans la table "s_gabarit" de votre base de données, créez une nouvelle ligne.
@@ -27,6 +29,7 @@
  * Insérez les champs suivants :
 || _ gabarit_id _ || _ gabarit_titre _ || ... || _ gabarit_classe _ || ... || _ gabarit_plugin _ ||
 || ... || titre du gabarit || ... || titre de la classe || ... || nom du dossier ||
+
 
 === Ajouter le gabarit dans une rubrique ===
 
@@ -71,16 +74,17 @@ Vous devriez obtenir cette arborescence :
  ...
 
 
-
 === Insertion du gabarit dans la base de données ===
 
  * Insérer dans la table s_gabarit une ligne : 
 || gabarit_titre || gabarit_classe || gabarit_plugin ||
 || Actualités || genActualites || actualites ||
 
+
 === Ajouter le gabarit dans une rubrique ===
 
 [http://www.opixido.com/ocms/screen/gabarit/gabarit-actus.png]
+
 
 === Création de la table actualités ===
 
@@ -104,6 +108,7 @@ Vous devriez obtenir cette arborescence :
 
 Les types de champs et attributs générés automatiquement par OCMS sont listés [http://code.google.com/p/opixido-ocms/wiki/configurationBO sur cette page]
 
+
 === Création du template de la liste des actualités ===
 
  * Ouvrez votre template actualites.php qui se trouve dans le dossier "tpl"
@@ -112,7 +117,9 @@ Les types de champs et attributs générés automatiquement par OCMS sont listé
  * Voici à quoi devrait finalement ressembler votre template :
 [http://www.opixido.com/ocms/screen/gabarit/gabarit-actualites-template.png]
   
+
 Plus d'infos sur la fonction _t()_ et les textes paramétrables [http://code.google.com/p/opixido-ocms/wiki/TextesParam ICI]
+
 
 === Développement ===
 
