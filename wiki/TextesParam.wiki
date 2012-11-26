@@ -25,6 +25,21 @@ Rentrez l'_id_ de votre texte paramétrable (_ voir_les_actus _) et entrez la tr
 
 [http://www.opixido.com/ocms/screen/textesParam/id.png]
 
-== Développement ==
+== Appel et insertion dans le développement ==
 
 === Fonction _t()_ ===
+
+Pour afficher un texte paramétrable, il suffit simplement d'afficher le résultat de la fonction _t()_.
+Cette fonction prend en paramètre l'identifiant du texte paramétrable.
+
+=== Exemple ===
+
+ * Insérez dans votre code l'appel de la fonction
+
+<code language="PHP">
+<div class="titre"><h1><?php echo t('page_accueil'); ?></h1></div>
+</code>
+
+ * Ajoutez l'identifiant (ici 'page_accueil') dans le back-office.
+
+ * En fonction de la langue, le texte s'affichera
