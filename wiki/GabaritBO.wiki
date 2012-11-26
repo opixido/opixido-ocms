@@ -18,7 +18,7 @@ global $tabForms,$uploadFields,$_Gconfig,$relinv,$orderFields,$admin_trads, $gs_
 $_Gconfig['bigMenus']['nomPlugin'][] = 'nomTable';
 </code>
 
- * pour modifier le titre du bouton et ajouter un icône :
+ * Pour modifier le titre du bouton et ajouter un icône :
 <code>
 //traduction du texte
 $admin_trads["cp_txt_nomTable"]["fr"] = "Nom de mon gabarit";
