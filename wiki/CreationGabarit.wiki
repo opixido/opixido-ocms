@@ -102,7 +102,16 @@ Vous devriez obtenir cette arborescence :
 || actualite_date || DATETIME ||
 || en_ligne || TINYINT(1) ||
 
-Vous pouvez trouver la liste des attributs OCMS : ocms_date_online, ocms_date_offline, "champ"`_url`, "champ"`_img`
+Les attributs gérés automatiquement par OCMS : 
+|| ocms_date_modif || Date de modification ||
+|| ocms_date_crea || Date de création de la ligne ||
+|| ocms_date_online || Date de mise en ligne (date à partir de laquelle la ligne est prise en compte) ||
+|| ocms_date_offline || Date à partir de laquelle la ligne n'est plus prise en compte ||
+|| ocms_creator || Identifiant de l'administrateur qui a créé la ligne ||
+Les types de champs :
+|| *Type* || *Fin* ||
+|| Mail || `_mail`, `_couriel`, `_email` ||
+|| Url || `_url`, `_url_`, `_link_1`, `_link`, `_lien_` ||
 
 === Création du template de la liste des actualités ===
 
@@ -112,3 +121,4 @@ Vous pouvez trouver la liste des attributs OCMS : ocms_date_online, ocms_date_of
  * Voici à quoi devrait finalement ressembler votre template :
 [http://www.opixido.com/ocms/screen/gabarit/gabarit-actualites-template.png]
   
+===  ===
