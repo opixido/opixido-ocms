@@ -17,7 +17,7 @@ Comme vous pouvez le voir sur l'image ci-dessous, les mots clés et la descripti
 
 [http://www.opixido.com/ocms/screen/referencement-code-source.png]
 
-== modification des entêtes (Header) ==
+== Modification des entêtes (Header) dans le code ==
 
 Il est possible, lors de la création d'un Gabarit/plugin, de modifier les entêtes HTML du site (balises Meta, Titre de page, ...).
 Plus d'informations [http://code.google.com/p/opixido-ocms/wiki/Divers#Header_de_page sur cette page]
