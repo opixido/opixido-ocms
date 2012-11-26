@@ -53,9 +53,23 @@ Il contiendra la liste des attributs de la base de données à générer dans le
  * Faites appel à ce fichier dans le _config.php_ : 
 
 <code>
-$tabForms['a_actualite']['pages']['Actualité'] = array('../plugins/actualites/forms/actualite.php');
+$tabForms['a_actualite']['pages']['Actualité'] = array('../plugins/actualites/forms/actualite.form.php');
 //'a_actualite' : nom de la table
 //'pages' : pour définir où se trouve le fichier de formulaire
 //'Actualité' : nom pour définir l'onglet (modifiable)
 //Le tableau doit contenir le chemin vers notre fichier de formulaire
+</code>
+
+ * dans le fichier créé (_actualite.form.php_), générez chaque champ utile comme ceci :
+
+<code>
+<?php
+//Le CMS reconnaîtra automatiquement la date
+$this->gen('actualite_date');
+$this->genlg('actualite_titre');
+//genlg va servir à générer le contenu multilingue
+$this->genlg('actualite_contenu');
+$this->gen('actualite_img');
+$this->gen('en_ligne');
+?>
 </code>
