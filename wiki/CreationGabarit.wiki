@@ -1,11 +1,11 @@
 #labels Documentation
 = Création d'un nouveau gabarit de page =
 
-<h2><a href="#mise_en_place">Mise en place</a></h2>
+<h2><a href="#Mise_en_place">Mise en place</a></h2>
 
 
 
-<h2 id="mise_en_place"><u>Mise en place</u></h2>
+<h2 id="Mise_en_place"><u>Mise en place</u></h2>
 
 
 === Creation des dossiers et fichiers PHP ===
