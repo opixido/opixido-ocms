@@ -40,6 +40,8 @@ $tabForms["a_actualite"]["picto"] = ADMIN_PICTOS_FOLDER."32x32/apps/internet-new
  * Pour définir quels champs afficher dans le back-office :
 
 <code>
+//'a_actualite' : nom de la table
+//'titre' : pour définir les champs à lister
 $tabForms['a_actualite']['titre'] = array('actualite_date', 'actualite_titre', 'actualite_img','actualite_contenu','en_ligne');
 </code>
 
@@ -51,5 +53,8 @@ Il contiendra la liste des attributs de la base de données à générer dans le
  * Faites appel à ce fichier dans le _config.php_ : 
 
 <code>
+//'a_actualite' : nom de la table
+//'pages' : pour définir où se trouve le fichier de formulaire
+//'Actualité' : nom pour définir l'onglet (modifiable)
 $tabForms['a_actualite']['pages']['Actualité'] = array('../plugins/actualites/forms/actualite.php');
 </code>
