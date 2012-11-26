@@ -119,7 +119,21 @@ Les types de champs et attributs générés automatiquement par OCMS sont listé
  * Créez une fonction _gen()_
 
 C'est dans la fonction _gen()_ que nous développerons tout le traitement.
- * Déclarez le template précédemment créé :
-<code>$tpl = new genTemplate();
+ * Chargez le template précédemment créé et générez-le :
+<code language="php">
+$tpl = new genTemplate();
 $tpl->loadTemplate('actualites', 'plugins/actualites/tpl');
+return $tpl->gen();
 </code>
+
+ * Récupérez ensuite toutes vos actualités qui sont en ligne grâce à la fonction _doSql()_ :
+<code language="php">
+$actualites = doSql(' SELECT * FROM a_actualite WHERE en_ligne=1 ORDER BY actualite_date');
+</code>
+_la fonction doSql() renvoie le résultat sous forme de tableau_
+
+ * Si on obtient un résultat, on boucle. Sinon, on affiche qu'il n'y a aucune actualité.
+<code language="php">
+if($actualites->recordCount()>0)
+</code>
+_La fonction recordCount() compte le nombre de lignes obtenues_
