@@ -20,13 +20,12 @@ Si un contenu n’existe pas dans une langue, l'OCMS va chercher automatiquement
 Pour ajouter une zone de saisie d'un contenu, il suffit, dans votre fichier "_form.php_", de faire appel à la fonction "_genlg()_"
 <code>
 <?php
-
 // include/plugins/actualites/forms/actualite.form.php
 
 //actualite_img ne gère pas plusieurs langues
 $this->gen('actualite_img');
+
 //La table contient les attributs actualite_titre_fr et actualite_titre_en par exemple
 $this->genlg('actualite_titre');
-
 ?>
 </code>
