@@ -333,3 +333,32 @@ public function gen()
   return $this->genListeActualites();
 }
 </code>
+
+ * Définissez une fonction _init()_ dans votre classe genActualites. Cette fonction se lance avant toutes les autres (avant _gen()_). Elle va nous permettre de vérifier si l'Url contient en paramètre une actualité ou non. Si elle contient une actualité et qu'elle est valide, alors on chargera _genActualite()_.
+
+<code>
+class genActualites extends ocmsGen
+{
+  //
+  public $actualite=false;
+
+  function init()
+  {
+    //On regarde si l'Url contient un paramètre 'actualite'
+    if(!empty($_REQUEST['actualite']))
+    {
+      //On vérifie que l'actualite existe et est en ligne
+      //getSingle() retourne une seule ligne, et sous forme de tableau
+      //La fonction sql() permet de convertir proprement une variable en string
+      $res = getSingle('SELECT * FROM a_actualite WHERE en_ligne=1 AND actualite_id='.sql($_REQUEST['actualite']));
+       //Su on obtient un résultat, c'est qu'elle existe
+       if($res>0)
+       {
+         $this->actualite = new Actualite($res);
+       }
+    }
+  }
+
+  //...
+}
+</code>
