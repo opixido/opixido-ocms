@@ -87,7 +87,7 @@ Vous devriez obtenir cette arborescence :
  * Créez une nouvelle table (exemple : "a_actualite")
  * Ajoutez ses attributs : 
   # Un identifiant : "actualite_id" (INT (11) en auto-incrémente)
-  # Le nom de l'actualité : "actualite_nom_fr" (VARCHAR) (ajoutez de même "actualite_nom_en" pour la version anglaise. Plus d'infos sur la gestion multilingue [http://code.google.com/p/opixido-ocms/w/ ici])
+  # Le nom de l'actualité : "actualite_nom_fr" (VARCHAR) (ajoutez de même "actualite_nom_en" pour la version anglaise. Plus d'infos sur la gestion multilingue [http://code.google.com/p/opixido-ocms/wiki/GestionLangues ici])
   # Le contenu de l'actualité : "actualite_contenu_fr" (TEXT)
   # Une image ! "actualite_img" (VARCHAR)
   # Une date : "actualite_date" (DATETIME)
@@ -101,6 +101,8 @@ Vous devriez obtenir cette arborescence :
 || actualite_img || VARCHAR(250) ||
 || actualite_date || DATETIME ||
 || en_ligne || TINYINT(1) ||
+
+Vous pouvez trouver la liste des attributs OCMS : ocms_date_online, ocms_date_offline, _champ__url
 
 === Création du template de la liste des actualités ===
 
