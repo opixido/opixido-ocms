@@ -72,7 +72,7 @@ Vous devriez obtenir cette arborescence :
 
 
 
-=== Insertion dans la base de données ===
+=== Insertion du gabarit dans la base de données ===
 
  * Insérer dans la table s_gabarit une ligne : 
 || gabarit_titre || gabarit_classe || gabarit_plugin ||
@@ -81,6 +81,13 @@ Vous devriez obtenir cette arborescence :
 === Ajouter le gabarit dans une rubrique ===
 
 [http://www.opixido.com/ocms/screen/gabarit/gabarit-actus.png]
+
+=== Création de la table actualités ===
+
+ * Créez une nouvelle table (exemple : "a_actualite")
+ * Ajoutez ses attributs : 
+  # Un identifiant : "actualite_id"
+  # Le nom de l'actualité : "actualite_nom_fr" (ajoutez de même actualite_nom_en pour la version anglaise. Plus d'infos sur la gestion multilingue [http://code.google.com/p/opixido-ocms/w/ ici])
 
 === Création du template de la liste des actualités ===
 
