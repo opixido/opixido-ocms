@@ -112,7 +112,7 @@ Les types de champs et attributs générés automatiquement par OCMS sont listé
  * Voici à quoi devrait finalement ressembler votre template :
 [http://www.opixido.com/ocms/screen/gabarit/gabarit-actualites-template.png]
   
-[http://code.google.com/p/opixido-ocms/wiki/TextesParam Plus d'infos sur la fonction _t()_ et les textes paramétrables]
+Plus d'infos sur la fonction _t()_ et les textes paramétrables [http://code.google.com/p/opixido-ocms/wiki/TextesParam ICI]
 
 === Développement ===
 
