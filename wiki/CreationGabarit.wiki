@@ -11,6 +11,7 @@
  * Créez-y le fichier PHP qui va générer le gabarit. De préférence un nom évocateur comme "genNomDuPlugin".
   # Dans ce fichier, déclarez votre classe ("genNomDuPlugin")
   # *ATTENTION : le fichier PHP générant le gabarit doit porter le même nom que la classe déclarée.*
+  # Créez dans la classe les fonctions init() (facultatif) et gen()
 
  * Créez un fichier PHP front.php qui sera automatiquement parcouru. Vous pourrez y déclarer vos classes utiles au fonctionnement du plugin.
 
