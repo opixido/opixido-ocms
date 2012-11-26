@@ -82,10 +82,10 @@ Vous devriez obtenir cette arborescence :
 
 [http://www.opixido.com/ocms/screen/gabarit/gabarit-actus.png]
 
-=== Création du template ===
+=== Création du template de la liste des actualités ===
 
  * Ouvrez votre template actualites.php qui se trouve dans le dossier "tpl"
  * Introduisez-y votre code HTML et vos variables ( sous la forme @@maVariable@@ )
-  # Si vous souhaitez boucler un bloc, placez celui-ci entre une balise XML : <ACTUALITE><div>...</div></ACTUALITE>
+  # Si vous souhaitez boucler un bloc, placez celui-ci entre une balise XML : `<ACTUALITE><div>...</div></ACTUALITE>`
  * Voici à quoi devrait finalement ressembler votre template :
   
