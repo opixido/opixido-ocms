@@ -1,6 +1,6 @@
 <h1>Divers</h1>
 
-==Header de page==
+==Headers de page==
 
 *Dans le init() ou afterinit() du plugin :*
 
@@ -37,3 +37,13 @@ $this->site->g_headers->getHtmlHeaders();
 $this->site->g_headers->getCssPath($listeFichiers);
 $this->site->g_headers->getJsPath($listeFichiers);
 </code>
+
+
+== Rubrique ==
+
+ * Récupérer l'Id de la rubrique
+<code>echo $this->site->g_rubrique->rubrique_id;</code>
+
+ * Récupérer
+<code>echo $this->site->g_rubrique;</code>
+
