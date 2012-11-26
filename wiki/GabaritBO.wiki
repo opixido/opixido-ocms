@@ -15,7 +15,7 @@ global $tabForms,$uploadFields,$_Gconfig,$relinv,$orderFields,$admin_trads, $gs_
  * Pour ajouter un lien/bouton vers la gestion dans le back-office : 
 
 <code>
-$_Gconfig['bigMenus']['nomGabarit'][] = 'nomTable';
+$_Gconfig['bigMenus']['nomPlugin'][] = 'nomTable';
 </code>
 
  * pour modifier le titre du bouton et ajouter un icône :
