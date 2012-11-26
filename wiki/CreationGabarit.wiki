@@ -121,7 +121,38 @@ Les types de champs et attributs générés automatiquement par OCMS sont listé
 Plus d'infos sur la fonction _t()_ et les textes paramétrables [http://code.google.com/p/opixido-ocms/wiki/TextesParam ICI]
 
 
-=== Développement ===
+=== Création de la classe Actualite ===
+
+<code language="php">
+class p_actualite extends row 
+{
+  function __construct( $roworid) {  
+    parent::__construct('p_actualite', $roworid);
+  }
+
+  function getTitle() 
+  {
+    return $this->actualite_titre;
+  }
+    
+  function getContenu()
+  {
+    return $this->actualite_contenu;
+  }
+
+  function getImg($w,$h)
+  {
+    if($w && $h)
+      return $this->actualite_img->getCropUrl($w,$h);
+    else
+      return $this->actualite_img;
+  }
+  
+  
+}
+</code>
+
+=== Développement de la liste des actualités ===
 
  * Ouvrez le fichier genActualites.php
  * Si ce n'est pas encore fait, définissez-y la classe _genActualites_ héritant d'_ocmsGen_
