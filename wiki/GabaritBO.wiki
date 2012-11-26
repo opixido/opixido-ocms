@@ -53,8 +53,10 @@ Il contiendra la liste des attributs de la base de données à générer dans le
  * Faites appel à ce fichier dans le _config.php_ : 
 
 <code>
+$tabForms['a_actualite']['pages']['Actualité'] = array('../plugins/actualites/forms/actualite.php');
+
 //'a_actualite' : nom de la table
 //'pages' : pour définir où se trouve le fichier de formulaire
 //'Actualité' : nom pour définir l'onglet (modifiable)
-$tabForms['a_actualite']['pages']['Actualité'] = array('../plugins/actualites/forms/actualite.php');
+//Le tableau doit contenir le chemin vers notre fichier de formulaire
 </code>
