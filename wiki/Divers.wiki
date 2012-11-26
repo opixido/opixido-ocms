@@ -50,5 +50,4 @@ $this->site->g_headers->getJsPath($listeFichiers);
  * Afficher ou masquer les paragraphes de la rubrique
 <code>
 $this->site->g_rubrique->showParagraphes=false;
-$this->site->g_rubrique->showParagraphes=true;
-</code>
+$this->site->g_rubrique->showParagraphes=true;</code>
