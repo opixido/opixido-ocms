@@ -2,3 +2,22 @@
 <h1>Créer la gestion d'un gabarit/plugin dans le back-office</h1>
 
 <h2></h2>
+
+
+
+<h2><u>Un exemple : gestion des actualités</u></h2>
+
+<h3>Ajouter les actualités dans le back-office</h3>
+
+ * Ouvrez le fichier de configuration "_config.php_".
+
+ * Déclarez toutes ces variables globales qui nous seront utiles plus tard : 
+<code>
+global $tabForms, $_Gconfig, $relinv,$orderFields,$uploadFields, $rteFields;
+</code>
+
+ * Pour ajouter un lien vers la gestion des actualités dans le back-office : 
+
+<code>
+$_Gconfig['bigMenus']['Actualités'] = array('a_actualite');
+</code>
