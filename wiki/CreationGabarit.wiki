@@ -348,6 +348,9 @@ class genActualites extends ocmsGen
 
   function init()
   {
+    //Ajouter un fichier css (dans le dossier /css)  
+    $this->site->g_headders->addCss('actualites.css');
+
     //On regarde si l'Url contient un paramètre 'actualite'
     if(!empty($_REQUEST['actualite']))
     {
