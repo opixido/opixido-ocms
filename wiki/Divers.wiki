@@ -4,20 +4,28 @@
 
 *Dans le init() ou afterinit() du plugin :*
 
- * Ajouter un titre de page
+ * Ajouter un nouveau "niveau" de titre
 <code>$this->site->g_headers->addTitle('Sous-titre');</code>
 
- * Ajouter un fichier CSS (dossier css/) : 
+ * Ajouter un fichier CSS (dossier _css/_) : 
 <code>$this->site->g_headers->addCss('fichier.css');</code>
 
  * Ajouter du texte CSS : 
 <code>$this->site->g_headers->addCssText('border:none;');</code>
 
- * Ajouter un fichier Javasript (dossier js/) :
+ * Ajouter un fichier Javasript (dossier _js/_) :
 <code>$this->site->g_headders->addScript('monScript.js')</code>
 
  * Ajouter du texte HTML :
 <code>$this->site->g_headers->addHtmlHeaders($text)</code>
 
+ * Modifier le titre de la page
+<code>$this->site->g_headers->setTitle('Nouveau Titre');</code>
+
  * Modifier la balise Meta de description :
-<code></code>
+<code>$this->site->g-headers->setMetaDescription('Nouvelle description')</code>
+
+ * Modifier la balise Meta de mots-clés :
+<code>$this->site->g_headers->setMetaKeywords('nouveau, mot, clé')</code>
+
+ * 
