@@ -118,7 +118,7 @@ $neededFields[] = "nomTable_titre";
 
 <code>$orderFields['nomTable'] = array('nomChamp_ordre'</code>
 
- * Afficher/Masquer une ligne de table : 
+ * Afficher/Masquer une ligne de table (attribut _en`_ligne`_) : 
 
 <code>$_Gconfig['hideableTable'][] = 'nomTable';</code>
 
