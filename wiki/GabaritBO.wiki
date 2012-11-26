@@ -54,7 +54,7 @@ $tabForms['nomTable']['pages']['Nom'] = array('../plugins/nomPlugin/forms/nomPlu
 //Le tableau doit contenir le chemin vers votre fichier de formulaire
 </code>
 
- * Dans le fichier créé (_nomPlugin.form.php_), générez chaque attribut de la talbe :
+ * Dans le fichier créé (_nomPlugin.form.php_), générez chaque attribut de la table :
 
 <code>
 <?php
