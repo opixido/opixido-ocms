@@ -86,8 +86,11 @@ Vous devriez obtenir cette arborescence :
 
  * Créez une nouvelle table (exemple : "a_actualite")
  * Ajoutez ses attributs : 
-  # Un identifiant : "actualite_id"
-  # Le nom de l'actualité : "actualite_nom_fr" (ajoutez de même actualite_nom_en pour la version anglaise. Plus d'infos sur la gestion multilingue [http://code.google.com/p/opixido-ocms/w/ ici])
+  # Un identifiant : "actualite_id" (INT (11) en auto-incrémente)
+  # Le nom de l'actualité : "actualite_nom_fr" (VARCHAR) (ajoutez de même "actualite_nom_en" pour la version anglaise. Plus d'infos sur la gestion multilingue [http://code.google.com/p/opixido-ocms/w/ ici])
+  # Le contenu de l'actualité : "actualite_contenu_fr"
+  # Une date : "actualite_date" (DATETIME)
+  # Un booléan pour la mise en ligne : "en_ligne" (TINYINT(1))
 
 === Création du template de la liste des actualités ===
 
