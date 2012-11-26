@@ -110,18 +110,5 @@ Vous pouvez trouver la liste des attributs OCMS : ocms_date_online, ocms_date_of
  * Introduisez-y votre code HTML et vos variables ( sous la forme @@maVariable@@ )
   # Si vous souhaitez boucler un bloc, placez celui-ci entre une balise XML : <ACTUALITE>`<div>Votre code</div>`</ACTUALITE>
  * Voici à quoi devrait finalement ressembler votre template :
-
-<code language="html">
-<div id="actualites">
-<h1>Actualités</h1>
-<!-- Debut de la boucle -->
-<ACTUALITE>
-<div class="actualite">
-<h2>@@titre@@</h2>
-<p>@@contenu@@</p>
-</div>
-</ACTUALITE>
-<!-- Fin de la boucle -->
-</div>
-</code>
+[http://www.opixido.com/ocms/screen/gabarit/gabarit-actualites-template.png]
   
