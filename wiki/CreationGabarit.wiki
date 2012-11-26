@@ -157,7 +157,16 @@ $actualites = doSql(' SELECT * FROM a_actualite WHERE en_ligne=1 ORDER BY actual
 //La fonction recordCount() compte le nombre de lignes obtenues
 if($actualites->recordCount()>0)
 {
-
+  //On boucle
+  foreach($actualites as $row)
+  {
+    //On définit le bloc sur lequel on boucle
+    $bloc = $tpl->addBlock('ACTUALITE');
+    //On déclare notre actualite : on lui envoie la ligne $row
+    //Cette déclaration équivaut à $actu = new row('a_actualite',$row);
+    $actu = new Actualite($row);
+    
+  }
 }
 //Si on obtient aucun résultat, on supprime le bloc
 else
