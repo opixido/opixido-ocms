@@ -162,10 +162,6 @@ if($actualites->recordCount()>0)
   {
     //On définit le bloc sur lequel on boucle
     $bloc = $tpl->addBlock('ACTUALITE');
-    //On déclare notre actualite : on lui envoie la ligne $row
-    //Cette déclaration équivaut à $actu = new row('a_actualite',$row);
-    $actu = new Actualite($row);
-    
   }
 }
 //Si on obtient aucun résultat, on supprime le bloc
@@ -174,4 +170,33 @@ else
   $tpl->delBlock('ACTUALITE');
   echo t('aucune_actualite');
 }
+</code>
+
+ * On va ensuite déclarer l'actualité dans la boucle, puis ajouter dans le template ses valeurs
+
+<code language="php">
+// ...
+foreach($actualites as $row)
+{
+  //On définit le bloc sur lequel on boucle
+  $bloc = $tpl->addBlock('ACTUALITE');
+
+  //On déclare notre actualite : on lui envoie la ligne $row
+  //Cette déclaration équivaut à $actu = new row('a_actualite',$row);
+  $actu = new Actualite($row);
+
+  //On renvoie les valeurs des variables définies dans le template
+  // (image, titre, date et contenu)
+
+  //Le titre
+  //pas besoin de préciser le langage, ocmsGen s'en charge pour vous
+  $bloc->titre = $actu->actualite_titre;
+  //De même pour le contenu
+  $bloc->contenu = $actu->actualite_contenu;
+  //On affiche la date
+  $bloc->date = $actu->actualite_date;
+  //Le CMS renvoie automatiquement l'url complet de l'image
+  $bloc->img = $actu->actualite_img;
+}
+// ...
 </code>
