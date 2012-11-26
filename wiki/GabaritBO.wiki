@@ -13,7 +13,7 @@
 
  * Déclarez toutes ces variables globales qui nous seront utiles plus tard : 
 <code>
-global $tabForms, $_Gconfig, $relinv,$orderFields,$uploadFields, $rteFields;
+global $tabForms,$uploadFields,$_Gconfig,$relinv,$orderFields,$admin_trads, $gs_roles, $rteFields, $relations, $tablerel, $basePath, $admin_trads,$searchField;
 </code>
 
  * Pour ajouter un lien vers la gestion des actualités dans le back-office : 
@@ -21,3 +21,14 @@ global $tabForms, $_Gconfig, $relinv,$orderFields,$uploadFields, $rteFields;
 <code>
 $_Gconfig['bigMenus']['Actualités'][] = 'a_actualite';
 </code>
+
+ * pour modifier le titre du bouton et ajouter un icône :
+<code>
+//traduction du texte
+$admin_trads["cp_txt_a_actualite"]["fr"] = "Actualités";
+
+//Ajout de l'icône
+$tabForms["a_actualite"]["picto"] = ADMIN_PICTOS_FOLDER."32x32/apps/internet-news-reader.png";
+</code>
+
+*Important ! n'oubliez pas de rajouter le plugin dans le back-office et de l'installer.*
