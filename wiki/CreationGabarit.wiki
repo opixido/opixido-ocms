@@ -88,17 +88,17 @@ Vous devriez obtenir cette arborescence :
  * Ajoutez ses attributs : 
   # Un identifiant : "actualite_id" (INT (11) en auto-incrémente)
   # Le nom de l'actualité : "actualite_nom_fr" (VARCHAR) (ajoutez de même "actualite_nom_en" pour la version anglaise. Plus d'infos sur la gestion multilingue [http://code.google.com/p/opixido-ocms/w/ ici])
-  # Le contenu de l'actualité : "actualite_contenu_fr"
+  # Le contenu de l'actualité : "actualite_contenu_fr" (TEXT)
   # Une date : "actualite_date" (DATETIME)
   # Un booléen pour la mise en ligne : "en_ligne" (TINYINT(1))
 
-|| actualite_id ||
-|| actualite_titre_fr ||
-|| actualite_titre_en ||
-|| actualite_contenu_fr ||
-|| actualite_contenu_en ||
-|| actualite_date ||
-|| en_ligne ||
+|| actualite_id || INT(11), auto-incremente ||
+|| actualite_titre_fr || VARCHAR(250) ||
+|| actualite_titre_en || VARCHAR(250) ||
+|| actualite_contenu_fr || TEXT ||
+|| actualite_contenu_en || TEXT ||
+|| actualite_date || DATETIME ||
+|| en_ligne || TINYINT(1) ||
 
 === Création du template de la liste des actualités ===
 
