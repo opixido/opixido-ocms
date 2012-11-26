@@ -102,7 +102,7 @@ Vous devriez obtenir cette arborescence :
 || actualite_date || DATETIME ||
 || en_ligne || TINYINT(1) ||
 
-Vous pouvez trouver la liste des attributs OCMS : ocms_date_online, ocms_date_offline, "champ"_url, "champ"_img
+Vous pouvez trouver la liste des attributs OCMS : ocms_date_online, ocms_date_offline, `champ_url`, "champ"_img
 
 === Création du template de la liste des actualités ===
 
