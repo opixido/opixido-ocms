@@ -57,4 +57,15 @@ $this->site->g_headers->getJsPath($listeFichiers);</code>
 $this->site->g_rubrique->showParagraphes=false;
 $this->site->g_rubrique->showParagraphes=true;</code>
 
- * 
+ * Savoir si le plugin est actif ( retourne true ou false):
+<code>$this->site->g_rubrique->isActivePlugin()</code>
+
+ * Savoir si on se trouve sur la rubrique modifiable, ou sur la rubrique en ligne : 
+<code>$this->site->g_rubrique->isRealRubrique()</code>
+
+ * Définir si on affiche la boîte lexique, de téléchargement, ou la boite "En savoir plus" :
+<code>
+$this->site->g_rubrique->showBoxLexique=false;
+$this->site->g_rubrique->showBoxDwl=false;
+$this->site->g_rubrique->showBoxLinks=false;
+</code>
