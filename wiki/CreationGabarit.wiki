@@ -51,8 +51,6 @@
 *Pour ajouter ensuite dans le back-office la gestion de votre gabarit/plugin, rendez-vous sur <u>[GabaritBO cette page]</u>*
 
 
-
-
 <h2><u>Un exemple : Actualités</u></h2> 
 
 Nous allons voir dans cet exemple comment créer un gabarit simple mais très utile : les actualités.
