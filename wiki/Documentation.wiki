@@ -12,7 +12,7 @@
 
   * [http://code.google.com/p/opixido-ocms/wiki/Installation Installation]
   * [http://code.google.com/p/opixido-ocms/wiki/Arborescence Création de l'arborescence]
-  * Création d'un template/thème
+  * [http://code.google.com/p/opixido-ocms/wiki/CreationTheme Création d'un template/thème]
   * [http://code.google.com/p/opixido-ocms/wiki/TypesParagraphe Création des types de paragraphes]
   * [http://code.google.com/p/opixido-ocms/wiki/CreationGabarit Création d'un nouveau gabarit de page]
    # [http://code.google.com/p/opixido-ocms/wiki/GabaritBO Ajout du gabarit dans le Back-Office]
