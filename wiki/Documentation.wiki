@@ -18,7 +18,7 @@
    # [http://code.google.com/p/opixido-ocms/wiki/GabaritBO Ajout du gabarit dans le Back-Office]
   * [http://code.google.com/p/opixido-ocms/wiki/Plugin Création d'un plugin complet]
 
- * [http://code.google.com/p/opixido-ocms/wiki/Divers Autres/Divers]
+ * [http://code.google.com/p/opixido-ocms/wiki/Divers Classes]
 
 = Rubriques =
 
