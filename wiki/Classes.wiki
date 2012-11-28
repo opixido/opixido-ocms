@@ -1,7 +1,9 @@
 #labels Documentation
 <h1>Classes</h1>
 
-== Headers de page (genHeaders) ==
+== Classes ==
+
+=== Headers de page (genHeaders) ===
 
 *Seulement dans le _init()_ ou _afterinit()_ du gabarit/plugin :*
 
@@ -39,7 +41,7 @@ $this->site->g_headers->getCssPath($listeFichiers);
 $this->site->g_headers->getJsPath($listeFichiers);</code>
 
 
-== Rubrique (genRubrique) ==
+=== Rubrique (genRubrique) ===
 
  * Récupérer l'Id de la rubrique :
 <code>$this->site->g_rubrique->rubrique_id;</code>
@@ -70,3 +72,15 @@ $this->site->g_rubrique->showBoxLexique=false;
 $this->site->g_rubrique->showBoxDwl=false;
 $this->site->g_rubrique->showBoxLinks=false;
 </code>
+
+== Fonctions de base ==
+
+=== Urls ===
+
+ * Récupérer l'identifiant de la rubrique du gabarit correspondant
+
+<code>getRubFromGabarit('genGabarit')</code>
+
+ * Récupérer la premiere rubrique (identifiant) qui a comme gabarit, la classe passée en paramètre
+
+<code>getRubriqueByGabarit('')</code>
