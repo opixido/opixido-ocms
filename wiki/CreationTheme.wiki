@@ -1,0 +1,6 @@
+#labels Documentation
+= Création d'un thème/template =
+
+==  ==
+
+Le template HTML (layout) se situe dans le dossier _include/exports/default.html.php_
