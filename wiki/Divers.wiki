@@ -2,7 +2,7 @@
 
 ==Headers de page==
 
-*Dans le init() ou afterinit() du plugin :*
+*Seulement dans le _init()_ ou _afterinit()_ du gabarit/plugin :*
 
  * Ajouter un nouveau "niveau" de titre
 <code>$this->site->g_headers->addTitle('Sous-titre');</code>
