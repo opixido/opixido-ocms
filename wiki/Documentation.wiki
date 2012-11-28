@@ -17,7 +17,7 @@
   * [http://code.google.com/p/opixido-ocms/wiki/CreationGabarit Création d'un nouveau gabarit de page]
    # [http://code.google.com/p/opixido-ocms/wiki/GabaritBO Ajout du gabarit dans le Back-Office]
   * [http://code.google.com/p/opixido-ocms/wiki/Plugin Création d'un plugin complet]
-  # [http://code.google.com/p/opixido-ocms/wiki/CreationGabarit#Creation_du_dossier_et_des_fichiers Exemple]
+   # [http://code.google.com/p/opixido-ocms/wiki/CreationGabarit#Creation_du_dossier_et_des_fichiers Exemple]
 
  * [http://code.google.com/p/opixido-ocms/wiki/Classes Classes]
 
