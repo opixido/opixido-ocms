@@ -163,3 +163,11 @@ else
   echo $html;
 }
 </code>
+
+=== genParagraphes _(include/global/genParagraphes.php)_ ===
+
+Vous pouvez affecter des paragraphes à une table. Vous pouvez par exemple affecter plusieurs paragraphes à une actualité ([CreationGabarit#Creation_du_dossier_et_des_fichiers tutoriel de création sur cette page]).
+
+<code>
+
+</code>
