@@ -79,7 +79,7 @@ Chaque rubrique possède un cache. Vous pouvez aussi créer un cache pour votre 
 <code>
 //Déclaration du cache
 $cache = new genCache(idDuCache, derniereDateModif);
-//Si le cache existe
+//Si le cache existe et si le contenu n'a pas été dernièrement modifié
 if($cache->cacheExits())
   echo $cache->getCache();
 else 
