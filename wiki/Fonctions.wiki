@@ -7,15 +7,12 @@
 <code>getServeurUrl();</code>
 
  * Récupérer l'identifiant de la rubrique du gabarit correspondant
-
 <code>getRubFromGabarit('genActualites')</code>
 
  * Récupérer l'identifiant de la première rubrique qui a comme gabarit la classe passée en paramètre
-
 <code>getRubriqueByGabarit('genActualites')</code>
 
  * Récupérer l'url d'une rubrique ayant pour gabarit 'genActualites' :
-
 <code>
 //Récupère l'url de la rubrique ayant pour gabarit 'genActualites'
 getUrlFromId(getRubFromGabarit('genActualites'));
@@ -44,7 +41,7 @@ dinfo('TEST');
 
  * Récupérer l'url complet d'une image :
 <code>
-//getImg(table, champ, id, row)
+//function getImg(table, champ, id, row)
 getImg('a_actualite', 'actualite_img', $idActu, '');
 //Equivaut à :
 $actu = new row('a_actualite',$idActu);
@@ -52,17 +49,15 @@ $actu->actualite_img;
 </code>
 
  * Récupérer l'url d'une image en _Thumbnail_ :
-
 <code>
-//getThumb($table, $champ, $id, $row = array(), $w, $h)
+//function getThumb($table, $champ, $id, $row = array(), $w, $h)
 //Vous pouvez ne pas spécifier la hauteur en mettant 0
 getThumb('a_actualite', 'actualite_img', $idActu, '', 300, 400);
 </code>
 
  * Récupérer l'url d'une image en _Crop_ :
-
 <code>
-//getCrop($table, $champ, $id, $row = array(), $w, $h)
+//function getCrop($table, $champ, $id, $row = array(), $w, $h)
 getCrop('a_actualite', 'actualite_img', $idActu, '', 300, 400);
 //Vous pouvez ne pas spécifier la hauteur en mettant 0
 </code>
@@ -70,5 +65,29 @@ getCrop('a_actualite', 'actualite_img', $idActu, '', 300, 400);
 
 == Contenu ==
 
- * Limiter le nombre de caractères puis concaténer une chaine
-<code></code>
+ * Limiter le nombre de mots et rajouter une chaine
+<code>
+//function limitWords($str, $nbwords = 30, $tpp = ' ...')
+echo limitWords($str, 50, '...');
+</code>
+
+ * Limiter le nombre de caractères et rajouter "..."
+<code>
+//function limit($str, $nchars = 30)
+echo limitWords($str, 50, '...');
+</code>
+
+== E-Mails et formulaires ==
+
+ * Vérifier la validitié d'un mail :
+<code>
+CheckEmail('email@opixido.com');
+//Equivaut à :
+isMail('email@opixido.com');
+</code>
+
+ * Envoyer un mail
+<code>sendMail($to, $subject, $message, $headers)</code>
+
+ * Déterminer si le fichier est une image 
+<code>isImage($str);</code>
