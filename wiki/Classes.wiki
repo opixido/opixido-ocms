@@ -77,21 +77,20 @@ $this->site->g_rubrique->showBoxLinks=false;
 
 Pour savoir comment créer un template dans un gabarit, rendez-vous sur [CreationGabarit#Creation_du_template_de_la_liste_des_actualites cette page]
 
-Commencçons par créer un template html _(chemin/Du/Fichier/tpl.php)_
+Commençons par créer un template html basique _(chemin/Du/Fichier/tpl.php)_
 <code language="html">
 <div id="monTemplate">
 
     <h1>@@titre@@</h1>
 
     <?php echo '<p>'.$this->contenu.'</p>' ?>
-
     <div id="items">
 
-    <ITEM>
+        <ITEM>
 
-        <div id="@@id@@">@@nom@@</div>
+            <div id="@@id@@">@@nom@@</div>
 
-    </ITEM>
+        </ITEM>
 
     </div>
 
@@ -109,7 +108,7 @@ $tpl->loadTemplate('tpl', 'chemin/Du/Fichier');
 $tpl->titre = $this->getTitre();
 $tpl->contenu = $this->getDescription();
 
-Pour boucler sur des informations
+//On boucle sur les informations
 $i=0;
 foreach($results as $resultat)
 {
