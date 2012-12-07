@@ -1,4 +1,3 @@
-#labels Documentation
 <h1>Classes</h1>
 
 == Classes ==
@@ -41,7 +40,7 @@ $this->site->g_headers->getCssPath($listeFichiers);
 $this->site->g_headers->getJsPath($listeFichiers);</code>
 
 
-=== genRubrique _(include/global/genRubrique.php)_ ===
+=== Rubrique : genRubrique _(include/global/genRubrique.php)_ ===
 
  * Récupérer l'Id de la rubrique :
 <code>$this->site->g_rubrique->rubrique_id;</code>
@@ -73,8 +72,25 @@ $this->site->g_rubrique->showBoxDwl=false;
 $this->site->g_rubrique->showBoxLinks=false;
 </code>
 
-=== genCache _(include/global/gencache.php)_ ===
+=== Créer un cache : genCache _(include/global/gencache.php)_ ===
 
+Chaque rubrique possède un cache. Vous pouvez aussi créer un cache pour votre application.
+
+<code>
+//Déclaration du cache
+$cache = new genCache(idDuCache, derniereDateModif);
+//Si le cache existe
+if($cache->cacheExits())
+  echo $cache->getCache();
+else 
+{
+  //On récupère le contenu
+  $html= doSomething();
+  //On le met en cache
+  $cache->saveCache($html);
+  echo $html;
+}
+</code>
 
 == Fonctions de base ==
 
