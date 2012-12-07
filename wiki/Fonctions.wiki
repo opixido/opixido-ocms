@@ -68,4 +68,7 @@ getCrop('a_actualite', 'actualite_img', $idActu, '', 300, 400);
 </code>
 
 
+== Contenu ==
 
+ * Limiter le nombre de caractères puis concaténer une chaine
+<code></code>
