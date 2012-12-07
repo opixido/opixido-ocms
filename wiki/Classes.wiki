@@ -81,7 +81,19 @@ Commencçons par créer un template html _(chemin/Du/Fichier/tpl.php)_
 <code language="html">
 <div id="monTemplate">
 
-  <h1>@@titre@@</h1>
+    <h1>@@titre@@</h1>
+
+    <?php echo '<p>'.$this->contenu.'</p>' ?>
+
+    <div id="items">
+
+    <ITEM>
+
+        <div id="@@id@@">@@nom@@</div>
+
+    </ITEM>
+
+    </div>
 
 </div>
 </code>
@@ -98,12 +110,21 @@ $tpl->titre = $this->getTitre();
 $tpl->contenu = $this->getDescription();
 
 Pour boucler sur des informations
+$i=0;
 foreach($results as $resultat)
 {
-  //On déclare un bloc
-  
-
+  //On déclare le bloc ITEM
+  $item = $tpl->addBlock('ITEM');
+  //On affecte les valeurs
+  $item->id = $i;
+  $item->nom = 'Item n°'.$i;
 }
+</code>
+
+Autres opérations possibles :
+
+<code>
+
 </code>
 
 === Créer un cache : genCache _(include/global/gencache.php)_ ===
