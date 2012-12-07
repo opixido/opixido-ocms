@@ -3,7 +3,7 @@
 
 == Classes ==
 
-=== Headers de page (genHeaders) ===
+=== Headers de page (genHeaders) _(include/global/genHeaders.php)_ ===
 
 *Seulement dans le _init()_ ou _afterinit()_ du gabarit/plugin :*
 
@@ -41,7 +41,7 @@ $this->site->g_headers->getCssPath($listeFichiers);
 $this->site->g_headers->getJsPath($listeFichiers);</code>
 
 
-=== Rubrique (genRubrique) ===
+=== genRubrique _(include/global/genRubrique.php)_ ===
 
  * Récupérer l'Id de la rubrique :
 <code>$this->site->g_rubrique->rubrique_id;</code>
@@ -72,6 +72,9 @@ $this->site->g_rubrique->showBoxLexique=false;
 $this->site->g_rubrique->showBoxDwl=false;
 $this->site->g_rubrique->showBoxLinks=false;
 </code>
+
+=== genCache _(include/global/gencache.php)_ ===
+
 
 == Fonctions de base ==
 
