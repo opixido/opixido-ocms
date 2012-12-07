@@ -5,8 +5,19 @@
 
  * Récupérer l'identifiant de la rubrique du gabarit correspondant
 
-<code>getRubFromGabarit('genGabarit')</code>
+<code>getRubFromGabarit('genActualites')</code>
 
- * Récupérer la premiere rubrique (identifiant) qui a comme gabarit, la classe passée en paramètre
+ * Récupérer l'identifiant de la premiere rubrique (identifiant) qui a comme gabarit, la classe passée en paramètre
 
-<code>getRubriqueByGabarit('')</code>
+<code>getRubriqueByGabarit('genActualites')</code>
+
+ * Récupérer l'url d'une rubrique ayant pour gabarit 'genActualites' :
+
+<code>
+//Récupère l'url de la rubrique ayant pour gabarit 'genActualites'
+getUrlFromId(getRubFromGabarit('genActualites'));
+//Récupère l'url précédente, en y rajoutant des paramètres :
+LG étant une constante récupérant le code de la langue actuelle, et actu un paramètre
+getUrlFromId(getRubFromGabarit('genActualites'), LG, array('actu'=>5));
+</code>
+
