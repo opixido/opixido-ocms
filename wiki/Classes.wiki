@@ -177,6 +177,7 @@ $paras = getAll('SELECT * FROM s_paragraphe, s_para_type WHERE fk_actualite_id =
 $this->site->g_rubrique->rubrique['rubrique_date_publi'] = $this->actualite->ocms_date_modif;
 //On déclare le genParagraphe
 $gp = new genParagraphes($this->site, $paras);
+//On donne un id pour le cache et pour les paragraphes
 $gp->id = $this->actualite->id;
 //on ajoute à la variable du template tous les paragraphes
 $tpl->text = $gp->gen();
