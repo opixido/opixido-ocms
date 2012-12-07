@@ -1,9 +1,7 @@
 #labels Documentation
 = Fonctions =
 
-== Fonctions de base ==
-
-=== Urls ===
+== Urls ==
 
  * Récupérer l'identifiant de la rubrique du gabarit correspondant
 
