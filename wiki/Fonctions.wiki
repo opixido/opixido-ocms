@@ -3,11 +3,14 @@
 
 == Urls ==
 
+ * Récupérer l'url du serveur :
+<code>getServeurUrl();</code>
+
  * Récupérer l'identifiant de la rubrique du gabarit correspondant
 
 <code>getRubFromGabarit('genActualites')</code>
 
- * Récupérer l'identifiant de la premiere rubrique (identifiant) qui a comme gabarit, la classe passée en paramètre
+ * Récupérer l'identifiant de la première rubrique qui a comme gabarit la classe passée en paramètre
 
 <code>getRubriqueByGabarit('genActualites')</code>
 
@@ -21,3 +24,27 @@ LG étant une constante récupérant le code de la langue actuelle, et actu un p
 getUrlFromId(getRubFromGabarit('genActualites'), LG, array('actu'=>5));
 </code>
 
+== Gestion des erreurs ==
+
+Vous pouvez utiliser la fonction _debug()_  ou _error()_pour afficher du contenu dans une infobulle;
+<code>
+//Affichera simplement "TEST"
+derror('TEST');
+//Affichera 'TEST' puis la liste des fichiers inclus et des appels aux fonctions
+debug('TEST');
+//Idem que debug()
+error('TEST');
+//Afficher une infobulle verte
+dinfo('TEST');
+</code>
+
+== Fichiers ==
+
+ * Récupérer l'url complet d'une image :
+<code>
+//getImg(table, champ, id, row)
+getImg('a_actualite', 'actualite_img', $idActu, '');
+//Equivaut à :
+$actu = new row('a_actualite',$idActu);
+$actu->actualite_img;
+</code>
