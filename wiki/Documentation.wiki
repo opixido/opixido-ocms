@@ -20,6 +20,8 @@
    # [http://code.google.com/p/opixido-ocms/wiki/CreationGabarit#Creation_du_dossier_et_des_fichiers Exemple]
 
  * [http://code.google.com/p/opixido-ocms/wiki/Classes Classes]
+  # [Classes#Headers_de_page_(genHeaders)_(include/global/genHeaders.php) genHeaders]
+  #[Classes#Rubrique_:_genRubrique_(include/global/genRubrique.php) genRubrique]
 
 = Rubriques =
 
