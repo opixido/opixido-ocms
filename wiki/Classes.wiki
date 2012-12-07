@@ -78,7 +78,7 @@ $this->site->g_rubrique->showBoxLinks=false;
 Pour savoir comment créer un template dans un gabarit, rendez-vous sur [CreationGabarit#Creation_du_template_de_la_liste_des_actualites cette page]
 
 Commencçons par créer un template html _(chemin/Du/Fichier/tpl.php)_
-<code>
+<code language="html">
 <div id="monTemplate">
   <h1>@@titre@@</h1>
 </div>
