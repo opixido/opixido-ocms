@@ -24,7 +24,7 @@
   # [Classes#Headers_de_page_(genHeaders)_(include/global/genHeaders.php) genHeaders]
   # [Classes#Rubrique_:_genRubrique_(include/global/genRubrique.php) genRubrique]
   # [Classes genTemplate]
-  # [Classes genCache]
+  # [Classes#Créer_un_cache_:_genCache_(include/global/gencache.php) genCache]
   # [Classes#genParagraphes_(include/global/genParagraphes.php) genParagraphes]
 
  * [Fonctions les fonctions]
