@@ -27,7 +27,7 @@
   # [Classes genCache]
   # [Classes#genParagraphes_(include/global/genParagraphes.php) genParagraphes]
 
- * [Fonctions Les fonctions]
+ * [Fonctions Les fonctions de base]
   # [Fonctions#Urls URL]
 
 = Rubriques =
