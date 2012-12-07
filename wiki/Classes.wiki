@@ -168,6 +168,9 @@ else
 
 Vous pouvez affecter des paragraphes à une table. Vous pouvez par exemple afficher plusieurs paragraphes dans une actualité ([CreationGabarit#Creation_du_dossier_et_des_fichiers tutoriel de création sur cette page]).
 
+Commencez par rajouter dans la table _ s_paragraphe _ une colonne faisant référence à votre table. (exemple : _ fk_actualite_id _)
+
 <code>
+
 
 </code>
