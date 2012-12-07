@@ -100,6 +100,8 @@ Commençons par créer un template html/PHP basique _(chemin/Du/Fichier/tpl.php)
 
 Pour déclarer une variable dans votre template, vous pouvez utiliser <code>@@maVariable@@</code> ou <code><?php echo $this->maVariable ?></code>
 
+Implémentons maintenant notre template
+
 <code>
 //Déclaration du template
 $tpl = new genTemplate();
@@ -139,7 +141,7 @@ $tpl->remplaceBlock('ITEM', $replace);
 //Equivaut à implémenter $tpl->titre
 $tpl->setVar('titre', $this->getTitle());
 //Savoir si une variable est définie dans le template : return true ou false
-echo $tpl->isDefined('contenu');
+$tpl->isDefined('contenu');
 </code>
 
 === Créer un cache : genCache _(include/global/gencache.php)_ ===
