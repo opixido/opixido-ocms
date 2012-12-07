@@ -77,7 +77,7 @@ $this->site->g_rubrique->showBoxLinks=false;
 
 Pour savoir comment créer un template dans un gabarit, rendez-vous sur [CreationGabarit#Creation_du_template_de_la_liste_des_actualites cette page]
 
-Commençons par créer un template html basique _(chemin/Du/Fichier/tpl.php)_
+Commençons par créer un template html/PHP basique _(chemin/Du/Fichier/tpl.php)_
 <code language="html">
 <div id="monTemplate">
 
@@ -98,7 +98,7 @@ Commençons par créer un template html basique _(chemin/Du/Fichier/tpl.php)_
 </div>
 </code>
 
-Pour déclarer une variable dans votre template HTML, vous pouvez utiliser <code>@@maVariable@@</code> ou <code><?php echo $this->maVariable ?></code>
+Pour déclarer une variable dans votre template, vous pouvez utiliser <code>@@maVariable@@</code> ou <code><?php echo $this->maVariable ?></code>
 
 <code>
 //Déclaration du template
@@ -113,20 +113,33 @@ $tpl->contenu = $this->getDescription();
 
 //On boucle sur les informations
 $i=0;
-foreach($results as $resultat)
+//Si on a des résultats
+if($results)
 {
-  //On déclare le bloc ITEM
-  $item = $tpl->addBlock('ITEM');
-  //On affecte les valeurs
-  $item->id = $i;
-  $item->nom = 'Item n°'.$i;
+  foreach($results as $resultat)
+  {
+    //On déclare le bloc ITEM
+    $item = $tpl->addBlock('ITEM');
+    //On affecte les valeurs
+    $item->id = $i;
+    $item->nom = 'Item n°'.$i;
+  }
 }
+//Sinon on supprime le bloc
+else $tpl->delBlock('ITEM');
 </code>
 
 Autres opérations possibles :
 
 <code>
-
+//Définir un bloc : ceci évite de devoir le supprimer lorsqu'il n'est pas implémenté
+$tpl->defineBlocks('ITEM');
+//Remplacer le contenu du bloc
+$tpl->remplaceBlock('ITEM', $replace);
+//Equivaut à implémenter $tpl->titre
+$tpl->setVar('titre', $this->getTitle());
+//Savoir si une variable est définie dans le template : return true ou false
+echo $tpl->isDefined('contenu');
 </code>
 
 === Créer un cache : genCache _(include/global/gencache.php)_ ===
