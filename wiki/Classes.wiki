@@ -171,11 +171,14 @@ Vous pouvez affecter des paragraphes à une table. Vous pouvez par exemple affic
 Commencez par rajouter dans la table _ s_paragraphe _ une colonne faisant référence à votre table. (exemple : _ fk_actualite_id _)
 
 <code>
+//ON sélectionne tous les paragraphes de l'actualité
 $paras = getAll('SELECT * FROM s_paragraphe, s_para_type WHERE fk_actualite_id = ' . sql($this->actualite->id) . ' AND fk_para_type_id = para_type_id ORDER BY paragraphe_ordre ASC');
 //Il est nécessaire d'indiquer une date de modification par rapport au cache
 $this->site->g_rubrique->rubrique['rubrique_date_publi'] = $this->actualite->ocms_date_modif;
+//On déclare le genParagraphe
 $gp = new genParagraphes($this->site, $paras);
 $gp->id = $this->actualite->id;
+//on ajoute à la variable du template tous les paragraphes
 $tpl->text = $gp->gen();
 
 </code>
