@@ -20,4 +20,4 @@ Comme vous pouvez le voir sur l'image ci-dessous, les mots clés et la descripti
 == Modification des entêtes (Header) dans le code ==
 
 Il est possible, lors de la création d'un Gabarit/plugin, de modifier les entêtes HTML du site (balises Meta, Titre de page, ...).
-Plus d'informations [http://code.google.com/p/opixido-ocms/wiki/Divers#Header_de_page sur cette page]
+Plus d'informations [Classes#Headers_de_page_(genHeaders)_(include/global/genHeaders.php) sur cette page]
