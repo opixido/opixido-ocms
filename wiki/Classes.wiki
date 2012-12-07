@@ -80,20 +80,13 @@ Pour savoir comment créer un template dans un gabarit, rendez-vous sur [Creatio
 Commençons par créer un template html basique _(chemin/Du/Fichier/tpl.php)_
 <code language="html">
 <div id="monTemplate">
-
     <h1>@@titre@@</h1>
-
     <?php echo '<p>'.$this->contenu.'</p>' ?>
     <div id="items">
-
         <ITEM>
-
             <div id="@@id@@">@@nom@@</div>
-
         </ITEM>
-
     </div>
-
 </div>
 </code>
 
