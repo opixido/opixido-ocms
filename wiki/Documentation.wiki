@@ -25,6 +25,9 @@
   # [Classes#Générer_un_template_:_genTemplate_(include/global/genTemplate. genTemplate]
   # [Classes#Créer_un_cache_:_genCache_(include/global/gencache.php) genCache]
 
+ * Fonctions
+  # [Fonctions URL]
+
 = Rubriques =
 
  * [http://code.google.com/p/opixido-ocms/wiki/PageActions Actions sur une page]
