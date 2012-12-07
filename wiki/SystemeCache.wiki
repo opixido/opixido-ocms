@@ -18,3 +18,7 @@ Sélectionnez ensuite le type de cache à vider.
  * Thumbs : les images recadrées
  * CSS : les fichiers CSS de mise en page du site
  * AdminCSS : les fichiers CSS de la partie admin
+
+== Développement ==
+
+Plus d'informations sur la classe _genCache_ sur [Classes cette page].
