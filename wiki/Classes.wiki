@@ -72,6 +72,14 @@ $this->site->g_rubrique->showBoxDwl=false;
 $this->site->g_rubrique->showBoxLinks=false;
 </code>
 
+=== Générer un template : genTemplate _(include/global/genTemplate.php)_ ===
+
+Plus d'infos sur [CreationGabarit#Creation_du_template_de_la_liste_des_actualites cette page]
+
+<code>
+
+</code>
+
 === Créer un cache : genCache _(include/global/gencache.php)_ ===
 
 Chaque rubrique possède un cache. Vous pouvez aussi créer un cache pour votre application.
