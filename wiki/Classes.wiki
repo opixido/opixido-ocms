@@ -163,15 +163,3 @@ else
   echo $html;
 }
 </code>
-
-== Fonctions de base ==
-
-=== Urls ===
-
- * Récupérer l'identifiant de la rubrique du gabarit correspondant
-
-<code>getRubFromGabarit('genGabarit')</code>
-
- * Récupérer la premiere rubrique (identifiant) qui a comme gabarit, la classe passée en paramètre
-
-<code>getRubriqueByGabarit('')</code>
