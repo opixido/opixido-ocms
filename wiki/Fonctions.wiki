@@ -40,6 +40,8 @@ dinfo('TEST');
 
 == Fichiers ==
 
+=== Images ===
+
  * Récupérer l'url complet d'une image :
 <code>
 //getImg(table, champ, id, row)
@@ -48,3 +50,22 @@ getImg('a_actualite', 'actualite_img', $idActu, '');
 $actu = new row('a_actualite',$idActu);
 $actu->actualite_img;
 </code>
+
+ * Récupérer l'url d'une image en _Thumbnail_ :
+
+<code>
+//getThumb($table, $champ, $id, $row = array(), $w, $h)
+//Vous pouvez ne pas spécifier la hauteur en mettant 0
+getThumb('a_actualite', 'actualite_img', $idActu, '', 300, 400);
+</code>
+
+ * Récupérer l'url d'une image en _Crop_ :
+
+<code>
+//getCrop($table, $champ, $id, $row = array(), $w, $h)
+getCrop('a_actualite', 'actualite_img', $idActu, '', 300, 400);
+//Vous pouvez ne pas spécifier la hauteur en mettant 0
+</code>
+
+
+
