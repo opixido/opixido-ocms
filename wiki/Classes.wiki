@@ -1,3 +1,4 @@
+#labels Documentation
 <h1>Classes</h1>
 
 == Classes ==
@@ -74,10 +75,33 @@ $this->site->g_rubrique->showBoxLinks=false;
 
 === Générer un template : genTemplate _(include/global/genTemplate.php)_ ===
 
-Plus d'infos sur [CreationGabarit#Creation_du_template_de_la_liste_des_actualites cette page]
+Pour savoir comment créer un template dans un gabarit, rendez-vous sur [CreationGabarit#Creation_du_template_de_la_liste_des_actualites cette page]
+
+Commencçons par créer un template html _(chemin/Du/Fichier/tpl.php)_
+<code>
+<div id="monTemplate">
+  <h1>@@titre@@</h1>
+</div>
+</code>
 
 <code>
+//Déclaration du template
+$tpl = new genTemplate();
+//On charge le template html
+$tpl->loadTemplate('tpl', 'chemin/Du/Fichier');
 
+//On affecte des valeurs aux variables du template
+//Un titre et du contenu par exemple;
+$tpl->titre = $this->getTitre();
+$tpl->contenu = $this->getDescription();
+
+Pour boucler sur des informations
+foreach($results as $resultat)
+{
+  //On déclare un bloc
+  
+
+}
 </code>
 
 === Créer un cache : genCache _(include/global/gencache.php)_ ===
