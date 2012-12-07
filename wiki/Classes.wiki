@@ -80,7 +80,9 @@ Pour savoir comment créer un template dans un gabarit, rendez-vous sur [Creatio
 Commencçons par créer un template html _(chemin/Du/Fichier/tpl.php)_
 <code language="html">
 <div id="monTemplate">
+
   <h1>@@titre@@</h1>
+
 </div>
 </code>
 
