@@ -38,7 +38,7 @@
 = Gestion des utilisateurs =
 
  * [GestionUtilisateurs Gestion des utilisateurs]
-* [GestionDroits Gestion des droits]
+ * [GestionDroits Gestion des droits]
 
 = Autres =
 
