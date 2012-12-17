@@ -22,4 +22,8 @@ Pour créer un rôle d'administration, cliquez sur l'îcone "Plus/Créer" ou ajo
 Par défaut, un nouveau role ne dispose d'aucun droit.
  * Indiquez un nom pour ce nouveau rôle
  * Pour ajouter des droits sur une table, cliquez sur le bouton "Nouveau" puis :
-  # 
+  # Entrez le nom de la table sur laquelle vous souhaitez mettre les droits
+  # Indiquez le type de droit :
+   # _all_ : 
+   # _per_user_ : 
+   # _specific_ : 
