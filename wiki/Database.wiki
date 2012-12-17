@@ -1,6 +1,6 @@
 #Schéma relationnel de la base de données du CMS
 
-[http://www.opixido.com/ocms/screen/ocms-structure.png]
+[http://www.opixido.com/ocms/screen/ocms-structure2.png]
 
 #Base de donnée
 
