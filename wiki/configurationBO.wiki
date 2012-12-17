@@ -48,7 +48,8 @@ Pour cela, rendez-vous dans la section "Créer un plugin".
  * Pour chaque champ : 
   * Cochez "label" s'il doit apparaître dans la liste
   * Cochez "Wysiwyg" si le champ peut contenir du HTML
+  * Sélectionnez la table sur lequel pointe la clef étrangère (le champ commmence par _ fk_... _)
   * Cochez "Obligatoire" s'il ne doit pas être nul
   * Cochez "Url" ou "Mail" si le champ est respectivement un lien ou une adresse mail
   * Indiquez le nom de l'onglet contenant les champs à générer
-  * Indiquez le nom du cahmp s'affichant dans la liste
+  * Indiquez la traduction du champ
