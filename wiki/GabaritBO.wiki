@@ -131,7 +131,7 @@ $neededFields[] = "nomTable_titre";
 
  * Les champs de type ordre :
 
-<code>$orderFields['nomTable'] = array('nomChamp_ordre'</code>
+<code>$orderFields['nomTable'] = array('nomChamp_ordre');</code>
 
  * Afficher/Masquer une ligne de table (attribut _en`_ligne`_) : 
 
