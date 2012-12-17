@@ -23,7 +23,14 @@ Par défaut, un nouveau role ne dispose d'aucun droit.
  * Indiquez un nom pour ce nouveau rôle
  * Pour ajouter des droits sur une table, cliquez sur le bouton "Nouveau" puis :
   # Entrez le nom de la table sur laquelle vous souhaitez mettre les droits
-  # Indiquez le type de droit :
+  # Indiquez le type de droit ("Table type") :
    * _all_ : l'utilisateur peut modifier toutes les lignes de la table
    * _per_user_ : permet de spécifier pour chaque utilisateur quelles sont les lignes qu'il peut modifier (via l'onglet "Admin Droits spécifiques" lors de la création de l'utilisateur)
    * _specific_ : si la table contient le champ "_ ocms_creator _", alors seules les lignes créées par l'utilisateur seront modifiables par ce dernier.
+  # "Table specific" :
+  # "Table champs" : entrez tous les champs modifiables par l'utilisateur (séparés par des virgules, sans espace). Si vous n'indiquez rien, alors l'utilisateur pourra modifier tous les champs.
+  # "Table View" : l'utilisateur peut voir toutes les données.
+  # "Table Add" : l'utilisateur peut ajouter des données.
+  # "Table Edit" : l'utilisateur peut modifier les données.
+  # "Table Delete" : l'utilisateur peut supprimer des données.
+  # "Table Actions" : entrez le nom des actions (définies dans la config) utilisables par l'utilisateur. (ex : validate,unvalidatemoveRubrique). Laissez vide si l'utilisateur a tous les droits.
