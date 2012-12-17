@@ -10,7 +10,7 @@ Doc : _include/config/config.base.php_
 || *ocms_date_crea* || Date de création de la ligne ||
 || *ocms_date_online* || Date de mise en ligne (date à partir de laquelle la ligne est prise en compte) ||
 || *ocms_date_offline* || Date à partir de laquelle la ligne n'est plus prise en compte ||
-|| *ocms_creator* || Identifiant de l'administrateur qui a créé la ligne ||
+|| *ocms_creator* || Identifiant de l'administrateur qui a créé la ligne, [GestionDroits#Ajouter_les_droits_pour_chaque_table exemple ici] ||
 
 == Les types de champs ==
 || *Type* || *Fin* ||
