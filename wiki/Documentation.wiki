@@ -11,16 +11,16 @@
 
 = Details =
 
-  * [http://code.google.com/p/opixido-ocms/wiki/Installation Installation]
-  * [http://code.google.com/p/opixido-ocms/wiki/Arborescence Création de l'arborescence]
-  * [http://code.google.com/p/opixido-ocms/wiki/CreationTheme Création d'un template/thème]
-  * [http://code.google.com/p/opixido-ocms/wiki/TypesParagraphe Création des types de paragraphes]
-  * [http://code.google.com/p/opixido-ocms/wiki/CreationGabarit Création d'un nouveau gabarit de page]
-   # [http://code.google.com/p/opixido-ocms/wiki/GabaritBO Ajout du gabarit dans le Back-Office]
-  * [http://code.google.com/p/opixido-ocms/wiki/Plugin Création d'un plugin complet]
+  * [Installation Installation]
+  * [Arborescence Création de l'arborescence]
+  * [CreationTheme Création d'un template/thème]
+  * [TypesParagraphe Création des types de paragraphes]
+  * [CreationGabarit Création d'un nouveau gabarit de page]
+   # [GabaritBO Ajout du gabarit dans le Back-Office]
+  * [Plugin Création d'un plugin complet]
    # [http://code.google.com/p/opixido-ocms/wiki/CreationGabarit#Creation_du_dossier_et_des_fichiers Exemple]
 
- * [http://code.google.com/p/opixido-ocms/wiki/Classes Classes]
+ * [Classes Classes]
   # [Classes#Headers_de_page_(genHeaders)_(include/global/genHeaders.php) genHeaders]
   # [Classes#Rubrique_:_genRubrique_(include/global/genRubrique.php) genRubrique]
   # [Classes genTemplate]
@@ -32,18 +32,18 @@
 
 = Rubriques =
 
- * [http://code.google.com/p/opixido-ocms/wiki/PageActions Actions sur une page]
- * [http://code.google.com/p/opixido-ocms/wiki/Referencement Le référencement]
+ * [PageActions Actions sur une page]
+ * [Referencement Le référencement]
 
 = Gestion des utilisateurs =
 
- * [http://code.google.com/p/opixido-ocms/wiki/GestionUtilisateurs Gestion des utilisateurs]
+ * [GestionUtilisateurs Gestion des utilisateurs]
 * [GestionDroits Gestion des droits]
 
 = Autres =
 
- * [http://code.google.com/p/opixido-ocms/wiki/TextesParam Textes paramétrables]
- * [http://code.google.com/p/opixido-ocms/wiki/GestionLangues Gestion des langues]
- * [http://code.google.com/p/opixido-ocms/wiki/Images Recadrage et accessibilité des images]
- * [http://code.google.com/p/opixido-ocms/wiki/SystemeCache Système de cache]
- * [http://code.google.com/p/opixido-ocms/wiki/GestionnaireMAJ Les gestionnaire de mises à jour]
+ * [TextesParam Textes paramétrables]
+ * [GestionLangues Gestion des langues]
+ * [Images Recadrage et accessibilité des images]
+ * [SystemeCache Système de cache]
+ * [GestionnaireMAJ Les gestionnaire de mises à jour]
