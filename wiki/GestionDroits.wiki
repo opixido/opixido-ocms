@@ -37,6 +37,11 @@ Par défaut, un nouveau role ne dispose d'aucun droit.
 
 Ajoutez autant de tables que nécessaire.
 
-=== Ajouter des droits spécifiques (Type "table specific sélectionné") ===
+=== Ajouter des droits spécifiques (Type table"per_user" sélectionné) ===
 
-Vous pouvez ajouter des droits spécifiques lorsque vous créez ou modifiez un utilisateur. : cliquez sur l'onglet "Admin Droits spécifiques". 
+Vous pouvez ajouter des droits spécifiques lorsque vous créez ou modifiez un utilisateur.
+ * Allez dans la partie "Gestion des utilisateurs".
+ * Ajoutez ou modifiez un utilisateur.
+ * Sélectionnez l'onglet "Admin Droits Spécifiques"
+ * Si le type "per_user" a été sélectionnez, vous pourrez dès lors sélectionnez les données modifiables par l'utilisateur. Exemple :
+[http://www.opixido.com/ocms/screen/arborescence/droits.png]
