@@ -12,5 +12,14 @@ Lorsque vous créez un utilisateur, vous pouvez lui attribuer un ou plusieurs r�
 
 == Créer un rôle ==
 
+=== ===
+
 Pour créer un rôle d'administration, cliquez sur l'îcone "Plus/Créer" ou ajoutez dans l'url le paramètre "_ ?curTable=s_role _" et cliquez sur "Ajouter un élément" comme ci-dessous :
 [http://www.opixido.com/ocms/screen/droits/role-table.png]
+
+=== Ajouter les droits pour chaque table ===
+
+Par défaut, un nouveau role ne dispose d'aucun droit.
+ * Indiquez un nom pour ce nouveau rôle
+ * Pour ajouter des droits sur une table, cliquez sur le bouton "Nouveau" puis :
+  # 
