@@ -2,6 +2,8 @@
 
 Doc : _include/config/config.base.php_
 
+Exemple de configuration sur [GabaritBO cette page].
+
 == Ajouter la configuration d'un gabarit ==
 
 Documentation sur [GabaritBO cette page].
@@ -37,3 +39,16 @@ $tabForms["nomTable"]["picto"] = ADMIN_PICTOS_FOLDER."32x32/apps/internet-news-r
 </code>
 
 *Important: n'oubliez pas de rajouter le plugin dans le back-office et de l'installer!*
+
+== Créer ou modifier la configuration d'un menu plus rapidement ==
+
+Il existe un outil pour récupérer plus rapidement le code de configuration.
+Pour cela, rendez-vous dans la section "Créer un plugin". 
+ * Sélectionnez la table du plugin.
+ * Pour chaque champ : 
+  * Cochez "label" s'il doit apparaître dans la liste
+  * Cochez "Wysiwyg" si le champ peut contenir du HTML
+  * Cochez "Obligatoire" s'il ne doit pas être nul
+  * Cochez "Url" ou "Mail" si le champ est respectivement un lien ou une adresse mail
+  * Indiquez le nom de l'onglet contenant les champs à générer
+  * Indiquez le nom du cahmp s'affichant dans la liste
