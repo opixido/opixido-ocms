@@ -57,3 +57,4 @@ Pour cela, rendez-vous dans la section "Créer un plugin".
  * Entrez un nom pour le plugon
  * Sélectionnez une rubrique dans laquelle afficher le plugin
  * Choisissez un icône pour votre plugin
+Cliquez ensuite sur "Créer" et copiez/collez le résultat dans votre fichier de config.
