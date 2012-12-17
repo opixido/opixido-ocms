@@ -38,6 +38,7 @@
 = Gestion des utilisateurs =
 
  * [http://code.google.com/p/opixido-ocms/wiki/GestionUtilisateurs Gestion des utilisateurs]
+* [GestionDroits Gestion des droits]
 
 = Autres =
 
