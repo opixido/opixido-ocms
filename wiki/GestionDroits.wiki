@@ -34,3 +34,9 @@ Par défaut, un nouveau role ne dispose d'aucun droit.
   # "Table Edit" : l'utilisateur peut modifier les données.
   # "Table Delete" : l'utilisateur peut supprimer des données.
   # "Table Actions" : entrez le nom des actions (définies dans la config) utilisables par l'utilisateur. (ex : validate,unvalidatemoveRubrique). Laissez vide si l'utilisateur a tous les droits.
+
+Ajoutez autant de tables que nécessaire.
+
+=== Ajouter des droits spécifiques (Type "table specific sélectionné") ===
+
+Vous pouvez ajouter des droits spécifiques lorsque vous créez ou modifiez un utilisateur. : cliquez sur l'onglet "Admin Droits spécifiques". 
