@@ -12,4 +12,5 @@ Lorsque vous créez un utilisateur, vous pouvez lui attribuer un ou plusieurs r�
 
 == Créer un rôle ==
 
-Pour créer un rôle d'administration, cliquez sur l'îcone "Plus/Créer" ou ajoutez dans l'url le paramètre "_ ?curTable=s_role _" et cliquez sur "Ajouter un élément".
+Pour créer un rôle d'administration, cliquez sur l'îcone "Plus/Créer" ou ajoutez dans l'url le paramètre "_ ?curTable=s_role _" et cliquez sur "Ajouter un élément" comme ci-dessous :
+[http://www.opixido.com/ocms/screen/droits/role_table.png]
