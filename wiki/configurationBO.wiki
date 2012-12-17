@@ -44,6 +44,7 @@ $tabForms["nomTable"]["picto"] = ADMIN_PICTOS_FOLDER."32x32/apps/internet-news-r
 
 Il existe un outil pour récupérer plus rapidement le code de configuration.
 Pour cela, rendez-vous dans la section "Créer un plugin". 
+[http://www.opixido.com/ocms/screen/creer-plugin.png]
  * Sélectionnez la table du plugin.
  * Pour chaque champ : 
   * Cochez "label" s'il doit apparaître dans la liste
