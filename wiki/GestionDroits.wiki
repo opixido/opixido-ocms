@@ -25,5 +25,5 @@ Par défaut, un nouveau role ne dispose d'aucun droit.
   # Entrez le nom de la table sur laquelle vous souhaitez mettre les droits
   # Indiquez le type de droit :
    * _all_ : l'utilisateur peut modifier toutes les lignes de la table
-   * _per_user_ : permet de spécifier pour chaque utilisateur quelles sont les lignes qu'il peut modifier.
+   * _per_user_ : permet de spécifier pour chaque utilisateur quelles sont les lignes qu'il peut modifier (via l'onglet "Admin Droits spécifiques" lors de la création de l'utilisateur)
    * _specific_ : si la table contient le champ "_ ocms_creator _", alors seules les lignes créées par l'utilisateur seront modifiables par ce dernier.
