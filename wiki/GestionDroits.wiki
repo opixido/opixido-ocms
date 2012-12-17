@@ -9,3 +9,7 @@ Comment créer un utilisateur [GestionUtilisateurs sur cette page]
 Lorsque vous créez un utilisateur, vous pouvez lui attribuer un ou plusieurs rôles d'administration du site.
 
 [http://www.opixido.com/ocms/screen/droits/ajouter-role-utilisateur.png]
+
+== Créer un rôle ==
+
+Pour créer un rôle d'administration, cliquez sur l'îcone "Plus/Créer" ou ajoutez dans l'url le paramètre "_ ?curTable=s_role _" et cliquez sur "Ajouter un élément".
