@@ -934,8 +934,13 @@ function setAllUrls() {
 
     $f = new simpleForm('', 'get', '');
     $f->add('hidden', 'setAllUrls', '', 'globalAction');
-
-    $f->add('select', $_Gconfig['LANGUAGES'], t('langue_source'), 'langue_source');
+	
+	$langues_sources = array();
+	foreach ($_Gconfig['LANGUAGES'] as $v) {
+		$langues_sources[$v] = $v;
+	}
+    $f->add('select', $langues_sources, t('langue_source'), 'langue_source');
+    //$f->add('select', $_Gconfig['LANGUAGES'], t('langue_source'), 'langue_source');
 
     $f->add('submit', t('submit'));
 
