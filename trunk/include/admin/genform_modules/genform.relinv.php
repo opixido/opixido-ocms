@@ -87,7 +87,7 @@ if (!$this->editMode) {
         $this->addBuffer('<table class="sortable table table-striped table-bordered table-condensed" rel="' . $fk_table . '__' . $ofield . '" border="0" width="' . ($this->larg - 25) . '" class="genform_table ' . ($sortable ? 'sortable' : '') . ' relinv" ><thead>');
 
         $ml = 1;
-        $cs = $sortable ? 3 : 2;
+        $cs = $sortable && count($res) > 1 ? 3 : 2;
 
         $this->addBuffer('<tr><th width="20" colspan="' . $cs . '">');
 
