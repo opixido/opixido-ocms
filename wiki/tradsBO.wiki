@@ -1,0 +1,10 @@
+#labels Documentation
+= Modifier les traductions du BO =
+
+Nous allons voir comment modifier les titres, les images et les textes d'aide des champs.
+
+== Directement dans un formulaire ==
+
+Rendez-vous sur un formulaire contenant les champs dont vous souhaitez modifier la traduction.
+Rajoutez dans l'url de la page le paramètre "editTrads=1" comme ci-dessous :
+[http://www.opixido.com/ocms/screen/textesParam/editTrads.png]
