@@ -34,7 +34,7 @@ Vous pouvez finalement rajouter dans le fichier "config.php" de votre plugin les
 
 <code>
 //Si votre champ est un champ de langue, il ne faut pas rajouter dans la traduction la terminaison ("_fr" par exemple)
-$admin_trads['actualite_titre']['fr'] = 'Titre de l'actualité';
+$admin_trads['actualite_titre']['fr'] = 'Titre de l\'actualité';
 </code>
 
 Note : n'oubliez pas de déclarer la variable globale "$admin_trads".
