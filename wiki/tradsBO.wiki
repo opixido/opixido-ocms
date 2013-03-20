@@ -16,4 +16,25 @@ Rajoutez dans l'url de la page le paramètre "editTrads=1" comme ci-dessous :
 
 [http://www.opixido.com/ocms/screen/textesParam/editTrads2.png]
 
-Pour enregistrer les modifications, cliquez simplement sur le bouton "Enregistrer".
+Pour enregistrer ensuite les modifications, cliquez simplement sur le bouton "Enregistrer".
+
+Note : pour retirer cet éditeur, passez le paramètre à "editTrads=0"
+
+== Via les textes paramétrables ==
+
+Dans l'accueil du Back-office, sélectionnez le lien "Textes de l'admin" (paramètre "curTable=s_admin_trad").
+
+[http://www.opixido.com/ocms/screen/textesParam/s_admin_trad.png]
+
+Vous pouvez ajouter à cet endroit tous les champs et noms de tables à traduire.
+
+== Dans la config ==
+
+Vous pouvez finalement rajouter dans le fichier "config.php" de votre plugin les traductions du back-office comme ci-dessous :
+
+<code>
+//Si votre champ est un champ de langue, il ne faut pas rajouter dans la traduction la terminaison ("_fr" par exemple)
+$admin_trads['actualite_titre']['fr'] = 'Titre de l'actualité';
+</code>
+
+Note : n'oubliez pas de déclarer la variable globale "$admin_trads".
