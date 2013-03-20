@@ -39,7 +39,7 @@
 
 == Formulaires ==
 
- * [ Modifier les traductions et les icônes]
+ * [tradsBO Modifier les traductions et les icônes]
 
 == Gestion des utilisateurs ==
 
