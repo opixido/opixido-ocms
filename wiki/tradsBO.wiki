@@ -16,6 +16,10 @@ Rajoutez dans l'url de la page le paramètre "editTrads=1" comme ci-dessous :
 
 [http://www.opixido.com/ocms/screen/textesParam/editTrads2.png]
 
+Vous obtiendrez :
+
+[http://www.opixido.com/ocms/screen/textesParam/editTrads3.png]
+
 Pour enregistrer ensuite les modifications, cliquez simplement sur le bouton "Enregistrer".
 
 Note : pour retirer cet éditeur, passez le paramètre à "editTrads=0"
