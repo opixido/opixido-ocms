@@ -35,7 +35,9 @@
  * [PageActions Actions sur une page]
  * [Referencement Le référencement]
 
-= Gestion des utilisateurs =
+= Back-Office =
+
+== Gestion des utilisateurs ==
 
  * [GestionUtilisateurs Gestion des utilisateurs]
  * [GestionDroits Gestion des droits]
