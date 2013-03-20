@@ -7,4 +7,13 @@ Nous allons voir comment modifier les titres, les images et les textes d'aide de
 
 Rendez-vous sur un formulaire contenant les champs dont vous souhaitez modifier la traduction.
 Rajoutez dans l'url de la page le paramètre "editTrads=1" comme ci-dessous :
+
 [http://www.opixido.com/ocms/screen/textesParam/editTrads.png]
+
+1 - Cliquez sur le symbole "+" bleu pour modifier le nom du champ
+2 - Cliquez sur l'icône pour modifier l'icône du champ
+3 - Cliquez sur le symbole "+" bleu près du point d'interrogation pour modifier le texte d'aide.
+
+[http://www.opixido.com/ocms/screen/textesParam/editTrads2.png]
+
+Pour enregistrer les modifications, cliquez simplement sur le bouton "Enregistrer".
