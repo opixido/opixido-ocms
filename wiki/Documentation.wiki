@@ -37,6 +37,10 @@
 
 = Back-Office =
 
+== Formulaires ==
+
+ * [ Modifier les traductions et les icônes]
+
 == Gestion des utilisateurs ==
 
  * [GestionUtilisateurs Gestion des utilisateurs]
