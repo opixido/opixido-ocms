@@ -33,8 +33,8 @@ Vous pouvez ajouter à cet endroit tous les champs et noms de tables à traduire
 Vous pouvez finalement rajouter dans le fichier "config.php" de votre plugin les traductions du back-office comme ci-dessous :
 
 <code>
-//Si votre champ est un champ de langue, il ne faut pas rajouter dans la traduction la terminaison ("_fr" par exemple)
 $admin_trads['actualite_titre']['fr'] = 'Titre de l\'actualité';
+//Attention, 'actualite_titre_fr' ne fonctionne pas
 </code>
 
 Note : n'oubliez pas de déclarer la variable globale "$admin_trads".
