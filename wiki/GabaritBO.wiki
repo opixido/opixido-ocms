@@ -239,8 +239,8 @@ $tabForms['a_actualite']['pages']['Actualité'] = array('../plugins/actualites/f
 <?php
 //Le CMS reconnaîtra automatiquement la date
 $this->gen('actualite_date');
-$this->genlg('actualite_titre');
 //genlg va servir à générer le contenu multilingue
+$this->genlg('actualite_titre');
 $this->genlg('actualite_contenu');
 $this->gen('actualite_img');
 $this->gen('en_ligne');
