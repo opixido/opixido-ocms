@@ -12,13 +12,6 @@
 = Details =
 
   * [Installation Installation]
-  * [Arborescence Création de l'arborescence]
-  * [CreationTheme Création d'un template/thème]
-  * [TypesParagraphe Création des types de paragraphes]
-  * [CreationGabarit Création d'un nouveau gabarit de page]
-   # [GabaritBO Ajout du gabarit dans le Back-Office]
-  * [Plugin Création d'un plugin complet]
-   # [http://code.google.com/p/opixido-ocms/wiki/CreationGabarit#Creation_du_dossier_et_des_fichiers Exemple]
 
  * [Classes Classes]
   # [Classes#Headers_de_page_(genHeaders)_(include/global/genHeaders.php) genHeaders]
@@ -30,9 +23,21 @@
  * [Fonctions Les fonctions de base]
   # [Fonctions#Urls URL]
 
+= Dévelopement =
+
+  * [CreationTheme Création d'un template/thème]
+  * [TypesParagraphe Création des types de paragraphes]
+  * [CreationGabarit Création d'un nouveau gabarit de page]
+   # [GabaritBO Ajout du gabarit dans le Back-Office]
+  * [Plugin Création d'un plugin complet]
+   # [http://code.google.com/p/opixido-ocms/wiki/CreationGabarit#Creation_du_dossier_et_des_fichiers Exemple]
+
+
 = Back-Office =
 
 == Rubriques ==
+
+  * [Arborescence Création de l'arborescence]
 
 == Formulaires ==
 
