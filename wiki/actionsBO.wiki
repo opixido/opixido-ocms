@@ -9,6 +9,14 @@ Pour ajouter une action *sur une table* :
 
 === Ajouter une action sur les lignes d'une table ===
 
+
+<code>
+//Ajoute le lien de l'action/bouton
+$_Gconfig['rowActions']['nomTable']['nomAction']= true;
+//Ajoute une image pour ce lien/bouton
+$admin_trads['src_nomAction']['fr'] = ADMIN_PICTOS_FOLDER."24x24/mimetypes/image.png";
+</code>
+
 Le nom de la classe doit obligatoirement commencer par "genAction" et implémenter la classe "ocms_action".
 
 <code>
@@ -22,12 +30,6 @@ class genActionNomDeMonAction extends ocms_action
 }
 </code>
 
-== Ajouter le lien/bouton ==
-
-<code>
-$_Gconfig['rowActions']['nomTable']['nomAction']= true;
-$admin_trads['src_nomAction']['fr'] = ADMIN_PICTOS_FOLDER."24x24/mimetypes/image.png";
-</code>
 
 == Exécuter une action lors d'une modification ==
 
