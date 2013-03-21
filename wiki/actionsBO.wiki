@@ -2,6 +2,23 @@
 
 == Ajouter une action ==
 
+=== Ajouter une action dans le menu de droite ===
+("Actions administrateur")
+
+<code>$_Gconfig['globalActions'][]= 'nomFonction';</code>
+
+Vous pourrez ensuite créer lafonction chargeant une page par exemple :
+
+<code>
+function nomFonction()
+{
+ //Vous pouvez par exemple inclure des fichiers
+ $GLOBALS['gb_obj']->includeFile('fichier.php','plugins/nomPlugin/');
+ //On affiche ce que doit contenir la page
+ echo'Ma nouvelle page';
+}
+</code>
+
 === Ajouter une action sur une table ===
 
 Pour ajouter une action *sur une table* :
