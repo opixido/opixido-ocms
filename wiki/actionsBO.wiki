@@ -9,7 +9,6 @@ Pour ajouter une action *sur une table* :
 
 === Ajouter une action sur les lignes d'une table ===
 
-
 <code>
 //Ajoute le lien de l'action/bouton
 $_Gconfig['rowActions']['nomTable']['nomAction']= true;
@@ -30,6 +29,11 @@ class genActionNomAction extends ocms_action
 }
 </code>
 
+== Ajouter une action "afficher/masquer" ==
+
+Si votre table contient un champ "en_ligne", vous pouvez ajouter facilement un lien/bouton pour masquer ou afficher une ligne :
+
+<code>$_Gconfig['hideableTable'][] = 'nomTable';</code>
 
 == Exécuter une action lors d'une modification ==
 
