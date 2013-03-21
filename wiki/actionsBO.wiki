@@ -7,12 +7,12 @@
 
 <code>$_Gconfig['globalActions'][]= 'nomFonction';</code>
 
-Vous pourrez ensuite créer lafonction chargeant une page par exemple :
+Vous pourrez ensuite créer la fonction, qui va par exemple charger une page :
 
 <code>
 function nomFonction()
 {
- //Vous pouvez par exemple inclure des fichiers
+ //On peut inclure des fichiers
  $GLOBALS['gb_obj']->includeFile('fichier.php','plugins/nomPlugin/');
  //On affiche ce que doit contenir la page
  echo'Ma nouvelle page';
