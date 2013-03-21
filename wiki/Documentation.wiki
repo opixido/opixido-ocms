@@ -32,6 +32,10 @@
 
  * [Fonctions Les fonctions de base]
   # [Fonctions#Urls URL]
+  # [Fonctions#Gestion_des_erreurs Gestion des erreurs]
+  # [Fonctions#Fichiers Fichiers]
+  # [Fonctions#Contenu Contenu]
+  # [Fonctions#E-Mails_et_formulaires E-mails et formulaires]
 
 = Back-Office =
 
