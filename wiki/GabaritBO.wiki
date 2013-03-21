@@ -167,9 +167,13 @@ $tablerel['actualite_theme'] = array('fk_actualite_id'=>'a_actualite','fk_theme_
 
 <code>
 $relinv['table_parente']['NOM_DU_FAUX_CHAMP'] = array('table_fille','CLEF EXTERNE');
+//Ou la même chose, mais en AJAX
+$_Gconfig['ajaxRelinv']['TABLE']['NOM_DU_FAUX_CHAMP'] = array('SOUS_TABLE','CLEF EXTERNE',array('LISTE DES CHAMPS A AFFICHER'));
 
 //Exemple :
 $relinv['a_actualite']['PARAGRAPHES'] = array('s_paragraphe','fk_actualite_id');
+//Version AJAX
+$_Gconfig['ajaxRelinv']['a_actualite']['PARAGRAPHES'] = array('s_paragraphe','fk_actualite_id',array('paragraphe_titre','fk_para_type_id','paragraphe_contenu'));
 </code>
 
 
