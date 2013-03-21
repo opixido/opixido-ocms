@@ -2,6 +2,13 @@
 
 == Ajouter une action ==
 
+=== Ajouter une action sur une table ===
+
+Pour ajouter une action *sur une table* :
+<code>$_Gconfig['tableActions']['nomTable'][] = 'nomFonction';</code>
+
+=== Ajouter une action sur les lignes d'une table ===
+
 Le nom de la classe doit obligatoirement commencer par "genAction" et implémenter la classe "ocms_action".
 
 <code>
