@@ -43,6 +43,10 @@
 
   * [Arborescence Création de l'arborescence]
 
+== Plugins/Gabarits ==
+
+ * [actionsBO Créer des actions]
+
 == Formulaires ==
 
  * [tradsBO Modifier les traductions et les icônes]
