@@ -1,0 +1,25 @@
+= L'ajout d'actions et de pages dans le Back-Office =
+
+== Ajouter une action (et son bouton) ==
+
+<code>
+class genActionnomDeMonAction extends ocms_action
+{
+ //Vérification avant action
+ public function checkCondition() {  }
+
+ //Code de l'action
+ public function doIt() { }
+}
+</code>
+
+<code>
+$gr_on['beforeDelete']['nomDuChamp'] = 'nomFonction';
+$gr_on['hideObject']['nomDuChamp'] = 'nomFonction';
+$gr_on['showObject']['nomDuChamp'] = 'nomFonction';
+$gr_on['recorded']['nomDuChamp'] = 'nomFonction';
+$gr_on['fileUploaded']['nomDuChamp'] = 'nomFonction';
+
+$_Gconfig['reloadOnChange'][] = 'nomChamp';
+$_Gconfig['specialListingWhereFullArbo']['nomTable'] = 'nomFonction';
+</code>
