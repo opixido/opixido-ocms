@@ -37,6 +37,8 @@
 
 = Back-Office =
 
+== Rubriques ==
+
 == Formulaires ==
 
  * [tradsBO Modifier les traductions et les icônes]
@@ -49,10 +51,10 @@
 == Autres ==
 
  * [Images Recadrage et accessibilité des images]
+ * [GestionLangues Gestion des langues]
  * [GestionnaireMAJ Les gestionnaire de mises à jour]
 
 = Autres =
 
  * [TextesParam Textes paramétrables]
- * [GestionLangues Gestion des langues]
  * [SystemeCache Système de cache]
