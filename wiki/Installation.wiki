@@ -5,6 +5,10 @@
 
 [http://code.google.com/p/opixido-ocms/wiki/PreRequis Voir cette page]
 
+== Téléchargement ==
+
+[https://code.google.com/p/opixido-ocms/source/browse/trunk/ Télécharger la dernière version d'OCMS]
+
 == Etapes ==
 
 (1)
