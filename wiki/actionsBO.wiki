@@ -56,7 +56,7 @@ Si votre table contient un champ "en_ligne", vous pouvez ajouter facilement un l
 Votre table doit contenir les champs : "fk_version" et "en_ligne" avant de pouvoir ajouter un bouton "Valider".
 Puis ajoutez :
 
-<code>$_Gconfig['multiVersionTable'][] = 'nomTable';</code>
+<code>$_Gconfig['versionedTable'][] = 'nomTable';</code>
 
 == Exécuter une action lors d'une modification ==
 
