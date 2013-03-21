@@ -74,7 +74,7 @@ echo limitWords($str, 50, '...');
  * Limiter le nombre de caractères et rajouter "..."
 <code>
 //function limit($str, $nchars = 30)
-echo limitWords($str, 50, '...');
+echo limit($str, 50);
 </code>
 
 == E-Mails et formulaires ==
