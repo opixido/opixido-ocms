@@ -35,6 +35,13 @@ Si votre table contient un champ "en_ligne", vous pouvez ajouter facilement un l
 
 <code>$_Gconfig['hideableTable'][] = 'nomTable';</code>
 
+== Ajouter une action "Valider" ==
+
+Votre table doit contenir les champs : "fk_version" et "en_ligne" avant de pouvoir ajouter un bouton "Valider".
+Puis ajoutez :
+
+<code>$_Gconfig['multiVersionTable'][] = 'nomTable';</code>
+
 == Exécuter une action lors d'une modification ==
 
 <code>
