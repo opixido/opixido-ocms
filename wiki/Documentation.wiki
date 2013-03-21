@@ -30,11 +30,6 @@
  * [Fonctions Les fonctions de base]
   # [Fonctions#Urls URL]
 
-= Rubriques =
-
- * [PageActions Actions sur une page]
- * [Referencement Le référencement]
-
 = Back-Office =
 
 == Rubriques ==
@@ -53,6 +48,13 @@
  * [Images Recadrage et accessibilité des images]
  * [GestionLangues Gestion des langues]
  * [GestionnaireMAJ Les gestionnaire de mises à jour]
+
+= Front-Office =
+
+== Rubriques ==
+
+ * [PageActions Actions sur une page]
+ * [Referencement Le référencement]
 
 = Autres =
 
