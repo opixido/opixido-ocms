@@ -60,6 +60,22 @@ Puis ajoutez :
 
 == Exécuter une action lors d'une modification ==
 
+Actions POST edition :
+<code>
+//Après la création d'une ligne
+$gr_on['insert']['nomTable'][] = 'nomFonction';
+//Après suppression
+$gr_on['beforeDelete']['nomTable'][]  = 'nomFonction';
+//Après modification
+$gr_on['update']['nomTable'][]  = 'nomFonction';
+//Après enregistrement
+$gr_on['save']['nomTable'][]  = 'nomFonction';
+//Après validation
+$gr_on['validate']['nomtable'][]  = 'nomFonction';
+//Toutes les tables
+$gr_on['save']['ANY_TABLE'][]  = 'nomFonction';
+</code>
+
 <code>
 $gr_on['beforeDelete']['nomDuChamp'] = 'nomFonction';
 $gr_on['insert']['nomDuChamp'] = 'nomFonction';
