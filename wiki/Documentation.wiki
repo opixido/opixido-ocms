@@ -20,8 +20,6 @@
   # [Classes genCache]
   # [Classes#genParagraphes_(include/global/genParagraphes.php) genParagraphes]
 
- * [Fonctions Les fonctions de base]
-  # [Fonctions#Urls URL]
 
 = Dévelopement =
 
@@ -32,6 +30,8 @@
   * [Plugin Création d'un plugin complet]
    # [http://code.google.com/p/opixido-ocms/wiki/CreationGabarit#Creation_du_dossier_et_des_fichiers Exemple]
 
+ * [Fonctions Les fonctions de base]
+  # [Fonctions#Urls URL]
 
 = Back-Office =
 
