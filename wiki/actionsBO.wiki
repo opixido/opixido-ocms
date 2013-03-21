@@ -20,7 +20,7 @@ $admin_trads['src_nomAction']['fr'] = ADMIN_PICTOS_FOLDER."24x24/mimetypes/image
 Le nom de la classe doit obligatoirement commencer par "genAction" et implémenter la classe "ocms_action".
 
 <code>
-class genActionNomDeMonAction extends ocms_action
+class genActionNomAction extends ocms_action
 {
  //Vérification avant action
  public function checkCondition() {  }
