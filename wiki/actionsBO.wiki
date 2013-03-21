@@ -1,6 +1,6 @@
 = L'ajout d'actions et de pages dans le Back-Office =
 
-== Ajouter une action (et son bouton) ==
+== Ajouter une action ==
 
 Le nom de la classe doit obligatoirement commencer par "genAction" et implémenter la classe "ocms_action".
 
@@ -13,6 +13,13 @@ class genActionNomDeMonAction extends ocms_action
  //Code de l'action
  public function doIt() { }
 }
+</code>
+
+== Ajouter le lien/bouton ==
+
+<code>
+$_Gconfig['rowActions']['nomTable']['nomAction']= true;
+$admin_trads['src_nomAction']['fr'] = ADMIN_PICTOS_FOLDER."24x24/mimetypes/image.png";
 </code>
 
 == Exécuter une action lors d'une modification ==
