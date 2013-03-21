@@ -35,6 +35,7 @@ class genActionNomAction extends ocms_action
 
 <code>
 $gr_on['beforeDelete']['nomDuChamp'] = 'nomFonction';
+$gr_on['insert']['nomDuChamp'] = 'nomFonction';
 $gr_on['hideObject']['nomDuChamp'] = 'nomFonction';
 $gr_on['showObject']['nomDuChamp'] = 'nomFonction';
 $gr_on['recorded']['nomDuChamp'] = 'nomFonction';
