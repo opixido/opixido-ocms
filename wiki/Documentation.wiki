@@ -41,7 +41,9 @@
 
 == Rubriques ==
 
-  * [Arborescence Création de l'arborescence]
+ * [Arborescence Création de l'arborescence]
+ * [PageActions Actions sur une page]
+ * [Referencement Le référencement]
 
 == Plugins/Gabarits ==
 
@@ -66,8 +68,6 @@
 
 == Rubriques ==
 
- * [PageActions Actions sur une page]
- * [Referencement Le référencement]
 
 = Autres =
 
