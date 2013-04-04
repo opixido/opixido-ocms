@@ -93,7 +93,7 @@ $this->genlg('nomTable_contenu');
 
   # Pour recadrer automatiquement une image (en pixels) :
 
-  <code>$_Gconfig['imageAutoResize'] = array('nomChamp_img'=>array(maxWidth,maxHeight));</code>
+  <code>$_Gconfig['imageAutoResize'] = array('nomChamp_img'=>array($maxWidth,$maxHeight));</code>
 
  * Pour ajouter un champ de couleur :
 
@@ -143,7 +143,7 @@ $neededFields[] = "nomTable_titre";
 
 <code>$_Gconfig['reloadOnChange'] = array('nomChamp');</code>
 
-<h3>Les relations en tables</h3>
+<h3>Les relations entre tables</h3>
 
  * Pour ajouter une relation de simple clé externe :
 
