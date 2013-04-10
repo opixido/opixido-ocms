@@ -20,14 +20,24 @@
 [http://www.opixido.com/ocms/screen/gabarit/gabarit-arbo.png]
 
 
-<h2><u>Insertion dans la base de donnees</u></h2>
+<h2><u>Installation du gabarit/plugin</u></h2>
 
- * Dans la table "s_gabarit" de votre base de données, créez une nouvelle ligne.
+<h3>Enregistrement dans la table "s_gabarit"</h3>
 
- * Insérez les champs suivants :
+Deux méthodes sont possibles : 
+
+ * Directement dans le système de gestion de BD :
+
+  # Dans la table "s_gabarit" de votre base de données, créez une nouvelle ligne.
+
+  # Insérez les champs suivants :
 || _ gabarit_id _ || _ gabarit_titre _ || ... || _ gabarit_classe _ || ... || _ gabarit_plugin _ ||
 || ... || titre du gabarit || ... || titre de la classe || ... || nom du dossier ||
 
+ * A partir du Back-Office
+  # Ajouter le paramètre "&curTable=s_gabarit" à la fin de l'url
+  # Cliquez sur "Ajouter un élément"
+  # Renseignez le titre du gabarit/plugin, le nom de la classe, des paramètres (facultatif), et le nom du dossier contenant le gabarit/plugin.
 
 <h2><u>Ajouter le gabarit dans une rubrique</u></h2>
 
