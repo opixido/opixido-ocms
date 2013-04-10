@@ -10,6 +10,7 @@
  <li> Créez-y un dossier, avec pour nom le nom de votre futur plugin(pas d'espace ni de caractère spécial). <b>Le nom du plugin doit, de préférence, être le même que celui de la table utilisée (utile pour le moteur de recherche)</b>.</li>
 [http://www.opixido.com/ocms/screen/gabarit/gabarit-arbo.png]
  <li> Créez-y le fichier PHP qui va générer le gabarit (controlleur). De préférence un nom évocateur comme "genNomDuPlugin".</li>
+</ul>
 
 <h4>Le controlleur</h4>
 
