@@ -53,10 +53,12 @@ class maClasse extends row
 }
 </code>
 
-<h4>la vue</h4>
+<h4>La vue</h4>
 
  * Créez dans le dossier courant un dossier qui va contenir le template du gabarit (_tpl_ par exemple).
  * Créez dans le nouveau dossier le template PHP (_nomDuPlugin.php_ par exemple)
+
+<h4>Arborescence finale</h4>
 
 [http://www.opixido.com/ocms/screen/gabarit/gabarit-arbo.png]
 
