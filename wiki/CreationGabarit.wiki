@@ -1,9 +1,11 @@
 #labels Documentation
 = Création d'un nouveau gabarit de page =
 
-<h2><u>Creation des dossiers et fichiers PHP</u></h2>
+<h2><u>Creation du gabarit ou plugin</u></h2>
 
- * Commencez par vous rendre dans le dossier "plugins" (nomDuProjet/include/plugins) de votre projet
+<h3>Création des fichiers et des dossiers</h3>
+
+ * Commencez par vous rendre dans le dossier _plugins_ (_nomDuProjet/include/plugins_) de votre projet.
 
  * Créez-y un dossier, avec pour nom le nom de votre futur plugin(pas d'espace ni de caractère spécial)
  * Créez-y le fichier PHP qui va générer le gabarit. De préférence un nom évocateur comme "genNomDuPlugin".
