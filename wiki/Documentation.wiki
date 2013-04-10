@@ -50,6 +50,8 @@
    # [GabaritBO Ajout du gabarit dans le Back-Office]
   * [Plugin Création d'un plugin complet]
    # [http://code.google.com/p/opixido-ocms/wiki/CreationGabarit#Creation_du_dossier_et_des_fichiers Exemple]
+ 
+ * [ExempleCreationGabarit Exemple de gabarit : Les actualités]
 
 == Style et disposition ==
 
