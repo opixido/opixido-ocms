@@ -375,8 +375,6 @@ class genActualites extends ocmsGen
 }
 </code>
 
-Pour ajouter ensuite dans le back-office la gestion des Actualités, rendez-vous sur [GabaritBO cette page]
-
 Vous pouvez modifier le template de la page par un autre :
  - Créez un nouveau fichier php dans le dossier _include/exports_ portant le nom du nouveau template de page.
 Puis, dans votre gabarit, déclarez-le dans la fonction _init()_ comme suit : 
@@ -384,3 +382,5 @@ Puis, dans votre gabarit, déclarez-le dans la fonction _init()_ comme suit :
 $this->site->g_url->TEMPLATE = 'monTemplate';
 //l'extension et le chemin ne sont pas nécessaires.
 </code>
+
+Pour ajouter ensuite dans le back-office la gestion des Actualités, rendez-vous sur [GabaritBO cette page]
