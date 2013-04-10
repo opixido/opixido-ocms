@@ -44,6 +44,9 @@
 == Plugins ==
 
   * [CreationGabarit Création d'un nouveau gabarit de page]
+   # [ Création des fichiers]
+   # [ Création de la classe]
+    #cd
    # [GabaritBO Ajout du gabarit dans le Back-Office]
   * [Plugin Création d'un plugin complet]
    # [http://code.google.com/p/opixido-ocms/wiki/CreationGabarit#Creation_du_dossier_et_des_fichiers Exemple]
