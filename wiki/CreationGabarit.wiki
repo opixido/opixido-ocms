@@ -19,7 +19,7 @@
 [http://www.opixido.com/ocms/screen/gabarit/gabarit-arbo.png]
 
 
-<h2><u>Installation du gabarit</u></h2>
+<h2><u>Installation du gabarit ou du plugin</u></h2>
 
 <h3>Enregistrement dans la table "s_gabarit"</h3>
 
