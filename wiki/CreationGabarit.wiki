@@ -8,12 +8,12 @@
 <ul>
  <li> Commencez par vous rendre dans le dossier _plugins_ ("_nomDuProjet/include/plugins_") de votre projet.</li>
  <li> Créez-y un dossier, avec pour nom le nom de votre futur plugin(pas d'espace ni de caractère spécial).</li>
- <li> Créez-y le fichier PHP qui va générer le gabarit. De préférence un nom évocateur comme "genNomDuPlugin".</li>
+ <li> Créez-y le fichier PHP qui va générer le gabarit (controlleur). De préférence un nom évocateur comme "genNomDuPlugin".</li>
 
-<h4>Dans le fichier créé</h4>
+<h4>Le controlleur</h4>
 
 Dans ce fichier, déclarez votre classe. La classe créée doit étendre la classe _ocmsGen_ ou la classe _ocmsPlugin_.
-  La fonction _init()_ et _afterInit()_ seront automatiquement appelées avant la fonction _gen()_. Elles ne doivent rien retourner et ne rien afficher.
+La fonction _init()_ et _afterInit()_ seront automatiquement appelées avant la fonction _gen()_. Elles ne doivent rien retourner et ne rien afficher.
   La fonction _gen()_ retournera le code du gabarit/plugin à afficher.<br/>
   <b>ATTENTION : le fichier PHP générant le gabarit doit porter le même nom que la classe déclarée et aucune fonction ne doit porter le même nom que la classe</b>
 
@@ -32,14 +32,16 @@ class genTest extends ocmsGen
 }
 </code>
 
- * Créez un fichier PHP front.php qui sera automatiquement parcouru. Vous pourrez y déclarer vos classes utiles au fonctionnement du plugin.
+<h4>Le modèle</h4>
+
+ * Créez un fichier PHP _front.php_ dans le dossier courant (_include/plugins/nomDeVotrePlugin_). Ce fichier sera automatiquement inclu. Vous pourrez y déclarer vos classes utiles au fonctionnement du plugin.
 
  * Créez, toujours dans le même dossier, un dossier qui va contenir le template du gabarit ("tpl" par exemple).
  * Créez dans le dossier "tpl" le template PHP ("nomDuPlugin.php" par exemple)
 
 [http://www.opixido.com/ocms/screen/gabarit/gabarit-arbo.png]
 
-
+<h4>la vue</h4>
 
 <h2><u>Installation du gabarit ou du plugin</u></h2>
 
