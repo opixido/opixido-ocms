@@ -61,7 +61,7 @@ class maClasse extends row
 
 <h4>Arborescence finale</h4>
 
-
+[http://www.opixido.com/ocms/screen/gabarit/gabarit-arbo2.png]
 
 <h2><u>Installation du gabarit ou du plugin</u></h2>
 
