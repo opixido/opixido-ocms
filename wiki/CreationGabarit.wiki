@@ -1,7 +1,6 @@
 #labels Documentation
 = Création d'un nouveau gabarit de page =
 
-
 <h2><u>Creation des dossiers et fichiers PHP</u></h2>
 
  * Commencez par vous rendre dans le dossier "plugins" (nomDuProjet/include/plugins) de votre projet
@@ -20,7 +19,7 @@
 [http://www.opixido.com/ocms/screen/gabarit/gabarit-arbo.png]
 
 
-<h2><u>Installation du gabarit/plugin</u></h2>
+<h2><u>Installation du gabarit</u></h2>
 
 <h3>Enregistrement dans la table "s_gabarit"</h3>
 
@@ -29,7 +28,6 @@ Deux méthodes sont possibles :
  * Directement dans le système de gestion de BD :
 
   # Dans la table "s_gabarit" de votre base de données, créez une nouvelle ligne.
-
   # Insérez les champs suivants :
 || _ gabarit_id _ || _ gabarit_titre _ || ... || _ gabarit_classe _ || ... || _ gabarit_plugin _ ||
 || ... || titre du gabarit || ... || titre de la classe || ... || nom du dossier ||
@@ -39,12 +37,16 @@ Deux méthodes sont possibles :
   # Cliquez sur "Ajouter un élément"
   # Renseignez le titre du gabarit/plugin, le nom de la classe, des paramètres (facultatif), et le nom du dossier contenant le gabarit/plugin.
 
-<h2><u>Ajouter le gabarit dans une rubrique</u></h2>
 
- * Rendez-vous sur la page d'administration de votre site (monSite/admin)
+<h3>Installer le plugin</h3>
+
+ * Rendez-vous sur la page d'administration de votre site 
  * Cliquez sur le lien "Plugins" dans "Dev".
  * Sélectionnez "Ajouter un élément", sélectionnez votre nouveau plugin, puis enregistrez. Cliquez ensuite sur "Installer".
- * Rendez-vous ensuite dans la gestion du contenu et sélectionnez la page où vous souhaitez insérer votre nouveau gabarit.
+
+<h3>Attribuer un gabarit à une page</h3>
+
+ * Rendez-vous dans la gestion du contenu et sélectionnez la page où vous souhaitez insérer votre nouveau gabarit.
  * Cliquez sur "Modifer"
  * Dans l'onglet "Paramètres", sélectionnez votre nouveau gabarit (champ "gabarit spécial"), puis enregistrez et validez.
 
