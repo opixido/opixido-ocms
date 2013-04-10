@@ -48,10 +48,11 @@
    # [CreationGabarit#Creation_de_la_classe_Actualite Création de la classe]
     #cd
    # [GabaritBO Ajout du gabarit dans le Back-Office]
+ * [ExempleCreationGabarit Exemple de gabarit : Les actualités]
+
   * [Plugin Création d'un plugin complet]
    # [http://code.google.com/p/opixido-ocms/wiki/CreationGabarit#Creation_du_dossier_et_des_fichiers Exemple]
  
- * [ExempleCreationGabarit Exemple de gabarit : Les actualités]
 
 == Style et disposition ==
 
