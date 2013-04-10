@@ -1,7 +1,7 @@
 #labels Documentation
 = Création d'un nouveau gabarit de page =
 
-<h2><u>Creation du gabarit ou plugin</u></h2>
+== <u>Creation du gabarit ou plugin</u> ==
 
 <h3>Création des fichiers et des dossiers</h3>
 
