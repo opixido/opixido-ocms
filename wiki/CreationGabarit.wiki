@@ -15,7 +15,7 @@
   <li> Dans ce fichier, déclarez votre classe. La classe créée doit étendre la classe _ocmsGen_ ou la classe _ocmsPlugin_.
   La fonction _init()_ et _afterInit()_ seront automatiquement appelées avant la fonction _gen()_. Elles ne doivent rien retourner et ne rien afficher.
   La fonction _gen()_ retournera le code du gabarit/plugin à afficher.
-  *ATTENTION : le fichier PHP générant le gabarit doit porter le même nom que la classe déclarée et aucune fonction ne doit porter le même nom que la classe*</li>
+  <b>ATTENTION : le fichier PHP générant le gabarit doit porter le même nom que la classe déclarée et aucune fonction ne doit porter le même nom que la classe</b></li>
   <li> Créez dans la classe les fonctions _init()_ (facultatif) et _gen()_.</li>
 
 Vous devriez obtenir quelque chose comme :
