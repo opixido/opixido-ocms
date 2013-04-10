@@ -1,7 +1,7 @@
 #summary Documentation
 #labels Documentation
 
-= Introduction =
+= I. Introduction =
 
 [http://code.google.com/p/opixido-ocms/wiki/ScreenShots ScreenShots]
 
@@ -9,7 +9,7 @@
 
 [http://code.google.com/p/opixido-ocms/wiki/pluginsDeBase Les plugins de base]
 
-= Details =
+= II. Details =
 
   * [Installation Installation]
 
@@ -21,7 +21,7 @@
   # [Classes#genParagraphes_(include/global/genParagraphes.php) genParagraphes]
 
 
-= Dévelopement =
+= III. Dévelopement =
 
  * [Database Description de la base de données]
 
@@ -56,7 +56,7 @@
 
 == Style et disposition ==
 
-= Back-Office =
+= IV. Back-Office =
 
 == Rubriques ==
 
@@ -83,11 +83,11 @@
  * [GestionLangues Gestion des langues]
  * [GestionnaireMAJ Les gestionnaire de mises à jour]
 
-= Front-Office =
+= V. Front-Office =
 
 == Rubriques ==
 
 
-= Autres =
+= VI. Autres =
 
  * [SystemeCache Système de cache]
