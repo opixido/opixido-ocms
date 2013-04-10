@@ -8,6 +8,7 @@
 <ul>
  <li> Commencez par vous rendre dans le dossier _plugins_ ("_nomDuProjet/include/plugins_") de votre projet.</li>
  <li> Créez-y un dossier, avec pour nom le nom de votre futur plugin(pas d'espace ni de caractère spécial). <b>Le nom du plugin doit, de préférence, être le même que celui de la table utilisée (utile pour le moteur de recherche)</b>.</li>
+[http://www.opixido.com/ocms/screen/gabarit/gabarit-arbo.png]
  <li> Créez-y le fichier PHP qui va générer le gabarit (controlleur). De préférence un nom évocateur comme "genNomDuPlugin".</li>
 
 <h4>Le controlleur</h4>
@@ -60,7 +61,6 @@ class maClasse extends row
 
 <h4>Arborescence finale</h4>
 
-[http://www.opixido.com/ocms/screen/gabarit/gabarit-arbo.png]
 
 
 <h2><u>Installation du gabarit ou du plugin</u></h2>
