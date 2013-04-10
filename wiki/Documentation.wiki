@@ -44,8 +44,8 @@
 == Plugins ==
 
   * [CreationGabarit Création d'un nouveau gabarit de page]
-   # [ Création des fichiers]
-   # [ Création de la classe]
+   # [CreationGabarit#Creation_du_dossier_et_des_fichiers Création des fichiers]
+   # [CreationGabarit#Creation_de_la_classe_Actualite Création de la classe]
     #cd
    # [GabaritBO Ajout du gabarit dans le Back-Office]
   * [Plugin Création d'un plugin complet]
