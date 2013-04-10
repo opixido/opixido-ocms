@@ -62,13 +62,15 @@ class maClasse extends row
 
 <h4>Mise en place de la configuration BO/FO</h4>
 
- * Crééez un fichier _config.php_ qui sera automatiquement inclu.
+ * Crééz un fichier _config.php_ qui sera automatiquement inclu.
 
 [GabaritBO Plus de détails ici]
+
 
 <h4>Arborescence finale</h4>
 
 [http://www.opixido.com/ocms/screen/gabarit/gabarit-arbo2.png]
+
 
 <h2><u>Installation du gabarit ou du plugin</u></h2>
 
