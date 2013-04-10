@@ -2,10 +2,7 @@
 = Création d'un nouveau gabarit de page =
 
 
-<h2><u>Mise en place</u></h2>
-
-
-=== Creation des dossiers et fichiers PHP ===
+<h2><u>Creation des dossiers et fichiers PHP</u></h2>
 
  * Commencez par vous rendre dans le dossier "plugins" (nomDuProjet/include/plugins) de votre projet
 
@@ -23,7 +20,7 @@
 [http://www.opixido.com/ocms/screen/gabarit/gabarit-arbo.png]
 
 
-=== Insertion dans la base de donnees ===
+<h2><u>Insertion dans la base de donnees</u></h2>
 
  * Dans la table "s_gabarit" de votre base de données, créez une nouvelle ligne.
 
