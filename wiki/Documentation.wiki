@@ -43,11 +43,11 @@
 
 == Plugins ==
 
-  * [CreationGabarit Création d'un nouveau gabarit de page]
-   # [CreationGabarit#Creation_du_dossier_et_des_fichiers Création des fichiers]
-   # [CreationGabarit#Creation_de_la_classe_Actualite Création de la classe]
-    #cd
-   # [GabaritBO Ajout du gabarit dans le Back-Office]
+  * [CreationGabarit Création d'un plugin ou gabarit de page]
+   # [CreationGabarit#Creation_du_gabarit_ou_plugin Création]
+   # [ Configuration]
+   # [CreationGabarit#Installation_du_gabarit_ou_du_plugin Installation]
+
  * [ExempleCreationGabarit Exemple de gabarit : Les actualités]
 
   * [Plugin Création d'un plugin complet]
