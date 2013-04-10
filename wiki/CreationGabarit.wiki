@@ -5,10 +5,10 @@
 
 <h3>Création des fichiers et des dossiers</h3>
 
- * Commencez par vous rendre dans le dossier _plugins_ (_nomDuProjet/include/plugins_) de votre projet.
+ * Commencez par vous rendre dans le dossier _plugins_ ("_nomDuProjet/include/plugins_") de votre projet.
 
  * Créez-y un dossier, avec pour nom le nom de votre futur plugin(pas d'espace ni de caractère spécial)
- * Créez-y le fichier PHP qui va générer le gabarit. De préférence un nom évocateur comme "genNomDuPlugin".
+ * Créez-y le fichier PHP qui va générer le gabarit. De préférence un nom évocateur comme "gen_NomDuPlugin_".
   # Dans ce fichier, déclarez votre classe ("genNomDuPlugin")
   # *ATTENTION : le fichier PHP générant le gabarit doit porter le même nom que la classe déclarée. Aucune fonction ne doit porter le même nom que la classe*
   # Créez dans la classe les fonctions init() (facultatif) et gen()
