@@ -25,7 +25,7 @@
 
  * [Database Description de la base de données]
 
- * [Fonctions Les fonctions de base]
+ * [Fonctions Liste des fonctions d'OCMS]
   # [Fonctions#Urls URL]
   # [Fonctions#Gestion_des_erreurs Gestion des erreurs]
   # [Fonctions#Fichiers Fichiers]
