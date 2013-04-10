@@ -59,6 +59,12 @@ class maClasse extends row
  * Créez dans le dossier courant un dossier qui va contenir le template du gabarit (_tpl_ par exemple).
  * Créez dans le nouveau dossier le template PHP (_nomDuPlugin.php_ par exemple)
 
+<h4>Mise en place de la configuration BO/FO</h4>
+
+ * Crééez un fichier _config.php_ qui sera automatiquement inclu.
+
+[GabaritBO Plus de détails ici]
+
 <h4>Arborescence finale</h4>
 
 [http://www.opixido.com/ocms/screen/gabarit/gabarit-arbo2.png]
