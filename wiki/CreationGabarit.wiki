@@ -3,7 +3,7 @@
 
 <h2><u>Creation du gabarit ou plugin</u></h2>
 
-</h3>Création des fichiers et des dossiers</h3>
+<h3>Création des fichiers et des dossiers</h3>
 
 <ul>
  <li> Commencez par vous rendre dans le dossier _plugins_ ("_nomDuProjet/include/plugins_") de votre projet.</li>
