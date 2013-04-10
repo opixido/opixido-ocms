@@ -7,7 +7,7 @@
 
 <ul>
  <li> Commencez par vous rendre dans le dossier _plugins_ ("_nomDuProjet/include/plugins_") de votre projet.</li>
- <li> Créez-y un dossier, avec pour nom le nom de votre futur plugin(pas d'espace ni de caractère spécial). Le nom du plugin doit, de préférence, être le même que celui de la table utilisée (pour le moteur de recherche).</li>
+ <li> Créez-y un dossier, avec pour nom le nom de votre futur plugin(pas d'espace ni de caractère spécial). <b>Le nom du plugin doit, de préférence, être le même que celui de la table utilisée (utile pour le moteur de recherche)</b>.</li>
  <li> Créez-y le fichier PHP qui va générer le gabarit (controlleur). De préférence un nom évocateur comme "genNomDuPlugin".</li>
 
 <h4>Le controlleur</h4>
@@ -40,7 +40,17 @@ class genTest extends ocmsGen
  * Vous y déclarerez vos classes utiles au plugin. Chaque classe utilisant la base de données devra étendre la classe _row_.
 
 <code>
+class maClasse extends row
+{
+ //Constructeur
+ function __construct( $roworid) {
+  parent::__construct('nomTable', $roworid);
+ }
 
+ function getTitle() {
+  return 'Hello world !';
+ }
+}
 </code>
 
  * Créez, toujours dans le même dossier, un dossier qui va contenir le template du gabarit ("tpl" par exemple).
