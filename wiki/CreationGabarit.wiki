@@ -5,15 +5,19 @@
 
 <h3>Création des fichiers et des dossiers</h3>
 
- * Commencez par vous rendre dans le dossier _plugins_ ("_nomDuProjet/include/plugins_") de votre projet.
+<ul>
+ <li> Commencez par vous rendre dans le dossier _plugins_ ("_nomDuProjet/include/plugins_") de votre projet.</li>
 
- * Créez-y un dossier, avec pour nom le nom de votre futur plugin(pas d'espace ni de caractère spécial)
- * Créez-y le fichier PHP qui va générer le gabarit. De préférence un nom évocateur comme "genNomDuPlugin".
-  # Dans ce fichier, déclarez votre classe. La classe créée doit étendre la classe _ocmsGen_ ou la classe _ocmsPlugin_.
-  La fonction _init()_ et _afterInit()_ seront automatiquement appelée avant la fonction _gen()_. Elles ne doivent rien retourner et ne rien afficher.
+ <li> Créez-y un dossier, avec pour nom le nom de votre futur plugin(pas d'espace ni de caractère spécial).</li>
+ <li> Créez-y le fichier PHP qui va générer le gabarit. De préférence un nom évocateur comme "genNomDuPlugin".</li>
+</ul>
+
+<ul>
+  <li> Dans ce fichier, déclarez votre classe. La classe créée doit étendre la classe _ocmsGen_ ou la classe _ocmsPlugin_.
+  La fonction _init()_ et _afterInit()_ seront automatiquement appelées avant la fonction _gen()_. Elles ne doivent rien retourner et ne rien afficher.
   La fonction _gen()_ retournera le code du gabarit/plugin à afficher.
-*ATTENTION : le fichier PHP générant le gabarit doit porter le même nom que la classe déclarée et aucune fonction ne doit porter le même nom que la classe*
-  # Créez dans la classe les fonctions _init()_ (facultatif) et _gen()_.
+*ATTENTION : le fichier PHP générant le gabarit doit porter le même nom que la classe déclarée et aucune fonction ne doit porter le même nom que la classe*</li>
+  <li> Créez dans la classe les fonctions _init()_ (facultatif) et _gen()_.</li>
 
 Vous devriez obtenir quelque chose comme :
 <code>
@@ -28,12 +32,15 @@ class genTest extends ocmsGen
 }
 </code>
 
+</ul>
+
  * Créez un fichier PHP front.php qui sera automatiquement parcouru. Vous pourrez y déclarer vos classes utiles au fonctionnement du plugin.
 
  * Créez, toujours dans le même dossier, un dossier qui va contenir le template du gabarit ("tpl" par exemple).
  * Créez dans le dossier "tpl" le template PHP ("nomDuPlugin.php" par exemple)
 
 [http://www.opixido.com/ocms/screen/gabarit/gabarit-arbo.png]
+
 
 
 <h2><u>Installation du gabarit ou du plugin</u></h2>
