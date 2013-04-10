@@ -23,19 +23,30 @@
 
 = Dévelopement =
 
-  * [CreationTheme Création d'un template/thème]
-  * [TypesParagraphe Création des types de paragraphes]
-  * [CreationGabarit Création d'un nouveau gabarit de page]
-   # [GabaritBO Ajout du gabarit dans le Back-Office]
-  * [Plugin Création d'un plugin complet]
-   # [http://code.google.com/p/opixido-ocms/wiki/CreationGabarit#Creation_du_dossier_et_des_fichiers Exemple]
-
  * [Fonctions Les fonctions de base]
   # [Fonctions#Urls URL]
   # [Fonctions#Gestion_des_erreurs Gestion des erreurs]
   # [Fonctions#Fichiers Fichiers]
   # [Fonctions#Contenu Contenu]
   # [Fonctions#E-Mails_et_formulaires E-mails et formulaires]
+
+== Front-Office ==
+
+  * [CreationTheme Création d'un template/thème]
+  * [TypesParagraphe Création des types de paragraphes]
+
+== Back-Office ==
+
+ * [actionsBO Créer des actions]
+
+== Plugins ==
+
+  * [CreationGabarit Création d'un nouveau gabarit de page]
+   # [GabaritBO Ajout du gabarit dans le Back-Office]
+  * [Plugin Création d'un plugin complet]
+   # [http://code.google.com/p/opixido-ocms/wiki/CreationGabarit#Creation_du_dossier_et_des_fichiers Exemple]
+
+== Style et disposition ==
 
 = Back-Office =
 
@@ -47,7 +58,6 @@
 
 == Plugins/Gabarits ==
 
- * [actionsBO Créer des actions]
 
 == Formulaires ==
 
@@ -60,6 +70,7 @@
 
 == Autres ==
 
+ * [TextesParam Textes paramétrables]
  * [Images Recadrage et accessibilité des images]
  * [GestionLangues Gestion des langues]
  * [GestionnaireMAJ Les gestionnaire de mises à jour]
@@ -71,5 +82,4 @@
 
 = Autres =
 
- * [TextesParam Textes paramétrables]
  * [SystemeCache Système de cache]
