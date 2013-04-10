@@ -8,7 +8,7 @@
 <ul>
  <li> Commencez par vous rendre dans le dossier _plugins_ ("_nomDuProjet/include/plugins_") de votre projet.</li>
  <li> Créez-y un dossier, avec pour nom le nom de votre futur plugin(pas d'espace ni de caractère spécial).</li>
- <li> Créez-y le fichier PHP qui va générer le gabarit. De préférence un nom évocateur comme "genNomDuPlugin".
+ <li> Créez-y le fichier PHP qui va générer le gabarit. De préférence un nom évocateur comme "genNomDuPlugin".<ul>
 
   <li> Dans ce fichier, déclarez votre classe. La classe créée doit étendre la classe _ocmsGen_ ou la classe _ocmsPlugin_.
   La fonction _init()_ et _afterInit()_ seront automatiquement appelées avant la fonction _gen()_. Elles ne doivent rien retourner et ne rien afficher.
@@ -29,7 +29,7 @@ class genTest extends ocmsGen
 }
 </code>
 
-</li>
+</ul></li>
 
  * Créez un fichier PHP front.php qui sera automatiquement parcouru. Vous pourrez y déclarer vos classes utiles au fonctionnement du plugin.
 
