@@ -11,7 +11,7 @@
 
 = II. Details =
 
-  * [Installation Installation]
+ * [Installation Installation]
 
  * [Classes Classes]
   # [Classes#Headers_de_page_(genHeaders)_(include/global/genHeaders.php) genHeaders]
@@ -32,16 +32,16 @@
   # [Fonctions#Contenu Contenu]
   # [Fonctions#E-Mails_et_formulaires E-mails et formulaires]
 
-== Front-Office ==
+== A. Front-Office ==
 
   * [CreationTheme Création d'un template/thème]
   * [TypesParagraphe Création des types de paragraphes]
 
-== Back-Office ==
+== B. Back-Office ==
 
  * [actionsBO Créer des actions]
 
-== Plugins ==
+== C. Plugins ==
 
   * [CreationGabarit Création d'un plugin ou gabarit de page]
    # [CreationGabarit#Creation_du_gabarit_ou_plugin Création]
@@ -54,29 +54,31 @@
    # [http://code.google.com/p/opixido-ocms/wiki/CreationGabarit#Creation_du_dossier_et_des_fichiers Exemple]
  
 
-== Style et disposition ==
+== D. Style et disposition ==
+
+  ...
 
 = IV. Back-Office =
 
-== Rubriques ==
+== A. Rubriques ==
 
  * [Arborescence Création de l'arborescence]
  * [PageActions Actions sur une page]
  * [Referencement Le référencement]
 
-== Plugins/Gabarits ==
+== B. Plugins/Gabarits ==
 
 
-== Formulaires ==
+== C. Formulaires ==
 
  * [tradsBO Modifier les traductions et les icônes]
 
-== Gestion des utilisateurs ==
+== D. Gestion des utilisateurs ==
 
  * [GestionUtilisateurs Gestion des utilisateurs]
  * [GestionDroits Gestion des droits]
 
-== Autres ==
+== E. Autres ==
 
  * [TextesParam Textes paramétrables]
  * [Images Recadrage et accessibilité des images]
@@ -85,7 +87,7 @@
 
 = V. Front-Office =
 
-== Rubriques ==
+== A. Rubriques ==
 
 
 = VI. Autres =
