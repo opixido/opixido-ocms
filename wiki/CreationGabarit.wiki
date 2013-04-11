@@ -55,7 +55,7 @@ class maClasse extends row
 }
 </code>
 
-<h4>La vue</h4>
+==== La vue ====
 
 Pour intégrer la vue au controlleur, veuillez procéder comme suit :
 
