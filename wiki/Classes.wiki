@@ -75,7 +75,7 @@ $this->site->g_rubrique->showBoxLinks=false;
 
 === Générer un template : genTemplate _(include/global/genTemplate.php)_ ===
 
-Pour savoir comment créer un template dans un gabarit, rendez-vous sur [CreationGabarit#Creation_du_template_de_la_liste_des_actualites cette page]
+Pour savoir comment créer un template dans un gabarit, rendez-vous sur [CreationGabarit#La_vue cette page]
 
 Commençons par créer un template html/PHP basique _(chemin/Du/Fichier/tpl.php)_
 <code language="html">
