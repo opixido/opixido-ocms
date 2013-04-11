@@ -1,5 +1,5 @@
 #labels Documentation
-= Création d'un nouveau gabarit de page =
+= Création d'un nouveau plugin =
 
 == <u>Creation du gabarit ou plugin</u> ==
 
@@ -61,19 +61,19 @@ Pour intégrer la vue au controlleur, veuillez procéder comme suit :
 
  * Créez dans le dossier courant un dossier qui va contenir le template du gabarit (_tpl_ par exemple).
  * Créez dans le nouveau dossier le template PHP (_nomDuPlugin.php_ par exemple)
- * Pour implémenter la vue dans le controller, vous devrez déclarer un objet de type _genTemplate_ et lui associer le template précédemment créé
+ * Pour implémenter la vue dans le controller, vous devrez déclarer un objet de type _genTemplate_ et lui associer le template précédemment créé.
 <code>
 public function gen(){
  //Déclaration du nouveau template
  $tpl = new genTemplate;
- //Affectation du template
+ //Affectation du template. Attention : ne pas rajouter l'extension au nom du template lors du chargement
  $tpl->loadTemplate('nomDuTemplate', 'plugins/nomDuPlugin/cheminVersTemplate');
 
  //On retourne le template généré
  return $tpl->gen();
 }
 </code>
-
+Documentation de la classe genTemplate [Classes ici].
 
 ==== Mise en place de la configuration BO/FO ====
 
