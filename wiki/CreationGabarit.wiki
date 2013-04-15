@@ -160,6 +160,27 @@ public function gen(){
 <ul>
 <li>Dans le template, insérez deux balises XML comme ceci : 
 [http://www.opixido.com/ocms/screen/gabarit/vue-template2.png]
+Elles vont nous servir à définir l'endroit où boucler.
+</li>
+<li>
+Ensuite, dans le controlleur, après avoir déclaré votre template, ajoutez-lui des bloc comme ceci :
+<code>
+public function gen(){
+ $tpl = new genTemplate();
+ $tpl->loadTemplate('test', 'plugins/pluginTest/tpl');
+ //Affectation des valeurs
+ $tpl->titre = 'Hello world';
+ $table = array('text1', 'test2', 'text3');
+ foreach($table as $row){
+  //On ajoute un nouveau bloc
+  //Veillez à lui donner le même nom que la balise
+  $tplItem = $tpl->addBlock('ITEM');
+  $tplItem->text = $row;
+ }
+
+ return $tpl->gen();
+}
+</code>
 </li>
 </ul>
 
