@@ -159,17 +159,7 @@ public function gen(){
 <u>Boucler dans un template</u>
 <ul>
 <li>Dans le template, insérez deux balises XML comme ceci : 
-<code language="html">
-<!-- Template test.php -->
-<div id="test">
-<h2>@@titre@@</h2>
-<ul>
-<ITEM>
-<li>@@text@@</li>
-</ITEM>
-</ul>
-</div>
-</code>
+[http://www.opixido.com/ocms/screen/gabarit/vue-template2.png]
 </li>
 </ul>
 
