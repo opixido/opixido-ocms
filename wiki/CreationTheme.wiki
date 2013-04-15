@@ -1,7 +1,7 @@
 #labels Documentation
 = Création d'un thème/template =
 
-==  ==
+== Modification du layout ==
 
 Le template HTML (layout) se situe dans le dossier _include/exports/default.html.php_
 
@@ -21,3 +21,11 @@ class genTest extends ocmsGen
 *Le template doit se trouver dans le dossier _include/exports_ et doit avoir comme extension _.html.php_.*
 
 [http://www.opixido.com/ocms/screen/arborescence/arbo-layout.png]
+
+== Style et disposition ==
+
+=== Ajout d'un CSS ===
+
+ * <code>
+$this->site->g_headers->addCss($name, $group='page');
+</code>
