@@ -31,7 +31,7 @@ class genTest extends ocmsGen
  <code>$this->site->g_headers->addCss($name, $group='page');</code>
  La fonction addCss va permettre d'ajouter une feuille de style. Si aucun chemin n'est spécifié, le fichier doit être enregistré dans le dossier _css_.
  Le paramètre _group_ permet de regrouper des feuilles de style pour la compression. 
- <br/><b>Attention : le paramètre $__Gconfig['compressCssFiles'] du fichier _include/config/config.app.php_ doit être mis à _"true"_ .</b>
+ <br/><b>Attention : le paramètre $___Gconfig['compressCssFiles'] du fichier _include/config/config.app.php_ doit être mis à _"true"_ .</b>
  <br/>Exemple : <code>$this->site->g_headers->addCss('contact.css');</code>
 </li>
 <li>
