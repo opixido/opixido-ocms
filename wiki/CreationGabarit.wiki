@@ -56,11 +56,14 @@ class maClasse extends row
  }
 }
 </code>
-La classe _row_ permet d'obtenir une base de données orientée objet de à partir d'une base de données relationnelle.
-Il est nécessaire de déclarer dans le fichier _config.php_ du plugin toutes les relations de la table en question ($relations, $relinv, $tablerel).
-Elle permet de plus :
- - Générer directement l'url d'un fichier enregistré ($uploadFields)
- - Générer la traduction d'un champ ("_fr", "_en", ...)
+<p>La classe _row_ permet d'obtenir une base de données orientée objet de à partir d'une base de données relationnelle.</p>
+<p>Il est nécessaire de déclarer dans le fichier _config.php_ du plugin toutes les relations de la table en question ($relations, $relinv, $tablerel).</p>
+<p>Elle permet de plus :
+ <ul>
+ <li>Générer directement l'url d'un fichier enregistré ($uploadFields)</li>
+ <li>Générer la traduction d'un champ ("_fr", "_en", ...)</li>
+ </ul>
+</p>
 </li>
 
 </ul>
