@@ -190,9 +190,10 @@ public function gen(){
 
 <li><b>Deuxième méthode :</b>
 <ul>
-<li>[http://www.opixido.com/ocms/screen/gabarit/vue-template3.png]
+<li>Dans le template :
+[http://www.opixido.com/ocms/screen/gabarit/vue-template3.png]
 </li>
-<li>
+<li>Dans le controlleur :
 <code>
 public function gen(){
  $tpl = new genTemplate();
