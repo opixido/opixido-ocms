@@ -193,9 +193,6 @@ public function gen(){
 <li>[http://www.opixido.com/ocms/screen/gabarit/vue-template3.png]
 </li>
 <li>
-</li>
-</ul>
-</li>
 <code>
 public function gen(){
  $tpl = new genTemplate();
@@ -208,6 +205,10 @@ public function gen(){
  return $tpl->gen();
 }
 </code>
+</li>
+</ul>
+</li>
+
 </ul>
 
 ==== Mise en place de la configuration BO/FO ====
