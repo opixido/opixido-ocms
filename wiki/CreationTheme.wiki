@@ -37,6 +37,6 @@ Le paramètre _group_ permet de regrouper des feuilles de style pour la compress
 </li>
 <li>
 <code>$this->site->g_headers->addCssText($text);</code>
-La fonction _addCsstext()_ permet d'ajouter directement du CSS dans la balise _\<style>_ de la page.
+La fonction _addCsstext()_ permet d'ajouter directement du CSS dans la balise <code><style></code> de la page.
 </li>
 </ul>
