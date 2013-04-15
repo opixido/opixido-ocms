@@ -62,7 +62,7 @@ class maClasse extends row
 <p>Elle permet en plus de :
  <ul>
  <li>Générer directement l'url d'un fichier enregistré ($uploadFields)</li>
- <li>Générer la traduction d'un champ ('_fr', "_en", ...)</li>
+ <li>Générer la traduction d'un champ</li>
  </ul>
 </p>
 </li>
@@ -94,6 +94,8 @@ class Evenement extends row
 
 }
 </code>
+
+*Plus d'informations sur la configuration du fichier _config.php_ sur [GabaritBO cette page]*
 
 ==== La vue ====
 
