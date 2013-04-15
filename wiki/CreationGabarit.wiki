@@ -115,7 +115,7 @@ Pour intégrer la vue au controlleur, veuillez procéder comme suit :
 <code>
 public function gen(){
  //Déclaration du nouveau template
- $tpl = new genTemplate;
+ $tpl = new genTemplate();
  //Affectation du template. Attention : ne pas rajouter l'extension au nom du template lors du chargement
  $tpl->loadTemplate('nomDuTemplate', 'plugins/nomDuPlugin/cheminVersTemplate');
 
@@ -142,7 +142,7 @@ Documentation de la classe genTemplate [Classes ici].
 <li>Puis , lors de la déclaration du template via la classe _genTemplate_, implémentez ces variables :
 <code>
 public function gen(){
- $tpl = new genTemplate;
+ $tpl = new genTemplate();
  $tpl->loadTemplate(test', 'plugins/pluginTest/tpl');
  //Affectation des valeurs
  $tpl->titre = 'Hello world';
