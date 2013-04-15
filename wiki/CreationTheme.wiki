@@ -13,9 +13,11 @@ class genTest extends ocmsGen
 {
  //
  public function init() {
-  $this->site->g_url->TEMPLATE = 'newTemplate';
+  $this->site->g_url->TEMPLATE = 'test';
  }
 }
 </code>
 
 *Le template doit se trouver dans le dossier _include/exports_ et doit avoir comme extension _.html.php_.*
+
+[http://www.opixido.com/ocms/screen/arborescence/arbo-layout.png]
