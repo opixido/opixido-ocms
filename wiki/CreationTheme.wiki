@@ -29,7 +29,7 @@ class genTest extends ocmsGen
 <ul>
 <li>
 <p><code>$this->site->g_headers->addCss($name, $group='page');</code>
-La fonction _addCss()_ va permettre d'ajouter une feuille de style. Si aucun chemin n'est spécifié, le fichier doit être enregistré dans le dossier _css_.</p>
+La fonction _addCss()_ va permettre d'ajouter une feuille de style. Si aucun chemin n'est spécifié, le fichier doit être enregistré dans le dossier _/css_.</p>
 <p>Le paramètre _group_ permet de regrouper des feuilles de style pour la compression. 
 <b>Pour activer la compression : le paramètre du fichier _include/config/config.app.php_ doit être mis à _"true"_ :</b><code>$_Gconfig['compressCssFiles']=true</code> 
 </p>
@@ -40,5 +40,23 @@ La fonction _addCss()_ va permettre d'ajouter une feuille de style. Si aucun che
 <p><code>$this->site->g_headers->addCssText($text);</code>
 La fonction _addCsstext()_ permet d'ajouter directement du CSS dans la balise _style_ de la page.</p>
 <p>Exemple : <code>$this->site->g_url-addCssText('img{max-width:100%;}');</code></p>
+</li>
+</ul>
+
+=== Ajout d'un fichier Javascript ===
+
+<ul>
+<li>
+<p><code>$this->site->g_headers->addScript($name, $addBase=true, $group='page');</code>
+La fonction _addScript()_ va permettre d'ajouter un fichier Javascript. Si aucun chemin n'est spécifié, le fichier doit être enregistré dans le dossier _/js_. Sinon, il faut mettre le paramètre _$addBase_ à _true_ et insérer dans le paramètre _$name_ le chemin complet</p>
+<p>Le paramètre _group_ permet de regrouper des feuilles de style pour la compression. 
+<b>Pour activer la compression : le paramètre du fichier _include/config/config.app.php_ doit être mis à _"true"_ :</b><code>$_Gconfig['compressCssFiles']=true</code> 
+</p>
+<p><b>Exemple d'utilisation : </b>
+<code>
+$this->site->g_headers->addScript('jquery.js');
+//Autre méthode :
+$this->site->g_headers->addHtmlHeaders('<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js" ></script>');
+</code></p>
 </li>
 </ul>
