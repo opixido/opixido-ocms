@@ -78,7 +78,7 @@ $this->genlg('nomTable_contenu');
 || *ocms_date_offline* || Date à partir de laquelle la ligne n'est plus prise en compte ||
 || *ocms_creator* || Identifiant de l'administrateur qui a créé la ligne, [GestionDroits#Ajouter_les_droits_pour_chaque_table exemple ici] ||
 
-<h4> Les types de champs </h4>
+==== Les types de champs ====
 || *Type* || *Fin* ||
 || Mail || `_mail`, `_couriel`, `_email` ||
 || Url || `_url`, `_url_`, `_link_1`, `_link`, `_lien_` ||
