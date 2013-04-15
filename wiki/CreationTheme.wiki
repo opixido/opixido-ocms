@@ -30,7 +30,7 @@ class genTest extends ocmsGen
  <li>
   <code>$this->site->g_headers->addCss($name, $group='page');</code>
   La fonction addCss va permettre d'ajouter une feuille de style. Si aucun chemin n'est spécifié, le fichier doit être enregistré dans le dossier _css_.
-  Exemple : <code>$this->site->g_headers->addCss('contact.css');</code>
+  <br/>Exemple : <code>$this->site->g_headers->addCss('contact.css');</code>
 </li>
 
 </ul>
