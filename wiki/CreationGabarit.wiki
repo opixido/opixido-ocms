@@ -138,6 +138,7 @@ Documentation de la classe genTemplate [Classes ici].
  <!-- Cette manière fonctionne aussi : -->
  <p><?php echo $this->text; ?></p>
 </div>
+</code>
 </li>
 <li>Puis , lors de la déclaration du template via la classe _genTemplate_, implémentez ces variables :
 <code>
