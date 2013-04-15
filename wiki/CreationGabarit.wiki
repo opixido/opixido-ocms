@@ -103,7 +103,14 @@ Pour intégrer la vue au controlleur, veuillez procéder comme suit :
 
 <ul>
 <li>Créez dans le dossier courant un dossier qui va contenir le template du gabarit (_tpl_ par exemple).</li>
-<li>Créez dans le nouveau dossier le template PHP (_nomDuPlugin.php_ par exemple)</li>
+<li>Créez dans le nouveau dossier le template PHP (_nomDuPlugin.php_ par exemple)
+<code>
+<!-- Template test.php -->
+<div id="test">
+ <h2>Test</h2>
+</div>
+</code>
+</li>
 <li>Pour implémenter la vue dans le controller, vous devrez déclarer un objet de type _genTemplate_ et lui associer le template précédemment créé.
 <code>
 public function gen(){
@@ -121,7 +128,8 @@ public function gen(){
 
 Documentation de la classe genTemplate [Classes ici].
 
-Insérer des variables
+<u>Insérer des variables dans le template :</u>
+
 
 
 
