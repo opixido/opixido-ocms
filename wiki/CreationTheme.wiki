@@ -39,5 +39,6 @@ La fonction _addCss()_ va permettre d'ajouter une feuille de style. Si aucun che
 <li>
 <p><code>$this->site->g_headers->addCssText($text);</code>
 La fonction _addCsstext()_ permet d'ajouter directement du CSS dans la balise _style_ de la page.</p>
+<p>Exemple : <code>$this->site->g_url-addCssText('img{max-width:100%;}');</code></p>
 </li>
 </ul>
