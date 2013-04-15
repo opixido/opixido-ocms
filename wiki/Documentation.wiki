@@ -45,7 +45,7 @@
 
   * [CreationGabarit Création d'un plugin ou gabarit de page]
    # [CreationGabarit#Creation_du_gabarit_ou_plugin Création]
-   # [CreationGabarit#Mise_en_place_de_la_configuration_BO/FO Configuration]
+   # [CreationGabarit#Mise_en_place_de_la_configuration_BO/FO Configuration Back-Office]
    # [CreationGabarit#Installation_du_gabarit_ou_du_plugin Installation]
 
  * [ExempleCreationGabarit Exemple de gabarit : Les actualités]
