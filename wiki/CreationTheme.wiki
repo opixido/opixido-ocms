@@ -26,6 +26,4 @@ class genTest extends ocmsGen
 
 === Ajout d'un CSS ===
 
- * <code>
-$this->site->g_headers->addCss($name, $group='page');
-</code>
+ * <code>$this->site->g_headers->addCss($name, $group='page');</code>
