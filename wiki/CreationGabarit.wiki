@@ -157,10 +157,14 @@ public function gen(){
 </ul>
 
 <u>Boucler dans un template</u>
+
+<ul>
+<li><b>1e méthode :</b>
+
 <ul>
 <li>Dans le template, insérez deux balises XML comme ceci : 
 [http://www.opixido.com/ocms/screen/gabarit/vue-template2.png]
-Elles vont nous servir à définir l'endroit où boucler.
+<br/>Elles vont nous servir à définir l'endroit où boucler.
 </li>
 <li>
 Ensuite, dans le controlleur, après avoir déclaré votre template, ajoutez-lui des bloc comme ceci :
@@ -182,6 +186,14 @@ public function gen(){
 }
 </code>
 </li>
+</ul></li>
+
+<li><b>Deuxième méthode :</b>
+<ul>
+<li></li>
+</ul>
+</li>
+
 </ul>
 
 ==== Mise en place de la configuration BO/FO ====
