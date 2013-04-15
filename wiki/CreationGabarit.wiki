@@ -103,11 +103,11 @@ Pour intégrer la vue au controlleur, veuillez procéder comme suit :
 
 <ul>
 <li>Créez dans le dossier courant un dossier qui va contenir le template du gabarit (_tpl_ par exemple).</li>
-<li>Créez dans le nouveau dossier le template PHP (_nomDuPlugin.php_ par exemple)
+<li>Créez dans le nouveau dossier le template PHP (_nomDuTemplate.php_)
 <code language="html">
 <!-- Template test.php -->
 <div id="test">
- <h2>Test</h2>
+ <h2>Hello world</h2>
 </div>
 </code>
 </li>
@@ -129,8 +129,30 @@ public function gen(){
 Documentation de la classe genTemplate [Classes ici].
 
 <u>Insérer des variables dans le template :</u>
+<ul>
+<li>Commencez par insérer les noms des variables dans le template. Pour cela, insérez des noms entourés par des arobases.
+<code language="html">
+<!-- Template test.php -->
+<div id="test">
+ <h2>@@titre@@</h2>
+ <!-- Cette manière fonctionne aussi : -->
+ <p><?php echo $this->text; ?></p>
+</div>
+</li>
+<li>Puis , lors de la déclaration du template via la classe _genTemplate_, implémentez ces variables :
+<code>
+public function gen(){
+ $tpl = new genTemplate;
+ $tpl->loadTemplate(test', 'plugins/pluginTest/tpl');
+ //Affectation des valeurs
+ $tpl->titre = 'Hello world';
+ $tpl->text = 'lorem ipsum';
 
-
+ return $tpl->gen();
+}
+</code>
+</li>
+</ul>
 
 
 ==== Mise en place de la configuration BO/FO ====
