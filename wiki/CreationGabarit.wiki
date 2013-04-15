@@ -95,7 +95,7 @@ class Evenement extends row
 }
 </code>
 
-*Plus d'informations sur la configuration du fichier _config.php_ sur [GabaritBO cette page]*
+*Plus d'informations sur la configuration du fichier _config.php_ sur [GabaritBO#Les_types_de_champs cette page]*
 
 ==== La vue ====
 
