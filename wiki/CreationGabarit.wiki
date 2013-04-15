@@ -37,9 +37,11 @@ class genTest extends ocmsGen
 
 <h4>Le modèle</h4>
 
- * Créez un fichier PHP _front.php_ dans le dossier courant (_include/plugins/nomDeVotrePlugin_). Ce fichier sera automatiquement inclu. Vous pourrez y déclarer vos classes utiles au fonctionnement du plugin.
-
- * Vous y déclarerez vos classes utiles au plugin. Chaque classe utilisant la base de données devra étendre la classe _row_.
+<ul>
+<li>Créez un fichier PHP _front.php_ dans le dossier courant (_include/plugins/nomDeVotrePlugin_). Ce fichier sera automatiquement inclu. Vous pourrez y déclarer vos classes utiles au fonctionnement du plugin.
+</li>
+<li>
+Vous y déclarerez vos classes utiles au plugin. Chaque classe utilisant la base de données devra étendre la classe _row_.
 
 <code>
 class maClasse extends row
@@ -54,6 +56,14 @@ class maClasse extends row
  }
 }
 </code>
+La classe _row_ permet d'obtenir une base de données orientée objet de à partir d'une base de données relationnelle.
+Il est nécessaire de déclarer dans le fichier _config.php_ du plugin toutes les relations de la table en question ($relations, $relinv, $tablerel).
+Elle permet de plus :
+ - Générer directement l'url d'un fichier enregistré ($uploadFields)
+ - Générer la traduction d'un champ ("_fr", "_en", ...)
+</li>
+
+</ul>
 
 ==== La vue ====
 
