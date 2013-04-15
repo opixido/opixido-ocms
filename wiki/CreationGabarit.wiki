@@ -62,7 +62,7 @@ class maClasse extends row
 <p>Elle permet en plus de :
  <ul>
  <li>Générer directement l'url d'un fichier enregistré ($uploadFields)</li>
- <li>Générer la traduction d'un champ ("_fr", "_en", ...)</li>
+ <li>Générer la traduction d'un champ ("&#151;fr", "&#151;en", ...)</li>
  </ul>
 </p>
 </li>
