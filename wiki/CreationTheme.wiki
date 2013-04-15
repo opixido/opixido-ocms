@@ -4,3 +4,18 @@
 ==  ==
 
 Le template HTML (layout) se situe dans le dossier _include/exports/default.html.php_
+
+Il est possible de modifier le layout d'une page.
+Le code à insérer dans le controlleur du plugin où vous souhaitez modifier le layout :
+
+<code>
+class genTest extends ocmsGen
+{
+ //
+ public function init() {
+  $this->site->g_url->TEMPLATE = 'newTemplate';
+ }
+}
+</code>
+
+Le template doit se trouver dans le dossier _include/exports_ et doit avoir comme extension _php_.
