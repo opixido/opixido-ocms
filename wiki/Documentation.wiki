@@ -56,7 +56,7 @@
 
 == D. Style et disposition ==
 
-  ...
+  [CreationTheme#Style_et_disposition Style]
 
 = IV. Back-Office =
 
