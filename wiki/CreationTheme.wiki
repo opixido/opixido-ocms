@@ -18,4 +18,4 @@ class genTest extends ocmsGen
 }
 </code>
 
-Le template doit se trouver dans le dossier _include/exports_ et doit avoir comme extension _php_.
+*Le template doit se trouver dans le dossier _include/exports_ et doit avoir comme extension _.html.php_.*
