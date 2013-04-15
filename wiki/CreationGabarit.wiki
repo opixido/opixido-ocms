@@ -129,6 +129,7 @@ public function gen(){
 Documentation de la classe genTemplate [Classes ici].
 
 <u>Insérer des variables dans le template :</u>
+
 <ul>
 <li>Commencez par insérer les noms des variables dans le template. Pour cela, insérez des noms entourés par des arobases.
 <code language="html">
@@ -155,6 +156,22 @@ public function gen(){
 </li>
 </ul>
 
+<u>Boucler dans un template</u>
+<ul>
+<li>Dans le template, insérez deux balises XML comme ceci : 
+<code language="html">
+<!-- Template test.php -->
+<div id="test">
+ <h2>@@titre@@</h2>
+ <ul>
+ <ITEM>
+  <li>@@text@@</li>
+ </ITEM>
+</ul>
+</div>
+</code>
+</li>
+</ul>
 
 ==== Mise en place de la configuration BO/FO ====
 
