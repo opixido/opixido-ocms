@@ -144,7 +144,7 @@ Documentation de la classe genTemplate [Classes ici].
 <code>
 public function gen(){
  $tpl = new genTemplate();
- $tpl->loadTemplate(test', 'plugins/pluginTest/tpl');
+ $tpl->loadTemplate('test', 'plugins/pluginTest/tpl');
  //Affectation des valeurs
  $tpl->titre = 'Hello world';
  $tpl->text = 'lorem ipsum';
