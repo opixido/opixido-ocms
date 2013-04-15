@@ -231,7 +231,6 @@ public function gen(){
 Deux méthodes sont possibles : 
 
  * Directement dans le système de gestion de BD :
-
   # Dans la table "s_gabarit" de votre base de données, créez une nouvelle ligne.
   # Insérez les champs suivants :
 || _ gabarit_id _ || _ gabarit_titre _ || ... || _ gabarit_classe _ || ... || _ gabarit_plugin _ ||
