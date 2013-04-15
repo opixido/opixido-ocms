@@ -190,10 +190,24 @@ public function gen(){
 
 <li><b>Deuxième méthode :</b>
 <ul>
-<li></li>
+<li>[http://www.opixido.com/ocms/screen/gabarit/vue-template3.png]
+</li>
+<li>
+</li>
 </ul>
 </li>
+<code>
+public function gen(){
+ $tpl = new genTemplate();
+ $tpl->loadTemplate('test', 'plugins/pluginTest/tpl');
+ //Affectation des valeurs
+ $tpl->titre = 'Hello world';
+ $table = array('text1', 'test2', 'text3');
+ $tpl->textes = $table;
 
+ return $tpl->gen();
+}
+</code>
 </ul>
 
 ==== Mise en place de la configuration BO/FO ====
