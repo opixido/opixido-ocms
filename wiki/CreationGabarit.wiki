@@ -47,6 +47,7 @@ Vous y déclarerez vos classes utiles au plugin. Chaque classe utilisant la base
 class maClasse extends row
 {
  //Constructeur
+ //Paramètre : nom de la table et id ou array de la ligne de la table
  function __construct( $roworid) {
   parent::__construct('nomTable', $roworid);
  }
@@ -58,7 +59,7 @@ class maClasse extends row
 </code>
 <p>La classe _row_ permet d'obtenir une base de données orientée objet de à partir d'une base de données relationnelle.</p>
 <p>Il est nécessaire de déclarer dans le fichier _config.php_ du plugin toutes les relations de la table en question ($relations, $relinv, $tablerel).</p>
-<p>Elle permet de plus :
+<p>Elle permet en plus de :
  <ul>
  <li>Générer directement l'url d'un fichier enregistré ($uploadFields)</li>
  <li>Générer la traduction d'un champ ("_fr", "_en", ...)</li>
@@ -67,6 +68,31 @@ class maClasse extends row
 </li>
 
 </ul>
+
+Exemple avec une classe "Evenement" :
+
+<code>
+class Evenementextends row
+{
+ //Constructeur
+ //Paramètres : table "evenement" + id de la ligne ou array
+ function __construct( $roworid) {
+  parent::__construct('evenement', $roworid);
+ }
+
+ function getTitle() {
+  //Si l'évènement est un champ multilingue, alors la fonction retournera la traduction en fonction de la langue en question
+  return $this->evenement_titre;
+ }
+ 
+ function getUrlImg(){
+  //Retournera l'url de l'image
+  //J'ai au préalablement défini le champ en tant qu'uploadField
+  return $this->evenement_img;
+ }
+
+}
+</code>
 
 ==== La vue ====
 
