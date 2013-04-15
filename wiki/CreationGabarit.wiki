@@ -101,9 +101,10 @@ class Evenement extends row
 
 Pour intégrer la vue au controlleur, veuillez procéder comme suit :
 
- * Créez dans le dossier courant un dossier qui va contenir le template du gabarit (_tpl_ par exemple).
- * Créez dans le nouveau dossier le template PHP (_nomDuPlugin.php_ par exemple)
- * Pour implémenter la vue dans le controller, vous devrez déclarer un objet de type _genTemplate_ et lui associer le template précédemment créé.
+<ul>
+<li>Créez dans le dossier courant un dossier qui va contenir le template du gabarit (_tpl_ par exemple).</li>
+<li>Créez dans le nouveau dossier le template PHP (_nomDuPlugin.php_ par exemple)</li>
+<li>Pour implémenter la vue dans le controller, vous devrez déclarer un objet de type _genTemplate_ et lui associer le template précédemment créé.
 <code>
 public function gen(){
  //Déclaration du nouveau template
@@ -115,7 +116,14 @@ public function gen(){
  return $tpl->gen();
 }
 </code>
+</li>
+</ul>
+
 Documentation de la classe genTemplate [Classes ici].
+
+Insérer des variables
+
+
 
 ==== Mise en place de la configuration BO/FO ====
 
