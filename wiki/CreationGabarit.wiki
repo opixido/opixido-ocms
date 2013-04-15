@@ -161,21 +161,13 @@ public function gen(){
 <li>Dans le template, insérez deux balises XML comme ceci : 
 <code language="html">
 <!-- Template test.php -->
-
 <div id="test">
-
- <h2>@@titre@@</h2>
-
- <ul>
-
- <ITEM>
-
-  <li>@@text@@</li>
-
- </ITEM>
-
+<h2>@@titre@@</h2>
+<ul>
+<ITEM>
+<li>@@text@@</li>
+</ITEM>
 </ul>
-
 </div>
 </code>
 </li>
