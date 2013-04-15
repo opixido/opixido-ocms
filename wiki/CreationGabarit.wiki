@@ -81,7 +81,8 @@ class Evenement extends row
  }
 
  function getTitle() {
-  //Si l'évènement est un champ multilingue, alors la fonction retournera la traduction en fonction de la langue en question
+  //Si l'évènement est un champ multilingue, alors la fonction retournera la traduction en fonction de
+  //la langue en question ("evenement_titre_fr", "evenement_titre_en", ...)
   return $this->evenement_titre;
  }
  
