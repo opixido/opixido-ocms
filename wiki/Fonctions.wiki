@@ -191,6 +191,7 @@ Récupérer un enregistrement à partir de la table et de l'identifiant de la li
 <code>
 /* @param string $table
  * @param string $type int ou string
+ * @param boolean $onlyOnline
  * @return array
  */
 getRowFromId($table, $id, $onlyOnline=false);
@@ -201,6 +202,11 @@ Exemple :
 $row = getRowFromId('user', 2);
 //Equivalent : getSingle(' SELECT * FROM user WHERE user_id = 2 ');
 </code>
+
+</li>
+
+<li>
+Ne récupérer que les champs en ligne (possédant l'attribut "en_ligne")
 
 </li>
 
