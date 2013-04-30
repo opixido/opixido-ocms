@@ -145,7 +145,7 @@ $row = getRowFromFieldLike('user', 'nom', 'Martin');
 </li>
 
 <li>
-*Ne récupérer que les enregistrements en ligne*
+*Ne récupérer que les enregistrements en ligne.*
 Pré-requis : la table doit posséder l'attribut _"en_ligne"_
 <code>
 /* @param string $table
