@@ -91,3 +91,23 @@ isMail('email@opixido.com');
 
  * Déterminer si le fichier est une image 
 <code>isImage($str);</code>
+
+
+=== Base de données ===
+
+<h4>Pré-requis</h4>
+Vous devez configurer la connexion à la base de données dans le fichier _config.server.php_ se situant dans le dossier _include/config/_ :
+
+<code>
+$_bdd_user = 'root';
+$_bdd_pwd = '';
+$_bdd_bdd = 'database';
+$_bdd_host = 'localhost';
+$_bdd_type = 'mysql';
+</code>
+
+<h4>Les fonctions</h4>
+
+
+
+
