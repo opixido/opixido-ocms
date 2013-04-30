@@ -189,7 +189,7 @@ MetaColumns($table);
 
 <li>
 Récupérer le nombre d'enregistrements MySQL affectés par la dernière requête
-<code>
+<code language="php">
 /* @return array 
 */
 Affected_Rows();
