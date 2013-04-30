@@ -182,7 +182,26 @@ sql($param, $type='string');
 Exemple :
 <code>
 $user = getSingle(' SELECT * FROM user WHERE user_id = '.sql($_REQUEST['id'], 'int'));
+//Valeur de retour : 'SELECT * FROM user WHERE user_id = "2" '
 </code>
+</li>
+
+<li>
+Récupérer un enregistrement à partir de la table et de l'identifiant de la ligne
+<code>
+/* @param string $table
+ * @param string $type int ou string
+ * @return array
+ */
+getRowFromId($table, $id, $onlyOnline=false);
+</code>
+
+Exemple :
+<code>
+$row = getRowFromId('user', 2);
+//Equivalent : getSingle(' SELECT * FROM user WHERE user_id = 2 ');
+</code>
+
 </li>
 
 </ul>
