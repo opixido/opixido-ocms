@@ -177,6 +177,23 @@ $res = getAll('SELECT * FROM s_rubrique WHERE 1'.sqlVersionOnline('s_rubrique'))
 </code>
 </li>
 
+<li>
+Récupérer la liste des champs d'une table
+<code>
+/* @param string $table
+ * @return array
+*/
+MetaColumns($table);
+</code>
+</li>
 
+<li>
+Récupérer le nombre d'enregistrements MySQL affectés par la dernière requête
+<code>
+/* @return array 
+*/
+Affected_Rows();
+</code>
+</li>
 
 </ul>
