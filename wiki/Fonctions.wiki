@@ -121,13 +121,10 @@ Exécuter une requête SQL
 doSql($sql, $msg=''); 
 </code>
 
-Exemple d'utilisation :
+Exemple :
 <code>
-$users = doSql(' SELECT * FROM user ');
-foreach($users as $user)
-{
- echo $user['nom'];
-}
+$res = doSql(' UPDATE user SET age=30 WHERE user_id=2 ');
+if($res) echo 'Réussi';
 </code>
 
 </li>
@@ -143,7 +140,35 @@ Récupérer l'ensemble des résultats d'une requête sous forme de tableau
 getAll($sql, $cache=0, $connexion='');
 </code>
 
+Exemple :
+<code>
+$res = getAll(' SELECT * FROM user ');
+foreach($users as $user)
+{
+ echo $user['nom'];
+}
+</code>
+
 </li>
+
+<li>
+Récupérer le premier enregistrement d'une requête
+<code>
+/* @param string  $sql
+ * @param bool $cache
+ * @param string $connexion
+ * @return array
+ */
+getSingle($sql, $cache=0, $connexion='');
+</code>
+
+Exemple : 
+<code>
+$user = getSingle(' SELECT * FROM user WHERE user_id=2 ');
+echo $user['nom'];
+</code>
+</li>
+
 
 
 </ul>
