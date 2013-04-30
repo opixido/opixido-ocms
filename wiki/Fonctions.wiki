@@ -206,7 +206,7 @@ $row = getRowFromId('user', 2);
 </li>
 
 <li>
-Ne récupérer que les champs en ligne (possédant l'attribut "en_ligne")
+Ne récupérer que les champs en ligne (possédant l'attribut _"en_ligne"_)
 
 </li>
 
