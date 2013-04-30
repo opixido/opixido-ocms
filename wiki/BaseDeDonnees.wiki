@@ -107,7 +107,7 @@ InsertId();
 Exemple :
 <code>
 $res = doSql('INSERT INTO user(nom) VALUES('.sql($nom).') ');
-if($res) echo 'Correctement enregistré sous l'id '.InsertId();
+if($res) echo 'Correctement enregistré sous l\'id '.InsertId();
 </code>
 </li>
 
