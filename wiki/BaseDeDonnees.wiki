@@ -5,11 +5,16 @@
 Vous devez configurer la connexion à la base de données dans le fichier _config.server.php_ se situant dans le dossier _include/config/_ :
 
 <code>
+//Nom d'utilisateur pour se connecter
 $_bdd_user = 'root';
+//Mot de passe de l'utilisateur pour se connecter
 $_bdd_pwd = '';
+//Nom de la base de données
 $_bdd_bdd = 'database';
+//Chemin vers le serveur
 $_bdd_host = 'localhost';
-$_bdd_type = 'mysql';
+//Nom du SGBD
+$_bdd_type = 'mysqli';
 </code>
 
 OCMS utilise les fonctions de la librairie PHP ADOdb pour se connecter au SGBD.
