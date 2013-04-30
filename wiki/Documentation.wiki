@@ -31,7 +31,7 @@
   # [Fonctions#Fichiers Fichiers]
   # [Fonctions#Contenu Contenu]
   # [Fonctions#E-Mails_et_formulaires E-mails et formulaires]
-  # [Fonctions#Base_de_donnees hjh]
+  # [Fonctions#Base_de_donnees Base de données]
 
 == A. Front-Office ==
 
