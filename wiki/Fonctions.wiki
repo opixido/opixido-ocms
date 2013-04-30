@@ -187,6 +187,20 @@ $user = getSingle(' SELECT * FROM user WHERE user_id = '.sql($_REQUEST['id'], 'i
 </li>
 
 <li>
+Récupérer l'identifiant du dernier enregistrement effectué
+<code>
+/* @return mixed
+*/
+InsertId();
+</code>
+Exemple :
+<code>
+$res = doSql('INSERT INTO user(nom) VALUES('.sql($nom).') ');
+if($res) echo 'Correctement enregistré sous l'id '.InsertId();
+</code>
+</li>
+
+<li>
 Récupérer un enregistrement à partir de la table et de l'identifiant de la ligne
 <code>
 /* @param string $table
@@ -206,8 +220,38 @@ $row = getRowFromId('user', 2);
 </li>
 
 <li>
-Ne récupérer que les champs en ligne (possédant l'attribut _"en_ligne"_)
+Ne récupérer que les enregistrements en ligne
+Pré-requis : la table doit posséder l'attribut _"en_ligne"_
+<code>
+/* @param string $table
+ * @param string $alias
+ * @return string
+ */
+sqlOnlyOnline($table, $alias='');
+</code>
+
+Exemple :
+<code>
+//Ne récupérer que les news en ligne
+$res = getAll('SELECT * FROM news WHERE 1 '.sqlOnlyOnline('news'));
+</code>
 
 </li>
+
+<li>
+Ne récupérer que les enregistrements de version validée
+Pré-requis : la table doit posséder les attributs _"en_ligne"_ et _"fk_version"_
+<code>
+sqlVersionOline($table, $alias='');
+</code>
+
+Exemple :
+<code>
+//Ne récupérer que les rubriques validées et en ligne
+$res = getAll('SELECT * FROM s_rubrique WHERE 1'.sqlVersionOnline('s_rubrique'));
+</code>
+</li>
+
+
 
 </ul>
