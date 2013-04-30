@@ -164,7 +164,7 @@ $res = getAll('SELECT * FROM news WHERE 1 '.sqlOnlyOnline('news'));
 </li>
 
 <li>
-*Ne récupérer que les enregistrements de version validée*
+*Ne récupérer que les enregistrements de version validée*.
 Pré-requis : la table doit posséder les attributs _"en_ligne"_ et _"fk_version"_
 <code>
 sqlVersionOline($table, $alias='');
