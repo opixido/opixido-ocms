@@ -142,7 +142,7 @@ getAll($sql, $cache=0, $connexion='');
 
 Exemple :
 <code>
-$res = getAll(' SELECT * FROM user ');
+$users = getAll(' SELECT * FROM user ');
 foreach($users as $user)
 {
  echo $user['nom'];
