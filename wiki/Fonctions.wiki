@@ -187,7 +187,7 @@ $user = getSingle(' SELECT * FROM user WHERE user_id = '.sql($_REQUEST['id'], 'i
 </li>
 
 <li>
-*Récupérer l'identifiant du dernier enregistrement effectué*
+*Récupérer le dernier identifiant inséré*
 <code>
 /* @return mixed
 */
@@ -215,6 +215,25 @@ Exemple :
 <code>
 $row = getRowFromId('user', 2);
 //Equivalent : getSingle(' SELECT * FROM user WHERE user_id = 2 ');
+</code>
+
+</li>
+
+<li>
+*Récupérer un enregistrement à partir de la table, du champ et d'une valeur*
+<code>
+/* @param string $table
+ * @param string $champ
+ * @param string $val
+ * @return array
+ */
+getRowFromFieldLike($table, $champ, $val);
+</code>
+
+Exemple :
+<code>
+$row = getRowFromFieldLike('user', 'nom', 'Martin');
+//Equivalent : getSingle(' SELECT * FROM user WHERE user_nom LIKE '.sql('Martin'));
 </code>
 
 </li>
