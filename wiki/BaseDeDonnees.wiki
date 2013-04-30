@@ -178,7 +178,7 @@ $res = getAll('SELECT * FROM s_rubrique WHERE 1'.sqlVersionOnline('s_rubrique'))
 </li>
 
 <li>
-Récupérer la liste des champs d'une table
+*Récupérer la liste des champs d'une table*
 <code>
 /* @param string $table
  * @return array
@@ -188,16 +188,17 @@ getTableField($table);
 </li>
 
 <li>
-Récupérer le nombre d'enregistrements MySQL affectés par la dernière requête
+*Récupérer le nombre d'enregistrements MySQL affectés par la dernière requête*
 <code language="php">
 /* @return array 
+ *
 */
 Affected_Rows();
 </code>
 </li>
 
 <li>
-Tester une requête SQL.
+*Tester une requête SQL.*
 La fonction exécute la requête et retourne un message d'erreur si elle n'aboutit pas.
 <code language="php">
 /* @param string $sql
@@ -208,9 +209,10 @@ TrySql($sql);
 </li>
 
 <li>
-Récupérer la liste des tables
+*Récupérer la liste des tables*
 <code>
 /* @return array
+ *
 */
 getTables();
 </code>
