@@ -114,7 +114,7 @@ OCMS utilise les fonctions de la librairie PHP ADOdb pour se connecter au SGBD.
 <li>
 Exécuter une requête SQL
 <code> 
-/*
+/**
  * @param string $sql
  * @param string $msg Message en cas d'erreur
  * @return ADORecordSet $res
@@ -122,13 +122,30 @@ Exécuter une requête SQL
 doSql($sql, $msg=''); 
 </code>
 
-Exemple :
-<code>$res = doSql(' SELECT * FROM user ');</code>
+Exemple d'utilisation :
+<code>
+$users = doSql(' SELECT * FROM user ');
+foreach($users as $user)
+{
+ echo $user['nom'];
+}
+</code>
 
 </li>
 
 <li>
-
+Récupérer l'ensemble des résultats d'une requête sous forme de tableau
+<code>
+/**
+ * Retourne l'ensemble des résultats d'une requete
+ *
+ * @param string $sql
+ * @param bool $cache
+ * @param string $connexion
+ * @return array
+ */
+getAll($sql, $cache=0, $connexion='');
+</code>
 
 </li>
 
