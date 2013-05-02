@@ -17,9 +17,9 @@ Cliquez sur _Ajouter un élément_.
 <li>Rendez-le visible</li>
 </ul>
 
-<h2>Affichage</h2>
+== Affichage ==
 
-Pou afficher dans le layout ce que contient le bloc, modifiez le fichier _default.html.php_ du dossier _include/exports/_, et ajoutez à l'endroit voulu :
+Pou afficher dans le layout ce que contient le bloc, modifiez le fichier _default.html.php_ du dossier _include/exports/_, et faites appel à pa fonction _genBloc()_ à l'endroit voulu :
 <code language="php">
 <div id="bloc-droite">
 
@@ -77,3 +77,27 @@ class ocms_downloadFront extends ocmsPlugin
  }
 }
 </code>
+
+<h2>Les fonctions de la classe bloc</h2>
+
+<ul>
+<li>
+Afficher ou cacher un bloc :
+<code>
+//Cacher le bloc
+function hide();
+//Afficher le bloc
+function show();
+</code>
+</li>
+
+<li>
+Générez le bloc (cf. [o_blocs#Affichage Affichage] ) :
+<code>
+//Générer le contenu du bloc
+function genBloc();
+</code>
+</li>
+
+
+</ul>
