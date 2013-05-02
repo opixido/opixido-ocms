@@ -60,5 +60,18 @@ class ocms_downloadFront extends ocmsPlugin
   }
  }
 
+ public function genDownloads()
+ {
+  $tpl = new genTemplate();
+  $tpl->loadTemplate('download_box','plugins/ocms_download/tpl');
+  foreach($this->downloads as $row)
+  {
+   $stpl = $tpl->addBlock('DOWNLOAD');
+   $d = new row('p_download',$row);
+   $stpl->nom = $d->download_titre;
+   $stpl->url = $d->download_fichier;
+  }
+  return $tpl->gen();
+ }
 }
 </code>
