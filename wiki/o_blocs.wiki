@@ -81,6 +81,26 @@ class ocms_downloadFront extends ocmsPlugin
 <h2>Les fonctions de la classe bloc</h2>
 
 <ul>
+
+<li>
+Générer le bloc (cf. [o_blocs#Affichage Affichage] ) :
+<code>
+//Générer le contenu du bloc
+function genBloc();
+</code>
+</li>
+
+<li>
+Ajouter du contenu au bloc :
+<code>
+/* @param string $id nom de la boite
+ * @param string $html contenu de la boite
+ * @param string $class classe de la boite
+ */
+function add($id, $html, $class);
+</code>
+</li>
+
 <li>
 Afficher ou cacher un bloc :
 <code>
@@ -92,12 +112,14 @@ function show();
 </li>
 
 <li>
-Générez le bloc (cf. [o_blocs#Affichage Affichage] ) :
+Ajouter du contenu après une boite :
 <code>
-//Générer le contenu du bloc
-function genBloc();
+/* @param string $first nom de la première boite
+ * @param string $nom nom de la deuxième boite
+ * @param string $htmlclasse de la deuxième boite
+ */
+function addAfter($first, $nom, $html);
 </code>
 </li>
-
 
 </ul>
