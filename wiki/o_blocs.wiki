@@ -83,7 +83,7 @@ class ocms_downloadFront extends ocmsPlugin
 <ul>
 
 <li>
-Générer le bloc (cf. [o_blocs#Affichage Affichage] ) :
+*Générer le bloc* (cf. [o_blocs#Affichage Affichage] ) :
 <code>
 //Générer le contenu du bloc
 function genBloc();
@@ -91,7 +91,7 @@ function genBloc();
 </li>
 
 <li>
-Ajouter du contenu au bloc :
+*Ajouter du contenu au bloc*
 <code>
 /* @param string $id nom de la boite
  * @param string $html contenu de la boite
@@ -102,7 +102,7 @@ function add($id, $html, $class);
 </li>
 
 <li>
-Afficher ou cacher un bloc :
+*Afficher ou cacher un bloc*
 <code>
 //Cacher le bloc
 function hide();
@@ -112,7 +112,7 @@ function show();
 </li>
 
 <li>
-Ajouter du contenu après une boite :
+*Ajouter du contenu après une boite*
 <code>
 /* @param string $first nom de la première boite
  * @param string $nom nom de la deuxième boite
@@ -123,13 +123,39 @@ function addAfter($first, $nom, $html);
 </li>
 
 <li>
-Ajouter du contenu avantune boite :
+*Ajouter du contenu avant une boite*
 <code>
 /* @param string $second de la seconde boite
  * @param string $nom nom de la première boite
  * @param string $html de la deuxième boite
  */
 function addBefore($second, $nom, $html);
+</code>
+</li>
+
+<li>
+*Ajouter une boite en premier* (avant toutes les autres)
+<code>
+/* @param string $nom
+ * @param string $html
+ */
+function addAtTop($nom, $html);
+</code>
+</li>
+
+<li>
+*Tout supprimer*
+<code>
+function clean();
+</code>
+</li>
+
+<li>
+*Supprimer une boite*
+<code>
+/* string $nom nom de la boite à supprimer
+ */
+function remove($nom);
 </code>
 </li>
 
