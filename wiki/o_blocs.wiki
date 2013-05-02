@@ -56,7 +56,7 @@ class ocms_downloadFront extends ocmsPlugin
 		
   if($this->downloads)
   {
-  $this->site->plugins['o_blocs']->blocs['jaune']->add('downloads',$this->genDownloads());
+     $this->site->plugins['o_blocs']->blocs['jaune']->add('downloads',$this->genDownloads());
   }
  }
 
