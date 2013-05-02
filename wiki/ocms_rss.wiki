@@ -2,7 +2,7 @@
 
 <h2>Installation du plugin</h2>
 
-
+[CreationGabarit#Installation_du_gabarit_ou_du_plugin Installation d'un gabairt/plugin dans le Back-Office]
 
 <h2>Création du gabarit</h2>
 
@@ -12,8 +12,18 @@ Allez dans le back-office, ajoutez dans l'url le paramètre _"?curTable=s_gabari
 
 <ul>
 <li>Entrez le nom du gabarit</li>
-<li></li>
+<li>Entrez la classe du gabarit</li>
+<li>Entrez le nom du plugin (dossier) où est défini le gabarit</li>
 </ul>
 
 
-Remarque : vous pouvez aussi le créer à partir du PhpMyAdmin, dans la table _"s_gabarit"_
+Remarque : vous pouvez aussi le créer à partir du PhpMyAdmin dans la table _"s_gabarit"_
+
+<h2>Ajouter le gabarit dans une rubrique</h2>
+
+<ul>
+<li>Modifier la rubrique où afficher le flux RSS</li>
+<li>Aller dans l'onglet "Paramètres" et sélectionner le gabarit précédemment créé</li>
+</ul>
+
+<h2>Paramétrage</h2>
