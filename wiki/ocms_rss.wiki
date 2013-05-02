@@ -1,5 +1,19 @@
 <h1>Ocms_RSS</h1>
 
-<h2></h2>
+<h2>Installation du plugin</h2>
 
-[http://www.demo.opixido.com/demo/screen/plugins/rss-creation_gabarit.png]
+
+
+<h2>Création du gabarit</h2>
+
+Allez dans le back-office, ajoutez dans l'url le paramètre _"?curTable=s_gabarit"_, puis cliquez sur "Ajouter un élément".
+
+[http://www.opixido.com/ocms/screen/plugins/rss-creation_gabarit.png]
+
+<ul>
+<li>Entrez le nom du gabarit</li>
+<li></li>
+</ul>
+
+
+Remarque : vous pouvez aussi le créer à partir du PhpMyAdmin, dans la table _"s_gabarit"_
