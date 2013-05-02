@@ -4,6 +4,19 @@
 
 <h2>Créer un bloc</h2>
 
-Se rendre dans l'administration et rajouter dans l'url le paramètre _"?curTable=s_bloc"_
+Se rendre dans l'administration et rajouter dans l'url le paramètre _"?curTable=s_bloc"_.
+Cliquez sur _Ajouter un élément_.
 
 [http://www.opixido.com/ocms/screen/plugins/o_bloc-creer.png]
+ - Donnez un nom au bloc
+ - Écrire une condition quand à son affichage (facultatif)
+ - Donnez un nom de classe (facultatif)
+ - Rendez-le visible
+
+<h2>Affichage</h2>
+
+Pou afficher dans le layout ce que contient le bloc, modifiez le fichier _default.html.php_ du dossier _include/exports/_, et ajoutez à l'endroit voulu :
+<code language="php">
+//Remplacez "nomBloc" par le nom que vous lui avez donné lors de sa création
+<?php echo $this->plugins['o_blocs']->nomBloc->genBloc(); ?>
+</code>
