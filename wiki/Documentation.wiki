@@ -52,9 +52,10 @@
 
  * [ExempleCreationGabarit Exemple de gabarit : Les actualités]
 
-  * [Plugin Création d'un plugin complet]
+ * [Plugin Création d'un plugin complet]
    # [http://code.google.com/p/opixido-ocms/wiki/CreationGabarit#Creation_du_dossier_et_des_fichiers Exemple]
  
+ * [pluginsDeBase Les plugins de base et leur fonctionnement]
 
 == D. Style et disposition ==
 
