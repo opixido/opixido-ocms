@@ -2,7 +2,7 @@
 
 <h2>Installation du plugin</h2>
 
-[CreationGabarit#Installation_du_gabarit_ou_du_plugin Installation d'un gabairt/plugin dans le Back-Office]
+[CreationGabarit#Installation_du_gabarit_ou_du_plugin Installation d'un gabairt ou d'un plugin dans le Back-Office]
 
 <h2>Création du gabarit</h2>
 
@@ -27,3 +27,10 @@ Remarque : vous pouvez aussi le créer à partir du PhpMyAdmin dans la table _"s
 </ul>
 
 <h2>Paramétrage</h2>
+
+Après avoir sélectionné le gabarit, cliquez sur le nouvel onglet "RSS".
+[http://www.opixido.com/ocms/screen/plugins/rss-creation_rss.png]
+<ul>
+<li>Cliquer sur "Nouveau"</li>
+<li></li>
+</ul>
