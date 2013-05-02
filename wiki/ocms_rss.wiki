@@ -28,9 +28,11 @@ Remarque : vous pouvez aussi le créer à partir du PhpMyAdmin dans la table _"s
 
 <h2>Paramétrage</h2>
 
-Après avoir sélectionné le gabarit, cliquez sur le nouvel onglet "RSS".
+Après avoir sélectionné le gabarit, sélectionnersur le nouvel onglet "RSS".
 [http://www.opixido.com/ocms/screen/plugins/rss-creation_rss.png]
 <ul>
-<li>Cliquer sur "Nouveau"</li>
-<li></li>
+<li>Cliquer sur "Nouveau" pour créer un nouveau Flux RSS</li>
+<li>Remplissez les champs</li>
 </ul>
+
+[http://www.opixido.com/ocms/screen/plugins/rss-creation_new_rss.png]
