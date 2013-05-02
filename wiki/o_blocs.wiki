@@ -21,8 +21,10 @@ Pou afficher dans le layout ce que contient le bloc, modifiez le fichier _defaul
 <code language="php">
 <div id="bloc-droite">
 
+<?php
 //Remplacez "nomBloc" par le nom que vous lui avez donné lors de sa création
-<?php echo $this->plugins['o_blocs']->nomBloc->genBloc(); ?>
+    echo $this->plugins['o_blocs']->nomBloc->genBloc(); 
+?>
 
 </div>
 </code>
