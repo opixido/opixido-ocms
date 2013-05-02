@@ -33,16 +33,14 @@ Pou afficher dans le layout ce que contient le bloc, modifiez le fichier _defaul
 
 <h2>Ajouter un contenu</h2>
 
-Vous pouvez ajouter du contenu dans ce bloc en appelant la fonction _add()_ *dans la fonction _init()_* :
+Vous pouvez ajouter du contenu dans ce bloc en appelant la fonction _add()_ *dans la fonction _init()_* sur le bloc :
+
 <code language="php">
-public function init()
-{
- //do something
- if($ok)
- {
-  $this->site->plugins['o_blocs']->blocs[nomBloc]->add('idBloc',  $this->genDownloads(),'');
- }
-}
+/* @param string $nom
+ * @param string $html
+ * @param string $class
+ */
+function add($nom, $html, $class);
 </code>
 
 Exemple, dans le plugin _"ocms_downloads"_ (version raccourcie) :
