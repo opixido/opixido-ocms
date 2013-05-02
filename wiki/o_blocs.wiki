@@ -28,3 +28,18 @@ Pou afficher dans le layout ce que contient le bloc, modifiez le fichier _defaul
 
 </div>
 </code>
+
+<h2>Ajouter un contenu</h2>
+
+Vous pouvez ajouter du contenu dans ce bloc en appelant la fonction _add()_ *dans la fonction _init()_* :
+<code language="php">
+public function init()
+{
+ //do something
+ if($ok)
+ {
+  $this->site->plugins['o_blocs']->blocs[nomBloc]->add('idBloc',  $this->genDownloads(),'');
+ }
+}
+</code>
+
