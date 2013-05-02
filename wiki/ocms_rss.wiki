@@ -36,3 +36,10 @@ Après avoir sélectionné le gabarit, sélectionnersur le nouvel onglet "RSS".
 </ul>
 
 [http://www.opixido.com/ocms/screen/plugins/rss-creation_new_rss.png]
+
+<ul>
+<li>Cliquez sur "Enregistrer"</li>
+<li>N'oubliez pas de valider la rubrique si elle est nouvelle</li>
+<li>Dans le front-office, vous obtenez 3 versions du flux RSS :
+<ul><li>RSS 1.0</li><li>RSS 2.0</li><li>ATOM 1.0</li></ul></li>
+</ul>
