@@ -28,7 +28,7 @@ Remarque : vous pouvez aussi le créer à partir du PhpMyAdmin dans la table _"s
 
 <h2>Paramétrage</h2>
 
-Après avoir sélectionné le gabarit, sélectionnersur le nouvel onglet "RSS".
+Après avoir sélectionné le gabarit, cliquer sur le nouvel onglet "RSS".
 [http://www.opixido.com/ocms/screen/plugins/rss-creation_rss.png]
 <ul>
 <li>Cliquer sur "Nouveau" pour créer un nouveau Flux RSS</li>
@@ -40,7 +40,7 @@ Après avoir sélectionné le gabarit, sélectionnersur le nouvel onglet "RSS".
 <ul>
 <li>Cliquez sur "Enregistrer"</li>
 <li>N'oubliez pas de valider la rubrique si elle est nouvelle</li>
-<li>Dans le front-office, vous obtenez 3 versions du flux RSS :
+<li>Dans le front-office, l'utilisateur a le choix entre 3 versions du flux RSS :
 <ul><li>RSS 1.0</li><li>RSS 2.0</li><li>ATOM 1.0</li></ul></li>
-<li>Pour s'abonner au flux, il suffit de cliquer sur une des versions et de s'abonner via un des outils proposés</li>
+<li>Pour s'abonner au flux, il suffit de cliquer sur une des versions et de sélectionner un des outils proposés</li>
 </ul>
