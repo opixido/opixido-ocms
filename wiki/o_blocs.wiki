@@ -45,7 +45,7 @@ public function init()
 }
 </code>
 
-Exemple, dans le plugin _"ocms_downloads"_ :
+Exemple, dans le plugin _"ocms_downloads"_ (version raccourcie) :
 
 <code language="php">
 class ocms_downloadFront extends ocmsPlugin
@@ -53,7 +53,8 @@ class ocms_downloadFront extends ocmsPlugin
  public function afterInit()
  {
   $this->downloads = $this->getDownloads();
-		
+
+  //Si il y a des téléchargements, alors on ajoute du contenu au bloc		
   if($this->downloads)
   {
    $this->site->plugins['o_blocs']->blocs['droite']->add('downloads',$this->genDownloads());
@@ -64,6 +65,7 @@ class ocms_downloadFront extends ocmsPlugin
  {
   $tpl = new genTemplate();
   $tpl->loadTemplate('download_box','plugins/ocms_download/tpl');
+
   foreach($this->downloads as $row)
   {
    $stpl = $tpl->addBlock('DOWNLOAD');
@@ -71,6 +73,8 @@ class ocms_downloadFront extends ocmsPlugin
    $stpl->nom = $d->download_titre;
    $stpl->url = $d->download_fichier;
   }
+
+  //Retourne la génération HTML du template
   return $tpl->gen();
  }
 }
