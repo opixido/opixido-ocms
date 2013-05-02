@@ -4,4 +4,6 @@
 
 <h2>Créer un bloc</h2>
 
-[http://www.opixido.com/ocms/screen/plugins/o_blocs-creer.png]
+Se rendre dans l'administration et rajouter dans l'url le paramètre _"?curTable=s_bloc"_
+
+[http://www.opixido.com/ocms/screen/plugins/o_bloc-creer.png]
