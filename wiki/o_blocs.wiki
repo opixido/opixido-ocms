@@ -116,9 +116,20 @@ Ajouter du contenu après une boite :
 <code>
 /* @param string $first nom de la première boite
  * @param string $nom nom de la deuxième boite
- * @param string $htmlclasse de la deuxième boite
+ * @param string $html de la deuxième boite
  */
 function addAfter($first, $nom, $html);
+</code>
+</li>
+
+<li>
+Ajouter du contenu avantune boite :
+<code>
+/* @param string $second de la seconde boite
+ * @param string $nom nom de la première boite
+ * @param string $html de la deuxième boite
+ */
+function addBefore($second, $nom, $html);
 </code>
 </li>
 
