@@ -8,10 +8,12 @@ Se rendre dans l'administration et rajouter dans l'url le paramètre _"?curTable
 Cliquez sur _Ajouter un élément_.
 
 [http://www.opixido.com/ocms/screen/plugins/o_bloc-creer.png]
- - Donnez un nom au bloc
- - Écrire une condition quand à son affichage (facultatif)
- - Donnez un nom de classe (facultatif)
- - Rendez-le visible
+<ul>
+<li>Donnez un nom au bloc</li>
+<li>Écrire une condition quand à son affichage (facultatif)</li>
+<li>Donnez un nom de classe (facultatif)</li>
+<li>Rendez-le visible</li>
+</ul>
 
 <h2>Affichage</h2>
 
