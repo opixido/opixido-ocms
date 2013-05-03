@@ -19,6 +19,7 @@
   # [Classes genTemplate]
   # [Classes genCache]
   # [Classes#genParagraphes_(include/global/genParagraphes.php) genParagraphes]
+  # [Classes#Urls_(genUrl)_(include/autoload/genUrlV2.php) genUrl]
 
 
 = III. Dévelopement =
