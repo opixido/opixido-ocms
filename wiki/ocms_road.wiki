@@ -1,3 +1,13 @@
 <h1>Ocms_road</h1>
 
-<h2>Installation</h2>
+<h2>Installation du Plugin</h2>
+
+[CreationGabarit#Installation_du_gabarit_ou_du_plugin Installation d'un plugin dans le Back-Office]
+
+<h2></h2>
+
+<code language="php">
+<?= 
+$this->plugins['ocms_road']->genBeforePara(); 
+?>
+</code>
