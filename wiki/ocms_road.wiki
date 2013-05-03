@@ -1,13 +1,24 @@
 <h1>Ocms_road</h1>
 
+<h2>Introduction</h2>
+
+Le Plugin ocms_road est un plugin de base du CMS.
+Il permet d'afficher un fil d'Ariane généré automatiquement, représentant l'arborescence des rubriques traversées par la visiteur.
+
 <h2>Installation du Plugin</h2>
 
 [CreationGabarit#Installation_du_gabarit_ou_du_plugin Installation d'un plugin dans le Back-Office]
 
-<h2></h2>
+<h2>Affichage</h2>
+
+Pour afficher le fil d'ariane dans le layout, modifiez le fichier _default.html.php_ du dossier _include/exports/_
 
 <code language="php">
+<div id="fil">
+
 <?= 
 $this->plugins['ocms_road']->genBeforePara(); 
 ?>
+
+</div>
 </code>
