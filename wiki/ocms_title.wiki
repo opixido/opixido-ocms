@@ -21,3 +21,27 @@ $this->plugins['ocms_title']->genPageTitle();
 ?>
 </div>
 </code>
+
+<h2>Modification</h2>
+
+*Important* : toutes ces modifications sont à faire dans la fonction _init()_ ou _afterInit()_
+
+<ul>
+<li>
+Afficher ou masquer le titre
+<code language="php">
+//Masquer le titre
+$this->site->plugins['ocms_title']->hide();
+//Afficher le titre
+$this->site->plugins['ocms_title']->show();
+</code>
+</li>
+
+<li>
+Modifier le titre
+<code language="php">
+$this->site->plugins['ocms_title']->forceTitre = 'Mon nouveau titre';
+</code>
+</li>
+
+</ul>
