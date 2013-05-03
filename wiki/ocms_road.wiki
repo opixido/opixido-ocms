@@ -23,3 +23,13 @@ $this->plugins['ocms_road']->genBeforePara();
 
 </div>
 </code>
+
+Il est possible d'ajouter des chemins dans le fil d'Ariane
+<code>
+/* @param string $titre titre de la fausse rubrique
+ * @param string $url fin url
+ */
+addRoad($titre, $url);
+//Exemple :
+$this->site->g_url->addRoad('Nouvelle actualité', 'new_actu');
+</code>
