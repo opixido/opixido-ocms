@@ -17,7 +17,7 @@ Allez dans le back-office, ajoutez dans l'url le paramètre _"?curTable=s_gabari
 </ul>
 
 
-Remarque : vous pouvez aussi le créer à partir du "PhpMyAdmin" dans la table _"s_gabarit"_
+Remarque : vous pouvez aussi le créer à partir de _PhpMyAdmin_ dans la table _"s_gabarit"_
 
 <h2>Ajouter le gabarit dans une rubrique</h2>
 
