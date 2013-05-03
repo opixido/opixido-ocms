@@ -17,7 +17,7 @@ Allez dans le back-office, ajoutez dans l'url le paramètre _"?curTable=s_gabari
 </ul>
 
 
-Remarque : vous pouvez aussi le créer à partir de _PhpMyAdmin_ dans la table _"s_gabarit"_
+Remarque : vous pouvez aussi le créer à partir de PhpMyAdmin dans la table _"s_gabarit"_
 
 <h2>Ajouter le gabarit dans une rubrique</h2>
 
@@ -28,14 +28,29 @@ Remarque : vous pouvez aussi le créer à partir de _PhpMyAdmin_ dans la table _
 
 <h2>Paramétrage</h2>
 
-Après avoir sélectionné le gabarit, cliquer sur le nouvel onglet "RSS".
+Après avoir sélectionné le gabarit, cliquer sur le nouvel onglet "RSS" qui vient d'apparaître.
 [http://www.opixido.com/ocms/screen/plugins/rss-creation_rss.png]
 <ul>
 <li>Cliquer sur "Nouveau" pour créer un nouveau Flux RSS</li>
-<li>Remplissez les champs</li>
+<li>Remplissez les champs suivants :</li>
 </ul>
 
 [http://www.opixido.com/ocms/screen/plugins/rss-creation_new_rss.png]
+
+<ul>
+<li>*Titre* : titre du Flux RSS</li>
+<li>Desc : la description du Flux (facultatif)</li>
+<li>Vignette : une image correspondant au Flux</li>
+<li>*Table* : le nom de la table où sont stockées les données à afficher dans le nouveau flux</li>
+<li>Requete SQL : la requête SQL à exécuter pour l'affichage des flux (facultatif)</li>
+<li>*Champ titre* : le nom de l'attribut contenant le titre de l'objet</li>
+<li>*Champ desc* : le nom de l'attribut contenant le résumé de l'objet</li>
+<li>*Champ date* : le nom de l'attribut contenant la date de l'objet</li>
+<li>Champ image : le nom de l'attribut contenant le titre de l'image de l'objet (facultatif)</li>
+<li>Champ enclosure : (facultatif)</li>
+<li>*Champ Uri* : le nom de l'attribut contenant l'identifiant unique de l'objet</li>
+
+</ul>
 
 <ul>
 <li>Cliquez sur "Enregistrer"</li>
