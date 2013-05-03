@@ -33,3 +33,9 @@ addRoad($titre, $url);
 //Exemple :
 $this->site->g_url->addRoad('Nouvelle actualité', 'new_actu');
 </code>
+
+<h2>Modifications</h2>
+
+Il est possible de modifier le template du fil d'Ariane.
+
+Il suffit de modifier le fichier _"template.php"_ se trouvant dans le dossier _"include/plugins/ocms_road/"_
