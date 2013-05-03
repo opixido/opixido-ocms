@@ -51,6 +51,7 @@ Exemple type :
 class p_actualite extends row
 {
   //Constructeur
+  //La table correspondant est ici "p_actualite"
   function __construct( $roworid) {
    parent::__construct('p_actualite', $roworid);
   }
