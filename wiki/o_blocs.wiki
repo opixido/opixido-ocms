@@ -19,7 +19,7 @@ Cliquez sur _Ajouter un élément_.
 
 == Affichage ==
 
-Pou afficher dans le layout ce que contient le bloc, modifiez le fichier _default.html.php_ du dossier _include/exports/_, et faites appel à pa fonction _genBloc()_ à l'endroit voulu :
+Pour afficher dans le layout ce que contient le bloc, modifiez le fichier _default.html.php_ du dossier _include/exports/_, et faites appel à pa fonction _genBloc()_ à l'endroit voulu :
 <code language="php">
 <div id="bloc-droite">
 
