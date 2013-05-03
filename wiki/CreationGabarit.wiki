@@ -259,3 +259,10 @@ Deux méthodes sont possibles :
  * Rendez-vous dans la gestion du contenu et sélectionnez la page où vous souhaitez insérer votre nouveau gabarit.
  * Cliquez sur "Modifer"
  * Dans l'onglet "Paramètres", sélectionnez votre nouveau gabarit (champ "gabarit spécial"), puis enregistrez et validez.
+
+<h2>Exemples de plugins et gabarits</h2>
+
+<ul>
+<li>[pluginsDeBase Plugins de base]</li>
+<li>[ExempleCreationGabarit Gabarit actualités]</li>
+</ul>
