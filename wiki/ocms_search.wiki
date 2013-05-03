@@ -44,7 +44,36 @@ Pour chaque objet affiché dans la liste de résultats, le moteur regarde si cet
 </ul>
 
 *Attention : il est nécessaire de nommer les classes des objets avec le nom de la table utilisée par ce dernier.
-Exemple : une actualité enregistrée dans la table _"p_actualite"_ possèdera une classe "p_actualite".*
+De cette façon, une actualité enregistrée dans la table _"p_actualite"_ possèdera une classe "p_actualite".*
+
+Exemple type :
+<code language="php">
+class p_actualite extends row
+{
+  //Constructeur
+  function __construct( $roworid) {
+   parent::__construct('p_actualite', $roworid);
+  }
+  
+  function getTitle() {
+    return $this->actualite_titre;
+  }
+
+  function getDesc() {
+    return $this->actualite_desc;
+  }
+
+  function getImg() {
+    return $this->actualite_img;
+  }
+
+  function getUrl() {
+    //Retourne une url reconstruite
+    return getUrlFromId(getRubriqueByGabarit('genActualites'), LG, array('actualite'=>$this->actualite_id));
+  }
+
+}
+</code>
 
 <h2>Back-Office</h2>
 
