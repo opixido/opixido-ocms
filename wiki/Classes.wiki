@@ -183,3 +183,7 @@ $gp->id = $this->actualite->id;
 $tpl->text = $gp->gen();
 
 </code>
+
+
+
+=== Urls (genUrl) _(include/autoload/genUrlV2.php)_ ===
