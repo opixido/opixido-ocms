@@ -33,6 +33,7 @@ addRoad($titre, $url);
 //Exemple :
 $this->site->g_url->addRoad('Nouvelle actualité', 'new_actu');
 </code>
+Plus d'informations sur la classe genUrl [Classes#Urls_(genUrl)_(include/autoload/genUrlV2.php) ici].
 
 <h2>Modifications</h2>
 
