@@ -8,7 +8,9 @@ Il permet de créer un gabarit pour la recherche. Par défaut, la recherche s'ef
 
 [CreationGabarit#Installation_du_gabarit_ou_du_plugin Installation d'un gabarit ou d'un plugin dans le Back-Office]
 
-<h2>Insertion de la barre de recherche</h2>
+<h2>Front-Office</h2>
+
+<h3>Insertion de la barre de recherche</h3>
 
 Pour afficher la barre de recherche dans le layout, il suffit de modifier le fichier _default.html.php_ du dossier _include/exports/_ et d'y insérer le formulaire comme ceci :
 <code language="php">
@@ -25,4 +27,13 @@ Pour afficher la barre de recherche dans le layout, il suffit de modifier le fic
 </code>
 <p>L'action doit pointer vers la rubrique ayant pour gabarit _"ocms_search"_.
 La fonction _getUrlFromId(getRubFromGabarit('genOcmsSearch'))_ permet de récupérer cet url. </p>
-<p>Plus d'informations sur [Fonctions#Urls cette page].</p>
+<p>Plus d'informations sur les urls dans [Fonctions#Urls cette page].</p>
+
+<h3>Affichage des résultats</h3>
+
+<h2>Back-Office</h2>
+
+<h3>Indexation</h3>
+
+Le plugin a ajouté un lien "Ré-indexer le site" dans les "Actions administrateur", sur la partie droite.
+[http://www.opixido.com/ocms/screen/plugins/search-bo.png]
