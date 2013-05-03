@@ -23,4 +23,6 @@ Pour afficher la barre de recherche dans le layout, il suffit de modifier le fic
 
 </div>
 </code>
-<p>L'action doit pointer vers la rubrique ayant pour gabarit _"ocms_search"_.</p> La fonction _getUrlFromId(getRubFromGabarit('genOcmsSearch'))_ permet de récupérer cet url. Plus d'informations sur [Fonctions#Urls cette page].
+<p>L'action doit pointer vers la rubrique ayant pour gabarit _"ocms_search"_.
+La fonction _getUrlFromId(getRubFromGabarit('genOcmsSearch'))_ permet de récupérer cet url. </p>
+<p>Plus d'informations sur [Fonctions#Urls cette page].</p>
