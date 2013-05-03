@@ -1,5 +1,11 @@
 <h1>Ocms_RSS</h1>
 
+<h2>Introduction</h2>
+
+Le Plugin _"ocms_rss"_ est un Plugin de base du CMS.
+
+Il permet de créer, s'abonner et afficher des Flux RSS (RSS 1.0, RSS 2.0 et ATOM 1.0).
+
 <h2>Installation du plugin</h2>
 
 [CreationGabarit#Installation_du_gabarit_ou_du_plugin Installation d'un gabarit ou d'un plugin dans le Back-Office]
