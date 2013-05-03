@@ -49,9 +49,9 @@ Après avoir sélectionné le gabarit, cliquer sur le nouvel onglet "RSS" qui vi
 <li>Champ image : le nom de l'attribut contenant le titre de l'image de l'objet (facultatif)</li>
 <li>Champ enclosure : (facultatif)</li>
 <li>*Champ Uri* : le nom de l'attribut contenant l'identifiant unique de l'objet</li>
-
 </ul>
 
+Puis :
 <ul>
 <li>Cliquez sur "Enregistrer"</li>
 <li>N'oubliez pas de valider la rubrique si elle est nouvelle</li>
