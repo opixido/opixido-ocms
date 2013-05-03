@@ -9,3 +9,15 @@ Le Plugin _"ocms_title"_ permet d'afficher automatiquement sur chaque page du si
 [CreationGabarit#Installation_du_gabarit_ou_du_plugin Installation d'un gabarit ou plugin dans le Back-Office]
 
 <h2>Affichage</h2>
+
+<code language="php">
+<div id="content">
+
+<?php
+//Première manière (fonctionne si la fonction appelée a un nom unique)
+echo $this->g_rubrique->execute('genPageTitle');
+//Seconde manière
+$this->plugins['ocms_title']->genPageTitle();
+?>
+</div>
+</code>
