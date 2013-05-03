@@ -260,6 +260,8 @@ Deux méthodes sont possibles :
  * Cliquez sur "Modifer"
  * Dans l'onglet "Paramètres", sélectionnez votre nouveau gabarit (champ "gabarit spécial"), puis enregistrez et validez.
 
+
+</ul></ul>
 <h2>Exemples de plugins et gabarits</h2>
 
 <ul>
