@@ -2,7 +2,7 @@
 
 <h2>Introduction</h2>
 
-Le Plugin ocms_blocs est un plugin de base du CMS.
+Le Plugin _"ocms_blocs"_ est un Plugin de base du CMS.
 
 Il permet d'afficher et gérer dynamiquement des blocs de contenu sur une page.
 
