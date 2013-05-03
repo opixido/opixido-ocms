@@ -250,16 +250,19 @@ Deux méthodes sont possibles :
 
 <h3>Installer le plugin</h3>
 
- * Rendez-vous sur la page d'administration de votre site 
- * Cliquez sur le lien "Plugins" dans "Dev".
- * Sélectionnez "Ajouter un élément", sélectionnez votre nouveau plugin, puis enregistrez. Cliquez ensuite sur "Installer".
+<ul>
+<li>Rendez-vous sur la page d'administration de votre site</li>
+<li>Cliquez sur le lien "Plugins" dans "Dev"</li>
+<li>Sélectionnez "Ajouter un élément", sélectionnez votre nouveau plugin, puis enregistrez. Cliquez ensuite sur "Installer"</li>
+</ul>
 
 <h3>Attribuer un gabarit à une page</h3>
 
- * Rendez-vous dans la gestion du contenu et sélectionnez la page où vous souhaitez insérer votre nouveau gabarit.
- * Cliquez sur "Modifer"
- * Dans l'onglet "Paramètres", sélectionnez votre nouveau gabarit (champ "gabarit spécial"), puis enregistrez et validez.
-
+<ul>
+<li>Rendez-vous dans la gestion du contenu et sélectionnez la page où vous souhaitez insérer votre nouveau gabarit</li>
+<li>Cliquez sur "Modifer"</li>
+<li>Dans l'onglet "Paramètres", sélectionnez votre nouveau gabarit (champ "gabarit spécial"), puis enregistrez et validez</li>
+</ul>
 
 <h2>Exemples de plugins et gabarits</h2>
 
