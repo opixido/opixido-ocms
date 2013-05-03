@@ -230,8 +230,6 @@ public function gen(){
 
 Deux méthodes sont possibles : 
 
-
-
 Directement dans le système de gestion de BD :
 <ul>
 <li>Dans la table "s_gabarit" de votre base de données, créez une nouvelle ligne.</li>
@@ -239,6 +237,7 @@ Directement dans le système de gestion de BD :
 || _ gabarit_id _ || _ gabarit_titre _ || ... || _ gabarit_classe _ || ... || _ gabarit_plugin _ ||
 || ... || titre du gabarit || ... || titre de la classe || ... || nom du dossier ||</li>
 </ul>
+
 A partir du Back-Office
 <ul>
 <li>Ajouter le paramètre "&curTable=s_gabarit" à la fin de l'url</li>
