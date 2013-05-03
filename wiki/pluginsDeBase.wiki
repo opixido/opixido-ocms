@@ -10,7 +10,7 @@
  * Ocms_reaction : possibilité pour les visiteurs de commenter n’importe quelle rubrique
  * [ocms_road Ocms_road] : affichage du fil d’ariane
  * [ocms_rss Ocms_RSS] : possibilité d’ajouter un flux RSS sur une ou plusieurs rubriques
- * Ocms_search : recherche personnalisée (avec indexation du site)
+ * [ocms_search Ocms_search] : recherche personnalisée (avec indexation du site)
  * Ocms_sendToFriend : possibilité pour un visiteur de partager une page
  * Ocms_siteMap : création automatique du plan du site
  * [ocms_title Ocms_title] : affichage automatique du titre de la page
