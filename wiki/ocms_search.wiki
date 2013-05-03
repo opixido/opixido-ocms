@@ -31,6 +31,21 @@ La fonction _getUrlFromId(getRubFromGabarit('genOcmsSearch'))_ permet de récup�
 
 <h3>Affichage des résultats</h3>
 
+
+
+<h3>Attributs des objets</h3>
+
+Pour chaque objet affiché dans la liste de résultats, le moteur regarde si cet objet possède ou non les fonctions suivantes définies dans les fichiers _front.php_ ([CreationGabarit#Le_modèle modèle]) :
+<ul>
+<li>_getUrl()_ : retourne l'url de l'objet</li>
+<li>_getImg()_ : retourne l'image de l'objet</li>
+<li>_getTitle()_ : retourne le titre de l'objet</li>
+<li>_getDesc()_ : retourne la description/résumé de l'objet</li>
+</ul>
+
+*Attention : il est nécessaire de nommer les classes des objets avec le nom de la table utilisée par ce dernier.
+Exemple : une actualité enregistrée dans la table _"p_actualite"_ possèdera une classe "p_actualite".*
+
 <h2>Back-Office</h2>
 
 <h3>Indexation</h3>
