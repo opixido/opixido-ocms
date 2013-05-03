@@ -3,6 +3,7 @@
 <h2>Introduction</h2>
 
 Le Plugin ocms_road est un plugin de base du CMS.
+
 Il permet d'afficher un fil d'Ariane généré automatiquement, représentant l'arborescence des rubriques traversées par la visiteur.
 
 <h2>Installation du Plugin</h2>
