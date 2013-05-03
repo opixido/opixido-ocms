@@ -1,7 +1,7 @@
 #labels Documentation
 = Les plugins de base d'OCMS =
 
- * [o_blocs o_blocs] : créer et gérer des blocs
+ * [o_blocs o_blocs] : créer et gérer des blocs de contenu
  * Ocms_contact : création simple et rapide de formulaires de contact
  * Ocms_download : ajout et gestion de documents à télécharger pour une page donnée
  * Ocms_forum : création et gestion d’un forum
