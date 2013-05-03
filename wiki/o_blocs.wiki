@@ -26,6 +26,9 @@ Pou afficher dans le layout ce que contient le bloc, modifiez le fichier _defaul
 <?php
   //Remplacez "nomBloc" par le nom que vous lui avez donné lors de sa création
   echo $this->plugins['o_blocs']->nomBloc->genBloc(); 
+  //$this->plugins est un tableau contenant la liste des plugins
+  //$this->plugins['o_blocs'] est un objet o_blocsFront
+  //$this->plugins['o_blocs']->nomBloc est un objet bloc
 ?>
 
 </div>
