@@ -35,5 +35,9 @@ La fonction _getUrlFromId(getRubFromGabarit('genOcmsSearch'))_ permet de récup�
 
 <h3>Indexation</h3>
 
-Le plugin a ajouté un lien "Ré-indexer le site" dans les "Actions administrateur", sur la partie droite.
+<p>Le plugin a ajouté un lien "Ré-indexer le site" dans les "Actions administrateur", sur la partie droite.</p>
 [http://www.opixido.com/ocms/screen/plugins/search-bo.png]
+<p>Dans cette partie est affichée la liste des gabarits. Il est possible d'indexer manuellement chaque gabarit, ou alors de tout indexer en même temps en sélectionnant "Ensemble".</p>
+
+<p>L'indexation se fait automatiquement lors de la création ou de la modification d'un élément.</p>
+<p>Pour vider toute la recherche, il suffit de sélectionner, dans la page d'accueil du back-office le lien "Vider la recherche"</p>
