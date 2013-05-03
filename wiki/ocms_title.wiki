@@ -2,7 +2,7 @@
 
 <h2>Introduction</h2>
 
-Le Plugin _"ocms_title"_ permet d'afficher automatiquement sur chaque page du site le nom de la rubrique.
+Le Plugin _"ocms_title"_ permet d'afficher automatiquement sur chaque page du site le nom de la rubrique courante.
 
 <h2>Installation du plugin</h2>
 
