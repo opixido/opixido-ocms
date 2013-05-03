@@ -1,0 +1,25 @@
+<h1>Ocms_search</h1>
+
+<h2>Introduction</h2>
+
+Il permet de créer un gabarit pour la recherche. Par défaut, la recherche s'effectue dans les rubriques et dans les tables créées pour des gabarits de page ou plugin.
+
+<h2>Installation du plugin</h2>
+
+[CreationGabarit#Installation_du_gabarit_ou_du_plugin Installation d'un gabarit ou d'un plugin dans le Back-Office]
+
+<h2>Insertion de la barre de recherche</h2>
+
+Pour afficher la barre de recherche dans le layout, il suffit de modifier le fichier _default.html.php_ du dossier _include/exports/_ et d'y insérer le formulaire comme ceci :
+<code language="php">
+<div id="recherche">
+
+ <form id="form1" action="<?php echo   getUrlFromId(getRubFromGabarit('genOcmsSearch')) ?>" method="get">
+
+  <input type="text" placeholder="Rechercher" value=<?= alt(akev($_GET, 'q') )?> id="rechercher_input" name="q" />
+
+  <button value="" id="btn_header"></button>
+ </form>
+
+</div>
+</code>
