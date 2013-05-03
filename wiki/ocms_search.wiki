@@ -17,7 +17,6 @@ Pour afficher la barre de recherche dans le layout, il suffit de modifier le fic
  <form id="form1" action="<?php echo getUrlFromId(getRubFromGabarit('genOcmsSearch')) ?>" method="get">
 
   <input type="text" placeholder="Rechercher" value=<?= alt(akev($_GET, 'q') )?> id="rechercher_input" name="q" />
-
   <button value="" id="btn_header"></button>
  </form>
 
