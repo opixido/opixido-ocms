@@ -2,7 +2,7 @@
 
 <h2>Installation du plugin</h2>
 
-[CreationGabarit#Installation_du_gabarit_ou_du_plugin Installation d'un gabairt ou d'un plugin dans le Back-Office]
+[CreationGabarit#Installation_du_gabarit_ou_du_plugin Installation d'un gabarit ou d'un plugin dans le Back-Office]
 
 <h2>Création du gabarit</h2>
 
@@ -17,7 +17,7 @@ Allez dans le back-office, ajoutez dans l'url le paramètre _"?curTable=s_gabari
 </ul>
 
 
-Remarque : vous pouvez aussi le créer à partir du PhpMyAdmin dans la table _"s_gabarit"_
+Remarque : vous pouvez aussi le créer à partir du "PhpMyAdmin" dans la table _"s_gabarit"_
 
 <h2>Ajouter le gabarit dans une rubrique</h2>
 
