@@ -230,23 +230,22 @@ public function gen(){
 
 Deux méthodes sont possibles : 
 
-<ul>
 
-<li>Directement dans le système de gestion de BD :
+
+Directement dans le système de gestion de BD :
 <ul>
 <li>Dans la table "s_gabarit" de votre base de données, créez une nouvelle ligne.</li>
 <li>Insérez les champs suivants :
 || _ gabarit_id _ || _ gabarit_titre _ || ... || _ gabarit_classe _ || ... || _ gabarit_plugin _ ||
 || ... || titre du gabarit || ... || titre de la classe || ... || nom du dossier ||</li>
-</ul></li>
-<li>A partir du Back-Office
+</ul>
+A partir du Back-Office
 <ul>
 <li>Ajouter le paramètre "&curTable=s_gabarit" à la fin de l'url</li>
 <li>Cliquez sur "Ajouter un élément"</li>
 <li>Renseignez le titre du gabarit/plugin, le nom de la classe, des paramètres (facultatif), et le nom du dossier contenant le gabarit/plugin.</li>
-</ul></li>
-
 </ul>
+
 
 <h3>Installer le plugin</h3>
 
