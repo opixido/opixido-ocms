@@ -24,7 +24,7 @@ $this->plugins['ocms_title']->genPageTitle();
 
 <h2>Modification</h2>
 
-*Important* : toutes ces modifications sont à faire dans la fonction _init()_ ou _afterInit()_
+*Important* : toutes ces modifications sont à faire dans la fonction _init()_ ou _afterInit()_ d'un plugin ou gabarit.
 
 <ul>
 <li>
