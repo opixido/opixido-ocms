@@ -4,7 +4,7 @@
 
 Le Plugin _"ocms_rss"_ est un Plugin de base du CMS.
 
-Il permet de créer, s'abonner et afficher des Flux RSS (RSS 1.0, RSS 2.0 et ATOM 1.0).
+Il permet de créer, s'abonner et afficher des Flux RSS (RSS 1.0, RSS 2.0 et ATOM 1.0) facilement et automatiquement.
 
 <h2>Installation du plugin</h2>
 
