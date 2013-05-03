@@ -13,5 +13,5 @@
  * Ocms_search : recherche personnalisée (avec indexation du site)
  * Ocms_sendToFriend : possibilité pour un visiteur de partager une page
  * Ocms_siteMap : création automatique du plan du site
- * Ocms_title : affichage automatique du titre de la page
+ * [ocms_title Ocms_title] : affichage automatique du titre de la page
  * Ocms_vote : possibilité pour un utilisateur de voter 
