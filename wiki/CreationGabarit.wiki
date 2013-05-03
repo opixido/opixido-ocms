@@ -261,7 +261,16 @@ A partir du Back-Office
 <ul>
 <li>Rendez-vous dans la gestion du contenu et sélectionnez la page où vous souhaitez insérer votre nouveau gabarit</li>
 <li>Cliquez sur "Modifer"</li>
-<li>Dans l'onglet "Paramètres", sélectionnez votre nouveau gabarit (champ "gabarit spécial"), puis enregistrez et validez</li>
+<li>Dans l'onglet "Paramètres", sélectionnez votre nouveau gabarit (champ "gabarit spécial"), puis enregistrez et validez.
+Pou afficher un icône, il suffit d'enregistrer cette fonction dans le controlleur :
+<code>
+public static function ocms_getPicto() 
+{
+ //Remplacez la fin par le nom de l'image souhaitée
+ return ADMIN_PICTOS_FOLDER . ADMIN_PICTOS_ARBO_SIZE . '/actions/media-eject.png';
+}
+</code>
+</li>
 </ul>
 
 <h2>Exemples de plugins et gabarits</h2>
