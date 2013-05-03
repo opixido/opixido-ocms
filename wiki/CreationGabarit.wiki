@@ -35,7 +35,7 @@ class genTest extends ocmsGen
 }
 </code>
 
-<h4>Le modèle</h4>
+==== Le modèle ====
 
 <ul>
 <li>Créez un fichier PHP _front.php_ dans le dossier courant (_include/plugins/nomDeVotrePlugin_). Ce fichier sera automatiquement inclu. Vous pourrez y déclarer vos classes utiles au fonctionnement du plugin.
