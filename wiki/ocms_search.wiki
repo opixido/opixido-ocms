@@ -18,9 +18,9 @@ Pour afficher la barre de recherche dans le layout, il suffit de modifier le fic
 
   <input type="text" placeholder="Rechercher" value=<?= alt(akev($_GET, 'q') )?> id="rechercher_input" name="q" />
 
-  <button value="" id="btn_header"></button>
+  <button value="OK" id="recherche_btn"></button>
  </form>
 
 </div>
 </code>
-L'action doit pointer vers la rubrique ayant pour gabarit _"ocms_search"_. la fonction _getUrlFromId(getRubFromGabarit('genOcmsSearch'))_ permet de récupérer cet url. Plus d'informations sur [Fonctions#Urls cette page].
+<p>L'action doit pointer vers la rubrique ayant pour gabarit _"ocms_search"_.</p> La fonction _getUrlFromId(getRubFromGabarit('genOcmsSearch'))_ permet de récupérer cet url. Plus d'informations sur [Fonctions#Urls cette page].
