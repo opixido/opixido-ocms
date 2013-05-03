@@ -3,7 +3,8 @@
 <h2>Introduction</h2>
 
 Le Plugin ocms_blocs est un plugin de base du CMS.
-Il permet d'afficher et gérer des blocs de contenu sur une page.
+
+Il permet d'afficher et gérer dynamiquement des blocs de contenu sur une page.
 
 <h2>Installation du plugin</h2>
 
