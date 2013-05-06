@@ -11,12 +11,10 @@
 
 [Installation Installation]
 
-= II. Details =
-
-
-
 
 = III. Dévelopement =
+
+== A. Détails ==
 
  * [Database Description de la base de données]
 
@@ -37,16 +35,16 @@
 
  * [BaseDeDonnees Base de données]
 
-== A. Front-Office ==
+== B. Front-Office ==
 
   * [CreationTheme Création d'un template/thème]
   * [TypesParagraphe Création des types de paragraphes]
 
-== B. Back-Office ==
+== C. Back-Office ==
 
  * [actionsBO Créer des actions]
 
-== C. Plugins ==
+== D. Plugins ==
 
   * [CreationGabarit Création d'un plugin ou gabarit de page]
    # [CreationGabarit#Creation_du_gabarit_ou_plugin Création]
@@ -60,7 +58,7 @@
  
  * [pluginsDeBase Les plugins de base et leur fonctionnement]
 
-== D. Style et disposition ==
+== E. Style et disposition ==
 
  * [CreationTheme#Style_et_disposition Style]
 
