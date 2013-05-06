@@ -305,6 +305,8 @@ Trois méthodes sont possibles :
 <li>Cliquez sur le lien "Plugins" dans "Dev"</li>
 <li>Sélectionnez "Ajouter un élément", sélectionnez votre nouveau plugin, puis enregistrez. Cliquez ensuite sur "Installer"</li>
 </ul>
+Lors de l'installation, les fichiers _"datas.xml"_ et _"install.sql"_ seront automatiquement appelés (facultatif). 
+Le fichier _"install.sql"_ doit contenir du SQL pouvant créer la ou les table(s) utilisée(s) dans le plugin.
 
 <h3>Attribuer un gabarit à une page</h3>
 
