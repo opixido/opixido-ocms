@@ -235,9 +235,10 @@ Trois méthodes sont possibles :
 <li>Insérer automatiquement :
 <ul>
 <li>Créer un fichier XML _"datas.xml"_</li>
-<li>Ajouter
+<li>Insérer :
 <code language="xml">
 <?xml version="1.0" encoding="utf-8" ?>
+
 <opixidoocms>
 
  <!-- Table s_gabarit -->
