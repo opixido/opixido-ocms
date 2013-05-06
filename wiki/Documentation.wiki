@@ -11,6 +11,40 @@
 
 [Installation Installation]
 
+= IV. Front-Office =
+
+== A. Rubriques ==
+
+
+
+
+= III. Back-Office =
+
+== A. Rubriques ==
+
+ * [Arborescence Création de l'arborescence]
+ * [PageActions Actions sur une page]
+ * [Referencement Le référencement]
+
+== B. Plugins/Gabarits ==
+
+
+== C. Formulaires ==
+
+ * [tradsBO Modifier les traductions et les icônes]
+
+== D. Gestion des utilisateurs ==
+
+ * [GestionUtilisateurs Gestion des utilisateurs]
+ * [GestionDroits Gestion des droits]
+
+== E. Autres ==
+
+ * [TextesParam Textes paramétrables]
+ * [Images Recadrage et accessibilité des images]
+ * [GestionLangues Gestion des langues]
+ * [GestionnaireMAJ Les gestionnaire de mises à jour]
+
 
 = II. Dévelopement =
 
@@ -62,38 +96,7 @@
 
  * [CreationTheme#Style_et_disposition Style]
 
-= IV. Back-Office =
 
-== A. Rubriques ==
-
- * [Arborescence Création de l'arborescence]
- * [PageActions Actions sur une page]
- * [Referencement Le référencement]
-
-== B. Plugins/Gabarits ==
-
-
-== C. Formulaires ==
-
- * [tradsBO Modifier les traductions et les icônes]
-
-== D. Gestion des utilisateurs ==
-
- * [GestionUtilisateurs Gestion des utilisateurs]
- * [GestionDroits Gestion des droits]
-
-== E. Autres ==
-
- * [TextesParam Textes paramétrables]
- * [Images Recadrage et accessibilité des images]
- * [GestionLangues Gestion des langues]
- * [GestionnaireMAJ Les gestionnaire de mises à jour]
-
-= V. Front-Office =
-
-== A. Rubriques ==
-
-
-= VI. Autres =
+= V. Autres =
 
  * [SystemeCache Système de cache]
