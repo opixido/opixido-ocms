@@ -239,21 +239,36 @@ Trois méthodes sont possibles :
 <code language="xml">
 <?xml version="1.0" encoding="utf-8" ?>
 <opixidoocms>
-  <!-- Table s_gabarit -->
-    <s_gabarit>
-        <gabarit_id>1</gabarit_id>
-        <gabarit_titre>Actualités</gabarit_titre>
-        <gabarit_para_crea></gabarit_para_crea>
-        <gabarit_para_include></gabarit_para_include>
-        <gabarit_full_template></gabarit_full_template>
-        <gabarit_bdd_deco>0</gabarit_bdd_deco>
-        <gabarit_classe>genOcms_news</gabarit_classe>
-        <gabarit_classe_param></gabarit_classe_param>
-        <gabarit_plugin>ocms_news</gabarit_plugin>
-        <gabarit_index_table>p_news</gabarit_index_table>
-        <gabarit_index_url>news=news_id</gabarit_index_url>
-        <fk_default_rubrique_id>0</fk_default_rubrique_id>
+ <!-- Table s_gabarit -->
+
+  <s_gabarit>
+
+   <gabarit_id>/* Id */</gabarit_id>
+
+   <gabarit_titre>/* Titre */</gabarit_titre>
+
+   <gabarit_para_crea></gabarit_para_crea>
+
+   <gabarit_para_include></gabarit_para_include>
+
+   <gabarit_full_template></gabarit_full_template>
+
+   <gabarit_bdd_deco>0</gabarit_bdd_deco>
+
+   <gabarit_classe>/* Nom de la classe */</gabarit_classe>
+
+   <gabarit_classe_param></gabarit_classe_param>
+
+   <gabarit_plugin>/* Nom du plugin (dossier) */</gabarit_plugin>
+
+   <gabarit_index_table>/* Table utilisée */</gabarit_index_table>
+
+   <gabarit_index_url>news=news_id</gabarit_index_url>
+
+   <fk_default_rubrique_id>0</fk_default_rubrique_id>
+
     </s_gabarit>
+
 </opixidoocms>
 </code>
 </li>
