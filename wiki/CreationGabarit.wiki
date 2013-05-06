@@ -239,6 +239,7 @@ Trois méthodes sont possibles :
 <code language="xml">
 <?xml version="1.0" encoding="utf-8" ?>
 <opixidoocms>
+
  <!-- Table s_gabarit -->
 
   <s_gabarit>
@@ -272,6 +273,7 @@ Trois méthodes sont possibles :
 </opixidoocms>
 </code>
 </li>
+<li>Ce fichier sera automatiquement appelé lors de l'installation du gabarit. Il permettra d'enregistrer automatiquement les informations du gabarit dans la table _"s_gabarit"_</li>
 </ul>
 </li>
 
