@@ -309,7 +309,7 @@ Renseignez le titre du gabarit/plugin, le nom de la classe, des paramètres (fac
 Lors de l'installation, les fichiers _"datas.xml"_ et _"install.sql"_ seront automatiquement appelés (facultatif). 
 Le fichier _"install.sql"_ doit contenir du SQL pouvant créer la ou les table(s) utilisée(s) dans le plugin.
 
-=== Attribuer un gabarit à une page ===
+=== Ajouter un gabarit dans une page ===
 
 <ul>
 <li>Rendez-vous dans la gestion du contenu et sélectionnez la page où vous souhaitez insérer votre nouveau gabarit</li>
