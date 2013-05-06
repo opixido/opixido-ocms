@@ -9,9 +9,16 @@
 
 [http://code.google.com/p/opixido-ocms/wiki/pluginsDeBase Les plugins de base]
 
+[Installation Installation]
+
 = II. Details =
 
- * [Installation Installation]
+
+
+
+= III. Dévelopement =
+
+ * [Database Description de la base de données]
 
  * [Classes Classes]
   # [Classes#Headers_de_page_(genHeaders)_(include/global/genHeaders.php) genHeaders]
@@ -20,11 +27,6 @@
   # [Classes genCache]
   # [Classes#genParagraphes_(include/global/genParagraphes.php) genParagraphes]
   # [Classes#Urls_(genUrl)_(include/autoload/genUrlV2.php) genUrl]
-
-
-= III. Dévelopement =
-
- * [Database Description de la base de données]
 
  * [Fonctions Liste des fonctions d'OCMS]
   # [Fonctions#Urls URL]
