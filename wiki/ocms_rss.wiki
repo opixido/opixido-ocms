@@ -8,20 +8,6 @@ Il permet de créer, s'abonner et afficher des Flux RSS (RSS 1.0, RSS 2.0 et ATO
 
 [CreationGabarit#Installation_du_gabarit_ou_du_plugin Installation d'un gabarit ou d'un plugin dans le Back-Office]
 
-<h2>Création du gabarit</h2>
-
-Allez dans le back-office, ajoutez dans l'url le paramètre _"?curTable=s_gabarit"_, puis cliquez sur "Ajouter un élément".
-
-[http://www.opixido.com/ocms/screen/plugins/rss-creation_gabarit.png]
-
-<ul>
-<li>Entrez le nom du gabarit</li>
-<li>Entrez la classe du gabarit</li>
-<li>Entrez le nom du plugin (dossier) où est défini le gabarit</li>
-</ul>
-
-
-Remarque : vous pouvez aussi le créer à partir de PhpMyAdmin dans la table _"s_gabarit"_
 
 <h2>Ajouter le gabarit dans une rubrique</h2>
 
