@@ -228,9 +228,38 @@ public function gen(){
 
 <h3>Enregistrement dans la table "s_gabarit"</h3>
 
-Deux méthodes sont possibles : 
+Trois méthodes sont possibles : 
 
 <ul>
+
+<li>Insérer automatiquement :
+<ul>
+<li>Créer un fichier XML _"datas.xml"_</li>
+<li>Ajouter
+<code language="xml">
+<?xml version="1.0" encoding="utf-8" ?>
+<opixidoocms>
+  <!-- Table s_gabarit -->
+    <s_gabarit>
+        <gabarit_id>1</gabarit_id>
+        <gabarit_titre>Actualités</gabarit_titre>
+        <gabarit_para_crea></gabarit_para_crea>
+        <gabarit_para_include></gabarit_para_include>
+        <gabarit_full_template></gabarit_full_template>
+        <gabarit_bdd_deco>0</gabarit_bdd_deco>
+        <gabarit_classe>genOcms_news</gabarit_classe>
+        <gabarit_classe_param></gabarit_classe_param>
+        <gabarit_plugin>ocms_news</gabarit_plugin>
+        <gabarit_index_table>p_news</gabarit_index_table>
+        <gabarit_index_url>news=news_id</gabarit_index_url>
+        <fk_default_rubrique_id>0</fk_default_rubrique_id>
+    </s_gabarit>
+</opixidoocms>
+</code>
+</li>
+</ul>
+</li>
+
 <li>Directement dans le système de gestion de BD :
 <ul>
 <li>Dans la table "s_gabarit" de votre base de données, créez une nouvelle ligne
