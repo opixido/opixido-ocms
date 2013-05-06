@@ -311,7 +311,7 @@ Trois méthodes sont possibles :
 <ul>
 <li>Rendez-vous dans la gestion du contenu et sélectionnez la page où vous souhaitez insérer votre nouveau gabarit</li>
 <li>Cliquez sur "Modifer"</li>
-<li>Dans l'onglet "Paramètres", sélectionnez votre nouveau gabarit (champ "gabarit spécial"), puis enregistrez et validez.
+<li><p>Dans l'onglet "Paramètres", sélectionnez votre nouveau gabarit (champ "gabarit spécial"), puis enregistrez et validez.</p>
 Pou afficher un icône, il suffit d'enregistrer cette fonction dans le controlleur :
 <code>
 public static function ocms_getPicto() 
