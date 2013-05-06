@@ -11,7 +11,7 @@ Il permet de créer, s'abonner et afficher des Flux RSS (RSS 1.0, RSS 2.0 et ATO
 
 <h2>Ajouter le gabarit dans une rubrique</h2>
 
-[CreationGabarit#Attribuer_un_gabarit_à_une_page Attribuer un gabarit à une page]
+[CreationGabarit#Attribuer_un_gabarit_a_une_page Attribuer un gabarit à une page]
 
 <h2>Paramétrage</h2>
 
