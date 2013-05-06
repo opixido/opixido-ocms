@@ -6,7 +6,7 @@ Il permet de créer, s'abonner et afficher des Flux RSS (RSS 1.0, RSS 2.0 et ATO
 
 <h2>Installation du plugin</h2>
 
-[CreationGabarit#Installation_du_gabarit_ou_du_plugin Installation d'un gabarit ou d'un plugin dans le Back-Office]
+[CreationGabarit#Ajouter_un_gabarit_dans_une_page Installation d'un gabarit ou d'un plugin dans le Back-Office]
 
 
 <h2>Ajouter le gabarit dans une rubrique</h2>
