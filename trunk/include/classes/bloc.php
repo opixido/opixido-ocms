@@ -101,7 +101,7 @@ class bloc {
      * @param string $nom Nom de la boite
      * @param string $html code HTML
      */
-    function add($nom, $html, $class) {
+    function add($nom, $html, $class = '') {
 
         if (ake($this->toAddBefore, $nom)) {
 
