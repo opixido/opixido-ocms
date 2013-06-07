@@ -71,6 +71,8 @@ if ($this->tab_field[$name]->max_length < 2) {
     } else {
 
         $this->addBuffer(ta('genform_boolean_' . $this->tab_default_field[$name]));
+		$this->addBuffer('</div>');
+		
     }
 } else {
     if (!$this->editMode)
