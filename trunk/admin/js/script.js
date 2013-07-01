@@ -602,8 +602,11 @@ function searchSelectMass(co) {
  * Verifie les tableaux de langue pour les champs URL
  * lors de la creation d'une rubrique
  */
-function updateChampUrl(champ,valeur,prevalue = "") {
+function updateChampUrl(champ,valeur,prevalue) {
 
+	if(prevalue == null){
+		prevalue = "";
+	}
     var champ = gid(champ);
     valeur = valeur.toLowerCase();
     var re = /\$|,|@|#|~|`|\%|\*|\^|\&|\(|\)|\+|\=|\[|\-|\_|\]|\[|\}|\{|\;|\:|\'|\"|\<|\>|\?|\||\\|\!|\$|\.\£\°\§\//g;
