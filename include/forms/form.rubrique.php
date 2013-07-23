@@ -93,6 +93,27 @@ if ($_REQUEST['curId'] == "new") {
             ?>
             <input type="text" style="border:0;font-family:verdana;" value="<?php echo $parents_url?>" name="genform_rubrique_url_<?= $lg ?>" id="mygen_rubrique_url_<?= $lg ?>" onchange="checkFields()" />
        	<?php
+       	
+        }elseif($_Gconfig['URL_MANAGER'] == "genUrlV4"){
+        	
+	        $supRub = getUrlFromId($_REQUEST['genform__add_sub_id'], $lg);
+					
+			$parents_url = str_replace(BU.'/', '', $supRub);
+			
+        	$parents_url = trim($parents_url, '/')."/";
+			if($parents_url == "/"){
+				$parents_url = "";
+			}
+			
+            $form->gen('rubrique_titre_' . $lg, '', '', 'onkeyup="updateChampUrl(\'mygen_rubrique_url_' . $lg . '\',this.value,\''.$parents_url.'\')"');
+		?>
+        	<label for="mygen_rubrique_url_<?= $lg ?>"><?= t('url_' . $lg . '_will_be') ?></label><span style="font-family:verdana;padding:5px;display:block;background:#eee;border:1px solid #999">
+            <?php
+	           echo str_replace($parents_url, '', $supRub); 
+            ?>
+            <input type="text" style="border:0;font-family:verdana;" value="<?php echo $parents_url?>" name="genform_rubrique_url_<?= $lg ?>" id="mygen_rubrique_url_<?= $lg ?>" onchange="checkFields()" />
+	    <?php
+	    
         }
         else{
         	$form->gen('rubrique_titre_' . $lg, '', '', 'onkeyup="updateChampUrl(\'mygen_rubrique_url_' . $lg . '\',this.value)"');
