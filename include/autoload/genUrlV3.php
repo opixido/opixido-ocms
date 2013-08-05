@@ -87,11 +87,13 @@ class genUrlV3 {
      */
     public $parsedUrl = false;
     public $rootHomeId = 0;
+	
+	public $downArbo = true;
 
     /**
      *  Constructeur de la classe genUrl
      */
-    function __construct($lg = '') {
+    function __construct($lg = '', $downArbo = true) {
 
         $this->lg = $lg;
 
@@ -106,6 +108,9 @@ class genUrlV3 {
 
         $this->roadSup = array();
         $this->colorLevel = 'sd';
+		
+		$this->downArbo = $downArbo;
+		
     }
 
     function getTopRubId() {
@@ -1012,7 +1017,7 @@ class genUrlV3 {
         /**
          * Si jamais on demande aux pages de pointer vers la premiere sous page
          */
-        if (isset($GLOBALS['tabUrl'][$rubId]) && $GLOBALS['tabUrl'][$rubId]['type'] == 'folder' && $rubId != $this->root_id && $GLOBALS['tabUrl'][$rubId]['type'] != RTYPE_SITEROOT) {
+        if (isset($GLOBALS['tabUrl'][$rubId]) && $GLOBALS['tabUrl'][$rubId]['type'] == 'folder' && $rubId != $this->root_id && $GLOBALS['tabUrl'][$rubId]['type'] != RTYPE_SITEROOT && $this->downArbo) {
 
             $subId = $rubId;
             //$subs = $this->recursRub($subId,1,1);
