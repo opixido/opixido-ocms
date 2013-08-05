@@ -87,11 +87,13 @@ class genUrlV4 {
      */
     public $parsedUrl = false;
     public $rootHomeId = 0;
+	
+	public $downArbo = true;
 
     /**
      *  Constructeur de la classe genUrl
      */
-    function __construct($lg = '') {
+    function __construct($lg = '', $downArbo = true) {
 
         $this->lg = $lg;
 
@@ -106,6 +108,8 @@ class genUrlV4 {
 
         $this->roadSup = array();
         $this->colorLevel = 'sd';
+		
+		$this->downArbo = $downArbo;
     }
 
     function getTopRubId() {
@@ -820,7 +824,7 @@ class genUrlV4 {
             }
 			
         }
-
+			
         /**
          * Si on est dans un mini site en sous domaine
          */
@@ -828,6 +832,7 @@ class genUrlV4 {
             //$url = path_concat('http://',$this->curLinkRoot['url'.LG].$_Gconfig['minisite_sous_domaine'],$url);
 
             $url = path_concat('http://', $GLOBALS['tabUrl'][$rubId]['webroot'], $url);
+			
         } else {
 
             $rub = $rubId;
@@ -836,17 +841,17 @@ class genUrlV4 {
 
                 $rub = $GLOBALS['tabUrl'][$rub]['fkRub'];
             }
-
-
+			
             if (
             	isset($GLOBALS['tabUrl'][$rub]) && 
             	akev($GLOBALS['tabUrl'][$rub], 'webroot') && 
-            	isset($GLOBALS['tabUrl'][$this->getRubId()]) && 
-            	$GLOBALS['tabUrl'][$rub]['webroot'] != akev($GLOBALS['tabUrl'][$this->getRubId()], 'webroot')
+            	isset($GLOBALS['tabUrl'][$this->getRubId()])
+            	//&& $GLOBALS['tabUrl'][$rub]['webroot'] != akev($GLOBALS['tabUrl'][$this->getRubId()], 'webroot') Bug sur home.
 			) {
                 //$url = path_concat($_Gconfig['protocole'] . '://', $GLOBALS['tabUrl'][$rub]['webroot'], $url);
                 $reallg = ($lg) ? $lg : $this->lg;
-                $real_host = $GLOBALS['tabUrl'][$rub]['webroot'];
+                $real_host = $GLOBALS['tabUrl'][$rub]['webroot'];	
+				
 				if(
 					strpos($GLOBALS['tabUrl'][$rub]['webroot'], $this->lg.'.') !== false &&
 					strpos($GLOBALS['tabUrl'][$rub]['webroot'], $this->lg.'.') == 0
@@ -954,6 +959,7 @@ class genUrlV4 {
             return;
 
         if (!is_array(akev($GLOBALS['tabUrl'], $rubId))) {
+            	
             $sql = 'select R1.* ,
 				   R1.rubrique_id as rubId,
 				   R2.rubrique_id as p_rubId,
@@ -966,8 +972,6 @@ class genUrlV4 {
                 $sql .= '' . sqlRubriqueOnlyOnline('R1') . '';
             }
             $res = GetSingle($sql);
-
-
 
             if (!empty($res) && !is_array(akev($GLOBALS['tabUrl'], akev($res, 'rubId')))) {
 
@@ -993,6 +997,7 @@ class genUrlV4 {
                         $GLOBALS['tabUrl'][$res['rubId']]['link_' . $lg] = $res['rubrique_link_' . $lg];
                         $GLOBALS['tabUrl'][$res['rubId']]['titre_' . $lg] = $res['rubrique_titre_' . $lg];
                         $GLOBALS['tabUrl'][$res['rubId']]['url' . $lg] = $res['rubrique_url_' . $lg];
+						//ici
                     }
                 }
             } else if (!empty($res)) {
@@ -1045,6 +1050,7 @@ class genUrlV4 {
          * Si on ne demande pas la page racine
          */
         $this->curLinkRoot = array();
+		
         if ($rubId != $this->root_id) {
 			 if ($GLOBALS['tabUrl'][$key]['type'] != 'menuroot') {
                 /**
@@ -1062,8 +1068,7 @@ class genUrlV4 {
         /**
          * Si jamais on demande aux pages de pointer vers la premiere sous page
          */
-        if (isset($GLOBALS['tabUrl'][$rubId]) && $GLOBALS['tabUrl'][$rubId]['type'] == 'folder' && $rubId != $this->root_id && $GLOBALS['tabUrl'][$rubId]['type'] != RTYPE_SITEROOT) {
-
+        if (isset($GLOBALS['tabUrl'][$rubId]) && $GLOBALS['tabUrl'][$rubId]['type'] == 'folder' && $rubId != $this->root_id && $GLOBALS['tabUrl'][$rubId]['type'] != RTYPE_SITEROOT && $this->downArbo) {
             $subId = $rubId;
             //$subs = $this->recursRub($subId,1,1);
             if (rubHasOption($GLOBALS['tabUrl'][$rubId]['option'], 'dynSubRubs')) {

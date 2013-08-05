@@ -72,12 +72,22 @@ if ($_REQUEST['curId'] == "new") {
         global $_Gconfig;
         if($_Gconfig['URL_MANAGER'] == "genUrlV3"){
         	
-			 $supRub = getUrlFromId($_REQUEST['genform__add_sub_id'], $lg);
+			//$supRub = getUrlFromId($_REQUEST['genform__add_sub_id'], $lg);
+			$u = new genUrlV3('', false);
+        	$supRub = $u->buildUrlFromId($_REQUEST['genform__add_sub_id'], $lg);		
 				
 			if($_Gconfig['onlyOneLgForever']){
-				$parents_url = str_replace(BU.'/', '', $supRub);
+				if(BU && BU != ""){
+					$parents_url = str_replace(BU.'/', '', $supRub);
+				}else{
+					$parents_url = $supRub;
+				}
 			}else{
-				$parents_url = str_replace(BU.'/'.$lg, '', $supRub);
+				if(BU && BU != ""){
+					$parents_url = str_replace(BU.'/'.$lg, '', $supRub);
+				}else{
+					$parents_url = $supRub;
+				}
 			}
 			
         	$parents_url = trim($parents_url, '/')."/";
@@ -96,9 +106,15 @@ if ($_REQUEST['curId'] == "new") {
        	
         }elseif($_Gconfig['URL_MANAGER'] == "genUrlV4"){
         	
-	        $supRub = getUrlFromId($_REQUEST['genform__add_sub_id'], $lg);
-					
-			$parents_url = str_replace(BU.'/', '', $supRub);
+			$u = new genUrlV4('', false);
+			$supRub = $u->buildUrlFromId($_REQUEST['genform__add_sub_id'], $lg);
+			
+			echo $supRub.'<br/>';
+			if(BU && BU != ""){
+				$parents_url = str_replace(BU.'/', '', $supRub);
+			}else{
+				$parents_url = $supRub;
+			}
 			
         	$parents_url = trim($parents_url, '/')."/";
 			if($parents_url == "/"){
