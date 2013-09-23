@@ -11,7 +11,7 @@
 
 [Installation Installation]
 
-= IV. Front-Office =
+= II. Front-Office =
 
 == A. Rubriques ==
 
@@ -46,7 +46,7 @@
  * [GestionnaireMAJ Les gestionnaire de mises à jour]
 
 
-= II. Dévelopement =
+= IV. Dévelopement =
 
 == A. Détails ==
 
