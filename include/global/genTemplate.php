@@ -130,9 +130,10 @@ class genTemplate {
     public function setVar($nom, $valeur, $strreplace = false) {
         $this->vars[$nom] = $valeur;
 
-        if ($this->doreplace && !in_array('@@' . $nom . '@@', $this->replaces)) {
+        if ($this->doreplace && !in_array('@@' . $nom . '@@', $this->replaces) && !is_array($valeur)) {
             $this->replaces[] = '@@' . $nom . '@@';
         }
+        
         return $this;
     }
 
@@ -205,6 +206,10 @@ class genTemplate {
         $this->imgs[$nom]['alt'] = $alt;
         $this->imgs[$nom]['gf'] = $gf;
         return $this;
+    }
+    
+    public function getGfImg($nom) {
+        return $this->imgs[$nom]['gf'];
     }
 
     /**
@@ -421,8 +426,8 @@ class genTemplate {
             
         } else {
             $this->blocks[$nom] = array();
-            $start = stripos($this->template, '<' . $nom . '>') + strlen('<' . $nom . '>');
-            $end = stripos($this->template, '</' . $nom . '>');
+            $start = mb_stripos($this->template, '<' . $nom . '>') + mb_strlen('<' . $nom . '>');
+            $end = mb_stripos($this->template, '</' . $nom . '>');
 
             if ($start !== false && $end !== false) {
 
@@ -547,7 +552,6 @@ class genTemplate {
             /**
              * Les textes
              */
-
             $html = str_ireplace($this->replaces, $this->vars, $html);
 
             /**
