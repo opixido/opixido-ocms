@@ -22,7 +22,6 @@
 # @package ocms
 #
 
-
 /* La clef se trouve dans l'autre table */
 
 /*
@@ -83,19 +82,34 @@ if (!$this->editMode) {
         }
 
         $sortable = array_key_exists($fk_table, $orderFields);
+        $sortable=1;
 
         $this->addBuffer('<table class="sortable table table-striped table-bordered table-condensed" rel="' . $fk_table . '__' . $ofield . '" border="0" width="' . ($this->larg - 25) . '" class="genform_table ' . ($sortable ? 'sortable' : '') . ' relinv" ><thead>');
-
+        
         $ml = 1;
-        $cs = $sortable && count($res) > 1 ? 3 : 2;
+        $cs = $sortable ? 3 : 2;
+        if(count($res)>1 && $sortable) $cs = 3;
+        else
+            $cs = 2;
 
-        $this->addBuffer('<tr><th width="20" colspan="' . $cs . '">');
+        $this->addBuffer('<tr>');
+        
+        /* ---------------------------
+         * Modif Timothée Octobre 2013
+         * ---------------------------
+         * On ajoute le bouton d'ajout à la relinv s'il possède les droits
+         */
+        if ($this->gs->can('add', $fk_table))
+        {
+            $this->addBuffer('<th width="20" colspan="'.$cs.'">');
 
-        $this->addBuffer('<button class="btn" title="' . $this->trad('ajouter') . $this->trad($fk_table) . '" name="genform_addfk__' . $fk_table . '__' . $name . '"><img src="' . t('src_new') . '" alt=""  />' . t('Nouveau') . '</button>');
+            $this->addBuffer('<button class="btn" title="' . $this->trad('ajouter') . $this->trad($fk_table) . '" name="genform_addfk__' . $fk_table . '__' . $name . '"><img src="' . t('src_new') . '" alt=""  />'.t('Nouveau').'</button>');
 
 
-        $this->addBuffer('</th>');
-
+            $this->addBuffer('</th>');
+        }
+        else
+            $this->addBuffer('<th colspan="'.$cs.'"></th>');
 
         /**
          * Case TH vide pour chaque action supplémentaire
@@ -104,9 +118,23 @@ if (!$this->editMode) {
 
             foreach ($_Gconfig['rowActions'][$fk_table] as $actionName => $v) {
 
-                $ga = new GenAction($actionName, $fk_table, $row[$clef], $row);
+                /* ---------------------------
+                 * Modif Timothée Octobre 2013
+                 * ---------------------------
+                 * On cherche s'il y a au moins un row qui peut faire l'action
+                 * 
+                 */
+                foreach ($res as $row)
+                {
+                    $ga = new GenAction($actionName, $fk_table, $row[$clef], $row);
+                    $can = (int)$this->gs->can($actionName, $fk_table, $row, $row[$clef]);
+                    $checkCondition = (int)$ga->checkCondition();
+                    if($ga && $checkCondition)
+                        continue;
+                }
 
-                if ($this->gs->can($actionName, $fk_table, $row, $row[$clef]) && $ga->checkCondition()) {
+                //Si au moins un peut
+                if ($ga && $checkCondition) {
                     //	debug($actionName);
                     $this->addBuffer('<th width="20">&nbsp;</th>');
                 }
@@ -123,7 +151,7 @@ if (!$this->editMode) {
 
         reset($tabForms[$fk_table]['titre']);
         foreach ($tabForms[$fk_table]['titre'] as $titre) {
-            $this->addBuffer('<th>' . preg_replace("/\([^\)]+\)/", "", $this->trad($titre)) . '</th>');
+            $this->addBuffer('<th>' . preg_replace("/\([^\)]+\)/","",$this->trad($titre)) . '</th>');
         }
 
         $this->addBuffer('</tr></thead><tbody>');
@@ -142,13 +170,12 @@ if (!$this->editMode) {
             /*             * *********
               On ajoute le bouton editer
              * *********** */
-            $this->addBuffer('<td>');
 
             $canedit = $this->gs->can('edit', $fk_table, $row, $row[$clef]);
             //debug("**".$fk_table.'-'.$row[$clef].'-'.$canedit);
 
             if ($canedit) {
-
+            $this->addBuffer('<td>');
 
                 $this->addBuffer('<input
 		
@@ -166,12 +193,12 @@ if (!$this->editMode) {
 								value="' . $row[$clef] . '" />
 		
 								');
+            $this->addBuffer('</td>');
             }
 
-            $this->addBuffer('</td>');
-            $this->addBuffer('<td>');
 
             if ($this->gs->can('del', $fk_table, $row, $row[$clef])) {
+            $this->addBuffer('<td>');
 
                 $this->addBuffer('
                                     <input
@@ -190,9 +217,9 @@ if (!$this->editMode) {
                                     value="' . $row[$clef] . '" />
 
                             ');
+            $this->addBuffer('</td>');
             }
 
-            $this->addBuffer('</td>');
 
             /**
              * Actions supplémentaires
@@ -203,8 +230,8 @@ if (!$this->editMode) {
 
                     $ga = new GenAction($actionName, $fk_table, $row[$clef], $row);
 
-                    $this->addBuffer('<td>');
                     if ($this->gs->can($actionName, $fk_table, $row, $row[$clef]) && $ga->checkCondition()) {
+                    $this->addBuffer('<td>');
 
 
                         $this->addBuffer('
@@ -227,8 +254,8 @@ if (!$this->editMode) {
                           id="genform_'.$actionName.'fk__' . $fk_table . '_value_'.$ml.'"
                           value="' . $row[$clef] . '" />
                          */
-                    }
                     $this->addBuffer('</td>');
+                    }
                 }
             }
 
