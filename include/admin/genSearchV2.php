@@ -1,31 +1,12 @@
 <?php
 
-#
-# This file is part of oCMS.
-#
-# oCMS is free software: you cgan redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# oCMS is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with oCMS. If not, see <http://www.gnu.org/licenses/>.
-#
-# @author Celio Conort / Opixido 
-# @copyright opixido 2012
-# @link http://code.google.com/p/opixido-ocms/
-# @package ocms
-#
-
 class genSearchV2 {
 
     var $nbperpage = 20;
     var $lstart = 0;
+    var $isExportResults = false;
+    var $isExportAdvancedResults = false;
+    var $full_custom_fields_request;
 
     function genSearchV2($table) {
 
@@ -34,6 +15,14 @@ class genSearchV2 {
         $this->gs = &$gs_obj;
         $this->table = $table;
         $this->lstart = empty($_REQUEST['page']) ? 0 : ($_REQUEST['page'] - 1) * $this->nbperpage;
+        $this->full_custom_fields_request = array();
+        // -- constantes de validation de gestion des exports sous csv
+        
+        // pour la recherche basique
+        $this->isExportResults = false;
+        
+        // pour la recherche avancée
+        $this->isExportAdvancedResults = false;
     }
 
     /**
@@ -43,8 +32,6 @@ class genSearchV2 {
     function printAll() {
 
         global $searchField, $tabForms, $_Gconfig;
-
-
 
         /**
          * On sélectionne tous les enregistrements
@@ -59,7 +46,7 @@ class genSearchV2 {
             $sql .= ' AND ( ' . $_Gconfig['arboredTable'][$this->table] . ' = 0 OR ' . $_Gconfig['arboredTable'][$this->table] . ' IS NULL )';
         }
 
-        $sqlCount = 'SELECT COUNT(' . getPrimaryKey($this->table) . ') AS NB , ' . $sql . ' GROUP BY ' . getPrimaryKey($this->table) . '';
+        $sqlCount = 'SELECT COUNT(' . getPrimaryKey($this->table) . ') AS NB , ' . $sql . ' ';
         $rCount = DoSql($sqlCount);
         $rCount = $rCount->FetchRow();
         $this->count = $rCount['NB'];
@@ -95,7 +82,7 @@ class genSearchV2 {
             p('<div class="row-fluid">');
 
             if (!empty($searchField[$this->table])) {
-                p('<div class="span3">');
+                p('<div class="span2" style="margin-top: 75px;">');
             } else {
                 p('<div class="span12">');
             }
@@ -147,8 +134,33 @@ class genSearchV2 {
                 global $searchField;
 
                 $this->getSimpleSearchForm();
+
+                // LANCEMENT DU FORMULAIRE AVANCEE
                 if (!empty($searchField[$this->table])) {
                     $this->getFullSearchForm();
+                    
+                    // Recuperation des arguments des champs personnalisés de la recherche avancée
+                    foreach($_REQUEST as $k => $v){
+                        //print_r($k);
+                        $key_id = ( strpos($k, 'cf_') === 0 ) ? $k : '';
+                        if( array_key_exists( $key_id, $_REQUEST ) ){
+                            // le contenu du champs personnalisé est complété
+                            if( !empty($_REQUEST[$k]) ){
+                                $this->full_custom_fields_request[$k] = array();
+                                // si c'est un tableau
+                                if( is_array($_REQUEST[$k]) ){
+                                    // on parcourt le tableau
+                                    foreach( $_REQUEST[$k] as $w ){
+                                        array_push( $this->full_custom_fields_request[$k], $w );
+                                    }
+                                }else{
+                                    // sinon c'est une valeur de clé
+                                     array_push( $this->full_custom_fields_request[$k], $_REQUEST[$k] );
+                                }
+                                
+                            }
+                        }
+                    }                    
                 }
 
                 $res = $this->doFullSearch();
@@ -157,10 +169,27 @@ class genSearchV2 {
 
             if (!empty($searchField[$this->table])) {
                 p('</div>');
-                p('<div class="span9">');
+                p('<div class="span10">');
             }
 
-            $this->printRes($res);
+
+            // validation bouton recherche rapide
+            if ($_REQUEST['exportResults'] == 'true') {
+                $this->isExportResults = true;
+                $this->exportRes($res, 'basicExport');
+            }
+
+            // validation bouton recherche avancée
+            else if ($_REQUEST['exportAdvancedResults'] == 'true') {
+                $this->isExportAdvancedResults = true;
+                $this->exportRes($res, 'advancedExport');
+            } 
+            
+            // sinon on affiche simplement le resultat
+            else {
+                $this->printRes($res);
+            }
+
             p('</div></div>');
         }
     }
@@ -168,8 +197,10 @@ class genSearchV2 {
     function getSimpleSearchForm() {
 
 
-        p('<form name="formChooseSearch" method="post" action="index.php" class="form-inline well" >');
+        p('<div class="well">');
 
+        p('<form name="formChooseSearch" id="formChooseSearch" method="post" action="index.php" style="margin-bottom: 0" >');
+        p('<h5>Effectuer une recherche</h5>');
         p('<input type="hidden" name="doSimpleSearch" value="1" />');
 
         p('<input type="hidden" name="curTable" value="' . $this->table . '" />');
@@ -178,9 +209,22 @@ class genSearchV2 {
 
         echo ('<input  type="text" placeholder=' . alt(ta('recherche_rapide')) . ' id="searchTxt" name="searchTxt" value="' . akev($_REQUEST, 'searchTxt') . '"/>');
 
-        p('<button class="btn btn-mini"><img src="' . t('src_search') . '" alt=' . alt(t('rechercher')) . ' /></button></div></div></div>');
+        p('<button onclick="document.forms[\'formChooseSearch\'].elements[\'exportResults\'].value = false;" class="btn btn-mini"><img src="' . t('src_search') . '" alt=' . alt(t('rechercher')) . ' /></button></div></div></div>');
 
+        /**
+         * Ajout Olivier 5 nov 2009
+         */
+        p('<div class="action_export_csv"><input type="hidden" name="exportResults" value="false" />');
+        p('<label class="abutton" onclick="document.forms[\'formChooseSearch\'].elements[\'exportResults\'].value = true;document.formChooseSearch.submit();" style="margin: 0pt 0pt 0pt 5px; float: left;">');
+        p('<img src="' . ADMIN_URL . 'img/btnExportCsv.png" alt="" style="padding:2px;" width="16" height="16"/>');
+        p('Exporter les résultats de recherche (CSV)');
+        p('</label></div>');
+        /**
+         * *************************
+         */
         p('</form>');
+
+        p('</div>');
     }
 
     function getSelect() {
@@ -193,8 +237,17 @@ class genSearchV2 {
             return;
 
         // p('<div style="clear:both;">&nbsp;</div>
-        p('<form name="formChooseSel" id="formChooseSel" method="post" action="index.php"  class="span12 form-vertical" style="float:left;">');
 
+        p('<div class="well">');
+
+
+        $request_string = '';
+
+        if (isset($_SERVER['QUERY_STRING']) && !empty($_SERVER['QUERY_STRING'])) {
+            $request_string = $_SERVER['QUERY_STRING'];
+        }
+
+        p('<form name="formChooseSel" id="formChooseSel" method="post" action="?' . $request_string . '"  class="span12 form-vertical" style="float:left;">');
 
         p('<input type="hidden" name="curTable" value="' . $this->table . '" />');
         p('<input type="hidden" name="resume" value="1" />');
@@ -212,7 +265,7 @@ class genSearchV2 {
         }
         p('</select>');
 
-        p('<button class="btn" ><img src="' . t('src_search') . '" /></label>');
+        p('<button class="btn"><img src="' . t('src_search') . '" /></label>');
         p('</form>');
 
         $this->getSimpleSearchForm();
@@ -224,9 +277,17 @@ class genSearchV2 {
 
         $table = $this->table;
         $fields = getTabField($table);
+        p('<div class="well">');
 
-        p('
-        	<form id="search" method="post" action="index.php"  class="well form-vertical" >');
+
+        // Si il existe des arguments, nous le les perdons pas
+        if (isset($_SERVER['QUERY_STRING']) && !empty($_SERVER['QUERY_STRING'])) {
+            $request_string = $_SERVER['QUERY_STRING'];
+        }
+
+        p('<form id="search" name="advancedFormSearch" class="advancedFormSearch" method="post" action="?' . $request_string . '"  class="well form-vertical" >');
+        p('<h5>Effectuer une recherche avancée</h5>');
+
 
         p('
         	<script type="text/javascript">
@@ -298,7 +359,7 @@ class genSearchV2 {
 
                     $res = GetAll($sql);
 
-                    p('<select class="selectM" id="' . $k . '" name="' . $k . '[]" multiple="multiple" >');
+                    p('<select class="selectM" id="' . $k . '" name="cf_' . $k . '[]" multiple="multiple" >');
 
                     foreach ($res as $row) {
                         $sel = @in_array($row[$thiskey], $_POST[$k]) ? 'selected="selected"' : '';
@@ -309,7 +370,7 @@ class genSearchV2 {
                 } else
                 if (!empty($relations[$table][$k])) {
 
-                    p('<label class="hide-text"> ' . t($k) . '</label>');
+                    p('<label class="select-label"> ' . t($k) . '</label>');
                     $tablenom = $relations[$table][$k];
 
                     $label = 'A.' . GetTitleFromTable($tablenom, " , A.");
@@ -318,14 +379,18 @@ class genSearchV2 {
 
                     $sql = "SELECT A." . $thiskey . " , " . $label . " FROM " . $tablenom . " AS A  , " . $table . " AS B WHERE B." . $k . " = A." . $thiskey . " " . GetOnlyEditableVersion($tablenom, 'A') . ' GROUP BY  A.' . $thiskey . " ORDER BY " . $label;
                     $res = GetAll($sql);
-
-                    p('<select class="selectM" id="' . $k . '"  name="' . $k . '[]" multiple="multiple" >');
+                    
+                    p('<select class="selectM" id="' . $k . '"  name="cf_' . $k . '[]" multiple="multiple" >');
                     p('<option value="">' . ta($k) . '</option>');
                     foreach ($res as $row) {
                         $sel = @in_array($row[$thiskey], $_POST[$k]) ? 'selected="selected"' : '';
                         p('<option ' . $sel . ' value="' . $row[$thiskey] . '">' . limit(GetTitleFromRow($tablenom, $row, " "), 30) . '</option>');
                     }
-                    p('</select><br/><input type="text" class="selectMSearch span2" id="' . $k . '_search" onkeydown="searchInSelect(this)" />');
+                    p('</select><br/>');
+                    
+                    // masquage temporaire pour comprendre utilité
+                    //p('<div class="control-group"><input type="text" class="selectMSearch span2" id="' . $k . '_search" onkeydown="searchInSelect(this)" /></div>');
+                    
                 } else {
 
                     if (($type == "int" && $size < 2 ) || $type == "tinyint") {
@@ -355,7 +420,7 @@ class genSearchV2 {
                                 <option ' . $sel1 . ' value="eg">=</option>
                                 <option ' . $sel2 . ' value="sup">></option>
                             </select>
-                            <input type="text" name="' . $k . '" value=' . alt(akev($_REQUEST, $k)) . ' />
+                            <input type="text" name="cf_' . $k . '" value=' . alt(akev($_REQUEST, $k)) . ' />
                         ');
                     } else if ($type == 'enum') {
                         p('<div><label class=""> ' . t($k) . '</label>');
@@ -371,7 +436,7 @@ class genSearchV2 {
                         p('<label class="hide-text"> ' . t($k) . '</label>');
 
                         p('<input placeholder=' . alt(ta($k)) . '  type="text"
-                        			id="rech_' . $k . '" name="' . $k . '" 
+                        			id="cf_' . $k . '" name="cf_' . $k . '" 
                         			value="' . akev($_REQUEST, $k) . '" />');
 
                         p('
@@ -379,7 +444,7 @@ class genSearchV2 {
                         <script type="text/javascript">                        
                         jQuery(function(){
                                 options = { serviceUrl:"?xhr=autocompletesearch&table=' . $_REQUEST['curTable'] . '&champ=' . $k . '", onSelect: submitFormRech   };
-                                a = $("#rech_' . $k . '").autocomplete(options);
+                                a = $("#' . $k . '").autocomplete(options);
 							});	
                          </script>
 						');
@@ -394,10 +459,23 @@ class genSearchV2 {
         }
 
 
-        p('<button class="btn"><img src="' . t('src_search') . '" />' . t('rechercher') . '</button>');
+        p('<button class="btn" onClick="document.forms[\'advancedFormSearch\'].elements[\'exportAdvancedResults\'].value = false;"><img src="' . t('src_search') . '" /><span class="btn_span">' . t('rechercher') . '</span></button>');
 
-
+        /**
+         * Ajout Olivier 5 nov 2009
+         */
+        p('<div class="action_export_csv" style="margin-top: 10px;"><input type="hidden" name="exportAdvancedResults" value="false" />');
+        p('<label class="abutton" onclick="document.forms[\'advancedFormSearch\'].elements[\'exportAdvancedResults\'].value = true;document.advancedFormSearch.submit();" style="margin: 0pt 0pt 0pt 5px; float: left;">');
+        p('<img src="' . ADMIN_URL . 'img/btnExportCsv.png" alt="" style="padding:2px;" width="16" height="16"/>');
+        p('Exporter les résultats de recherche (CSV)');
+        p('</label></div>');
+        /**
+         * *************************
+         */
         p('</form>');
+
+
+        p('</div>');
     }
 
     function printRes($res) {
@@ -417,11 +495,17 @@ class genSearchV2 {
         $maxLength = 100;
 
 
-        if (!empty($searchField[$table])) {
+        /*if (!empty($searchField[$table])) {
             $tablo = $searchField[$table];
         } else {
             $tablo = $tabForms[$table]['titre'];
-        }
+        }*/
+        if(!empty($tabForms[$table]['titre']))
+            $tablo = $tabForms[$table]['titre'];
+        else if(!empty($searchField[$table]))
+            $tablo = $searchField[$table];
+        else $tablo = array();
+            
 
 
         /**
@@ -470,7 +554,7 @@ class genSearchV2 {
         /**
          * Nombre de résultats
          */
-        $r .= '<tr><td colspan="10">' . ('<h4  >' . t('il_y_a') . ' ' . ( $this->count ) . ' ' . t('resultats') . '</h4>') . '</td></tr>';
+        $r .= '<tr><td colspan="16">' . ('<h4  >' . t('il_y_a') . ' ' . ( $this->count ) . ' ' . t('resultats') . '</h4>') . '</td></tr>';
 
 
         if ($totRes == 0) {
@@ -630,7 +714,8 @@ class genSearchV2 {
 
                         /** Date * */
                         $class = 'class="colonne_date"';
-                    } else
+                    }
+                    else
                         $class = '';
 
                     $r .= '<td ' . $class . '>' . $valeur . '' . "&nbsp;</td>";
@@ -794,6 +879,7 @@ class genSearchV2 {
          * Create query for full relational search
          */
         $searchTxt = $searchTxt ? $searchTxt : akev($_REQUEST, 'searchTxt');
+        
 
         $table = $this->table;
         $curkey = GetPrimaryKey($table);
@@ -804,8 +890,7 @@ class genSearchV2 {
         /**
          * Paramètres supplémentaires si un champ de tri est demandé
          */
-        if (!empty($_REQUEST['order']) && (array_key_exists($_REQUEST['order'], getTabField($this->table))
-                || ( array_key_exists($_REQUEST['order'] . '_' . ADMIN_LG_DEF, getTabField($this->table))))) {
+        if (!empty($_REQUEST['order']) && (array_key_exists($_REQUEST['order'], getTabField($this->table)) || ( array_key_exists($_REQUEST['order'] . '_' . ADMIN_LG_DEF, getTabField($this->table))))) {
 
             /**
              * Si le champ de tri est une clé étrangère
@@ -941,24 +1026,46 @@ class genSearchV2 {
         }
 
 
+        
+        $full_fields_request = array();
+        $isCustomPageFullSearch = false;
+        foreach( $this->full_custom_fields_request as $k => $v ){
+            
+            if( isset($_GET['page']) && $_GET['page'] != '1' ){
+                $v = unserialize($v[0]);
+                $isCustomPageFullSearch = true;
+            }
+
+            $full_fields_request[substr($k, 3)] = $v;
+        }
+        
+       // print_r($full_fields_request);
+        
         /**
          * Getting all table fields
          */
         $tabs = getTabField($this->table);
-
-
-
+        
         /**
          * Looping on the search Fields
          */
         while (list($k, $v) = @each($mySearchField[$table])) {
+            
             $k = $v;
-            $v = akev($_POST, $v);
-
-
-
+            
+            if( $_POST['doFullSearch'] || $isCustomPageFullSearch  ){
+                // enlever "cf_" pour le reconnaitre dans la requete comme champs
+                $v = akev($full_fields_request, $v );
+            }else{
+                $v = akev($_POST, $v);
+            }
+            
+            //echo $k . ' : ' . $v . '<br/>';
+            
+            
+            
+            
             if (!empty($tablerel[$k]) && is_array($v)) {
-
                 /**
                  * It's an n:n relation
                  */
@@ -1004,7 +1111,7 @@ class genSearchV2 {
                      * Multiple choices
                      */
                     $wheresql .= " AND T." . $k . " IN ('" . implode("','", $v) . "') " . "\n";
-                } else if (strlen($v)) {
+                } else if ( strlen($v) ) {
                     /**
                      * Single choice
                      */
@@ -1056,17 +1163,17 @@ class genSearchV2 {
 
         $wheresql .= "T." . $label;
 
-
         $res = DoSql(str_replace('**COUNT**', ' COUNT(' . getPrimaryKey($this->table) . ') AS NB, ', $presql) . $wheresql);
+        
         $res = $res->FetchRow();
         $this->count = $res['NB'];
 
         $wheresql .= $this->limit();
 
-
         $res = DoSql(str_replace('**COUNT**', '', $presql) . $wheresql);
 
         return $res;
+        
     }
 
     public function limit() {
@@ -1093,8 +1200,7 @@ class genSearchV2 {
         /**
          * Paramètres supplémentaires si un champ de tri est demandé
          */
-        if (!empty($_REQUEST['order']) && (array_key_exists($_REQUEST['order'], getTabField($this->table)))
-                || (!empty($_REQUEST['order']) && array_key_exists($_REQUEST['order'] . '_' . ADMIN_LG_DEF, getTabField($this->table)))) {
+        if (!empty($_REQUEST['order']) && (array_key_exists($_REQUEST['order'], getTabField($this->table))) || (!empty($_REQUEST['order']) && array_key_exists($_REQUEST['order'] . '_' . ADMIN_LG_DEF, getTabField($this->table)))) {
 
 
 
@@ -1237,6 +1343,69 @@ class genSearchV2 {
         $res = DoSql($select . $sql);
 
         return $res;
+    }
+
+    /**
+     * Export des résultats de la recherche au format CSV
+     *
+     * @param unknown_type $res
+     *   
+     */
+    function exportRes($res, $typeResult) {
+
+        // si export basique
+        if($typeResult == 'basicExport'){
+            $this->isExportResults = false;
+        // si export avancé
+        }else{
+            $this->isExportAdvancedResults = false;
+        }
+        
+        /**
+         * On vide le tampon de sortie
+         */
+        global $tabForms;
+        ob_end_clean();
+
+        $filename = "data_export_" . date("Y-m-d") . ".csv";
+
+        header("Pragma: public");
+        header("Expires: 0");
+        header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+        header("Content-Type: application/force-download");
+        header("Content-Type: application/octet-stream");
+        header("Content-Type: application/download");
+        header("Content-Disposition: attachment;filename={$filename}");
+        header("Content-Transfer-Encoding: binary");
+
+        $champs = isset($tabForms[$this->table]['exportFields']) ? $tabForms[$this->table]['exportFields'] : $tabForms[$this->table]['titre'];
+
+        foreach ($res as $row) {
+
+            $f = new GenForm($this->table, 'post', 0, $row);
+            $f->editMode = true;
+            $f->onlyData = true;
+
+            foreach ($champs as $c) {
+
+                $csv .= $this->csvenc(strip_tags(str_replace('&nbsp;', '', ($f->gen($c))))) . ';';
+            }
+
+            $csv .= "\n";
+        }
+
+        /**
+         * On décode l'utf8 pour que le fichier de sortie soit lisible dans excel
+         */
+        echo(utf8_decode($csv));
+        ob_end_flush();
+
+        die();
+    }
+
+    function csvenc($str) {
+
+        return str_replace(array(";", "\n", "\r"), array(":", " ", " "), $str);
     }
 
 }
