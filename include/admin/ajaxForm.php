@@ -17,7 +17,7 @@
 # along with oCMS. If not, see <http://www.gnu.org/licenses/>.
 #
 # @author Celio Conort / Opixido 
-# @copyright opixido 2012
+# @copyright opixido 2009
 # @link http://code.google.com/p/opixido-ocms/
 # @package ocms
 #
@@ -36,16 +36,16 @@ class ajaxForm {
         if ($this->id != 'new') {
             $this->row = getRowFromId($this->table, $this->id);
         }
-
+        
         $this->tab_field = getTabField($this->table);
     }
 
     function gen() {
-        
+
     }
 
     function genLabel() {
-        
+
     }
 
     function genField($champ) {
@@ -89,7 +89,7 @@ class ajaxForm {
 
         global $relations, $uploadFields;
 
-        if (( in_array($champ, $uploadFields) || in_array(getBaseLgField($champ), $uploadFields))) {
+        if (( in_array($champ, $uploadFields) || in_array(getBaseLgField($champ), $uploadFields) )) {
 
             $GLOBALS['gb_obj']->includeFile('ajax.upload.php', 'admin/af_modules');
 
@@ -124,7 +124,21 @@ class ajaxForm {
             $f = new ajaxDateTime($this, $champ);
 
             $this->addBuffer($f->gen());
-        } else {
+        }
+        /* -----------------------
+         * Ajout Timothée octobre 2013
+         * -----------------------
+         * Textarea
+         */
+        else if ($this->tab_field[$champ]->type == 'text')
+        {
+            $GLOBALS['gb_obj']->includeFile('ajax.text.php', 'admin/af_modules');
+
+            $f = new ajaxText($this, $champ, $this->tab_field[$champ]->max_length);
+
+            $this->addBuffer($f->gen());
+        }
+        else {
 
             $GLOBALS['gb_obj']->includeFile('ajax.varchar.php', 'admin/af_modules');
 
