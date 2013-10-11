@@ -1057,7 +1057,8 @@ class genSearchV2 {
                 // enlever "cf_" pour le reconnaitre dans la requete comme champs
                 $v = akev($full_fields_request, $v );
             }else{
-                $v = akev($_POST, $v);
+                //$v = akev($_POST, $v);
+                $v = akev($_REQUEST, $v);
             }
             
             //echo $k . ' : ' . $v . '<br/>';
