@@ -35,7 +35,7 @@ $s = substr($s,0,strpos($s,'/admin/'));
 /*------------------------------------------------------------------------------*/
 /* The physical path to the document root, Set manually if not using apache	*/
 /*------------------------------------------------------------------------------*/
-$fckphp_config['basedir']=$_SERVER['DOCUMENT_ROOT'].''.$s.'/rtefiles';
+$fckphp_config['basedir']=$_SERVER['DOCUMENT_ROOT'].''.$s.'/fichier/rte';
 $fckphp_config['basedir'] = str_replace('//','/',$fckphp_config['basedir']);
 //echo '-'.$fckphp_config['basedir'].'-';
 //$fckphp_config['basedir'] = 'D:\Work\FCKEditor\www\FCKeditor.V2\editor\filemanager\browser\mcpuk' ;
@@ -177,7 +177,7 @@ array_push($fckphp_config['FileNameAllowedChars'],')','(','[',']','~');
 /*------------------------------------------------------------------------------*/
 
 $fckphp_config['Debug']=false;
-$fckphp_config['DebugOutput']="/home/zouzou/hp/DEBUG.TXT";
+$fckphp_config['DebugOutput']="DEBUG.TXT";
 
 #Log PHP errors
 $fckphp_config['Debug_Errors']=true;
@@ -200,7 +200,7 @@ $fckphp_config['Debug_Output']=true;
 /*	ResourceTypes :: Array of valid resource areas				*/
 /*	Commands :: Array of valid commands accepted by the connector		*/
 /*------------------------------------------------------------------------------*/
-$fckphp_config['ResourceTypes'] = array('files','images','Flash','Media');
+$fckphp_config['ResourceTypes'] = array('files','images');
 $fckphp_config['Commands'] = array(
 				"CreateFolder",
 				"GetFolders",

@@ -12,7 +12,7 @@
             /* 'admin/genform/css/genform.css', */
             'admin/jq/css/bootstrap/jquery-ui-1.8.16.custom.css',
             'admin/css/bootstrap-2.1.1.css',
-            /*'admin/css/bootstrap.ocms.css',*/
+            /* 'admin/css/bootstrap.ocms.css', */
             'admin/jq/css/tipsy.css',
             'admin/jq/css/fg.menu.css',
             'admin/jq/css/jquery.tagedit.css',
@@ -57,10 +57,10 @@
         ?>
 
         <script type="text/javascript">
-<?
-global $_Gconfig;
-echo 'var lgs = ' . json_encode($_Gconfig['LANGUAGES']) . ';';
-?>
+        <?php
+        global $_Gconfig;
+        echo 'var lgs = ' . json_encode($_Gconfig['LANGUAGES']) . ';';
+        ?>
         </script>
 
         <?php
@@ -88,55 +88,55 @@ echo 'var lgs = ' . json_encode($_Gconfig['LANGUAGES']) . ';';
                                 <img style="vertical-align:bottom" src="img/logo.png" alt="" height="30"/>
                                 <span style="font-family:Times new roman;text-transform:lowercase;position:relative;top:11px;left:-49px;font-size:18px;"><?php echo ta('base_title') ?></span>
                             </a>
-                            <? if ($GLOBALS['gs_obj']->isLogged()) { ?>
+                            <?php if ($GLOBALS['gs_obj']->isLogged()) { ?>
 
 
-                                <div class="btn-group pull-right">
-                                    <a class="btn dropdown-toggle" href="#" data-toggle="dropdown">
-                                        <i class="icon-user"></i>
-                                        <?= $GLOBALS['gs_obj']->adminnom ?>
-                                        <span class="caret"></span>
-                                    </a>
-                                    <ul class="dropdown-menu">
-                                        <li>
-                                            <span class="badge" style="margin:10px;display: block"><?= ta('derniere_connexion') ?><br/><?= niceDateTime(($_SESSION['last_cx'])) ?></span>
-                                        </li>
-                                        <li class="divider"></li>
-                                        <li style="text-align:right">
-                                            <a href="index.php?logout=1"><i class="icon-eject"></i> <?= t('logout') ?></a>
-                                        </li>
-                                    </ul>
-                                </div>
+                            <div class="btn-group pull-right">
+                                <a class="btn dropdown-toggle" href="#" data-toggle="dropdown">
+                                    <i class="icon-user"></i>
+                                    <?= $GLOBALS['gs_obj']->adminnom ?>
+                                    <span class="caret"></span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <span class="badge" style="margin:10px;display: block"><?= ta('derniere_connexion') ?><br/><?= niceDateTime(($_SESSION['last_cx'])) ?></span>
+                                    </li>
+                                    <li class="divider"></li>
+                                    <li style="text-align:right">
+                                        <a href="index.php?logout=1"><i class="icon-eject"></i> <?= t('logout') ?></a>
+                                    </li>
+                                </ul>
+                            </div>
 
 
-                                <div class="nav-collapse pull-right">
-                                    <ul class="nav" >
-                                        <?php
-                                        $tables = getTables();
-                                        $nb = 1;
-                                        $menus = array_merge($_Gconfig['bigMenus'], $_Gconfig['adminMenus']);
-                                        foreach ($menus as $k => $menus) {
-                                            $men = current($menus);
-                                            $t = '<li class="dropdown"><a href="#" id="menu_' . $k . '" class="dropdown-toggle" data-toggle="dropdown"><img src="' . getPicto($men, '16x16') . '" alt=""/> ' . ta($k) . '</a><ul class="dropdown-menu" id="content_' . $k . '" class="" >';
-                                            $h = '';
-                                            foreach ($menus as $menu) {
-                                                if ($GLOBALS['gs_obj']->can('edit', $menu)) {
-                                                    $url = in_array($menu, $tables) ? 'index.php?curTable=' . $menu : ta('cp_link_' . $menu);
-                                                    $h .= '<li><a href="' . $url . '" ><img src="' . getPicto($menu, '16x16') . '" alt=""/> <span>' . ta('cp_txt_' . $menu) . '</span></a></li>';
-                                                }
-                                            }
-                                            if ($h) {
-                                                $nb++;
-                                                echo $t . $h . '</ul>';
+                            <div class="nav-collapse pull-right">
+                                <ul class="nav" >
+                                    <?php
+                                    $tables = getTables();
+                                    $nb = 1;
+                                    $menus = array_merge($_Gconfig['bigMenus'], $_Gconfig['adminMenus']);
+                                    foreach ($menus as $k => $menus) {
+                                        $men = current($menus);
+                                        $t = '<li class="dropdown"><a href="#" id="menu_' . $k . '" class="dropdown-toggle" data-toggle="dropdown"><img src="' . getPicto($men, '16x16') . '" alt=""/> ' . ta($k) . '</a><ul class="dropdown-menu" id="content_' . $k . '" class="" >';
+                                        $h = '';
+                                        foreach ($menus as $menu) {
+                                            if ($GLOBALS['gs_obj']->can('edit', $menu)) {
+                                                $url = in_array($menu, $tables) ? 'index.php?curTable=' . $menu : ta('cp_link_' . $menu);
+                                                $h .= '<li><a href="' . $url . '" ><img src="' . getPicto($menu, '16x16') . '" alt=""/> <span>' . ta('cp_txt_' . $menu) . '</span></a></li>';
                                             }
                                         }
-                                        ?>
-                                    </ul>
-                                </div>
+                                        if ($h) {
+                                            $nb++;
+                                            echo $t . $h . '</ul>';
+                                        }
+                                    }
+                                    ?>
+                                </ul>
+                            </div>
 
 
 
-                            <? } ?>
+                            <?php } ?>
                         </div>
                     </div>
                 </div>
