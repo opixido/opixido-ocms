@@ -52,6 +52,11 @@ $baseWebPath = '/';
 
 
 /**
+ * Timezone par défaut
+ */
+date_default_timezone_set('Europe/Paris');
+
+/**
  * Protocole utilisé : (HTTP)
  */
 $protocole = array_key_exists("HTTPS", $_SERVER) && $_SERVER["HTTPS"] == 'on' ? 'https' : 'http';
