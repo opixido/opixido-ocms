@@ -45,7 +45,7 @@ $fckphp_config['basedir'] = str_replace('//','/',$fckphp_config['basedir']);
 /*------------------------------------------------------------------------------*/
 /* Prefix added to image path before sending back to editor			*/
 /*------------------------------------------------------------------------------*/
-$fckphp_config['urlprefix']=$fckphp_config['prot'].str_replace('//','/',$_SERVER['SERVER_NAME'].'/'.$s.'/rtefiles');
+$fckphp_config['urlprefix']=$fckphp_config['prot'].str_replace('//','/',$_SERVER['SERVER_NAME'].'/'.$s.'/fichier/rte');
 
 /*==============================================================================*/
 
