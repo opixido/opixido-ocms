@@ -254,7 +254,7 @@ class genInstall {
 
         $this->errorVersion('SESSION', 'Le support des sessions n\'est pas activ&eacute;', function_exists('session_start'));
 
-        $this->errorVersion('short_open_tag', 'Les short_open_tagne sont pas activ&eacute;s', ini_get('short_open_tag'));
+        $this->infoVersion('short_open_tag', 'Les short_open_tagne sont pas activ&eacute;s', ini_get('short_open_tag'));
 
         $this->errorVersion('CONFIGW', 'Impossible d\'ecrire dans le dossier config', is_writable($GLOBALS['gb_obj']->include_path . '/config'));
 

@@ -14,13 +14,13 @@
         <div class="well">
             <?= $this->get('lastActions'); ?>
         </div>
-        <?
+        <?php
         if ($GLOBALS['gs_obj']->can('edit', 'any_table')) {
             ?>
             <div class="well">
                 <?= $this->get('globalActions'); ?>
             </div>
-            <?
+            <?php
         }
         ?>
     </div>

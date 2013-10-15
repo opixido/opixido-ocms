@@ -76,7 +76,7 @@
                         <img src="<?= $src ?>" alt=""  />
                         <?= t('cp_txt_' . $menu); ?></a>
                 </li>
-                <?
+                <?php
             }
         }
 
