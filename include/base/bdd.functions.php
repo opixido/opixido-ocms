@@ -52,7 +52,7 @@ function insertEmptyRecord($table, $id = false, $champs = array())
 
         if($res)
         {
-            $gr = new genRecord($table, $res);
+            $gr = new genRecord($table, $id);
             $gr->onInsert();
             return $id;
         }

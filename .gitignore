@@ -18,7 +18,7 @@ plugins_base
 nbproject
 .svn
 svn-commit.tmp
-
+xhprof
 
 # OS generated files #
 ######################
