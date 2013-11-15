@@ -2533,6 +2533,20 @@ class pagination {
          */
         $this->params = $GLOBALS['site']->g_url->paramsUrl;
         $this->params = !empty($GLOBALS['site']->g_url->paramsUrl) ? $GLOBALS['site']->g_url->paramsUrl : !empty($_POST) ? $_POST : $_GET;
+		
+		unset($this->params['genform_action']);
+		unset($this->params['curId']);
+		unset($this->params['fromList']);
+		unset($this->params['action']);
+		unset($this->params['gs_adminuser']);
+		unset($this->params['gs_adminpassword']);
+		unset($this->params['gs_fromForm']);
+		unset($this->params['gs_askedFor']);
+		unset($this->params['gs_fromForm']);
+		if($_GET['curTable'] && !$this->params['curTable']){
+			$this->params['curTable'] = $_GET['curTable'];
+		}
+		
     }
 
     public function gen() {
