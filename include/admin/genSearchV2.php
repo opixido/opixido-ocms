@@ -835,7 +835,7 @@ class genSearchV2 {
 
                 if ($action == 'del') {
 
-                    $r .= '<a class="btn btn-mini" title="' . t($action) . '" href="?genform_action%5B' . $action . '%5D=1&amp;curTable=' . $table . '&amp;curId=' . $id . '&amp;action=' . $action . '&amp;fromList=1" onclick="return confirm(\'' . t('confirm_suppr') . '\')">
+                    $r .= '<a class="btn btn-mini" title="' . t($action) . '" href="?genform_action%5B' . $action . '%5D=1&amp;curTable=' . $table . '&amp;curId=' . $id . '&amp;action=' . $action . '&amp;fromList=1' . (empty($_REQUEST['page']) ? '' : ('&page='.$_REQUEST['page'])) . '" onclick="return confirm(\'' . t('confirm_suppr') . '\')">
 							<img src="' . $srcBtn . '" alt="' . t($action) . '" title="' . t($action) . '" />
 						   </a>';
                 } else {
@@ -845,7 +845,7 @@ class genSearchV2 {
                         $r .= '<div class="btn btn-mini small_form_action">' . $ga->obj->getSmallForm() . '</div>';
                     } else {
 
-                        $r .= '<a class="btn btn-mini ' . ($action == 'edit' ? 'btn-primary' : '') . '" href="?genform_action%5B' . $action . '%5D=1&amp;curTable=' . $table . '&amp;curId=' . $id . '&amp;action=' . $action . '&amp;fromList=1" title="' . t($action) . '">
+                        $r .= '<a class="btn btn-mini ' . ($action == 'edit' ? 'btn-primary' : '') . '" href="?genform_action%5B' . $action . '%5D=1&amp;curTable=' . $table . '&amp;curId=' . $id . '&amp;action=' . $action . '&amp;fromList=1' . ((empty($_REQUEST['page']) || !$ga->obj->canReturnToList) ? '' : ('&page='.$_REQUEST['page'])) . '" title="' . t($action) . '">
 								<img src="' . $srcBtn . '" alt="' . t($action) . '" title="' . t($action) . '" />
 							   </a>';
                     }
