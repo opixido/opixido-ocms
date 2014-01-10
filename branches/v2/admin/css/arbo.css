@@ -1,0 +1,23 @@
+/* ** ** * ARBORESCENCE * ** ** */
+#arborescence ul {
+    list-style-type: none;
+}
+
+#arborescence li {
+    margin-bottom: 4px;
+    padding: 0 3px 0 3px;
+}
+
+#arborescence ul {
+    margin-top: 4px;
+}
+
+#arborescence .delChild {
+    position: relative;
+    margin-left: 10px;
+}
+
+#arborescence input {
+    margin: 3px 15px 5px 5px;
+    width: 200px;
+}

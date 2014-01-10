@@ -1,0 +1,710 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+-
+- phpMyAdmin XML Dump
+- version 2.11.9.2
+- http://www.phpmyadmin.net
+-
+- Host: localhost
+- Generation Time: Sep 18, 2009 at 11:12 AM
+- Server version: 5.0.67
+- PHP Version: 5.2.6
+-->
+
+<!--
+- Database: 'ecafe'
+-->
+<ecafe>
+  <!-- Table s_trad -->
+    <s_trad>
+        <trad_id>forum_admin</trad_id>
+        <trad_fr>Voir dans l'admin</trad_fr>
+        <trad_uk>edit in admin</trad_uk>
+        <trad_us></trad_us>
+        <trad_it></trad_it>
+        <trad_es></trad_es>
+        <trad_nl></trad_nl>
+        <trad_de></trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>forum_aucun_message</trad_id>
+        <trad_fr>Aucun message dans ce forum</trad_fr>
+        <trad_uk>No messages in this forum</trad_uk>
+        <trad_us></trad_us>
+        <trad_it>Nessun messaggio in questo forum
+</trad_it>
+        <trad_es>No hay mensajes en este foro
+</trad_es>
+        <trad_nl>Geen berichten in dit forum
+</trad_nl>
+        <trad_de>Keine Nachrichten in diesem Forum
+</trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>forum_cancel</trad_id>
+        <trad_fr>Annuler</trad_fr>
+        <trad_uk>Cancel</trad_uk>
+        <trad_us></trad_us>
+        <trad_it></trad_it>
+        <trad_es></trad_es>
+        <trad_nl></trad_nl>
+        <trad_de></trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>forum_cgv</trad_id>
+        <trad_fr>J'ai lu et j'accepte les conditions d'utilisation du forum</trad_fr>
+        <trad_uk>I have read and I accept the conditions of use for the forum
+</trad_uk>
+        <trad_us></trad_us>
+        <trad_it>Ho letto e accetto le condizioni d'uso del forum
+
+</trad_it>
+        <trad_es>He leído y acepto las condiciones de uso del foro
+
+</trad_es>
+        <trad_nl>Ik verklaar dat ik de gebruiksvoorwaarden van dit forum heb gelezen en ze aanvaard
+</trad_nl>
+        <trad_de>Ich habe die Nutzungsbedingungen des Forums gelesen und akzeptiere diese
+</trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>forum_date</trad_id>
+        <trad_fr>Postés depuis</trad_fr>
+        <trad_uk></trad_uk>
+        <trad_us></trad_us>
+        <trad_it></trad_it>
+        <trad_es></trad_es>
+        <trad_nl></trad_nl>
+        <trad_de></trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>forum_delete</trad_id>
+        <trad_fr>Supprimer</trad_fr>
+        <trad_uk>Delete</trad_uk>
+        <trad_us></trad_us>
+        <trad_it></trad_it>
+        <trad_es></trad_es>
+        <trad_nl></trad_nl>
+        <trad_de></trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>forum_dernier</trad_id>
+        <trad_fr>Dernier message</trad_fr>
+        <trad_uk>Latest message
+</trad_uk>
+        <trad_us></trad_us>
+        <trad_it>Ultimo messaggio
+</trad_it>
+        <trad_es>Último mensaje
+</trad_es>
+        <trad_nl>Meest recente bericht
+</trad_nl>
+        <trad_de>Neuste Nachricht
+</trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>forum_edit</trad_id>
+        <trad_fr>&gt;&gt; Modifier</trad_fr>
+        <trad_uk>&gt;&gt; Edit</trad_uk>
+        <trad_us></trad_us>
+        <trad_it></trad_it>
+        <trad_es></trad_es>
+        <trad_nl></trad_nl>
+        <trad_de></trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>forum_insert_error</trad_id>
+        <trad_fr>Erreur lors de la création du message</trad_fr>
+        <trad_uk></trad_uk>
+        <trad_us></trad_us>
+        <trad_it></trad_it>
+        <trad_es></trad_es>
+        <trad_nl></trad_nl>
+        <trad_de></trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>forum_insert_ok</trad_id>
+        <trad_fr>Votre message a bien été créé</trad_fr>
+        <trad_uk>Your message has been created</trad_uk>
+        <trad_us></trad_us>
+        <trad_it>Il tuo messaggio è stato creato
+</trad_it>
+        <trad_es>Se ha creado el mensaje
+</trad_es>
+        <trad_nl>Uw bericht is aangemaakt
+</trad_nl>
+        <trad_de>Ihre Nachricht wurde erstellt
+</trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>forum_last</trad_id>
+        <trad_fr>Dernier inscrit</trad_fr>
+        <trad_uk></trad_uk>
+        <trad_us></trad_us>
+        <trad_it></trad_it>
+        <trad_es></trad_es>
+        <trad_nl></trad_nl>
+        <trad_de></trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>forum_le</trad_id>
+        <trad_fr>Le</trad_fr>
+        <trad_uk></trad_uk>
+        <trad_us></trad_us>
+        <trad_it></trad_it>
+        <trad_es></trad_es>
+        <trad_nl></trad_nl>
+        <trad_de></trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>forum_messages</trad_id>
+        <trad_fr>Messages</trad_fr>
+        <trad_uk>Messages</trad_uk>
+        <trad_us></trad_us>
+        <trad_it>Messaggi
+</trad_it>
+        <trad_es>Mensajes
+</trad_es>
+        <trad_nl>Berichten
+</trad_nl>
+        <trad_de>Nachrichten
+</trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>forum_nb</trad_id>
+        <trad_fr>Nombre d'inscrits</trad_fr>
+        <trad_uk></trad_uk>
+        <trad_us></trad_us>
+        <trad_it></trad_it>
+        <trad_es></trad_es>
+        <trad_nl></trad_nl>
+        <trad_de></trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>forum_par</trad_id>
+        <trad_fr>Par </trad_fr>
+        <trad_uk></trad_uk>
+        <trad_us></trad_us>
+        <trad_it></trad_it>
+        <trad_es></trad_es>
+        <trad_nl></trad_nl>
+        <trad_de></trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>forum_post</trad_id>
+        <trad_fr>Nouveau sujet</trad_fr>
+        <trad_uk>New topic
+</trad_uk>
+        <trad_us></trad_us>
+        <trad_it>Nuova discussione
+</trad_it>
+        <trad_es>Nuevo tema
+</trad_es>
+        <trad_nl>Nieuw onderwerp
+</trad_nl>
+        <trad_de>Neues Thema
+</trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>forum_preview</trad_id>
+        <trad_fr>Prévisualisation</trad_fr>
+        <trad_uk>Preview</trad_uk>
+        <trad_us></trad_us>
+        <trad_it></trad_it>
+        <trad_es></trad_es>
+        <trad_nl></trad_nl>
+        <trad_de></trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>forum_previous_reply</trad_id>
+        <trad_fr>Dernières réponses</trad_fr>
+        <trad_uk></trad_uk>
+        <trad_us></trad_us>
+        <trad_it></trad_it>
+        <trad_es></trad_es>
+        <trad_nl></trad_nl>
+        <trad_de></trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>forum_q</trad_id>
+        <trad_fr>Rechercher</trad_fr>
+        <trad_uk>Search</trad_uk>
+        <trad_us></trad_us>
+        <trad_it></trad_it>
+        <trad_es></trad_es>
+        <trad_nl></trad_nl>
+        <trad_de></trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>forum_quote</trad_id>
+        <trad_fr>&gt;&gt; Citer</trad_fr>
+        <trad_uk>&gt;&gt; Quote</trad_uk>
+        <trad_us></trad_us>
+        <trad_it>&gt;&gt; Citare
+</trad_it>
+        <trad_es>&gt;&gt; Citar
+</trad_es>
+        <trad_nl>&gt;&gt; Quoten
+</trad_nl>
+        <trad_de>&gt;&gt; Zitieren
+</trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>forum_reply</trad_id>
+        <trad_fr>Répondre</trad_fr>
+        <trad_uk>Reply</trad_uk>
+        <trad_us></trad_us>
+        <trad_it>Rispondere
+</trad_it>
+        <trad_es>Responder
+</trad_es>
+        <trad_nl>Antwoord
+</trad_nl>
+        <trad_de>Antwort
+</trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>forum_reponses</trad_id>
+        <trad_fr>Réponses</trad_fr>
+        <trad_uk>replies</trad_uk>
+        <trad_us></trad_us>
+        <trad_it>Risposte
+</trad_it>
+        <trad_es>Respuestas
+</trad_es>
+        <trad_nl>Antwoorden
+</trad_nl>
+        <trad_de>Antworten
+</trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>forum_report</trad_id>
+        <trad_fr>Signaler ce post</trad_fr>
+        <trad_uk></trad_uk>
+        <trad_us></trad_us>
+        <trad_it></trad_it>
+        <trad_es></trad_es>
+        <trad_nl></trad_nl>
+        <trad_de></trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>forum_reported</trad_id>
+        <trad_fr>Signalé</trad_fr>
+        <trad_uk></trad_uk>
+        <trad_us></trad_us>
+        <trad_it></trad_it>
+        <trad_es></trad_es>
+        <trad_nl></trad_nl>
+        <trad_de></trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>forum_report_body</trad_id>
+        <trad_fr>Le message suivant a été signalé par un utilisateur :</trad_fr>
+        <trad_uk></trad_uk>
+        <trad_us></trad_us>
+        <trad_it></trad_it>
+        <trad_es></trad_es>
+        <trad_nl></trad_nl>
+        <trad_de></trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>forum_report_subject</trad_id>
+        <trad_fr>[Forum] message signalé</trad_fr>
+        <trad_uk></trad_uk>
+        <trad_us></trad_us>
+        <trad_it></trad_it>
+        <trad_es></trad_es>
+        <trad_nl></trad_nl>
+        <trad_de></trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>forum_retour_messages</trad_id>
+        <trad_fr>Retour aux sujets</trad_fr>
+        <trad_uk>Back to topics
+</trad_uk>
+        <trad_us></trad_us>
+        <trad_it>Ritorna alle discussioni
+</trad_it>
+        <trad_es>Volver a los temas
+</trad_es>
+        <trad_nl>Terug naar onderwerpen
+</trad_nl>
+        <trad_de>Zurück zu den Themen
+</trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>forum_retour_themes</trad_id>
+        <trad_fr>Retour aux catégories</trad_fr>
+        <trad_uk>Return to categories
+</trad_uk>
+        <trad_us></trad_us>
+        <trad_it>Ritorna alle categorie
+</trad_it>
+        <trad_es>Volver a las categorías
+</trad_es>
+        <trad_nl>Terug naar categorieën
+</trad_nl>
+        <trad_de>Zurück zu den Kategorien
+</trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>forum_search</trad_id>
+        <trad_fr>Recherche</trad_fr>
+        <trad_uk>Search</trad_uk>
+        <trad_us></trad_us>
+        <trad_it>Cerca
+</trad_it>
+        <trad_es>Buscar
+</trad_es>
+        <trad_nl>Zoeken
+</trad_nl>
+        <trad_de>Suchen</trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>forum_send_mail</trad_id>
+        <trad_fr>Envoyer un e-mail à cet utilisateur</trad_fr>
+        <trad_uk></trad_uk>
+        <trad_us></trad_us>
+        <trad_it></trad_it>
+        <trad_es></trad_es>
+        <trad_nl></trad_nl>
+        <trad_de></trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>forum_submit</trad_id>
+        <trad_fr>Envoyer</trad_fr>
+        <trad_uk>Submit</trad_uk>
+        <trad_us></trad_us>
+        <trad_it>Invia
+</trad_it>
+        <trad_es>Enviar
+</trad_es>
+        <trad_nl>Verzenden
+</trad_nl>
+        <trad_de>Senden
+</trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>forum_suite</trad_id>
+        <trad_fr>Lire la suite</trad_fr>
+        <trad_uk>Read more</trad_uk>
+        <trad_us></trad_us>
+        <trad_it>Leggi il seguito
+</trad_it>
+        <trad_es>Leer más
+</trad_es>
+        <trad_nl>Meer informatie
+</trad_nl>
+        <trad_de>Lesen Sie mehr
+</trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>forum_sujets</trad_id>
+        <trad_fr>Sujets</trad_fr>
+        <trad_uk>Topics</trad_uk>
+        <trad_us></trad_us>
+        <trad_it>Discussioni
+</trad_it>
+        <trad_es>Temas
+</trad_es>
+        <trad_nl>Onderwerpen
+</trad_nl>
+        <trad_de>Themen
+</trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>forum_texte</trad_id>
+        <trad_fr>Message</trad_fr>
+        <trad_uk>Message</trad_uk>
+        <trad_us></trad_us>
+        <trad_it>Messaggio
+</trad_it>
+        <trad_es>Mensaje
+</trad_es>
+        <trad_nl>Bericht
+</trad_nl>
+        <trad_de>Nachricht
+</trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>forum_themes</trad_id>
+        <trad_fr>Thèmes</trad_fr>
+        <trad_uk>Themes</trad_uk>
+        <trad_us></trad_us>
+        <trad_it></trad_it>
+        <trad_es></trad_es>
+        <trad_nl></trad_nl>
+        <trad_de></trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>forum_this_search</trad_id>
+        <trad_fr>Rechercher dans ce thème</trad_fr>
+        <trad_uk>Search in this category
+</trad_uk>
+        <trad_us></trad_us>
+        <trad_it>Cerca in questa categoria
+</trad_it>
+        <trad_es>Buscar en esta categoría
+</trad_es>
+        <trad_nl>In deze categorie zoeken
+</trad_nl>
+        <trad_de>Suche in dieser Kategorie
+</trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>forum_titre</trad_id>
+        <trad_fr>Titre</trad_fr>
+        <trad_uk>Title</trad_uk>
+        <trad_us></trad_us>
+        <trad_it>Titolo
+</trad_it>
+        <trad_es>Título
+
+</trad_es>
+        <trad_nl>Titel
+</trad_nl>
+        <trad_de>Titel
+</trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>forum_unwatch</trad_id>
+        <trad_fr>Ne pus surveiller</trad_fr>
+        <trad_uk>Unwatch</trad_uk>
+        <trad_us></trad_us>
+        <trad_it></trad_it>
+        <trad_es></trad_es>
+        <trad_nl></trad_nl>
+        <trad_de></trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>forum_usermessages</trad_id>
+        <trad_fr>messages</trad_fr>
+        <trad_uk>messages</trad_uk>
+        <trad_us></trad_us>
+        <trad_it>Messaggi
+</trad_it>
+        <trad_es>Mensajes
+</trad_es>
+        <trad_nl>Berichten
+</trad_nl>
+        <trad_de>Nachrichten
+</trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>forum_user_age</trad_id>
+        <trad_fr>Age</trad_fr>
+        <trad_uk>Age</trad_uk>
+        <trad_us></trad_us>
+        <trad_it></trad_it>
+        <trad_es></trad_es>
+        <trad_nl></trad_nl>
+        <trad_de></trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>forum_user_avatar</trad_id>
+        <trad_fr>Votre avatar</trad_fr>
+        <trad_uk>Your avatar
+</trad_uk>
+        <trad_us></trad_us>
+        <trad_it>Il tuo avatar
+</trad_it>
+        <trad_es>Tu avatar
+</trad_es>
+        <trad_nl>Uw avatar
+</trad_nl>
+        <trad_de>Ihr Avatar
+</trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>forum_user_nom</trad_id>
+        <trad_fr>Votre nom</trad_fr>
+        <trad_uk>Last name
+</trad_uk>
+        <trad_us></trad_us>
+        <trad_it>Cognome
+</trad_it>
+        <trad_es>Apellido
+</trad_es>
+        <trad_nl>Achternaam
+</trad_nl>
+        <trad_de>Familienname
+</trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>forum_user_pays</trad_id>
+        <trad_fr>Pays</trad_fr>
+        <trad_uk>Country</trad_uk>
+        <trad_us></trad_us>
+        <trad_it></trad_it>
+        <trad_es></trad_es>
+        <trad_nl></trad_nl>
+        <trad_de></trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>forum_user_prenom</trad_id>
+        <trad_fr>Prénom</trad_fr>
+        <trad_uk>First name
+</trad_uk>
+        <trad_us></trad_us>
+        <trad_it>Nome
+</trad_it>
+        <trad_es>Nombre
+</trad_es>
+        <trad_nl>Voornaam
+</trad_nl>
+        <trad_de>Vorname
+</trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>forum_user_signature</trad_id>
+        <trad_fr>Signature</trad_fr>
+        <trad_uk></trad_uk>
+        <trad_us></trad_us>
+        <trad_it></trad_it>
+        <trad_es></trad_es>
+        <trad_nl></trad_nl>
+        <trad_de></trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>forum_vieprivee</trad_id>
+        <trad_fr>J'accepte</trad_fr>
+        <trad_uk>I agree
+</trad_uk>
+        <trad_us></trad_us>
+        <trad_it>Accetto
+</trad_it>
+        <trad_es>Acepto
+</trad_es>
+        <trad_nl>Ik ga akkoord
+</trad_nl>
+        <trad_de>Ich stimme zu
+</trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>forum_voir_message</trad_id>
+        <trad_fr>&lt;br/&gt;Voir mon message</trad_fr>
+        <trad_uk>&lt;br/&gt;View my message
+</trad_uk>
+        <trad_us>&lt;br/&gt;</trad_us>
+        <trad_it>&lt;br/&gt;Leggi il mio messaggio
+</trad_it>
+        <trad_es>&lt;br/&gt;Ver mi mensaje
+</trad_es>
+        <trad_nl>&lt;br/&gt;Mijn bericht bekijken
+</trad_nl>
+        <trad_de>&lt;br/&gt;Meine Nachricht anschauen
+</trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>forum_vues</trad_id>
+        <trad_fr>Vues</trad_fr>
+        <trad_uk>Viewed
+</trad_uk>
+        <trad_us></trad_us>
+        <trad_it>Visualizzazioni
+</trad_it>
+        <trad_es>Visto
+</trad_es>
+        <trad_nl>Bekeken
+</trad_nl>
+        <trad_de>Angesehen
+</trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>forum_watch</trad_id>
+        <trad_fr>Surveiller</trad_fr>
+        <trad_uk>Watch</trad_uk>
+        <trad_us></trad_us>
+        <trad_it></trad_it>
+        <trad_es></trad_es>
+        <trad_nl></trad_nl>
+        <trad_de></trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>forum_watch_body</trad_id>
+        <trad_fr>Bonjour, 
+
+Une réponse a été postée dans le sujet suivant : 
+</trad_fr>
+        <trad_uk>Hello, 
+
+Someone replied to the following subject :</trad_uk>
+        <trad_us></trad_us>
+        <trad_it></trad_it>
+        <trad_es></trad_es>
+        <trad_nl></trad_nl>
+        <trad_de></trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>forum_watch_subject</trad_id>
+        <trad_fr>[eCafé] Réponse au message : </trad_fr>
+        <trad_uk>[eCafé] Reply to message : </trad_uk>
+        <trad_us></trad_us>
+        <trad_it></trad_it>
+        <trad_es></trad_es>
+        <trad_nl></trad_nl>
+        <trad_de></trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+    <s_trad>
+        <trad_id>forum_young</trad_id>
+        <trad_fr>Vous devez avoir 16 ans pour participer à ce forum</trad_fr>
+        <trad_uk>You have to be 16 years old to contribute to this forum</trad_uk>
+        <trad_us></trad_us>
+        <trad_it></trad_it>
+        <trad_es></trad_es>
+        <trad_nl></trad_nl>
+        <trad_de></trad_de>
+        <fk_plugin_id></fk_plugin_id>
+    </s_trad>
+</ecafe>

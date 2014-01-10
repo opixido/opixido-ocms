@@ -1,0 +1,124 @@
+
+
+.genform_cal {
+        text-align: center;
+        font-family: arial, helvetica,sans-serif;
+        font-size:11px;
+        background-color:#DDDDDD;
+        border: 1px solid #555555;
+}
+
+.genform_cal_td {
+        text-align: center;
+        font-family: arial, helvetica,sans-serif;
+        font-size:11px;
+        background-color:#EEE;
+}
+
+
+.genform_cal_td a:hover {
+        text-align: center;
+        font-family: arial, helvetica,sans-serif;
+        font-size:11px;
+        background-color:#FFFFFF;
+}
+
+.genform_cal_td2 {
+        text-align: center;
+        font-family: arial, helvetica,sans-serif;
+        font-size:11px;
+        background-color:#EEE;
+        border: 1px solid #EEE;
+
+}
+
+.genform_champ_centered {
+	text-align:center;
+}
+
+.genform_cal_td2 a {
+        border: 1px solid #EEE;
+        display: block;
+}
+
+.genform_cal_td2 a:hover {
+        display: block;
+        text-align: center;
+        font-family: arial, helvetica,sans-serif;
+        font-size:11px;
+        background-color:#FFFFFF;
+        border: 1px solid #FF0000;
+}
+
+.genform_cal a {
+        font-family: arial, helvetica,sans-serif;
+        font-size:11px;
+        color: #000000;
+
+}
+
+.genform_cal span {
+        font-family: arial, helvetica,sans-serif;
+        font-size:11px;
+        color: #000000;
+        font-weight: bold;
+}
+
+
+.genform_codefield {
+	background:url(../../img/fond.textarea.code.gif) scroll !important;
+	overflow:auto;
+	font-family:Monospace;height:300px;line-height:18px;padding-left:17px;
+
+}
+
+
+.genform_txt_error {
+	
+}
+
+
+
+.xhr_links {
+
+	height:150px;
+	
+	border-bottom:1px solid #fff;
+	padding:3px;
+	margin:5px;
+	overflow:auto;
+	width:300px;
+	display:none;
+	background:url(/img/fond.bloc2.gif);
+}
+
+.xhr_links h1 {
+	background:white;
+	margin-top:0;
+}
+
+
+.xhr_links ul {
+	list-style-type:square;
+	list-style-image:url(/pictos_stock/tango/16x16/actions/document-template.png);
+	padding-left:30px;
+	margin-left:0;
+}
+
+.xhr_links a {
+
+	cursor:pointer;
+	margin-top:1px;
+}
+.xhr_links a:hover {
+
+	background:#ddd;
+
+}
+
+#genform_rubrique_gabarit_param {
+	background:#eee;
+	font-family:courrier, monospace;
+	border:1px solid #ddd;
+	cursor:default;
+}
