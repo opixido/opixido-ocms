@@ -356,4 +356,19 @@ class rubrique extends row {
         return getAll($sql);
     }
 
+
+    /**
+     *
+     * @global type $_Gconfig
+     * @return ADOdb_RECORDSET
+     */
+    public function getDrafts() {
+        global $_Gconfig;
+        $sql = 'SELECT * FROM s_rubrique WHERE '
+                . '     ' . MULTIVERSION_FIELD . ' = ' . sql($this->row[MULTIVERSION_FIELD]) . ' AND '
+                . ' ' . MULTIVERSION_STATE . ' = ' . sql(MV_STATE_DRAFT) . ' ORDER BY ' . $_Gconfig['field_date_maj'] . ' DESC';
+
+        return doSql($sql);
+    }
+
 }
