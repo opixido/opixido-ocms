@@ -16,7 +16,14 @@ define('RTYPE_LINK','link');
 define('VERSION_FIELD','fk_version');
 define('MULTIVERSION_FIELD','ocms_version');
 define('MULTIVERSION_FIELDNAME','ocms_version_name');
-define('MULTIVERSION_STATE','ocms_etat');
+define('MULTIVERSION_STATE', 'ocms_etat');
+
+define('MV_STATE_DRAFT', 'brouillon');
+define('MV_STATE_ONLINE', 'en_ligne');
+define('MV_STATE_OFFLINE', 'publiable');
+define('MV_STATE_ARCHIVE', 'archive');
+
+
 define('ONLINE_FIELD','en_ligne');
 
 define('crypto_cipher','rijndael-256');
@@ -362,7 +369,7 @@ $adminInfos = array('s_admin'=>'fk_admin_id');
 /**
  * Rubriques
  */
-$_Gconfig['rowActions']['s_rubrique'] = array('validate'=>true,'unvalidate'=>true,'moveRubrique'=>true);
+//$_Gconfig['rowActions']['s_rubrique'] = array('validate'=>true,'unvalidate'=>true,'moveRubrique'=>true);
 //,'translate'=>true
 
 
@@ -498,7 +505,7 @@ $multiVersionField['s_rubrique'] = 'fk_rubrique_version_id';
  * $_Gconfig['multiVersionTable'][] = 'table';
  */
 
-$_Gconfig['multiVersionTable'] = array();
+$_Gconfig['multiVersionTable'] = array('s_rubrique');
 
 
 /**
@@ -506,14 +513,14 @@ $_Gconfig['multiVersionTable'] = array();
  * CHACUNE DE CES TABLES DOIT AVOIR UN CHAMP ONLINE_FIELD (en_ligne)
  * ET UN CHAMP VERSION_FIELD (fk_version)
  */
-$_Gconfig['versionedTable'] = array('t_publication');
+$_Gconfig['versionedTable'] = array('');
 
 
 /**
  * Definit les tables qui ont un statut en_ligne OUI/NON
  * CHACUNE DE CES TABLES DOIT AVOIR UN CHAMP ONLINE_FIELD (en_ligne)
  */
-$_Gconfig['hideableTable'] = array('t_breve');
+$_Gconfig['hideableTable'] = array('');
 
 
 /**
@@ -531,11 +538,6 @@ $_Gconfig['imageExtensions']=array('jpg','jpeg','gif','png','bmp');
  * Tables dont on peut gérer l'ordre directement au niveau 0
  */
 $_Gconfig['orderedTable'] = array();
-
-/**
- * A voir ...
- */
-$adminTypesToMail = array('valideur','administrateur');
 
 
 /**
