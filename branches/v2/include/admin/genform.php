@@ -1334,50 +1334,6 @@ class GenForm {
         }
 
 
-        /**
-         * Pour la table s_rubrique
-         * Affichage des liens de visualisation en ligne
-         */
-        if ($this->table == 's_rubrique') {
-
-            if (isRubriqueOnline($this->tab_default_field)) {
-
-                //p('<p>' . t('version_masquee') . '</p><br/>');
-
-                $urlView = path_concat($gurl->BuildUrlFromId($this->tab_default_field['fk_rubrique_version_id']));
-                $action = 'voir_version_en_ligne';
-                p('<a target="_blank" class="btn" href="' . $urlView . '" >');
-
-
-                p('<img class="inputimage" src="' . t('src_' . $action) . '" alt="" />');
-                p(t($action));
-                p('</a>');
-            } else {
-                p('<p>' . t('version_masquee') . '</p><br/>');
-            }
-
-
-            $urlView = path_concat($gurl->BuildUrlFromId($this->tab_default_field['fk_rubrique_version_id'], '', array(), 'editer'));
-            $action = 'voir_version_modifiable';
-            p('<a class="btn" href="' . $urlView . '" target="_blank">');
-
-
-            p('<img src="' . t('src_' . $action) . '" alt="" />');
-            p(t($action));
-            p('</a>');
-
-
-            p('<p>&nbsp;</p>');
-        }
-        /**/
-
-
-        p('');
-
-
-
-
-
         p('</div>');
 
         //if($this->editMode)
