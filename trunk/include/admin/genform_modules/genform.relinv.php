@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with oCMS. If not, see <http://www.gnu.org/licenses/>.
 #
-# @author Celio Conort / Opixido 
+# @author Celio Conort / Opixido
 # @copyright opixido 2012
 # @link http://code.google.com/p/opixido-ocms/
 # @package ocms
@@ -34,7 +34,7 @@ $name = $relinv[$this->table_name][$name][1];
 $ofield = '';
 if ($_REQUEST['curId'] != 'new') {
     /**
-     * L'enregistrement de la table actuel existe deja              
+     * L'enregistrement de la table actuel existe deja
      * */
     if (isset($thirdtable)) {
         $clefthird = getPrimaryKey($tab_name);
@@ -82,18 +82,94 @@ if (!$this->editMode) {
         }
 
         $sortable = array_key_exists($fk_table, $orderFields);
-        $sortable=1;
+        //$rowaction = array_key_exists($fk_table, $_Gconfig['rowActions']);
+
+        //$sortable=1;
 
         $this->addBuffer('<table class="sortable table table-striped table-bordered table-condensed" rel="' . $fk_table . '__' . $ofield . '" border="0" width="' . ($this->larg - 25) . '" class="genform_table ' . ($sortable ? 'sortable' : '') . ' relinv" ><thead>');
-        
+
         $ml = 1;
+
+        $sortable = 1;
+
+        if(count($res) > 1){
+            $cs = 1;
+        }
+        else{
+            $cs = 0;
+        }
+
+
+
+
+
+        /*
         $cs = $sortable ? 3 : 2;
+
+        $sortable = 1;
+
         if(count($res)>1 && $sortable) $cs = 3;
         else
             $cs = 2;
 
+        debug($cs);*/
+
         $this->addBuffer('<tr>');
-        
+
+
+        /**
+         * CALCULATE NEW BTN COLSPAN
+         */
+
+
+
+               $max_actions = 0;
+
+                //calculte nb rowActions on each row
+                //then add max number to cs value....
+                foreach ($res as $row)
+                {
+                    $nb_actions = 0;
+
+
+                    //can edit, count one more col
+                    $canedit = $this->gs->can('edit', $fk_table, $row, $row[$clef]);
+                    if($canedit){
+                        $nb_actions++;
+                    }
+
+                    //can delete count one more col
+                    $candel = $this->gs->can('del', $fk_table, $row, $row[$clef]);
+                    if($candel){
+                        $nb_actions++;
+                    }
+
+                     if (array_key_exists($fk_table, $_Gconfig['rowActions'])) {
+
+                        //browse each actions for line
+                        foreach ($_Gconfig['rowActions'][$fk_table] as $actionName => $v) {
+                            $ga = new GenAction($actionName, $fk_table, $row[$clef], $row);
+                            //$can = (int)$this->gs->can($actionName, $fk_table, $row, $row[$clef]);
+                            $checkCondition = (int)$ga->checkCondition();
+
+                            if($ga && $checkCondition){
+                                $nb_actions++;
+                                //continue;
+                            }
+                        }
+                     }
+
+                    if($nb_actions > $max_actions){
+                        $max_actions = $nb_actions;
+                    }
+
+                }
+
+                 $cs += $max_actions;
+
+
+
+
         /* ---------------------------
          * Modif Timothée Octobre 2013
          * ---------------------------
@@ -110,36 +186,6 @@ if (!$this->editMode) {
         }
         else
             $this->addBuffer('<th colspan="'.$cs.'"></th>');
-
-        /**
-         * Case TH vide pour chaque action supplémentaire
-         */
-        if (array_key_exists($fk_table, $_Gconfig['rowActions'])) {
-
-            foreach ($_Gconfig['rowActions'][$fk_table] as $actionName => $v) {
-
-                /* ---------------------------
-                 * Modif Timothée Octobre 2013
-                 * ---------------------------
-                 * On cherche s'il y a au moins un row qui peut faire l'action
-                 * 
-                 */
-                foreach ($res as $row)
-                {
-                    $ga = new GenAction($actionName, $fk_table, $row[$clef], $row);
-                    $can = (int)$this->gs->can($actionName, $fk_table, $row, $row[$clef]);
-                    $checkCondition = (int)$ga->checkCondition();
-                    if($ga && $checkCondition)
-                        continue;
-                }
-
-                //Si au moins un peut
-                if ($ga && $checkCondition) {
-                    //	debug($actionName);
-                    $this->addBuffer('<th width="20">&nbsp;</th>');
-                }
-            }
-        }
 
 
         /* Collones pour les boutons up down */
@@ -167,6 +213,9 @@ if (!$this->editMode) {
             reset($tabForms[$fk_table]['titre']);
 
 
+            $nb_col_used = 0;
+
+
             /*             * *********
               On ajoute le bouton editer
              * *********** */
@@ -178,22 +227,23 @@ if (!$this->editMode) {
             $this->addBuffer('<td>');
 
                 $this->addBuffer('<input
-		
-								type="image"
-								src="' . t('src_editer') . '"
-								class="inputimage"
-								rel="edit"
-								name="genform_modfk__' . $fk_table . '"
-								title="' . $this->trad("edit") . '"
-								onclick="document.getElementById(\'genform_modfk__' . $fk_table . '_value_' . $ml . '\').checked = \'checked\'" /><input ' . $ch . '
-								style="display:none;"
-								name="genform_modfk__' . $fk_table . '_value"
-								type="radio"
-								id="genform_modfk__' . $fk_table . '_value_' . $ml . '"
-								value="' . $row[$clef] . '" />
-		
-								');
+
+                                type="image"
+                                src="' . t('src_editer') . '"
+                                class="inputimage"
+                                rel="edit"
+                                name="genform_modfk__' . $fk_table . '"
+                                title="' . $this->trad("edit") . '"
+                                onclick="document.getElementById(\'genform_modfk__' . $fk_table . '_value_' . $ml . '\').checked = \'checked\'" /><input ' . $ch . '
+                                style="display:none;"
+                                name="genform_modfk__' . $fk_table . '_value"
+                                type="radio"
+                                id="genform_modfk__' . $fk_table . '_value_' . $ml . '"
+                                value="' . $row[$clef] . '" />
+
+                                ');
             $this->addBuffer('</td>');
+            $nb_col_used++;
             }
 
 
@@ -218,6 +268,7 @@ if (!$this->editMode) {
 
                             ');
             $this->addBuffer('</td>');
+            $nb_col_used++;
             }
 
 
@@ -235,13 +286,13 @@ if (!$this->editMode) {
 
 
                         $this->addBuffer('
-					<button	style="background:none;padding:0;border:0;cursor:pointer"
-						class="inputimage"
-						name="genform_relinvaction[' . $actionName . '][' . $fk_table . ']"
-						title="' . $this->trad($actionName) . '"
-						value="' . $ml . '"
-    					 ><img src="' . t('src_' . $actionName) . '" /></button>
-			');
+                    <button style="background:none;padding:0;border:0;cursor:pointer"
+                        class="inputimage"
+                        name="genform_relinvaction[' . $actionName . '][' . $fk_table . ']"
+                        title="' . $this->trad($actionName) . '"
+                        value="' . $ml . '"
+                         ><img src="' . t('src_' . $actionName) . '" /></button>
+            ');
                         // pour le faire en ajax
                         // onclick="ajaxAction(\''.$actionName.'\',\''.$fk_table.'\',\''.$ml.'\',\'\');return false;"
 
@@ -255,6 +306,7 @@ if (!$this->editMode) {
                           value="' . $row[$clef] . '" />
                          */
                     $this->addBuffer('</td>');
+                    $nb_col_used++;
                     }
                 }
             }
@@ -293,10 +345,10 @@ if (!$this->editMode) {
                 if ($nbIt < $nbTotIt) {
 
                     $this->addBuffer('<input type="image"
-                                        			src="' . t('src_down') . '" 
-                                        			class="inputimage" 
-                                        			onclick="gid(\'genform_downfk__' . $fk_table . '__' . $ml . '__' . $name . '\').checked = \'checked\'" 
-                                        			 name="genform_stay"  title="' . $this->trad("getdown") . '"/>');
+                                                    src="' . t('src_down') . '"
+                                                    class="inputimage"
+                                                    onclick="gid(\'genform_downfk__' . $fk_table . '__' . $ml . '__' . $name . '\').checked = \'checked\'"
+                                                     name="genform_stay"  title="' . $this->trad("getdown") . '"/>');
 
                     $this->addBuffer('<input  style="display:none;"
                                          name="genform_downfk" type="radio"
@@ -305,8 +357,14 @@ if (!$this->editMode) {
                     // $this->addBuffer('<img src="pictos/down_off.gif" alt="up" />' );
                 }
                 $this->addBuffer('</td>');
+                $nb_col_used++;
             }
 
+            //fill table with empty td
+
+            for($nb_col_index = $nb_col_used; $nb_col_index < $cs; $nb_col_index++){
+                $this->addBuffer('<td>&nbsp;</td>');
+            }
 
 
             $t = new GenForm($fk_table, "", $row[$clef], $row);
