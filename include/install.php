@@ -156,12 +156,12 @@ class genInstall
             $this->doForm = 3;
         } else {
             try {
-                mkdir('../c', 0755);
-                mkdir('../admin/c', 0755);
-                mkdir('../include/cache', 0755);
-                mkdir('../include/cache_agr', 0755);
-                mkdir('../thumb/cache', 0755);
-                mkdir('../fichier', 0755);
+                @mkdir('../c', 0755);
+                @mkdir('../admin/c', 0755);
+                @mkdir('../include/cache', 0755);
+                @mkdir('../include/cache_agr', 0755);
+                @mkdir('../thumb/cache', 0755);
+                @mkdir('../fichier', 0755);
             } catch (Exception $e) {
 
             }
