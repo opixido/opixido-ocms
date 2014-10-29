@@ -62,10 +62,9 @@ class genInstall
             foreach ($quers as $sql) {
                 if (!DoSql($sql)) {
                     $res = false;
-                    echo("<p class=\"error\">Error at the line $linenumber: " . trim($dumpline) . "</p>\n");
-                    echo("<p>Query: " . trim(nl2br(htmlentities($query))) . "</p>\n");
-                    echo("<p>MySQL: " . mysql_error() . "</p>\n");
-                    debug($query);
+                    echo("<p>Query: " . trim(nl2br(htmlentities($sql))) . "</p>\n");
+                    echo("<p>MySQL: " . $co->errorMsg() . "</p>\n");
+                    debug($sql);
                 }
             }
 
@@ -82,7 +81,7 @@ class genInstall
 
             global $co;
             echo '<div class="start">';
-            $co = NewADOConnection($_POST['bdd_type']);
+            $co = ADONewConnection($_POST['bded_type']);
             echo '</div>';
             if (!$co) {
                 $this->error('Database type is not supported');
@@ -163,7 +162,7 @@ class genInstall
                 mkdir('../include/cache_agr', 0755);
                 mkdir('../thumb/cache', 0755);
                 mkdir('../fichier', 0755);
-            } catch ($e) {
+            } catch (Exception $e) {
 
             }
         }
@@ -297,7 +296,7 @@ class genInstall
             foreach ($quers as $sql) {
                 if (!DoSql($sql)) {
                     $res = false;
-                    echo("<p class=\"error\">Error at the line $linenumber: " . trim($dumpline) . "</p>\n");
+
                     echo("<p>Query: " . trim(nl2br(htmlentities($sql))) . "</p>\n");
                     echo("<p>MySQL: " . $co->errorMsg() . "</p>\n");
                     echo($sql);
