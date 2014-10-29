@@ -1,0 +1,40 @@
+# Cache files #
+###############
+c
+cache
+cache_agr
+temoinchange
+temoinnextcache
+# User generated files #
+########################
+upload
+fichier
+rtefiles
+
+# Developer files #
+######################
+plugins_base
+.project
+nbproject
+.svn
+svn-commit.tmp
+xhprof
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+.sass-cache
+
+
+/_solr/solr/collection1/data/
+/_solr/logs/
+/admin/thumbs/
+.idea/
+/include/config/config.locale.php
+include/config/config.log.php
