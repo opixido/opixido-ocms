@@ -81,7 +81,7 @@ class genInstall
 
             global $co;
             echo '<div class="start">';
-            $co = ADONewConnection($_POST['bded_type']);
+            $co = ADONewConnection($_POST['bdd_type']);
             echo '</div>';
             if (!$co) {
                 $this->error('Database type is not supported');
