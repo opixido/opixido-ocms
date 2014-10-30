@@ -23,7 +23,6 @@
 #
 
 
-
 $GLOBALS['isWindows'] = array_key_exists('OS', $_SERVER) && strpos(strtolower($_SERVER['OS']), 'windows') !== false ? true : false;
 //$_SESSION['lg'] = ake('lg',$_REQUEST) ? $_REQUEST['lg'] : (ake('lg',$_SESSION) ? $_SESSION['lg'] : 'fr');
 
@@ -40,13 +39,14 @@ $GLOBALS['nbCacheTotal'] = 0;
  *
  * @return float
  */
-function getmicrotime() {
+function getmicrotime()
+{
     list($usec, $sec) = explode(" ", microtime());
-    return ((float) $usec + (float) $sec);
+    return ((float)$usec + (float)$sec);
 }
 
 /**
- * Debut de génération de la page 
+ * Debut de génération de la page
  * A quelques milisecondes pres ...
  */
 global $startTime;
@@ -58,42 +58,43 @@ $startTime = getmicrotime();
  * @param unknown_type $str
  * @return unknown
  */
-function js($str) {
+function js($str)
+{
     return "'" . str_replace("'", "\\'", $str) . "'";
 }
 
 /**
  * Configure une table automatiquement
- * 
+ *
  * La table doit respecter une nomenclature précise :
- * 
+ *
  * - les noms de tables doivent commencer par un préfixe ( s_table, projet_table, plug_table, ...)
  * - Le champ de "label" doit etre le second de la table
  * - Les clefs étrangères ( 1<>N ) doivent commencer par fk_ et finir par le nom de la clef primaire de la table distante
  *   ex : fk_autretable_id pour la table prefixe_autretable avec autretable_id comme PK
  * - Les tables de relations N<>N doivent avoir uniquement deux clefs etrangères formatées comme ci-dessus
- * - idem pour les tables N<>1 
- * 
- * 
+ * - idem pour les tables N<>1
+ *
+ *
  * @param unknown_type $table
  */
-function autoConfig($table) {
+function autoConfig($table)
+{
 
     global $tabForms, $relations, $_Gconfig, $tablerel, $relinv, $tablerel_reverse;
 
-    if ($tabForms[$table]) {
+    if ($tabForms[ $table ]) {
         return;
     }
 
     $fields = getTabField($table);
 
 
-
     /**
      * Le titre est le second champ de la table
      */
     $label = next($fields);
-    $tabForms[$table]['titre'] = array(fieldWithoutLg($label->name));
+    $tabForms[ $table ]['titre'] = array(fieldWithoutLg($label->name));
     return;
 
     /**
@@ -113,7 +114,7 @@ function autoConfig($table) {
         if (substr($k, 0, 3) == 'fk_') {
             $distTable = $prefixe . '_' . substr($k, 3, -3);
             if (in_array($distTable, $tables)) {
-                $relations[$table][$k] = $distTable;
+                $relations[ $table ][ $k ] = $distTable;
                 autoConfig($distTable);
             }
         }
@@ -130,7 +131,7 @@ function autoConfig($table) {
             /**
              * Table de relation
              */
-            if (count($tabs) == 2 && !$tablerel[$v]) {
+            if (count($tabs) == 2 && !$tablerel[ $v ]) {
 
                 foreach ($tabs as $k => $vv) {
                     if ($vv->name != $myfk) {
@@ -140,14 +141,14 @@ function autoConfig($table) {
                 }
 
 
-                $tablerel[$v] = array($myfk => $table, $distField => $distTable);
+                $tablerel[ $v ] = array($myfk => $table, $distField => $distTable);
                 autoConfig($distTable);
 
                 /**
                  * Table Relinv
                  */
             } else {
-                $relinv[$table]['RELINV_' . $v] = array($v, $myfk);
+                $relinv[ $table ][ 'RELINV_' . $v ] = array($v, $myfk);
             }
         }
     }
@@ -160,7 +161,8 @@ function autoConfig($table) {
  *
  * @param unknown_type $str
  */
-function error($str) {
+function error($str)
+{
     debug($str);
 }
 
@@ -173,19 +175,22 @@ function error($str) {
  * @param array $row
  * @return string
  */
-function getImg($table, $champ, $id, $row = array()) {
+function getImg($table, $champ, $id, $row = array())
+{
 
     $f = new GenFile($table, $champ, $id, $row);
     return $f->getWeburl();
 }
 
-function getThumb($table, $champ, $id, $row = array(), $w, $h) {
+function getThumb($table, $champ, $id, $row = array(), $w, $h)
+{
 
     $f = new GenFile($table, $champ, $id, $row);
     return $f->getThumbUrl($w, $h);
 }
 
-function getCrop($table, $champ, $id, $row = array(), $w, $h) {
+function getCrop($table, $champ, $id, $row = array(), $w, $h)
+{
 
     $f = new GenFile($table, $champ, $id, $row);
     return $f->getCropUrl($w, $h);
@@ -198,7 +203,8 @@ function getCrop($table, $champ, $id, $row = array(), $w, $h) {
  * @param int $nbwords
  * @return str
  */
-function limitWords($str, $nbwords = 30, $tpp = ' ...') {
+function limitWords($str, $nbwords = 30, $tpp = ' ...')
+{
     $words = explode(' ', $str);
     if (count($words) <= $nbwords) {
         return $str;
@@ -214,7 +220,8 @@ function limitWords($str, $nbwords = 30, $tpp = ' ...') {
  * @param int $chars
  * @return string
  */
-function limit($str, $chars = 30) {
+function limit($str, $chars = 30)
+{
 
     if (mb_strlen($str) <= $chars) {
         return $str;
@@ -228,7 +235,8 @@ function limit($str, $chars = 30) {
  *
  * @param unknown_type $info
  */
-function profile($info = '') {
+function profile($info = '')
+{
     global $profileTime, $profileSTR;
 
 
@@ -238,7 +246,7 @@ function profile($info = '') {
     $t = getmicrotime();
 
     $ar = debug_backtrace();
-    $profileSTR .= ( $info . ' ' . basename($ar[0]['file']) . ' : ' . $ar[0]['line'] . ' :: ' . number_format(($t - $profileTime), 3) . ' s :: ' . pretty_bytes(memory_get_usage()) . '<br/>');
+    $profileSTR .= ($info . ' ' . basename($ar[0]['file']) . ' : ' . $ar[0]['line'] . ' :: ' . number_format(($t - $profileTime), 3) . ' s :: ' . pretty_bytes(memory_get_usage()) . '<br/>');
 
     $profileTime = getmicrotime();
 }
@@ -250,7 +258,8 @@ $profileTime = getmicrotime();
  * Affiche un backtrace pour voir ce qui se passe
  *
  */
-function debugtrace() {
+function debugtrace()
+{
     debug(debug_backtrace());
 }
 
@@ -260,16 +269,17 @@ function debugtrace() {
  * @param string $Email
  * @return boolean
  */
-function CheckEmail($email = "") {
+function CheckEmail($email = "")
+{
     if (filter_var($email, FILTER_VALIDATE_EMAIL) !== false) {
         return true;
     } else {
-        //debug('MAUVAIS EMAIL' . $email);
         return false;
     }
 }
 
-function isEmail($email) {
+function isEmail($email)
+{
     return CheckEmail($email);
 }
 
@@ -279,10 +289,11 @@ function isEmail($email) {
  * @param str $str Chemin du fichier
  * @return bool
  */
-function isImage($str) {
+function isImage($str)
+{
     global $_Gconfig;
     $s = explode(".", $str);
-    $ext = $s[count($s) - 1];
+    $ext = $s[ count($s) - 1 ];
     if (in_array(mb_strtolower($ext), $_Gconfig['imageExtensions']))
         return True;
     else
@@ -290,9 +301,10 @@ function isImage($str) {
 }
 
 /**
- * 		Alias pour l'envoi de mail
+ *        Alias pour l'envoi de mail
  */
-function sendMail($to, $subject, $message, $headers = '') {
+function sendMail($to, $subject, $message, $headers = '')
+{
     $m = includeMail();
     $m->AddAddress($to);
     $m->Subject = $subject;
@@ -304,19 +316,20 @@ function sendMail($to, $subject, $message, $headers = '') {
 }
 
 /**
- * 		Transforme un nom de fichier  : nom.du.fichier.pdf
- * 		en : Nom du fichier [PDF]
+ *        Transforme un nom de fichier  : nom.du.fichier.pdf
+ *        en : Nom du fichier [PDF]
  */
 
 /**
  * Transforme un nom de fichier en nom un peu plus propre
- * 
+ *
  * @example  nom.du.fichier.pdf =>  Nom du fichier [PDF]
  *
  * @param string $str
  * @return string
  */
-function systemToNiceName($str) {
+function systemToNiceName($str)
+{
 
     $ext = substr($str, strrpos($str, '.') + 1, strlen($str));
     $str = substr($str, 0, strrpos($str, '.'));
@@ -326,14 +339,15 @@ function systemToNiceName($str) {
     return $str . ' [' . strtoupper($ext) . ']';
 }
 
-$_SESSION['cache_' . UNIQUE_SITE]['adm']['cacheIsAdmin'] = "notChecked";
+$GLOBALS['GlobalObjCache'][ UNIQUE_SITE ]['adm']['cacheIsAdmin'] = "notChecked";
 
 /**
  * Est-on connecté en tant qu'admin
  *
  * @return unknown
  */
-function isLoggedAsAdmin() {
+function isLoggedAsAdmin()
+{
 
     global $gs_obj;
     if (!is_object($gs_obj)) {
@@ -343,28 +357,31 @@ function isLoggedAsAdmin() {
     return $gs_obj->checkAuth();
 }
 
-function getRealRubId($row) {
-    if ($row['fk_rubrique_version_id'] != 'NULL' && $row['fk_rubrique_version_id'] != '') {
-        return $row['fk_rubrique_version_id'];
+function getRealRubId($row)
+{
+    if ($row[ MULTIVERSION_FIELD ]) {
+        return $row[ MULTIVERSION_FIELD ];
     } else {
         return $row['fk_rubrique_id'];
     }
 }
 
-function getOnlineRubId($row) {
-    if ($row['fk_rubrique_version_id'] != 'NULL' && $row['fk_rubrique_version_id'] != '') {
-        return $row['fk_rubrique_version_id'];
+function getOnlineRubId($row)
+{
+    if ($row[ MULTIVERSION_FIELD ]) {
+        return $row[ MULTIVERSION_FIELD ];
     } else {
         return $row['rubrique_id'];
     }
 }
 
 /**
- * 	Transforme un nom de fichier de : "Fichier Célio [carte de Françe].pdf"
- * 	En : fichier_celio_carte_de_france.pdf
+ *    Transforme un nom de fichier de : "Fichier Célio [carte de Françe].pdf"
+ *    En : fichier_celio_carte_de_france.pdf
  * @param str string Nom actuel du fichier
  */
-function niceName($str) {
+function niceName($str)
+{
 
     $str = trim(mb_strtolower($str, 'utf-8'));
 
@@ -416,10 +433,11 @@ function niceName($str) {
 }
 
 /**
- * 	Fonction inutile
- * @deprecated 
+ *    Fonction inutile
+ * @deprecated
  */
-function fieldval($str) {
+function fieldval($str)
+{
     return $str;
 }
 
@@ -428,8 +446,9 @@ function fieldval($str) {
  *
  * @return bool True ou False  selon si l'utilisateur est connecté
  */
-function doAdminStuffs() {
-    if (isLoggedAsAdmin() && $_SESSION['cache_' . UNIQUE_SITE]['adm']['frontModif']) {
+function doAdminStuffs()
+{
+    if (isLoggedAsAdmin() && $GLOBALS['GlobalObjCache'][ UNIQUE_SITE ]['adm']['frontModif']) {
         return true;
     } else {
         return false;
@@ -442,7 +461,8 @@ function doAdminStuffs() {
  * @param mixed $s Variable a tester
  * @return bool
  */
-function has($s) {
+function has($s)
+{
     return isset($s) && (strlen(trim($s)) > 0) && $s != '0000-00-00' && $s != 'null';
 }
 
@@ -453,7 +473,8 @@ function has($s) {
  * @param bool $show_year Definit si l'on garde l'année
  * @return string Date formatée dd/mm[/yyyy]
  */
-function nicedate($d, $show_year = true, $separator = '/') {
+function nicedate($d, $show_year = true, $separator = '/')
+{
 
     /**
      * Si $d est un date time xxxx-xx-xx 00:00:00
@@ -488,10 +509,11 @@ function nicedate($d, $show_year = true, $separator = '/') {
  * Formatte une valeur Date + Time au format date JJ-MM-YY
  * sauf dates anglaises au format date MM-JJ-YY
  *
- * @param string  $d Valeur au format yyyy-mm-dd hh:mm:ss
+ * @param string $d Valeur au format yyyy-mm-dd hh:mm:ss
  * @return string 31/12[/01]
  */
-function nicedateyear2char($d) {
+function nicedateyear2char($d)
+{
 
     /**
      * Si $d est un date time xxxx-xx-xx 00:00:00
@@ -513,11 +535,12 @@ function nicedateyear2char($d) {
 /**
  * Formatte une valeur Date + Time
  *
- * @param string  $d Valeur au format yyyy-mm-dd hh:mm:ss
+ * @param string $d Valeur au format yyyy-mm-dd hh:mm:ss
  * @param bool $show_year On retourne l'année ou non
  * @return string 31/12[/2001] 12h59m59s
  */
-function niceDateTime($d, $show_year = true, $showSec = false) {
+function niceDateTime($d, $show_year = true, $showSec = false)
+{
     $t = explode(" ", $d);
     $mydate = $t[0];
     $mytime = $t[1];
@@ -537,7 +560,8 @@ function niceDateTime($d, $show_year = true, $showSec = false) {
     return $date . ' ' . $tim;
 }
 
-function niceTime($d) {
+function niceTime($d)
+{
 
     $t = explode(" ", $d);
     $mydate = $t[0];
@@ -559,7 +583,8 @@ function niceTime($d) {
  * @param string $date Date au format yyyy-mm-dd
  * @return string Ex : 24 Octobre 1980
  */
-function niceTextDate($date, $jour = false) {
+function niceTextDate($date, $jour = false)
+{
 
     global $lg;
 
@@ -568,7 +593,7 @@ function niceTextDate($date, $jour = false) {
     }
     $d = strtotime($date);
 
-    $type = '%e %B %Y';
+    $type = '%d %B %Y';
     if ($jour) {
         $type = '%A ' . $type;
     }
@@ -590,11 +615,12 @@ function niceTextDate($date, $jour = false) {
  * Sinon : Du 24 décembre 2005 au 2 janvier 2006
  *
  *
- * @param string  $date1 Date de début
+ * @param string $date1 Date de début
  * @param string $date2 Date de fin
  * @return string Date formatée
  */
-function nicedate_interval($date1, $date2 = '', $separator = '/') {
+function nicedate_interval($date1, $date2 = '', $separator = '/', $pre = '', $post = '')
+{
     global $lg, $lglocale;
 
     if ($nb = strpos($date1, ' ')) {
@@ -606,16 +632,16 @@ function nicedate_interval($date1, $date2 = '', $separator = '/') {
     @setlocale($GLOBALS['CURLOCALE']);
 
     if ($date1 == $date2 || $date2 == '0000-00-00' || $date2 == '' || $date2 == '0000-00-00 00:00:00') {
-        return t('le') . ' ' . nicetextdate($date1, true, $separator);
+        return t('le') . ' ' . $pre . nicetextdate($date1, true, $separator) . $post;
     } elseif ($d_deb[1] == $d_fin[1] && $d_deb[0] == $d_fin[0]) {
         if ($d_deb[2] == "01") {
             $d_deb[2] = '1er';
         }
         //setLocale(LC_TIME, $lglocale);
         //return t('du').' ' .$d_deb[2] .' '.t('au').' ' .$d_fin[2] .' ' .(ucfirst(strftime("%B", strtotime($date1)))) .' ' .$d_deb[0];
-        return t('du') . ' ' . $d_deb[2] . ' ' . t('au') . ' ' . nicetextdate($date2, false, $separator);
+        return t('du') . ' ' . $pre . $d_deb[2] . $post . ' ' . t('au') . ' ' . $pre . nicetextdate($date2, false, $separator) . $post;
     } else {
-        return t('du') . ' ' . nicedate($date1, true, $separator) . ' ' . t('au') . ' ' . nicedate($date2, true, $separator);
+        return t('du') . ' ' . $pre . nicedate($date1, true, $separator) . $post . ' ' . t('au') . ' ' . $pre . nicedate($date2, true, $separator) . $post;
     }
 }
 
@@ -627,8 +653,9 @@ function nicedate_interval($date1, $date2 = '', $separator = '/') {
  * @param unknown_type $separator
  * @return unknown
  */
-function niceDateInterval($date1, $date2 = '', $separator = '/') {
-    return nicedate_interval($date1, $date2, $separator);
+function niceDateInterval($date1, $date2 = '', $separator = '/', $pre = '', $post = '')
+{
+    return nicedate_interval($date1, $date2, $separator, $pre, $post);
 }
 
 /**
@@ -637,14 +664,15 @@ function niceDateInterval($date1, $date2 = '', $separator = '/') {
  * @param string $date Date yyyy-mm-dd
  * @return date
  */
-function nicedate_str($date, $showYear = 1) {
+function nicedate_str($date, $showYear = 1)
+{
     global $lg, $lglocale;
 
     $d = strtotime($date);
 
     $ee = ((mystrftime("%A", $d)));
 
-    $s = $ee . ' ' . (int) date('d', $d) . ' ' . ((mystrftime("%B", $d)));
+    $s = $ee . ' ' . (int)date('d', $d) . ' ' . ((mystrftime("%B", $d)));
 
     if ($showYear) {
         $s .= ' ' . date('Y', $d);
@@ -663,7 +691,8 @@ function nicedate_str($date, $showYear = 1) {
  *
  * @param mixed $txt
  */
-function p($txt) {
+function p($txt)
+{
     print($txt . "\n");
 }
 
@@ -673,7 +702,8 @@ function p($txt) {
  *
  * @param mixed $txt
  */
-function dinfo($txt) {
+function dinfo($txt)
+{
     global $genMessages;
 
     $genMessages->add($txt, 'info');
@@ -685,7 +715,8 @@ function dinfo($txt) {
  *
  * @param mixed $txt
  */
-function dinfo_instant($txt) {
+function dinfo_instant($txt)
+{
     global $genMessages;
 
     $genMessages->addInstant($txt, 'info');
@@ -697,7 +728,8 @@ function dinfo_instant($txt) {
  *
  * @param mixed $txt
  */
-function derror($txt) {
+function derror($txt)
+{
     global $genMessages;
     debug_print_backtrace();
     $genMessages->add($txt, 'error');
@@ -707,7 +739,8 @@ function derror($txt) {
  * Comme la fonction derror()
  * * @param mixed $txt
  */
-function debug() {
+function debug()
+{
     global $genMessages, $_Gconfig;
     if (!arrayInWord($_Gconfig['debugIps'], $_SERVER['REMOTE_ADDR']) && !isset($_REQUEST['debug'])) {
         return;
@@ -752,12 +785,13 @@ function debug() {
  * @param string $params
  * @return Tableau associatif nom de variable = clef
  */
-function SplitGabaritParams($params) {
+function SplitGabaritParams($params)
+{
     $a = explode(',', $params);
     $para = array();
     foreach ($a as $p) {
         $pa = explode('=', $p);
-        $para[$pa[0]] = $pa[1];
+        $para[ $pa[0] ] = $pa[1];
     }
     return $para;
 }
@@ -767,10 +801,11 @@ function SplitGabaritParams($params) {
  * les guillemets simples et doubles et on les remplaces
  * par leurs équivalents HTML
  *
- * @param string  $str
+ * @param string $str
  * @return string La chaine nettoyée
  */
-function altify($str) {
+function altify($str)
+{
     return str_replace(array('"', "'"), array("&quot;", "&#39;"), (strip_tags($str)));
 }
 
@@ -779,7 +814,8 @@ function altify($str) {
  *
  * @param unknown_type $str
  */
-function debugEvent($str) {
+function debugEvent($str)
+{
     global $_Gconfig;
     $GLOBALS['curSQL'] = $str;
     $GLOBALS['curSQLStart'] = getmicrotime();
@@ -805,7 +841,8 @@ function debugEvent($str) {
       debug($str); */
 }
 
-function debugEnd() {
+function debugEnd()
+{
     global $_Gconfig;
 
     if ($_Gconfig['debugSql']) {
@@ -813,8 +850,8 @@ function debugEnd() {
         $t = getmicrotime() - $GLOBALS['curSQLStart'];
         $h_sqls[] = array('sql' => $GLOBALS['curSQL'], 'time' => ($t), 'profile' => $GLOBALS['curProfile']);
         $t = str_replace('0,0', '', $t);
-        $t = (int) substr($t, 0, 8);
-        $h_sqlsI[$t] = $GLOBALS['curSQL'];
+        $t = (int)substr($t, 0, 8);
+        $h_sqlsI[ $t ] = $GLOBALS['curSQL'];
     }
 }
 
@@ -826,13 +863,14 @@ function debugEnd() {
  * @param int $precision
  * @return string
  */
-function pretty_bytes($bytes, $precision = 1) {
-    $suffix = array('<abbr title="octets">oct</abbr>', '<acronym title="Kilo octets">K.o.</acronym>', '<acronym title="Mega octets">M.o.</acronym>', '<acronym title="Giga octets">G.o.</acronym>');
+function pretty_bytes($bytes, $precision = 1)
+{
+    $suffix = array('<abbr title="octets">oct</abbr>', '<abbr title="Kilo octets">K.o.</abbr>', '<abbr title="Mega octets">M.o.</abbr>', '<abbr title="Giga octets">G.o.</abbr>');
 
     $index = floor(@log($bytes + 1, 1024)); // + 1 to prevent -INF
     if ($index == 0)
         return (substr(($bytes / 1024), 0, 3)) . " " . $suffix[1];
-    return sprintf("%0.{$precision}f %s", $bytes / pow(1024, $index), $suffix[$index]);
+    return sprintf("%0.{$precision}f %s", $bytes / pow(1024, $index), $suffix[ $index ]);
 }
 
 /**
@@ -841,7 +879,8 @@ function pretty_bytes($bytes, $precision = 1) {
  * @param int $seconds
  * @return string
  */
-function niceSeconds($seconds) {
+function niceSeconds($seconds)
+{
 
     if ($seconds < 60) {
         return $seconds . 's';
@@ -860,7 +899,8 @@ function niceSeconds($seconds) {
  *
  * @param mixed $s String a afficher
  */
-function debugOpix($s) {
+function debugOpix($s)
+{
     if (strstr($_SERVER['REMOTE_ADDR'], '192.168.1.') || strstr($_SERVER['REMOTE_ADDR'], '82.67.200.175') || $_REQUEST['debug']) {
         debug($s);
     }
@@ -871,7 +911,8 @@ function debugOpix($s) {
  *
  * @param string $str
  */
-function devbug($str) {
+function devbug($str)
+{
     $GLOBALS['ocms_warnings'][] = $str;
     debug($str, 'dev');
 }
@@ -882,21 +923,23 @@ function devbug($str) {
  * @param string $str
  * @return string
  */
-function showError($str) {
+function showError($str)
+{
 
     return '<div class="ocms_error">' . $str . '</div>';
 }
 
 /**
  * Met en majuscule les premiers mots après $impexp
- * 
+ *
  * @example phrase 1. phrase 2    => ". " => Phrase 1. Phrase 2
  *
  * @param string $impexp Délimiteur de majuscule
  * @param string $sentence_split phrase
  * @return string
  */
-function ucSentence($sentence_split, $impexpA = array(". ", "! ", "? ")) {
+function ucSentence($sentence_split, $impexpA = array(". ", "! ", "? "))
+{
     if (!is_array($impexpA)) {
         $impexpA = array($impexpA);
     }
@@ -919,7 +962,8 @@ function ucSentence($sentence_split, $impexpA = array(". ", "! ", "? ")) {
  * Temps d'execution, ...
  *
  */
-function GetStats() {
+function GetStats()
+{
 
 
     if (!empty($_REQUEST['debug'])) {
@@ -955,8 +999,9 @@ function GetStats() {
 }
 
 if (!empty($_REQUEST['debug'])) {
-
-    register_shutdown_function('getStats');
+    global $_Gconfig;
+    $_Gconfig['debugSql'] = 1;
+    register_shutdown_function('printDebugs');
 }
 
 /**
@@ -965,7 +1010,8 @@ if (!empty($_REQUEST['debug'])) {
  * @param string $str
  * @return string Apres addslashes (ou rien)
  */
-function addmyslashes($str) {
+function addmyslashes($str)
+{
     return $str;
     if (ini_get('magic_quotes_gpc'))
         return $str;
@@ -980,7 +1026,8 @@ function addmyslashes($str) {
  * @param unknown_type $sep
  * @return unknown
  */
-function getLgFields($field, $sep) {
+function getLgFields($field, $sep)
+{
 
     $i = 1;
     global $_Gconfig;
@@ -1004,7 +1051,8 @@ function getLgFields($field, $sep) {
  * @param string|array $val2
  * @return bool
  */
-function ake($val1, $val2) {
+function ake($val1, $val2)
+{
     if (is_array($val1)) {
         return @array_key_exists($val2, $val1);
     } else if (is_array($val2)) {
@@ -1026,7 +1074,8 @@ function ake($val1, $val2) {
  * @param <key> $val2
  * @return <mixed>
  */
-function akev($val1, $val2) {
+function akev($val1, $val2)
+{
 //
 //    if (is_array($val2) && !is_array($val1)) {
 //	$val3 = $val2;
@@ -1034,8 +1083,8 @@ function akev($val1, $val2) {
 //	$val1 = $val3;
 //    }
 
-    if (isset($val1[$val2])) { //is_array($val1) && array_key_exists($val2, $val1)) {
-        return $val1[$val2];
+    if (isset($val1[ $val2 ])) { //is_array($val1) && array_key_exists($val2, $val1)) {
+        return $val1[ $val2 ];
     }
     return false;
 }
@@ -1045,20 +1094,22 @@ function akev($val1, $val2) {
  *
  * @return string mot de passe
  */
-function mkPasswd() {
+function mkPasswd()
+{
 
     $consts = 'bcdfgkhijklmnpqrstvwxz';
     $vowels = 'aeiouy';
 
     for ($x = 0; $x < 6; $x++) {
-        mt_srand((double) microtime() * 1000000);
-        $const[$x] = substr($consts, mt_rand(0, strlen($consts) - 1), 1);
-        $vow[$x] = substr($vowels, mt_rand(0, strlen($vowels) - 1), 1);
+        mt_srand((double)microtime() * 1000000);
+        $const[ $x ] = substr($consts, mt_rand(0, strlen($consts) - 1), 1);
+        $vow[ $x ] = substr($vowels, mt_rand(0, strlen($vowels) - 1), 1);
     }
     return $const[0] . $vow[0] . $const[2] . $const[1] . $vow[1] . $const[3] . $vow[3] . $const[4];
 }
 
-function mkPasswdLen($length = 8) {
+function mkPasswdLen($length = 8)
+{
 
     // start with a blank password
     $password = "";
@@ -1093,7 +1144,8 @@ function mkPasswdLen($length = 8) {
  * @param unknown_type $string
  * @return unknown
  */
-function unhtmlentities($string) {
+function unhtmlentities($string)
+{
     $trans_tbl = get_html_translation_table(HTML_ENTITIES);
     $trans_tbl = array_flip($trans_tbl);
     $ret = strtr($string, $trans_tbl);
@@ -1106,13 +1158,15 @@ function unhtmlentities($string) {
  * @param unknown_type $str
  * @return unknown
  */
-function enc($str) {
+function enc($str)
+{
 
     return unhtmlentities(htmlEncodeText($str)); //,ENT_QUOTES,'cp1252'));
     //return htmlentities($str,ENT_QUOTES,'cp1252');
 }
 
-function htmlEncodeText($string) {
+function htmlEncodeText($string)
+{
 
     $string = str_replace("&", "#_#", $string);
     $pattern = '<([a-zA-Z0-9\. "\'_\/-=;\(\)?&#%]+)>';
@@ -1120,11 +1174,11 @@ function htmlEncodeText($string) {
     $textMatches = preg_split('/' . $pattern . '/', $string);
 
     foreach ($textMatches as $key => $value) {
-        $textMatches [$key] = htmlentities($value, ENT_QUOTES, 'cp1252');
+        $textMatches [ $key ] = htmlentities($value, ENT_QUOTES, 'cp1252');
     }
 
     for ($i = 0; $i < count($textMatches); $i++) {
-        $textMatches [$i] = $textMatches [$i] . $tagMatches [$i] [0];
+        $textMatches [ $i ] = $textMatches [ $i ] . $tagMatches [ $i ] [0];
     }
     $string = implode(" ", $textMatches);
     $string = str_replace("#_#", "&", $string);
@@ -1133,7 +1187,8 @@ function htmlEncodeText($string) {
 
 /* TRADUCTIONS */
 
-function loadTrads($lge) {
+function loadTrads($lge)
+{
     global $_trads, $atrads, $lg, $admin_trads;
 
 
@@ -1142,11 +1197,11 @@ function loadTrads($lge) {
         $lg = LG;
     }
 
-    if (ake('lgLoaded', $GLOBALS) && $GLOBALS['lgLoaded'][$lg]) {
+    if (ake('lgLoaded', $GLOBALS) && $GLOBALS['lgLoaded'][ $lg ]) {
         return;
     }
 
-    $GLOBALS['lgLoaded'][$lg] = true;
+    $GLOBALS['lgLoaded'][ $lg ] = true;
 
     $sql = 'SELECT trad_id,trad_' . LG . '';
     if (LG != LG_DEF) {
@@ -1154,13 +1209,13 @@ function loadTrads($lge) {
     }
     $sql .= ' FROM s_trad ';
 
-    $res = GetAll($sql);
+    $res = doSql($sql);
 
     foreach ($res as $row) {
 
-        $_trads[$row['trad_id']][$lg] = $row['trad_' . LG_DEF];
-        if ($row['trad_' . $lg]) {
-            $_trads[$row['trad_id']][$lg] = $row['trad_' . $lg];
+        $_trads[ $row['trad_id'] ][ $lg ] = $row[ 'trad_' . LG_DEF ];
+        if ($row[ 'trad_' . $lg ]) {
+            $_trads[ $row['trad_id'] ][ $lg ] = $row[ 'trad_' . $lg ];
         }
     }
 
@@ -1176,7 +1231,8 @@ function loadTrads($lge) {
 if (!function_exists("t")) {
 
 
-    function t($t, $doAdmin = false) {
+    function t($t, $doAdmin = false)
+    {
 
         global $frontAdminTrads, $trads, $_trads, $admin_trads, $otherLg, $atrads;
 
@@ -1195,13 +1251,13 @@ if (!function_exists("t")) {
 
         if (ake($atrads, $t)) {
 
-            if (akev($atrads[$t], $lg)) {
+            if (akev($atrads[ $t ], $lg)) {
                 /* La traduction existe t'elle dans la langue courante ? */
-                $v = $atrads[$t][$lg];
+                $v = $atrads[ $t ][ $lg ];
                 $id = $t;
-            } else if (akev($atrads[$t], $otherLg)) {
+            } else if (akev($atrads[ $t ], $otherLg)) {
                 /* Sinon dans l'autre langue */
-                $v = $atrads[$t][$otherLg]; // '<span lang="'.$otherLg.'">'..'</span>'
+                $v = $atrads[ $t ][ $otherLg ]; // '<span lang="'.$otherLg.'">'..'</span>'
                 $id = $t;
             }
         }
@@ -1212,6 +1268,7 @@ if (!function_exists("t")) {
                 $v = ta($t);
                 $id = $t;
             } else {
+                $GLOBALS['missingTrads'][ $t ] = true;
                 $id = $v = $t;
             }
         }
@@ -1229,7 +1286,8 @@ if (!function_exists("t")) {
 
 }
 
-function tf($t, $rep = array()) {
+function tf($t, $rep = array())
+{
 
     global $_trads, $otherLg;
 
@@ -1252,11 +1310,17 @@ function tf($t, $rep = array()) {
     return $v;
 }
 
-function roundMille($nb, $prec) {
-    return number_format($nb, $prec, ',', ' ');
+function roundMille($nb, $prec)
+{
+    if (LG == 'fr') {
+        return number_format($nb, $prec, ',', ' ');
+    } else {
+        return number_format($nb, $prec, '.', ',');
+    }
 }
 
-function loadParams() {
+function loadParams()
+{
     global $_params;
 
     /* if($_SESSION['_params'])  {
@@ -1264,32 +1328,24 @@ function loadParams() {
       return;
       }
      */
-
+    global $co;
     $sql = 'SELECT param_id,param_valeur FROM s_param';
-    $res = GetAll($sql);
-    $_params = array();
-    foreach ($res as $row) {
-        $_params[$row['param_id']] = $row['param_valeur'];
-    }
-
-    //$_SESSION['_params'] = $_params;
+    $_params = $co->getAssoc($sql);
 }
 
 if (!function_exists("getParam")) {
 
-    function getParam($t) {
+    function getParam($t)
+    {
 
         global $_params;
-        $v = ake($_params, $t) ? $_params[$t] : '';
-        if ($v == "")
-            return $t;
-        else
-            return $v;
+        return ake($_params, $t) ? $_params[ $t ] : $t;
     }
 
 }
 
-function removeaccents($string) {
+function removeaccents($string)
+{
     $string = htmlentities($string, ENT_QUOTES, 'utf-8');
 
     return preg_replace("/&([a-z])[a-z]+;/i", "$1", $string);
@@ -1297,7 +1353,8 @@ function removeaccents($string) {
 
 /* Deporter aussi */
 
-function getBrowserLang() {
+function getBrowserLang()
+{
     $langs = explode(",", $_SERVER["HTTP_ACCEPT_LANGUAGE"]);
 
     //start going through each one
@@ -1314,7 +1371,8 @@ function getBrowserLang() {
     return "fr";
 }
 
-function arraySplit($array_with_elements, $key_name) {
+function arraySplit($array_with_elements, $key_name)
+{
     $key_index = array_keys(array_keys($array_with_elements), $key_name);
     if (count($key_index) != '') {
 
@@ -1323,7 +1381,8 @@ function arraySplit($array_with_elements, $key_name) {
     return $array_with_elements;
 }
 
-function arrayInWord($arr, $word) {
+function arrayInWord($arr, $word)
+{
     if (!is_array($arr)) {
         return false;
     }
@@ -1335,18 +1394,26 @@ function arrayInWord($arr, $word) {
     return false;
 }
 
-function isUploadField($field) {
+function isUploadField($field)
+{
 
-    if (isset($GLOBALS['cache']['isUploadField'][$field])) {
-        return $GLOBALS['cache']['isUploadField'][$field];
+    if (isset($GLOBALS['cache']['isUploadField'][ $field ])) {
+        return $GLOBALS['cache']['isUploadField'][ $field ];
     }
     global $uploadFields;
-    $GLOBALS['cache']['isUploadField'][$field] = arrayInWord($uploadFields, $field);
+    $GLOBALS['cache']['isUploadField'][ $field ] = in_array($field, $uploadFields) || in_array(getBaseLgField($field), $uploadFields);
 
-    return $GLOBALS['cache']['isUploadField'][$field];
+    return $GLOBALS['cache']['isUploadField'][ $field ];
 }
 
-function path_concat() {
+function isRteField($name)
+{
+    global $rteFields;
+    return in_array($name, $rteFields) || in_array(getBaseLgField($name), $rteFields);
+}
+
+function path_concat()
+{
     /*
       Concatene deux bouts de chemins en un seul
      */
@@ -1355,7 +1422,7 @@ function path_concat() {
     $numargs = count($arg_list);
 
     for ($i = 0; $i < $numargs; $i++) {
-        $u2 = $arg_list[$i];
+        $u2 = $arg_list[ $i ];
         if (is_array($u2)) {
             break;
         }
@@ -1374,29 +1441,33 @@ function path_concat() {
 
 //print('XXX'.path_concat('test','test2','/test3'));
 
-function path($u1, $u2) {
+function path($u1, $u2)
+{
     return path_concat($u1, $u2);
 }
 
-function urlconcat($u1, $u2) {
+function urlconcat($u1, $u2)
+{
     return path_concat($u1, $u2);
 }
 
-function SplitParams($p, $first = ';', $second = "=") {
+function SplitParams($p, $first = ';', $second = "=")
+{
     $params = explode($first, $p);
     $retPar = array();
 
     foreach ($params as $param) {
         $t = explode($second, $param);
-        if ($t[0]) {
-            $retPar[$t[0]] = akev($t, 1);
+        if ($t[0] !== "") {
+            $retPar[ $t[0] ] = urldecode(akev($t, 1));
         }
     }
 
     return $retPar;
 }
 
-function numpad($nb, $cpt) {
+function numpad($nb, $cpt)
+{
     while (strlen($nb) < $cpt)
         $nb = '0' . $nb;
     return $nb;
@@ -1407,20 +1478,23 @@ function numpad($nb, $cpt) {
  *
  * @return false
  */
-function getFlashDetection() {
+function getFlashDetection()
+{
 
 
     return false;
 }
 
-function getFlashDetectionSo() {
+function getFlashDetectionSo()
+{
 
     $html = '<script type="text/javascript" src="' . BU . '/js/swfobject.js"></script>';
 
     return $html;
 }
 
-function getFlash($url, $w = 290, $h = 240, $alt = "Flash", $tag = '', $params = array()) {
+function getFlash($url, $w = 290, $h = 240, $alt = "Flash", $tag = '', $params = array())
+{
 
     global $_flashTestPrinted;
 
@@ -1433,28 +1507,29 @@ function getFlash($url, $w = 290, $h = 240, $alt = "Flash", $tag = '', $params =
         $tag = 'flash' . str_replace(',', '', getmicrotime()) . rand(0, 1000);
     }
 
-    $html .= ( '<object id="' . $tag . '" type="application/x-shockwave-flash" data="' . $url . '" width="' . $w . '" height="' . $h . '">');
-    $html .= ( '<param name="play" value="true" />');
-    $html .= ( '<param name="movie" value="' . $url . '" />');
-    $html .= ( '<param name="menu" value="false" />');
+    $html .= ('<object id="' . $tag . '" type="application/x-shockwave-flash" data="' . $url . '" width="' . $w . '" height="' . $h . '">');
+    $html .= ('<param name="play" value="true" />');
+    $html .= ('<param name="movie" value="' . $url . '" />');
+    $html .= ('<param name="menu" value="false" />');
     //$html .= ( '<param name="wmode" value="transparent" />');
-    $html .= ( '<param name="quality" value="high" />');
-    $html .= ( '<param name="allowFullScreen" value="true" />');
-    $html .= ( '<param name="allowScriptAccess" value="always" />');
-    $html .= ( '<param name="scalemode" value="showall" />');
+    $html .= ('<param name="quality" value="high" />');
+    $html .= ('<param name="allowFullScreen" value="true" />');
+    $html .= ('<param name="allowScriptAccess" value="always" />');
+    $html .= ('<param name="scalemode" value="showall" />');
 
     if (is_array($params)) {
         foreach ($params as $k => $v) {
-            $html .= ( '<param name="' . $k . '" value="' . $v . '" />');
+            $html .= ('<param name="' . $k . '" value="' . $v . '" />');
         }
     }
-    $html .= ( '<p>' . $alt . '</p>');
-    $html .= ( '</object>');
+    $html .= ('<p>' . $alt . '</p>');
+    $html .= ('</object>');
 
     return $html;
 }
 
-function getFlashSo($url, $w = 290, $h = 240, $alt = "Flash", $id_tag = '', $wmode = true) {
+function getFlashSo($url, $w = 290, $h = 240, $alt = "Flash", $id_tag = '', $wmode = true)
+{
 
     global $_flashTestPrintedSo;
 
@@ -1488,7 +1563,8 @@ function getFlashSo($url, $w = 290, $h = 240, $alt = "Flash", $id_tag = '', $wmo
  * @param int $alt alternatif
  * @param string $tag id de la balise qui reçoit le flash
  */
-function printFlash($url, $w = 290, $h = 240, $alt = "Flash", $tag = '', $params = array()) {
+function printFlash($url, $w = 290, $h = 240, $alt = "Flash", $tag = '', $params = array())
+{
 
     if ($tag != '') {
 
@@ -1499,26 +1575,31 @@ function printFlash($url, $w = 290, $h = 240, $alt = "Flash", $tag = '', $params
     }
 }
 
-function printFlvplayer($url, $w = 290, $h = 240, $alt = "Flash") {
+function printFlvplayer($url, $w = 290, $h = 240, $alt = "Flash")
+{
 
     printFlash('/flvplayer.swf?file=' . $url . '&amp;txt_clicktoplay=' . t('clicktoplay') . '&amp;txt_buffering=' . t('buffering'), $w, $h, $alt, ' class="flvplayer" ');
 }
 
-function getFlvPlayerSo($url, $w = 440, $h = 340, $alt = "Flash", $idbloc = "div_flv") {
+function getFlvPlayerSo($url, $w = 440, $h = 340, $alt = "Flash", $idbloc = "div_flv")
+{
     return getFlashSo('/flvplayer.swf?file=' . $url . '&amp;txt_clicktoplay=' . t('clicktoplay') . '&amp;txt_buffering=' . t('buffering'), $w, $h, $alt, $idbloc);
 }
 
-function printMp3player($url, $w = 290, $h = 20, $alt = "Flash") {
+function printMp3player($url, $w = 290, $h = 20, $alt = "Flash")
+{
 
     printFlash('/mp3player.swf?file=' . $url, $w, $h, $alt, ' class="mp3player" ');
 }
 
-function getMp3playerSo($url, $w = 290, $h = 20, $alt = "Flash", $idbloc = "") {
+function getMp3playerSo($url, $w = 290, $h = 20, $alt = "Flash", $idbloc = "")
+{
 
     return getFlashSo('/mp3player.swf?autostart=0&file=' . $url, $w, $h, $alt, $idbloc);
 }
 
-function printMedia($url, $alt = "") {
+function printMedia($url, $alt = "")
+{
     $ext = strtolower(substr($url, strrpos($url, '.') + 1));
 
     switch ($ext) {
@@ -1549,11 +1630,13 @@ function printMedia($url, $alt = "") {
     }
 }
 
-function printImage($src, $alt = "", $tag = '') {
+function printImage($src, $alt = "", $tag = '')
+{
     echo getImageTag($src, $alt, $tag);
 }
 
-function getImageTag($src, $alt = "", $tag = '') {
+function getImageTag($src, $alt = "", $tag = '')
+{
     return ('<img src="' . $src . '" alt=' . alt($alt) . ' ' . $tag . ' />');
 }
 
@@ -1563,7 +1646,8 @@ function getImageTag($src, $alt = "", $tag = '') {
  * @param unknown_type $str
  * @return unknown
  */
-function etcom($str) {
+function etcom($str)
+{
     return str_replace(' & ', ' &#38; ', $str);
 }
 
@@ -1572,7 +1656,8 @@ function etcom($str) {
  *
  * @param string $str Erreur a afficher
  */
-function diebug($str) {
+function diebug($str)
+{
     global $genMessages;
 
     derror($str);
@@ -1587,11 +1672,11 @@ function diebug($str) {
  *
  * @return liste des noms des plugins
  */
-function GetPlugins() {
+function GetPlugins()
+{
 
 
-
-    if (!akev($_SESSION['cache'][UNIQUE_SITE], 'activePlugins')) {
+    if (!akev($GLOBALS['GlobalObjCache'][ UNIQUE_SITE ], 'activePlugins')) {
         $sql = 'SELECT * FROM s_plugin AS P WHERE plugin_actif = 1 ORDER BY plugin_ordre ASC';
         $res = GetAll($sql);
         $ret = array();
@@ -1601,9 +1686,9 @@ function GetPlugins() {
         foreach ($res as $v) {
             $ret[] = $v['plugin_nom'];
         }
-        $_SESSION['cache'][UNIQUE_SITE]['activePlugins'] = $ret;
+        $GLOBALS['GlobalObjCache'][ UNIQUE_SITE ]['activePlugins'] = $ret;
     }
-    return $_SESSION['cache'][UNIQUE_SITE]['activePlugins'];
+    return $GLOBALS['GlobalObjCache'][ UNIQUE_SITE ]['activePlugins'];
 }
 
 /**
@@ -1611,11 +1696,12 @@ function GetPlugins() {
  *
  * @return array
  */
-function getGabaritsToIndex() {
+function getGabaritsToIndex()
+{
 
-    if (empty($_SESSION['cache'][UNIQUE_SITE]['gabaritsToIndex'])) {
+    if (empty($GLOBALS['GlobalObjCache'][ UNIQUE_SITE ]['gabaritsToIndex'])) {
 
-        $_SESSION['cache'][UNIQUE_SITE]['gabaritsToIndex'] = array();
+        $GLOBALS['GlobalObjCache'][ UNIQUE_SITE ]['gabaritsToIndex'] = array();
 
         $sql = 'SELECT G.*, R.rubrique_id
 		FROM s_gabarit AS G, s_rubrique AS R
@@ -1626,11 +1712,11 @@ function getGabaritsToIndex() {
         $res = GetAll($sql);
         foreach ($res as $row) {
 
-            $_SESSION['cache'][UNIQUE_SITE]['gabaritsToIndex'][$row['gabarit_index_table']] = $row;
+            $GLOBALS['GlobalObjCache'][ UNIQUE_SITE ]['gabaritsToIndex'][ $row['gabarit_index_table'] ] = $row;
         }
     }
 
-    return $_SESSION['cache'][UNIQUE_SITE]['gabaritsToIndex'];
+    return $GLOBALS['GlobalObjCache'][ UNIQUE_SITE ]['gabaritsToIndex'];
 }
 
 /**
@@ -1640,7 +1726,8 @@ function getGabaritsToIndex() {
  * @param array $r Ligne de la table en question index�e
  * @return unknown
  */
-function getUrlFromSearchOLD($obj, $row) {
+function getUrlFromSearchOLD($obj, $row)
+{
 
     if (!is_array($obj)) {
         $obj['obj'] = $obj;
@@ -1651,26 +1738,27 @@ function getUrlFromSearchOLD($obj, $row) {
     } else {
         $gabs = getGabaritsToIndex();
         //debug($gabs);
-        if (!$gabs[$obj['obj']]) {
+        if (!$gabs[ $obj['obj'] ]) {
             debug('NO GABARIT DEFINED FOR OBJECT : ' . $obj['obj']);
             debug($obj);
             return '';
         }
 
-        $rubid = $gabs[$obj['obj']]['rubrique_id'];
-        $params = $gabs[$obj['obj']]['gabarit_index_url'];
+        $rubid = $gabs[ $obj['obj'] ]['rubrique_id'];
+        $params = $gabs[ $obj['obj'] ]['gabarit_index_url'];
         $params = splitParams($params);
         $mp = array();
         foreach ($params as $param => $value) {
-            $mp[$param] = $row[$value];
+            $mp[ $param ] = $row[ $value ];
         }
     }
 //	debug($gabs[$obj['obj']]['gabarit_classe']);
-    return getUrlFromId(getRubFromGabarit($gabs[$obj['obj']]['gabarit_classe']), LG, $mp);
+    return getUrlFromId(getRubFromGabarit($gabs[ $obj['obj'] ]['gabarit_classe']), LG, $mp);
     return $GLOBALS['site']->g_url->buildUrlFromId($rubid, LG, $mp);
 }
 
-function getUrlFromSearch($obj, $row) {
+function getUrlFromSearch($obj, $row)
+{
 
     if (!is_array($obj)) {
         $obj['obj'] = $obj;
@@ -1691,14 +1779,14 @@ function getUrlFromSearch($obj, $row) {
             return '';
         }
 
-        if (!$gabs[$obj['obj']]) {
+        if (!$gabs[ $obj['obj'] ]) {
             debug('NO GABARIT DEFINED FOR OBJECT : ' . $obj['obj']);
             debug($obj);
             return '';
         }
 
-        $rubid = $gabs[$obj['obj']]['rubrique_id'];
-        $params = $gabs[$obj['obj']]['gabarit_index_url'];
+        $rubid = $gabs[ $obj['obj'] ]['rubrique_id'];
+        $params = $gabs[ $obj['obj'] ]['gabarit_index_url'];
         if (strpos($params, 'php:') !== false) {
             $code = substr($params, 4);
             return eval($code);
@@ -1706,9 +1794,9 @@ function getUrlFromSearch($obj, $row) {
         $params = splitParams($params);
         $mp = array();
         foreach ($params as $param => $value) {
-            $mp[$param] = $row[$value];
+            $mp[ $param ] = $row[ $value ];
         }
-        $rubid = getRubFromGabarit($gabs[$obj['obj']]['gabarit_classe']);
+        $rubid = getRubFromGabarit($gabs[ $obj['obj'] ]['gabarit_classe']);
     }
 //	debug($gabs[$obj['obj']]['gabarit_classe']);
     return getUrlFromId($rubid, LG, $mp);
@@ -1723,7 +1811,8 @@ function getUrlFromSearch($obj, $row) {
  * @param string $separator
  * @return string
  */
-function GetTitleFromRow($table, $row, $separator = " ", $html = false) {
+function GetTitleFromRow($table, $row, $separator = " ", $html = false)
+{
     global $tabForms, $relations, $uploadFields;
 
     if (!$row) {
@@ -1735,21 +1824,21 @@ function GetTitleFromRow($table, $row, $separator = " ", $html = false) {
     }
     $fields = getTabField($table);
 
-    if (!is_array($tabForms[$table]['titre'])) {
-        $tabForms[$table]['titre'] = array($tabForms[$table]['titre']);
+    if (!is_array($tabForms[ $table ]['titre'])) {
+        $tabForms[ $table ]['titre'] = array($tabForms[ $table ]['titre']);
     }
-    reset($tabForms[$table]['titre']);
+    reset($tabForms[ $table ]['titre']);
     $tab = getTabField($table);
     $titre = array();
-    while (list($k, $v) = each($tabForms[$table]['titre'])) {
+    while (list($k, $v) = each($tabForms[ $table ]['titre'])) {
 
-        if (akev($relations, $table) && akev($relations[$table], $v)) {
-            $re = GetRowFromId($relations[$table][$v], $row[$v]);
-            $row[$v] = GetTitleFromRow($relations[$table][$v], $re);
-        } else if (isset($tab[$v]) && $tab[$v]->type == 'date') {
-            $row[$v] = nicetextdate($row[$v]);
-        } else if (isset($tab[$v]) && $tab[$v]->type == 'datetime') {
-            $row[$v] = nicetextdate($row[$v]) . ' ' . nicetime($row[$v]);
+        if (akev($relations, $table) && akev($relations[ $table ], $v)) {
+            $re = GetRowFromId($relations[ $table ][ $v ], $row[ $v ]);
+            $row[ $v ] = GetTitleFromRow($relations[ $table ][ $v ], $re);
+        } else if (isset($tab[ $v ]) && $tab[ $v ]->type == 'date') {
+            $row[ $v ] = nicetextdate($row[ $v ]);
+        } else if (isset($tab[ $v ]) && $tab[ $v ]->type == 'datetime') {
+            $row[ $v ] = nicetextdate($row[ $v ]) . ' ' . nicetime($row[ $v ]);
         }
 
         if ($html && arrayInWord($uploadFields, $v)) {
@@ -1760,16 +1849,14 @@ function GetTitleFromRow($table, $row, $separator = " ", $html = false) {
                 $titre[] = $gf->getThumbImgtag(40, 40);
             }
         } else
-        if (!isset($fields[$v]) || !$fields[$v]) {
-            $titre[] = getLgValue($v, $row);
-        } else {
-            $titre[] = akev($row, $v);
-        }
+            if (!isset($fields[ $v ]) || !$fields[ $v ]) {
+                $titre[] = getLgValue($v, $row);
+            } else {
+                $titre[] = akev($row, $v);
+            }
     }
 
     $titre = array_diff($titre, array(''));
-
-
 
     return implode($titre, $separator);
 }
@@ -1782,7 +1869,8 @@ function GetTitleFromRow($table, $row, $separator = " ", $html = false) {
  * @param string $separator
  * @return string
  */
-function getDescFromRow($table, $row, $limit = 60, $separator = " ") {
+function getDescFromRow($table, $row, $limit = 60, $separator = " ")
+{
 
     if (class_exists($table) && method_exists($table, 'getDesc')) {
         $o = new $table($row);
@@ -1791,28 +1879,29 @@ function getDescFromRow($table, $row, $limit = 60, $separator = " ") {
 
     global $tabForms;
 
-    if (empty($tabForms[$table]['desc'])) {
+    if (empty($tabForms[ $table ]['desc'])) {
 
         return '';
     }
 
     $titre = '';
-    if (!is_array($tabForms[$table]['desc'])) {
-        $tabForms[$table]['desc'] = array(is_array($tabForms[$table]['desc']));
+    if (!is_array($tabForms[ $table ]['desc'])) {
+        $tabForms[ $table ]['desc'] = array(is_array($tabForms[ $table ]['desc']));
     }
-    reset($tabForms[$table]['desc']);
-    while (list($k, $v) = each($tabForms[$table]['desc'])) {
+    reset($tabForms[ $table ]['desc']);
+    while (list($k, $v) = each($tabForms[ $table ]['desc'])) {
         if (isBaseLgField($v, $table)) {
             $titre .= limitWords(getLgValue($v, $row), $limit) . $separator;
         } else {
-            $titre .= limitWords($row[$v], $limit) . $separator;
+            $titre .= limitWords($row[ $v ], $limit) . $separator;
         }
     }
 
     return $titre;
 }
 
-function getImgFromRow($table, $row, $w = 100, $h = 100) {
+function getImgFromRow($table, $row, $w = 100, $h = 100)
+{
     global $tabForms;
 
     if (class_exists($table) && method_exists($table, 'getImg')) {
@@ -1820,8 +1909,8 @@ function getImgFromRow($table, $row, $w = 100, $h = 100) {
         return $o->getImg($w, $h);
     }
 
-    if (!empty($tabForms[$table]['img'])) {
-        $gf = new genFile($table, $tabForms[$table]['img'], $row);
+    if (!empty($tabForms[ $table ]['img'])) {
+        $gf = new genFile($table, $tabForms[ $table ]['img'], $row);
         return $gf->getCropImgtag($w, $h);
     }
 }
@@ -1831,15 +1920,16 @@ function getImgFromRow($table, $row, $w = 100, $h = 100) {
  *
  * @return array
  */
-function GetTablesToIndex() {
+function GetTablesToIndex()
+{
 
-    if (empty($_SESSION['cache_' . UNIQUE_SITE]['tablesToIndex'])) {
+    if (empty($GLOBALS['GlobalObjCache'][ UNIQUE_SITE ]['tablesToIndex'])) {
         $g = getGabaritsToIndex();
         $ar = array_keys($g);
         $ar[] = 's_rubrique';
-        $_SESSION['cache_' . UNIQUE_SITE]['tablesToIndex'] = $ar;
+        $GLOBALS['GlobalObjCache'][ UNIQUE_SITE ]['tablesToIndex'] = $ar;
     }
-    return $_SESSION['cache_' . UNIQUE_SITE]['tablesToIndex'];
+    return $GLOBALS['GlobalObjCache'][ UNIQUE_SITE ]['tablesToIndex'];
 }
 
 /**
@@ -1848,7 +1938,8 @@ function GetTablesToIndex() {
  * @param unknown_type $tab
  * @return unknown
  */
-function htmlArray($tab) {
+function htmlArray($tab)
+{
 
     foreach ($tab as $k => $v) {
         $html .= '<h2>' . t($k) . '</h2>';
@@ -1862,23 +1953,24 @@ function htmlArray($tab) {
  *
  *
  */
-function addSimpleQuotes($tab) {
+function addSimpleQuotes($tab)
+{
 
     $newTab = array();
 
     for ($i = 0; $i < count($tab); $i++) {
-        $newTab[$i] = "'" . $tab[$i] . "'";
+        $newTab[ $i ] = "'" . $tab[ $i ] . "'";
     }
 
     return $newTab;
 }
 
-if (empty($_SESSION['cache'])) {
-    $_SESSION['cache'] = array();
+if (empty($GLOBALS['GlobalObjCache'])) {
+    $GLOBALS['GlobalObjCache'] = array();
 }
 
-if (!ake($_SESSION['cache'][UNIQUE_SITE], 'cache_rubgab')) {
-    $_SESSION['cache'][UNIQUE_SITE]['cache_rubgab'] = array();
+if (!ake($GLOBALS['GlobalObjCache'][ UNIQUE_SITE ], 'cache_rubgab')) {
+    $GLOBALS['GlobalObjCache'][ UNIQUE_SITE ]['cache_rubgab'] = array();
 }
 
 /**
@@ -1888,16 +1980,18 @@ if (!ake($_SESSION['cache'][UNIQUE_SITE], 'cache_rubgab')) {
  * @param string $param
  * @return int
  */
-function getRubFromGabarit($gab, $param = '') {
+function getRubFromGabarit($gab, $param = '', $all = false)
+{
 
-    if (empty($_SESSION['cache'][UNIQUE_SITE]['cache_rubgab'][$gab . $param])) {
+    if (empty($GLOBALS['GlobalObjCache'][ UNIQUE_SITE ]['cache_rubgab'][ $gab . $param . $all ])) {
 
-        $sql = 'SELECT rubrique_id , G.* FROM s_rubrique AS R, s_gabarit AS G
+        $sql = 'SELECT ' . ($all ? 'R.*' : 'R.rubrique_id') . '  , 
+                    G.* FROM s_rubrique AS R, s_gabarit AS G
 					WHERE G.gabarit_id = R.fk_gabarit_id AND 
 					G.gabarit_classe LIKE "' . mes($gab) . '" 
 					' . sqlRubriqueOnlyOnline('R') . ' AND 
 					( G.fk_default_rubrique_id = R.rubrique_id  OR 
-					G.fk_default_rubrique_id = R.fk_rubrique_version_id ) ';
+					G.fk_default_rubrique_id = R.' . MULTIVERSION_FIELD . '  ) ';
 
         if ($param) {
             $sql .= 'AND rubrique_gabarit_param LIKE ' . sql('%' . $param . '%') . ' ';
@@ -1905,7 +1999,7 @@ function getRubFromGabarit($gab, $param = '') {
         $row = GetSingle($sql);
 
         if (!count($row)) {
-            $sql = 'SELECT rubrique_id FROM s_rubrique AS R, s_gabarit AS G
+            $sql = 'SELECT ' . ($all ? 'R.*' : 'R.rubrique_id') . ' FROM s_rubrique AS R, s_gabarit AS G
 						WHERE G.gabarit_id = R.fk_gabarit_id AND 
 						G.gabarit_classe LIKE "' . mes($gab) . '" 
 						' . sqlRubriqueOnlyOnline('R') . ' AND 
@@ -1913,23 +2007,29 @@ function getRubFromGabarit($gab, $param = '') {
             $row = GetSingle($sql);
         }
         if ($row) {
-            $_SESSION['cache'][UNIQUE_SITE]['cache_rubgab'][$gab . $param] = $row['rubrique_id'];
+            if ($all) {
+                $GLOBALS['GlobalObjCache'][ UNIQUE_SITE ]['cache_rubgab'][ $gab . $param . $all ] = $row;
+            } else {
+                $GLOBALS['GlobalObjCache'][ UNIQUE_SITE ]['cache_rubgab'][ $gab . $param . $all ] = $row['rubrique_id'];
+            }
         } else {
-            if (!empty($GLOBALS['site']->g_url->rootHomeId))
-                $_SESSION['cache'][UNIQUE_SITE]['cache_rubgab'][$gab . $param] = $GLOBALS['site']->g_url->rootHomeId;
-            else
-                $_SESSION['cache'][UNIQUE_SITE]['cache_rubgab'][$gab . $param] = '';
+            if (!empty($GLOBALS['site']->g_url->rootHomeId)) {
+                $GLOBALS['GlobalObjCache'][ UNIQUE_SITE ]['cache_rubgab'][ $gab . $param . $all ] = $GLOBALS['site']->g_url->rootHomeId;
+            } else {
+                $GLOBALS['GlobalObjCache'][ UNIQUE_SITE ]['cache_rubgab'][ $gab . $param . $all ] = '';
+            }
         }
     }
 
-    return $_SESSION['cache'][UNIQUE_SITE]['cache_rubgab'][$gab . $param];
+    return $GLOBALS['GlobalObjCache'][ UNIQUE_SITE ]['cache_rubgab'][ $gab . $param . $all ];
 }
 
 /**
  * Inclu les fichiers config des plugins
  *
  */
-function initPlugins() {
+function initPlugins()
+{
 
     $plugs = GetPlugins();
 
@@ -1945,9 +2045,10 @@ function initPlugins() {
  * @param string $clef
  * @return mixed
  */
-function geta($array, $clef) {
+function geta($array, $clef)
+{
     if (array_key_exists($clef, $array)) {
-        return $array[$clef];
+        return $array[ $clef ];
     }
     return '';
 }
@@ -1958,7 +2059,8 @@ function geta($array, $clef) {
  * @param unknown_type $texte
  * @return unknown
  */
-function alt($texte) {
+function alt($texte)
+{
 
     return '"' . str_replace(array('"', "\n", "\r"), array('&quot;', " ", " "), $texte) . '"';
 }
@@ -1967,16 +2069,16 @@ if (ini_get('magic_quotes_gpc')) {
 
     foreach ($_GET as $k => $v) {
         if (!is_array($v))
-            $_GET[$k] = stripslashes($v);
+            $_GET[ $k ] = stripslashes($v);
     }
 
     foreach ($_POST as $k => $v) {
         if (!is_array($v))
-            $_POST[$k] = stripslashes($v);
+            $_POST[ $k ] = stripslashes($v);
     }
     foreach ($_REQUEST as $k => $v) {
         if (!is_array($v))
-            $_REQUEST[$k] = stripslashes($v);
+            $_REQUEST[ $k ] = stripslashes($v);
     }
 }
 
@@ -1988,7 +2090,8 @@ if (ini_get('magic_quotes_gpc')) {
  * @param string $str
  * @return string
  */
-function etamp($str) {
+function etamp($str)
+{
 
     $str = str_replace('&amp;', '**ET^AMP**', $str);
     $str = str_replace('&', '&amp;', $str);
@@ -2000,7 +2103,8 @@ function etamp($str) {
  *
  * @param unknown_type $params
  */
-function getUrlWithParams($params = array()) {
+function getUrlWithParams($params = array())
+{
 
     if (!is_object($GLOBALS['site'])) {
         $u = new genUrlV2(LG);
@@ -2010,7 +2114,8 @@ function getUrlWithParams($params = array()) {
     return $GLOBALS['site']->g_url->getUrlWithParams($params);
 }
 
-function addParamsToUrl($params = array()) {
+function addParamsToUrl($params = array())
+{
 
     return $GLOBALS['site']->g_url->getUrlWithParams(array_merge($GLOBALS['site']->g_url->paramsUrl, $params));
 }
@@ -2023,7 +2128,8 @@ function addParamsToUrl($params = array()) {
  * @param array $params
  * @return string URL
  */
-function getUrlFromId($id, $lg = '', $params = array(), $action = '') {
+function getUrlFromId($id, $lg = '', $params = array(), $action = '')
+{
     if (!isset($GLOBALS['site']) || !is_object($GLOBALS['site'])) {
         $u = new genUrlV2($lg);
         return $u->buildUrlFromId($id, $lg, $params, $action);
@@ -2037,7 +2143,8 @@ function getUrlFromId($id, $lg = '', $params = array(), $action = '') {
  * @param int $longueurMax
  * @return string
  */
-function substrWithNoCutWord($chaine, $debut, $longueurMax) {
+function substrWithNoCutWord($chaine, $debut, $longueurMax)
+{
 
     //return mb_substr($chaine,0,mb_strpos($chaine,' ',$longueurMax));
 
@@ -2046,10 +2153,9 @@ function substrWithNoCutWord($chaine, $debut, $longueurMax) {
         $tab = explode(' ', $chaine);
         $result = '';
         for ($i = 0; $i < count($tab) - 1; $i++) {
-            $result .= $tab[$i] . ' ';
+            $result .= $tab[ $i ] . ' ';
         }
-    }
-    else
+    } else
         $result = $chaine;
 
     return $result;
@@ -2062,7 +2168,8 @@ function substrWithNoCutWord($chaine, $debut, $longueurMax) {
  * @param string $gab
  * @return int
  */
-function getRubriqueByGabarit($gab) {
+function getRubriqueByGabarit($gab)
+{
 
     $sql = 'SELECT R.rubrique_id
 					FROM s_rubrique AS R , s_gabarit AS G
@@ -2095,19 +2202,21 @@ function getRubriqueByGabarit($gab) {
  * @param string $texte
  * @return string
  */
-function nbsp($texte) {
+function nbsp($texte)
+{
     return str_replace(' ', '&nbsp;', $texte);
 }
 
 /**
- * Autant d'arguments voulus possibles, 
- * on les parcourt dans l'ordre 
+ * Autant d'arguments voulus possibles,
+ * on les parcourt dans l'ordre
  * des qu'un n'est pas nul on le retourne
  *
  * @param unknown_type $a
  * @return unknown
  */
-function choose($a) {
+function choose($a)
+{
     $argc = func_num_args();
     for ($i = 0; $i < $argc; $i++) {
         $arg = func_get_arg($i);
@@ -2126,7 +2235,8 @@ function choose($a) {
  * @param unknown_type $val
  * @return unknown
  */
-function isTrue($val) {
+function isTrue($val)
+{
     $val = strtolower($val);
     $arrayTrue = array('1', 'oui', 'yes', 'o', 'y', 'on', 'true');
     return in_array($val, $arrayTrue);
@@ -2136,7 +2246,8 @@ function isTrue($val) {
  * Retourne l'adresse absolue du serveur
  * @return string
  */
-function getServerUrl() {
+function getServerUrl()
+{
     return 'http' . (akev($_SERVER, 'HTTPS') == 'on' ? 's' : '') . '://' . $_SERVER['HTTP_HOST'];
 }
 
@@ -2144,10 +2255,11 @@ function getServerUrl() {
  * Inclu les classes nécessaires
  * pour l'envoi de mails via PHPMAILER
  * et retourne un phpmailer configuré
- * 
+ *
  * @return PHPMailer PHPMailer
  */
-function includeMail() {
+function includeMail()
+{
 
     /**
      * Inclusion
@@ -2189,11 +2301,13 @@ function includeMail() {
  * @param nom $nom
  * @return bool
  */
-function pluginExists($nom) {
+function pluginExists($nom)
+{
     return ake($GLOBALS['site']->plugins, $nom);
 }
 
-function url($url) {
+function url($url)
+{
 
     if (strpos($url, 'http') !== false) {
         return $url;
@@ -2202,7 +2316,8 @@ function url($url) {
     }
 }
 
-function printDebugs() {
+function printDebugs()
+{
     /*     * ********
       DEBUG DES REQUETES SQL
       util uniquement en préprod
@@ -2227,10 +2342,10 @@ function printDebugs() {
             }
             $info = '';
             if (ake($sql['sql'], $donesSql)) {
-                $info = '[<strong style="background:yellow">DEJA FAITE LIGNE :' . $donesSql[$sql['sql']] . '</strong>]';
+                $info = '[<strong style="background:yellow">DEJA FAITE LIGNE :' . $donesSql[ $sql['sql'] ] . '</strong>]';
             }
             print('<div style="background:' . $bg . ';padding:5px;">' . $k . ' - ' . $info . ' ' . $sql['time'] . ' : ' . $sql['sql'] . '' . $sql['profile'] . '</div>');
-            $donesSql[$sql['sql']] = $k;
+            $donesSql[ $sql['sql'] ] = $k;
         }
         p('</div>');
     }
@@ -2253,22 +2368,23 @@ function printDebugs() {
     GetStats();
 }
 
-function GetTitleFromTable($table, $separator = " ") {
+function GetTitleFromTable($table, $separator = " ")
+{
     global $tabForms;
     $fields = getTabField($table);
 
     /**
      * Si on a plusieurs champs titre
      */
-    if (!is_array($tabForms[$table]['titre'])) {
-        $tabForms[$table]['titre'] = array($tabForms[$table]['titre']);
+    if (!is_array($tabForms[ $table ]['titre'])) {
+        $tabForms[ $table ]['titre'] = array($tabForms[ $table ]['titre']);
     }
 
     $titre = '';
     /**
      * On parcourt tous les champs
      */
-    foreach ($tabForms[$table]['titre'] as $k => $v) {
+    foreach ($tabForms[ $table ]['titre'] as $k => $v) {
 
         /**
          * On ne met le séparateur qu'à partir du second
@@ -2278,7 +2394,7 @@ function GetTitleFromTable($table, $separator = " ") {
         /**
          * Si le champ existe c'est un champ normal
          */
-        if (isset($fields[$v])) {
+        if (isset($fields[ $v ])) {
             $titre .= $sep . '' . $v;
 
             /**
@@ -2315,7 +2431,8 @@ function GetTitleFromTable($table, $separator = " ") {
  * strip_tags: string with tags to strip, ex: "<a><p><quote>" etc.
  * strip_content flag: TRUE will also strip everything between open and closed tag
  */
-function strip_selected_tags($str, $tags = "", $stripContent = false) {
+function strip_selected_tags($str, $tags = "", $stripContent = false)
+{
     preg_match_all("/<([^>]+)>/i", $tags, $allTags, PREG_PATTERN_ORDER);
     foreach ($allTags[1] as $tag) {
         if ($stripContent) {
@@ -2326,7 +2443,8 @@ function strip_selected_tags($str, $tags = "", $stripContent = false) {
     return $str;
 }
 
-function isNull($str) {
+function isNull($str)
+{
 
     if ($str == "NULL")
         return true;
@@ -2344,12 +2462,14 @@ function isNull($str) {
     return false;
 }
 
-function xss($str) {
+function xss($str)
+{
 
     return htmlentities($str, ENT_QUOTES, 'utf-8');
 }
 
-function ocmsAutoload($classe) {
+function ocmsAutoload($classe)
+{
     $GLOBALS['gb_obj']->includeFile($classe . '.php', 'autoload');
 }
 
@@ -2374,7 +2494,8 @@ spl_autoload_register('ocmsAutoload');
 
   } */
 
-function getAllPictos($size = "32x32") {
+function getAllPictos($size = "32x32")
+{
     $dir = str_replace(ADMIN_URL, '', ADMIN_PICTOS_FOLDER);
     $pictosDir = array(
         $dir . '' . $size . '/actions/',
@@ -2401,7 +2522,8 @@ function getAllPictos($size = "32x32") {
     return $tab;
 }
 
-function getGabaritClass($gab, $param = '', $instanciate = true) {
+function getGabaritClass($gab, $param = '', $instanciate = true)
+{
 
     $className = $gab['gabarit_classe'];
 
@@ -2435,7 +2557,8 @@ function getGabaritClass($gab, $param = '', $instanciate = true) {
     return $bddClasse;
 }
 
-function getObjUrl() {
+function getObjUrl($lg = LG)
+{
 
     $t = akev($_GET, 'curTable');
     $i = akev($_GET, 'curId');
@@ -2446,18 +2569,20 @@ function getObjUrl() {
 
     if ($t == 's_rubrique') {
         $r = getRealForRubrique($i);
-        if (!empty($r['rubrique_id']))
-            return getUrlFromId($r['rubrique_id'], LG, array(), ('editer'));
+        if (!empty($r['rubrique_id'])) {
+            return getUrlFromId($r['rubrique_id'], $lg) . '?_version=' . $i;
+        }
     } else {
         global $tabForms;
-        if (!empty($tabForms[$t]['view'])) {
-            $id = getRubFromGabarit($tabForms[$t]['view']['gabarit'], $tabForms[$t]['view']['gabaritparam']);
-            return getUrlFromId($id, LG, array($tabForms[$t]['view']['clef'] => $i));
+        if (!empty($tabForms[ $t ]['view'])) {
+            $id = getRubFromGabarit($tabForms[ $t ]['view']['gabarit'], $tabForms[ $t ]['view']['gabaritparam']);
+            return getUrlFromId($id, $lg, array($tabForms[ $t ]['view']['clef'] => $i));
         }
     }
 }
 
-function br2nl($string) {
+function br2nl($string)
+{
     $return = preg_replace('/\<br(\s*)?\/?\>/i', "\n", $string);
     $return = str_replace('<p', " \n <p", $return);
     $return = str_replace('<div', " \n <div", $return);
@@ -2465,13 +2590,15 @@ function br2nl($string) {
     return $return;
 }
 
-function myStripTags($str, $allow = '') {
+function myStripTags($str, $allow = '')
+{
     $str = br2nl($str);
     $str = strip_tags($str, $allow);
     return $str;
 }
 
-function xmlencode($str) {
+function xmlencode($str)
+{
     $str = str_replace('&amp;', '[ETAMP]', $str);
     $str = str_replace(array('&', '[ETAMP]'), '&amp;', $str);
     return $str;
@@ -2482,7 +2609,8 @@ function xmlencode($str) {
  * sinon la même requete avec le hash de verification
  * @param $src Chemin complet
  */
-function getThumbCacheFile($src, $u = false) {
+function getThumbCacheFile($src, $u = false)
+{
     global $_Gconfig;
 
 
@@ -2505,6 +2633,7 @@ function getThumbCacheFile($src, $u = false) {
     $cacheFile = md5($src_clean);
 
     $cachePath = path_concat($_SERVER['DOCUMENT_ROOT'], THUMBPATH, 'cache', $cacheFile, filesize($u), basename($u));
+    return $src;
     /**
      * Si le fichier de cache existe
      */
@@ -2517,14 +2646,16 @@ function getThumbCacheFile($src, $u = false) {
     return $src; // . '&hash=' . $hash;
 }
 
-class pagination {
+class pagination
+{
 
     public $nbPages = 1;
     public $requestParamName = 'page';
     public $tplName = 'pagination';
     public $tplFolder = 'template';
 
-    public function __construct($nbPages) {
+    public function __construct($nbPages)
+    {
 
         $this->nbPages = $nbPages;
 
@@ -2533,23 +2664,23 @@ class pagination {
          */
         $this->params = $GLOBALS['site']->g_url->paramsUrl;
         $this->params = !empty($GLOBALS['site']->g_url->paramsUrl) ? $GLOBALS['site']->g_url->paramsUrl : !empty($_POST) ? $_POST : $_GET;
-		
-		unset($this->params['genform_action']);
-		unset($this->params['curId']);
-		unset($this->params['fromList']);
-		unset($this->params['action']);
-		unset($this->params['gs_adminuser']);
-		unset($this->params['gs_adminpassword']);
-		unset($this->params['gs_fromForm']);
-		unset($this->params['gs_askedFor']);
-		unset($this->params['gs_fromForm']);
-		if($_GET['curTable'] && !$this->params['curTable']){
-			$this->params['curTable'] = $_GET['curTable'];
-		}
-		
+
+        unset($this->params['genform_action']);
+        unset($this->params['curId']);
+        unset($this->params['fromList']);
+        unset($this->params['action']);
+        unset($this->params['gs_adminuser']);
+        unset($this->params['gs_adminpassword']);
+        unset($this->params['gs_fromForm']);
+        unset($this->params['gs_askedFor']);
+        unset($this->params['gs_fromForm']);
+        if ($_GET['curTable'] && !$this->params['curTable']) {
+            $this->params['curTable'] = $_GET['curTable'];
+        }
     }
 
-    public function gen() {
+    public function gen()
+    {
 
         /**
          * Si une seule page on ne fait rien
@@ -2558,7 +2689,7 @@ class pagination {
             return;
         }
 
-        $page = $_REQUEST[$this->requestParamName] ? $_REQUEST[$this->requestParamName] : 1;
+        $page = $_REQUEST[ $this->requestParamName ] ? $_REQUEST[ $this->requestParamName ] : 1;
 
         /**
          * Template de pagination
@@ -2607,14 +2738,13 @@ class pagination {
         }
 
 
-
         /**
          * On parcourt les pages
          */
         for ($p = 1; $p <= $this->nbPages; $p++) {
 
             if ($this->nbPages > 10) {
-                if (( $p == 1 || $p == $this->nbPages || $p == $page || ($p % 10 == 0) || abs($page - $p) < 3)) {
+                if (($p == 1 || $p == $this->nbPages || $p == $page || ($p % 10 == 0) || abs($page - $p) < 3)) {
                     // on affiche ce numéro
                 } else {
                     if ($lastDotted) {
@@ -2649,7 +2779,8 @@ class pagination {
         return $tpl->gen();
     }
 
-    function getUrlWithParams($p) {
+    function getUrlWithParams($p)
+    {
         if ($GLOBALS['site']->g_url) {
             return getUrlWithParams($p);
         } else {
@@ -2661,7 +2792,8 @@ class pagination {
 
 if (!function_exists('http_build_str')) {
 
-    function http_build_str($query, $prefix = '', $arg_separator = '') {
+    function http_build_str($query, $prefix = '', $arg_separator = '')
+    {
         if (!is_array($query)) {
             return null;
         }
@@ -2683,3 +2815,64 @@ if (!function_exists('http_build_str')) {
 
 }
 
+function updateParam($nom, $val)
+{
+    $sql = 'REPLACE s_param SET param_valeur = "' . mes($val) . '",  param_id = "' . $nom . '" ';
+    DoSql($sql);
+}
+
+function updateNextCacheUpdate()
+{
+
+    global $_Gconfig, $co;
+
+    if (!$co || !empty($_Gconfig['nextCacheAlreadyUpdated'])) {
+        return;
+    }
+
+    $_Gconfig['nextCacheAlreadyUpdated'] = true;
+    $sql = 'SELECT ' . $_Gconfig['field_date_online'] . ' FROM s_rubrique WHERE '
+        . ' ' . $_Gconfig['field_date_online'] . ' > NOW()'
+        . ' ORDER BY  ' . $_Gconfig['field_date_online'] . ' ASC '
+        . ' LIMIT 0,1';
+    $val = strtotime($co->getOne($sql));
+
+    $sql = 'SELECT ' . $_Gconfig['field_date_offline'] . ' FROM s_rubrique WHERE '
+        . ' ' . $_Gconfig['field_date_offline'] . ' > NOW()'
+        . ' ORDER BY  ' . $_Gconfig['field_date_offline'] . ' ASC '
+        . ' LIMIT 0,1';
+    $val = minButNotNull(strtotime($co->getOne($sql)), $val);
+
+    foreach ($_Gconfig['futurOnlineFields'] as $k => $v) {
+        $sql = 'SELECT ' . $v . ' FROM ' . $k . ' WHERE ' . $v . ' > NOW() '
+            . ' ORDER BY ' . $v . ' ASC '
+            . 'LIMIT 0,  1 ';
+
+        $val = minButNotNull(strtotime($co->getOne($sql)), $val);
+    }
+
+    foreach ($_Gconfig['futurOfflineFields'] as $k => $v) {
+        $sql = 'SELECT ' . $v . ' FROM ' . $k . ' WHERE ' . $v . ' > NOW() '
+            . ' ORDER BY ' . $v . ' ASC '
+            . 'LIMIT 0,  1 ';
+
+        $val = minButNotNull(strtotime($co->getOne($sql)), $val);
+    }
+
+
+    updateParam('next_cache_update', $val);
+    file_put_contents(path_concat(INCLUDE_PATH, 'temoinnextcache'), $val);
+}
+
+function minButNotNull($a, $b)
+{
+    if (!isNull($a)) {
+        if (!isNull($b)) {
+            return min($a, $b);
+        } else {
+            return $a;
+        }
+    } else {
+        return $b;
+    }
+}

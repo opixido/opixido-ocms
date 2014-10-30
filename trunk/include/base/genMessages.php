@@ -66,8 +66,8 @@ class genMessages {
     }
 
     function genMessage($msg, $level) {
-        $level = $level == 'info' ? 'success' : $level;
-        p('<div class="box-shadow alert alert-' . $level . '" ><a class="close" data-dismiss="alert" href="#">×</a>');
+        $level = $level == 'info' ? 'secondary' : 'danger';
+        p('<div class="box-shadow alert ' . $level . '" ><a  onclick="$(this).parent().remove();" href="#">X</a>');
 
         if (is_array($msg) || is_object($msg)) {
             p('<pre>');

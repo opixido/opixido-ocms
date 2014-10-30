@@ -45,7 +45,7 @@ if (!empty($_REQUEST['lg'])) {
     $lg = LG_DEF;
 }
 
-
+ini_set('display_errors', 'on');
 define('LG', $lg);
 
 
@@ -59,13 +59,20 @@ $genMessages = new genMessages();
 
 $gb_obj->includeAdmin();
 
-
-
+global $gs_obj;
+/**
+ * @var $gs_obj genSecurity
+ */
 $gs_obj = new genSecurity();
+
 
 $gs_obj->needAuth();
 
 initPlugins();
+
+if (isset($_POST['gs_adminuser'])) {
+    $gs_obj->getRoles(true);
+}
 
 loadParams();
 
@@ -93,15 +100,12 @@ if (isset($_REQUEST['popup'])) {
     $gadmin->gen();
 }
 
-
 $genMessages->gen();
 
 
-if (isset($profileSTR) && (strstr($_SERVER['REMOTE_ADDR'], '192.168.1.') || strstr($_SERVER['REMOTE_ADDR'], '82.67.200.175') || $_REQUEST['debug'] )) {
+if (isset($profileSTR) && (strstr($_SERVER['REMOTE_ADDR'], '192.168.1.') || strstr($_SERVER['REMOTE_ADDR'], '82.67.200.175') || $_REQUEST['debug'])) {
     print($profileSTR);
 }
 
-
-echo getStats();
 
 

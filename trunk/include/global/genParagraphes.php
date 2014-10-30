@@ -54,10 +54,16 @@ class genParagraphes {
              * */
             $tpl = new genTemplate(true);
 
-            if (ake($_REQUEST, 'ocms_mode') && $para['para_type_template_' . $_REQUEST['ocms_mode']])
+            if (!empty($para['para_type_tpl_file'])) {
+                $file = str_replace('.php', '', basename($para['para_type_tpl_file']));
+                $folder = dirname($para['para_type_tpl_file']);
+                $tpl->loadTemplate($file, $folder);
+            } else
+            if (ake($_REQUEST, 'ocms_mode') && $para['para_type_template_' . $_REQUEST['ocms_mode']]) {
                 $tpl->setTemplate($para['para_type_template_' . $_REQUEST['ocms_mode']]);
-            else
+            } else {
                 $tpl->setTemplate('' . $para['para_type_template']);
+            }
 
 
 
@@ -116,9 +122,16 @@ class genParagraphes {
             $tpl->setVar('file1_size', $fichier->getNiceSize());
             $tpl->setVar('file1_type', mb_strtoupper($fichier->getExtension()));
             $tpl->setVar('file1_name', $fichier->getRealName());
-            $tpl->setVar('file1_legend', getLgValue('paragraphe_file_1_legend', $para));
+            $tpl->setVar('file1_legend', choose(getLgValue('paragraphe_file_1_legend', $para),$fichier->getRealName()));
             $tpl->setVar('link1', getLgValue('paragraphe_link_1', $para));
 
+            if (strlen(trim(GetLgValue('paragraphe_contenu_csv', $para)))) {
+                $params = $_GET;
+
+                $params['para'] = $para['paragraphe_id'];
+                $params['export'] = 'tableau.csv';
+                $tpl->setVar('dwl_csv', '<a class="exporter_tableau btn" href="' . $GLOBALS['site']->g_url->getUrlWithParams($params) . '" ><span class="icon-lien-rond"></span> ' . t('exporter_tableau') . '</a>');
+            }
 
             if (akev($_REQUEST, 'pdf')) {
                 $tpl->setVar('img', $img->getWebUrl());
@@ -144,7 +157,7 @@ class genParagraphes {
 
     function gen() {
 
-        $c = new genCache('para_' . $this->id . '_' . $this->site->getCurId(), strtotime($this->rubrique->rubrique['rubrique_date_publi']));
+        $c = new genCache('para_' . $this->id . '_' . $this->site->getCurId(), ($this->rubrique->date_publi));
 
         if (!$c->cacheExists()) {
 
@@ -168,4 +181,3 @@ class genParagraphes {
     }
 
 }
-

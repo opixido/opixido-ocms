@@ -28,7 +28,6 @@ include('agressiveCache.php');
  */
 require('./include/include.php');
 
-
 /**
  * Utile pour les connexions au front office
  *
@@ -83,7 +82,7 @@ $site = new GenSite();
  */
 $site->init();
 
-/**
+/** 
  * Post-initialisation
  */
 $site->afterInit();

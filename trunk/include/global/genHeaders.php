@@ -31,6 +31,7 @@ class genHeaders {
     public $titleSep = ' - ';
     public $firstBody = '';
     public $getAllCss = false;
+    public $metas = array();
 
     /**
      * Contenu des CSS en ligne
@@ -76,73 +77,89 @@ class genHeaders {
      */
     public function __construct($site) {
         $this->site = $site;
-
-        $this->addCss('base.css', 'global');
-        $this->addScript('base.js', true, 'global');
     }
 
-    /**
-     * Generates full headers
-     *
-     * @return unknown
-     */
-    public function gen() {
-
-        global $_Gconfig;
-
-        $tpl = new genTemplate();
-        $tpl->loadTemplate('headers.html');
-
-
+    public function genJs($type = false) {
         /**
          * Compression et Cache des JS
          */
         if (count($this->jsFiles)) {
-
-            $preHeaders = $this->html_headers;
-            $this->html_headers = '';
-
-            foreach ($this->jsFiles as $k => $v) {
-
-                $jsF = $this->getJsPath($v);
-                /**
-                 * Un seul js mis en cache
-                 */
-                $this->html_headers .= ( '<script type="text/javascript" src="' . $jsF . '"></script>' . "\n");
+            $x = '';
+            if ($type) {
+                if (!empty($this->jsFiles[$type])) {
+                    $jsF = $this->getJsPath($this->jsFiles[$type]);
+                    $x .= ( '<script src="' . $jsF . '"></script>' . "\n");
+                }
+            } else {
+                foreach ($this->jsFiles as $k => $v) {
+                    $jsF = $this->getJsPath($v);
+                    /**
+                     * Un seul js mis en cache
+                     */
+                    $x .= ( '<script src="' . $jsF . '"></script>' . "\n");
+                }
             }
-            $this->html_headers .= $preHeaders;
+
+            return $x;
         }
+    }
 
+    public function genCss() {
+        $x = '';
 
+        global $_Gconfig;
+
+        if (!$_Gconfig['groupCssFiles']) {
+            foreach ($this->cssFiles as $group => $medias) {
+                foreach ($medias as $media => $fichiers) {
+                    foreach ($fichiers as $fichier) {
+                        $x .= "\n" . '<link rel="stylesheet" media="' . $media . '" href="' . path_concat(BU, '/', $fichier) . '"  />' . "\n";
+                    }
+                }
+            }
+
+            return $x;
+        }
 
         /**
          * Compression et Cache des CSS
          */
         if (count($this->cssFiles)) {
-
-            $preHeaders = $this->html_headers;
-            $this->html_headers = '';
-
-            foreach ($this->cssFiles as $k => $v) {
-
-                $pathCss = $this->getCssPath($v);
-
-                /**
-                 * Un seul CSS mis en cache
-                 */
-                $this->html_headers .= "\n" . '<style type="text/css" media="screen"> /*' . $k . '-' . implode('-', $v) . '*/ @import "' . $pathCss . '"; </style>' . "\n";
+            foreach ($this->cssFiles as $group => $medias) {
+                $x .= $this->genCssByGroup($group);
             }
-            $this->html_headers .= $preHeaders;
         }
-
-
-
         /**
          * Compression des CSS en ligne
          */
         if (strlen($this->cssTexts)) {
-            $this->addHtmlHeaders('<style type="text/css"> ' . compressCSS($this->cssTexts) . ' </style>' . "\n");
+            $x .= ('<style type="text/css"> ' . compressCSS($this->cssTexts) . ' </style>' . "\n");
         }
+        return $x;
+    }
+
+    public function genCssByGroup($group) {
+        $x = '';
+        $medias = $this->cssFiles[$group];
+        if (!$medias) {
+            return '';
+        }
+        foreach ($medias as $media => $fichiers) {
+            $pathCss = $this->getCssPath($fichiers);
+            /**
+             * Un seul CSS mis en cache
+             */
+            $x .= "\n" . '<link rel="stylesheet" media="' . $media . '" href="' . $pathCss . '" data-files="' . $group . ':' . implode(':', $fichiers) . '" />' . "\n";
+        }
+        return $x;
+    }
+
+    public function genHtmlHeaders($more = '') {
+
+        $tpl = new genTemplate();
+        $tpl->loadTemplate('headers.html');
+
+        $this->html_headers .= $more;
 
         $tpl->set('lg', $this->site->getLg());
 
@@ -154,6 +171,20 @@ class genHeaders {
 
 
         return $tpl->gen();
+    }
+
+    /**
+     * Generates full headers
+     *
+     * @return unknown
+     */
+    public function gen() {
+
+        $x = '';
+        $x .= $this->genCss();
+        $x .= $this->genJs();
+
+        return $this->genHtmlHeaders($x);
     }
 
     public function getJsPath($fichiers) {
@@ -173,7 +204,6 @@ class genHeaders {
              * Si le cache est expiré ou inexistant
              * On récupère le contenu de toutes les js
              */
-            $j = new ECMAScriptPacker();
             foreach ($fichiers as $v) {
 
                 $jj = @file_get_contents($_SERVER['DOCUMENT_ROOT'] . BU . SEP . $v);
@@ -190,12 +220,13 @@ class genHeaders {
                 /**
                  * Si déjà compressé on ne touche pas
                  */
-                if (substr($jj, 0, 10) == '/*packed*/') {
+                if (substr($jj, 0, 10) == '/*packed*/' || !$_Gconfig['compressJsFiles']) {
                     $js .= $jj . "\n";
                 } else {
                     /**
                      * Sinon on compresse
                      */
+                    $j = new ECMAScriptPacker();
                     $js .= $j->pack($jj) . "\n";
                 }
             }
@@ -240,7 +271,7 @@ class genHeaders {
              */
             foreach ($fichiers as $v) {
                 if ($csT = file_get_contents($_SERVER['DOCUMENT_ROOT'] . BU . SEP . $v)) {
-                    $css .= $csT . "\n";
+                    $css .= $this->fixCssPath($csT, $_SERVER['DOCUMENT_ROOT'] . BU . SEP . $v) . "\n";
                 } else {
                     devbug('Cant load CSS : ' . $_SERVER['DOCUMENT_ROOT'] . BU . SEP . $v);
                 }
@@ -248,21 +279,32 @@ class genHeaders {
             /**
              * On les compresse
              */
-            $css = compressCss($css);
+            if ($_Gconfig['compressCssFiles']) {
+                $css = compressCss($css);
+            }
 
-            $css = str_replace('(/', '(' . path_concat($_Gconfig['CDN'], BU, '/', $this->addFolder, '/img/'), $css);
-            $css = str_replace('../img/', path_concat($_Gconfig['CDN'], BU, '/', $this->addFolder, '/img/'), $css);
 
 
             /**
              * Et on sauvegarde
              */
             $cssCache->saveCache($css);
-            //$a = new tsmartsprite($cssCache->cache_path);
-            //$cssCacheName = str_replace('.css','-sprite.css',$cssCacheName);
+//$a = new tsmartsprite($cssCache->cache_path);
+//$cssCacheName = str_replace('.css','-sprite.css',$cssCacheName);
         }
 
         return $_Gconfig['CDN'] . BU . '/' . $this->fCacheFolder . '/' . $cssCacheName;
+    }
+
+    public function fixCssPath($content, $cssPath) {
+        $cssPath = str_replace("\\", "/", dirname($cssPath));
+        $cssPath = str_replace(str_replace("\\", "/", $_SERVER['DOCUMENT_ROOT']), '', $cssPath) . '/';
+
+        $search = '#url\((?!\s*[\'"]?(?:https?:)?//)\s*([\'"])?#';
+        $replace = "url($1{$cssPath}";
+        $css = preg_replace($search, $replace, $content);
+
+        return $css;
     }
 
     /**
@@ -272,16 +314,15 @@ class genHeaders {
      * @param bool $addBase if FALSE you have to set the FULL path to the file in $name
      * @param string $tag additional parameters to add in the script tag
      */
-    public function addScript($name, $addBase = true, $group = 'page') {
-        global $_Gconfig;
+    public function addScript($name, $addBase = true, $group = 'page', $atTop = false) {
+
         if ($addBase) {
             $name = 'js/' . $name;
         }
-
-        if ($group && $_Gconfig['compressJsFiles']) {
-            $this->jsFiles[$group][] = $name;
+        if ($atTop) {
+            array_unshift($this->jsFiles[$group], $name);
         } else {
-            $this->addHtmlHeaders('<script type="text/javascript" src="' . path_concat(BU, '/', $name) . '" ></script>');
+            $this->jsFiles[$group][] = $name;
         }
     }
 
@@ -299,20 +340,14 @@ class genHeaders {
      *
      * @param string $name
      */
-    public function addCss($name, $group = 'page') {
-        global $_Gconfig;
+    public function addCss($name, $group = 'page', $media = 'screen') {
 
         if (strpos($name, '/') === false) {
             $name = 'css/' . $name;
-            //$this->addHtmlHeaders('<style type="text/css" media="screen"> @import "'.$name.'"; </style>');
+//$this->addHtmlHeaders('<style type="text/css" media="screen"> @import "'.$name.'"; </style>');
         }
 
-        if ($group && $_Gconfig['compressCssFiles']) {
-            $this->cssFiles[$group][] = $name;
-        } else {
-            $name = path_concat(BU, '/', $name);
-            $this->addHtmlHeaders('<style type="text/css" media="screen"> @import "' . ($name) . '"; </style>');
-        }
+        $this->cssFiles[$group][$media][] = $name;
     }
 
     /**
@@ -360,6 +395,10 @@ class genHeaders {
         return $this->title;
     }
 
+    public function setMeta($name, $value) {
+        $this->metas[$name] = $value;
+    }
+
     public function setMetaKeywords($str) {
         $this->meta_keywords = $str;
     }
@@ -381,8 +420,10 @@ class genHeaders {
     }
 
     public function getHtmlHeaders() {
+        foreach ($this->metas as $k => $v) {
+            $this->html_headers .= '<meta name="' . $k . '" content=' .alt($v) . ' />';
+        }
         return $this->html_headers;
     }
 
 }
-

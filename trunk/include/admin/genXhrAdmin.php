@@ -6,8 +6,7 @@
  *
  * ******************** */
 
-class genXhrAdmin
-{
+class genXhrAdmin {
 
     /**
      *
@@ -18,8 +17,7 @@ class genXhrAdmin
     public $real_fk_rub = false;
     public $insideRealRubId = false;
 
-    function __construct($table, $id)
-    {
+    function __construct($table, $id) {
 
         $this->table = $table;
         $this->id = $id;
@@ -29,22 +27,17 @@ class genXhrAdmin
 
 
 
-        if(!$this->gs->isLogged())
-        {
+        if (!$this->gs->isLogged()) {
             die();
         }
-        if(empty($_REQUEST['field']))
-        {
+        if (empty($_REQUEST['field'])) {
             $_REQUEST['field'] = '';
         }
 
         $this->field = strstr($_REQUEST['field'], "_-_") ? explode("_-_", $_REQUEST['field']) : $_REQUEST['field'];
-        if(!$this->field)
-        {
+        if (!$this->field) {
             $this->field = akev($_SESSION, 'lastUsedField');
-        }
-        else
-        {
+        } else {
             $_SESSION['lastUsedField'] = $this->field;
         }
 
@@ -57,18 +50,15 @@ class genXhrAdmin
      *
      * @return unknown
      */
-    function LoadPlugins()
-    {
+    function LoadPlugins() {
 
         $plugs = GetPlugins();
 
-        foreach($plugs as $v)
-        {
+        foreach ($plugs as $v) {
 
             $GLOBALS['gb_obj']->includeFile('admin.php', PLUGINS_FOLDER . '' . $v . '/');
             $adminClassName = $v . 'Admin';
-            if(class_exists($adminClassName))
-            {
+            if (class_exists($adminClassName)) {
 
                 $this->plugins[$v] = new $adminClassName($this);
             }
@@ -79,12 +69,10 @@ class genXhrAdmin
       Dispatcher des actions
      */
 
-    function gen()
-    {
+    function gen() {
 
 
-        switch($_REQUEST['xhr'])
-        {
+        switch ($_REQUEST['xhr']) {
 
             case 'tablerel':
                 $this->searchTableRel();
@@ -166,41 +154,46 @@ class genXhrAdmin
 
             case 'deleteFile':
                 $this->deleteFile();
+
+            case 'genformReloadField';
+                $this->reloadField();
         }
     }
 
-    function loadFileTag()
-    {
+    function reloadField() {
+        $gf = new GenForm($_REQUEST['curTable'], 'post', $_REQUEST['curId']);
+        if (isBaseLgField($_REQUEST['curField'], $_REQUEST['curTable'])) {
+            $gf->genlg($_REQUEST['curField']);
+        } else {
+            $gf->gen($_REQUEST['curField']);
+        }
+    }
+
+    function loadFileTag() {
 
         $gf = new genFile($_REQUEST['curTable'], $_REQUEST['champ'], $_REQUEST['curId']);
         echo $gf->genAdminTag();
         die();
     }
 
-    function deleteFile()
-    {
+    function deleteFile() {
         global $gs_obj;
-        if($gs_obj->can('edit', $_REQUEST['curTable'], array(), $_REQUEST['curId'], $_REQUEST['curChamp']))
-        {
+        if ($gs_obj->can('edit', $_REQUEST['curTable'], array(), $_REQUEST['curId'], $_REQUEST['curChamp'])) {
             $gf = new genFile($_REQUEST['curTable'], $_REQUEST['curChamp'], $_REQUEST['curId']);
             $gf->deleteFile(true);
             global $getRowFromId_cacheRow;
             $getRowFromId_cacheRow = array();
             $gf = new genFile($_REQUEST['curTable'], $_REQUEST['curChamp'], $_REQUEST['curId']);
-            if(!empty($_REQUEST['small']))
-            {
+            if (!empty($_REQUEST['small'])) {
                 echo $gf->genSmallAdminTag();
-            }
-            else
-            {
+            } else {
                 echo $gf->genAdminTag();
             }
             die();
         }
     }
 
-    function upload()
-    {
+    function upload() {
 
 
         header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
@@ -209,8 +202,7 @@ class genXhrAdmin
         header("Cache-Control: post-check=0, pre-check=0", false);
         header("Pragma: no-cache");
         global $gs_obj;
-        if(!$gs_obj->can('edit', $_REQUEST['curTable'], array(), $_REQUEST['curId'], $_REQUEST['champ']))
-        {
+        if (!$gs_obj->can('edit', $_REQUEST['curTable'], array(), $_REQUEST['curId'], $_REQUEST['champ'])) {
             die('access denied');
         }
 
@@ -227,10 +219,10 @@ class genXhrAdmin
          */
         $fileName = isset($_REQUEST["name"]) ? $_REQUEST["name"] : '';
 
-        if(isset($_SERVER["HTTP_CONTENT_TYPE"]))
+        if (isset($_SERVER["HTTP_CONTENT_TYPE"]))
             $contentType = $_SERVER["HTTP_CONTENT_TYPE"];
 
-        if(isset($_SERVER["CONTENT_TYPE"]))
+        if (isset($_SERVER["CONTENT_TYPE"]))
             $contentType = $_SERVER["CONTENT_TYPE"];
 
         $tempName = md5($_SESSION['gs_admin_id'] . '_' . $_REQUEST['curTable'] . '_' . $_REQUEST['curId'] . '_' . $_REQUEST['champ']);
@@ -243,61 +235,48 @@ class genXhrAdmin
 
 
         // Handle non multipart uploads older WebKit versions didn't support multipart in HTML5
-        if(strpos($contentType, "multipart") !== false)
-        {
-            if(isset($_FILES['file']['tmp_name']) && is_uploaded_file($_FILES['file']['tmp_name']))
-            {
+        if (strpos($contentType, "multipart") !== false) {
+            if (isset($_FILES['file']['tmp_name']) && is_uploaded_file($_FILES['file']['tmp_name'])) {
                 // Open temp file
 
                 $out = fopen($tempFullPath, $chunk == 0 ? "wb" : "ab");
-                if($out)
-                {
+                if ($out) {
                     // Read binary input stream and append it to temp file
                     $in = fopen($_FILES['file']['tmp_name'], "rb");
 
-                    if($in)
-                    {
-                        while($buff = fread($in, 4096))
+                    if ($in) {
+                        while ($buff = fread($in, 4096))
                             fwrite($out, $buff);
-                    }
-                    else
+                    } else
                         die('{"jsonrpc" : "2.0", "error" : {"code": 101, "message": "Failed to open input stream."}, "id" : "id"}');
                     fclose($in);
                     fclose($out);
                     @unlink($_FILES['file']['tmp_name']);
-                }
-                else
+                } else
                     die('{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Failed to open output stream."}, "id" : "id"}');
-            }
-            else
+            } else
                 die('{"jsonrpc" : "2.0", "error" : {"code": 103, "message": "Failed to move uploaded file."}, "id" : "id"}');
-        } else
-        {
+        } else {
             // Open temp file
             $out = fopen($tempFullPath, $chunk == 0 ? "wb" : "ab");
-            if($out)
-            {
+            if ($out) {
                 // Read binary input stream and append it to temp file
                 $in = fopen("php://input", "rb");
 
-                if($in)
-                {
-                    while($buff = fread($in, 4096))
+                if ($in) {
+                    while ($buff = fread($in, 4096))
                         fwrite($out, $buff);
-                }
-                else
+                } else
                     die('{"jsonrpc" : "2.0", "error" : {"code": 101, "message": "Failed to open input stream."}, "id" : "id"}');
 
                 fclose($in);
                 fclose($out);
-            }
-            else
+            } else
                 die('{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Failed to open output stream."}, "id" : "id"}');
         }
 
 
-        if($chunks - 1 == $chunk || $chunks == 0)
-        {
+        if ($chunks - 1 == $chunk || $chunks == 0) {
 
 
             $gf = new genFile($_REQUEST['curTable'], $_REQUEST['champ'], $_REQUEST['curId'], $fileName, false);
@@ -310,12 +289,9 @@ class genXhrAdmin
             /* chmod($targetDir.DIRECTORY_SEPARATOR.$fileName, 0777);
               chgrp($targetDir.DIRECTORY_SEPARATOR.$filename, 'www-data'); */
             $gf->uploadFile($tempFullPath, true);
-            if(!empty($_REQUEST['type']) && $_REQUEST['type'] == 'small')
-            {
+            if (!empty($_REQUEST['type']) && $_REQUEST['type'] == 'small') {
                 echo $gf->genSmallAdminTag();
-            }
-            else
-            {
+            } else {
                 echo $gf->genAdminTag();
             }
             unlink($tempFullPath);
@@ -325,12 +301,10 @@ class genXhrAdmin
         die('{"jsonrpc" : "2.0", "result" : null, "id" : "id"}');
     }
 
-    function uploadDiaporama()
-    {
+    function uploadDiaporama() {
 
         global $gs_obj;
-        if($gs_obj->can('edit', 'c_programme', array(), $_REQUEST['curId']))
-        {
+        if ($gs_obj->can('edit', 'c_programme', array(), $_REQUEST['curId'])) {
             DoSql('INSERT INTO c_diaporama (diaporama_id, fk_programme_id,diaporama_titre)
                     VALUES ("",' . sql($_REQUEST['curId']) . ',' . sql($_REQUEST['name']) . ') ');
             $_REQUEST['curId'] = $_GET['curId'] = $_POST['curId'] = InsertId();
@@ -341,8 +315,7 @@ class genXhrAdmin
         }
     }
 
-    function uploadRP()
-    {
+    function uploadRP() {
 
 
         header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
@@ -364,10 +337,10 @@ class genXhrAdmin
          */
         $fileName = isset($_REQUEST["name"]) ? $_REQUEST["name"] : '';
 
-        if(isset($_SERVER["HTTP_CONTENT_TYPE"]))
+        if (isset($_SERVER["HTTP_CONTENT_TYPE"]))
             $contentType = $_SERVER["HTTP_CONTENT_TYPE"];
 
-        if(isset($_SERVER["CONTENT_TYPE"]))
+        if (isset($_SERVER["CONTENT_TYPE"]))
             $contentType = $_SERVER["CONTENT_TYPE"];
 
         $tempName = md5($_SESSION['gs_admin_id'] . '_' . $_REQUEST['curTable'] . '_' . $_REQUEST['curId'] . '_' . $_REQUEST['champ']);
@@ -380,72 +353,57 @@ class genXhrAdmin
 
 
         // Handle non multipart uploads older WebKit versions didn't support multipart in HTML5
-        if(strpos($contentType, "multipart") !== false)
-        {
-            if(isset($_FILES['file']['tmp_name']) && is_uploaded_file($_FILES['file']['tmp_name']))
-            {
+        if (strpos($contentType, "multipart") !== false) {
+            if (isset($_FILES['file']['tmp_name']) && is_uploaded_file($_FILES['file']['tmp_name'])) {
                 // Open temp file
 
                 $out = fopen($tempFullPath, $chunk == 0 ? "wb" : "ab");
-                if($out)
-                {
+                if ($out) {
                     // Read binary input stream and append it to temp file
                     $in = fopen($_FILES['file']['tmp_name'], "rb");
 
-                    if($in)
-                    {
-                        while($buff = fread($in, 4096))
+                    if ($in) {
+                        while ($buff = fread($in, 4096))
                             fwrite($out, $buff);
-                    }
-                    else
+                    } else
                         die('{"jsonrpc" : "2.0", "error" : {"code": 101, "message": "Failed to open input stream."}, "id" : "id"}');
                     fclose($in);
                     fclose($out);
                     @unlink($_FILES['file']['tmp_name']);
-                }
-                else
+                } else
                     die('{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Failed to open output stream."}, "id" : "id"}');
-            }
-            else
+            } else
                 die('{"jsonrpc" : "2.0", "error" : {"code": 103, "message": "Failed to move uploaded file."}, "id" : "id"}');
-        } else
-        {
+        } else {
             // Open temp file
             $out = fopen($tempFullPath, $chunk == 0 ? "wb" : "ab");
-            if($out)
-            {
+            if ($out) {
                 // Read binary input stream and append it to temp file
                 $in = fopen("php://input", "rb");
 
-                if($in)
-                {
-                    while($buff = fread($in, 4096))
+                if ($in) {
+                    while ($buff = fread($in, 4096))
                         fwrite($out, $buff);
-                }
-                else
+                } else
                     die('{"jsonrpc" : "2.0", "error" : {"code": 101, "message": "Failed to open input stream."}, "id" : "id"}');
 
                 fclose($in);
                 fclose($out);
-            }
-            else
+            } else
                 die('{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Failed to open output stream."}, "id" : "id"}');
         }
 
 
-        if($chunks - 1 == $chunk || $chunks == 0)
-        {
+        if ($chunks - 1 == $chunk || $chunks == 0) {
 
 
             $x = simplexml_load_file($tempFullPath);
 
             echo '<table class="genform_table">';
-            foreach($x->image as $image)
-            {
+            foreach ($x->image as $image) {
 
 
-                if(empty($image['name']))
-                {
+                if (empty($image['name'])) {
                     continue;
                 }
                 echo '<tr><td>' . $image['name'] . '</td>';
@@ -453,8 +411,7 @@ class genXhrAdmin
                  * On cherche le timecode correspondant
                  */
                 $tc = $x->xpath('//crossfade[@target=' . $image['handle'] . ']');
-                if(empty($tc[0]['start']))
-                {
+                if (empty($tc[0]['start'])) {
                     echo '<td>Timecode (crossfade) correspondant manquant</td></tr>';
                     continue;
                 }
@@ -477,8 +434,7 @@ class genXhrAdmin
                 $n = $n[count($n) - 1];
                 $sql = 'SELECT * FROM c_diaporama WHERE fk_programme_id = ' . sql($_REQUEST['curId']) . ' AND diaporama_img LIKE "%' . $n . '"';
                 $r = getSingle($sql);
-                if(!$r)
-                {
+                if (!$r) {
                     echo '<td>Aucun fichier image dans le diaporama ne correspond</td></tr>';
                     continue;
                 }
@@ -494,16 +450,14 @@ class genXhrAdmin
         die('{"jsonrpc" : "2.0", "result" : null, "id" : "id"}');
     }
 
-    function reloadChamp()
-    {
+    function reloadChamp() {
 
         $gf = new GenForm($_REQUEST['curTable'], 'post', $_REQUEST['curId']);
         echo $gf->gen($_REQUEST['curChamp']);
         die();
     }
 
-    function tablerelAsTags()
-    {
+    function tablerelAsTags() {
         global $tablerel, $_Gconfig;
 
 
@@ -511,43 +465,32 @@ class genXhrAdmin
         $_GET['order'] = $_REQUEST['order'] = $fields[0];
         $_GET['to'] = $_REQUEST['to'] = 'asc';
         $s = new genSearchV2($_REQUEST['table']);
-        $res = $s->doFullSearch($_REQUEST['term']);
+        $clause = '';
+        if ($_Gconfig['specialListingWhere'][$_REQUEST['tablerel']]) {
+            $clause .= $_Gconfig['specialListingWhere'][$_REQUEST['tablerel']]($_REQUEST['curId']);
+        }
+        $res = $s->doFullSearch($_REQUEST['term'], $clause);
+
+
 
         $re = array();
         $pk = getPrimaryKey($_REQUEST['table']);
 
 
         $fieldsD = akev($_Gconfig['tablerelAsTags'][$_REQUEST['tablerel']], 'desc');
-        if(!is_array($fieldsD))
-        {
+        if (!is_array($fieldsD)) {
             $fieldsD = array();
         }
         $tr = $_REQUEST['tablerel'];
 
-        foreach($res as $row)
-        {
+        foreach ($res as $row) {
             $td = $t = array();
-            foreach($fields as $v)
-            {
+            foreach ($fields as $v) {
                 $t[] = $row[$v];
             }
-            /*
-              foreach ($fieldsD as $v) {
-              $td[] = $row[$v];
-              }
-              if ($td) {
-              $td = '<span class="petit">' . implode($td, ' - ') . '</span>';
-              }
-             */
+
             $label = $value = implode($t, " - ");
-            if($tr == 'r_programme_dewey')
-            {
-                $r = explode('.', $t[0]);
-                if(count($r) > 1)
-                {
-                    $label = str_repeat('_', 1 + strlen($r[1])) . $label;
-                }
-            }
+
             $re[] = array('id' => $row[$pk], 'label' => $label, 'value' => $value);
         }
 
@@ -555,8 +498,7 @@ class genXhrAdmin
         die();
     }
 
-    function insertIdForNewForm()
-    {
+    function insertIdForNewForm() {
 
         $gr = new genRecord($_REQUEST['table'], 'new');
         $id = $gr->doRecord();
@@ -565,14 +507,12 @@ class genXhrAdmin
         die();
     }
 
-    function autocompletesearch()
-    {
+    function autocompletesearch() {
 
         $x = array('query' => $_REQUEST['query'], 'suggestions' => array(), 'data' => array());
 
         global $tabForms;
-        if(!$tabForms[$_REQUEST['table']])
-        {
+        if (!$tabForms[$_REQUEST['table']]) {
             die();
         }
 
@@ -584,8 +524,7 @@ class genXhrAdmin
 
 
         $add = true;
-        if(strpos(getTitleFromtable($_REQUEST['table']), $_REQUEST['champ']))
-        {
+        if (strpos(getTitleFromtable($_REQUEST['table']), $_REQUEST['champ'])) {
             $add = false;
         }
 
@@ -595,19 +534,13 @@ class genXhrAdmin
         /**
          * Formatage pour JSON
          */
-        foreach($res as $row)
-        {
-            if(true)
-            {
+        foreach ($res as $row) {
+            if (true) {
                 $x['suggestions'][] = limitwords(strip_tags($row[$_REQUEST['champ']]));
-            }
-            else
-            if($add)
-            {
+            } else
+            if ($add) {
                 $x['suggestions'][] = limitwords(strip_tags($row[$_REQUEST['champ']] . ' - ' . GetTitleFromRow($_REQUEST['table'], $row, ' - ')), 50);
-            }
-            else
-            {
+            } else {
                 $x['suggestions'][] = limitwords(strip_tags(GetTitleFromRow($_REQUEST['table'], $row, ' - ')), 50);
             }
             $x['data'][] = $row[$pk];
@@ -620,8 +553,7 @@ class genXhrAdmin
         die();
     }
 
-    function ajaxAction()
-    {
+    function ajaxAction() {
 
         $action = $_REQUEST['action'];
         $id = $_REQUEST['id'];
@@ -630,18 +562,14 @@ class genXhrAdmin
 
 
 
-        if($GLOBALS['gs_obj']->can($action, $_REQUEST['table'], array(), $_REQUEST['id']))
-        {
+        if ($GLOBALS['gs_obj']->can($action, $_REQUEST['table'], array(), $_REQUEST['id'])) {
 
-            if($action == 'goup')
-            {
+            if ($action == 'goup') {
                 $row = getRowFromId($_REQUEST['table'], $_REQUEST['id']);
                 $fkC = $row[$params['vfk2']] ? $params['vfk2'] : $params['vfk1'];
                 $o = new GenOrder($_REQUEST['table'], $_REQUEST['id'], $row[$fkC], $fkC);
                 $o->GetUp();
-            }
-            else if($action == 'godown')
-            {
+            } else if ($action == 'godown') {
 
                 $row = getRowFromId($_REQUEST['table'], $_REQUEST['id']);
                 $fkC = $row[$params['vfk2']] ? $params['vfk2'] : $params['vfk1'];
@@ -651,8 +579,7 @@ class genXhrAdmin
 
                 $o->GetDown();
             }
-            if($action == 'add')
-            {
+            if ($action == 'add') {
 
                 /* print_r($_REQUEST);
                   print_r(unserialize($_REQUEST['params']));
@@ -685,46 +612,33 @@ class genXhrAdmin
                 $fa->getLine($row, false);
 
                 echo $fa->html;
-            }
-            else if($action == 'del')
-            {
+            } else if ($action == 'del') {
 
                 $gr = new genRecord($table, $id);
                 $gr->DeleteRow($id);
-            }
-            else if($action == 'reorderRelinv')
-            {
-                print_r($params);
-                foreach($params['order'] as $k => $v)
-                {
+            } else if ($action == 'reorderRelinv') {
+                foreach ($params['order'] as $k => $v) {
                     $sql = ('UPDATE ' . $table . ' SET ' . $params['relinv'] . ' = ' . sql($k + 1) . ' WHERE ' . getPrimaryKey($table) . ' = ' . sql($v));
                     echo $sql;
                     Dosql($sql);
                 }
                 die();
             }
-        }
-        else
-        {
+        } else {
             echo 'CANTDO';
         }
     }
 
-    function ajaxForm()
-    {
+    function ajaxForm() {
 
-        if(!empty($_REQUEST['upload']))
-        {
+        if (!empty($_REQUEST['upload'])) {
             echo 'UPLOAD';
             print_r($_REQUEST);
             print_r($_FILES);
-        }
-        else
-        if(ake($_REQUEST, 'save') && $_REQUEST['champ'] && $_REQUEST['id'] && $_REQUEST['table'])
-        {
+        } else
+        if (ake($_REQUEST, 'save') && $_REQUEST['champ'] && $_REQUEST['id'] && $_REQUEST['table']) {
 
-            if($GLOBALS['gs_obj']->can('edit', $_REQUEST['table'], array(), $_REQUEST['id'], $_REQUEST['champ']))
-            {
+            if ($GLOBALS['gs_obj']->can('edit', $_REQUEST['table'], array(), $_REQUEST['id'], $_REQUEST['champ'])) {
 
                 DoSql('UPDATE ' . $_REQUEST['table'] . '
 	    						SET ' . $_REQUEST['champ'] . ' = ' . sql($_REQUEST['save']) . ' 
@@ -735,25 +649,19 @@ class genXhrAdmin
         }
     }
 
-    function ajaxRelinv()
-    {
+    function ajaxRelinv() {
 
 
-        if(!empty($_REQUEST['save']) && $_REQUEST['field'] && $_REQUEST['id'] && $_REQUEST['table'])
-        {
+        if (!empty($_REQUEST['save']) && $_REQUEST['field'] && $_REQUEST['id'] && $_REQUEST['table']) {
 
-            if($GLOBALS['gs_obj']->can('edit', $_REQUEST['table'], array(), $_REQUEST['id'], $_REQUEST['field']))
-            {
+            if ($GLOBALS['gs_obj']->can('edit', $_REQUEST['table'], array(), $_REQUEST['id'], $_REQUEST['field'])) {
 
                 echo DoSql('UPDATE ' . $_REQUEST['table'] . ' SET ' . $_REQUEST['field'] . ' = ' . sql($_REQUEST['save']) . '
 	    					WHERE ' . getPrimaryKey($_REQUEST['table']) . ' = ' . $_REQUEST['id']);
             }
-        }
-        else if(!empty($_REQUEST['fake']))
-        {
+        } else if (!empty($_REQUEST['fake'])) {
 
-            if($GLOBALS['gs_obj']->can('edit', $_REQUEST['table'], array(), $_REQUEST['id'], $_REQUEST['field']))
-            {
+            if ($GLOBALS['gs_obj']->can('edit', $_REQUEST['table'], array(), $_REQUEST['id'], $_REQUEST['field'])) {
 
                 global $_Gconfig, $orderFields;
 
@@ -773,12 +681,10 @@ class genXhrAdmin
                   $id = InsertId(); */
 
 
-                if(!$_REQUEST['id'] || $_REQUEST['id'] == 'new')
-                {
+                if (!$_REQUEST['id'] || $_REQUEST['id'] == 'new') {
                     $_SESSION['sqlWaitingForInsert'][] = 'UPDATE ' . $vals[0] . ' SET ' . $vals[1] . ' = [INSERTID] WHERE ' . getPrimaryKey($vals[0]) . ' = ' . sql($id);
                 }
-                if($orderFields[$vals[0]] && $orderFields[$vals[0]][1] == $vals[1])
-                {
+                if ($orderFields[$vals[0]] && $orderFields[$vals[0]][1] == $vals[1]) {
                     $clefEx = $orderFields[$vals[0]][1];
                     $champOrdre = $orderFields[$vals[0]][0];
                     $r = getSingle('SELECT MAX(' . $champOrdre . ') AS MAXX FROM ' . $vals[0] . ' WHERE ' . $clefEx . ' = ' . sql($_REQUEST['id']));
@@ -792,17 +698,12 @@ class genXhrAdmin
 
                 echo $a->getLine($row, $vals[2]);
             }
-        }
-        else if(!empty($_REQUEST['delete']))
-        {
-            if($GLOBALS['gs_obj']->can('delete', $_REQUEST['table'], array(), $_REQUEST['delete']))
-            {
+        } else if (!empty($_REQUEST['delete'])) {
+            if ($GLOBALS['gs_obj']->can('delete', $_REQUEST['table'], array(), $_REQUEST['delete'])) {
                 $gr = new genRecord($_REQUEST['table'], $_REQUEST['delete']);
                 echo $gr->DeleteRow($_REQUEST['delete']);
                 //echo DoSql('DELETE FROM '.$_REQUEST['table'].' WHERE '.getPrimaryKey($_REQUEST['table']). ' = '.sql($_REQUEST['delete']));
-            }
-            else
-            {
+            } else {
                 echo 'CANTDO';
             }
         }
@@ -810,15 +711,13 @@ class genXhrAdmin
         die();
     }
 
-    function gfa()
-    {
+    function gfa() {
 
         $champ = $_REQUEST['field'];
         echo '<input type="text" class="gfa_input" value="" />';
     }
 
-    function editTrad()
-    {
+    function editTrad() {
 
         $_REQUEST['nom'] = str_replace('ET_', '', $_REQUEST['nom']);
         $s = str_replace(str_replace(ADMIN_URL, "", ADMIN_PICTOS_FOLDER), '[ADMIN_PICTOS_FOLDER]', $_REQUEST['valeur']);
@@ -827,8 +726,7 @@ class genXhrAdmin
         print_r($_REQUEST);
     }
 
-    function getRealLink()
-    {
+    function getRealLink() {
         $id = $_GET['id'];
 
         $site = new GenSite();
@@ -837,8 +735,7 @@ class genXhrAdmin
         print path_concat(WEB_URL, $site->g_url->buildUrlFromId($id));
     }
 
-    function searchTableRel()
-    {
+    function searchTableRel() {
 
         global $tablerel, $_Gconfig;
 
@@ -847,45 +744,43 @@ class genXhrAdmin
         $fk_table = $tables[0] == $_REQUEST['curTable'] ? $tables[1] : $tables[0];
         $fk_pk = $rev[$fk_table];
 
-        if($this->gd)
+        if ($this->gd) {
             $sql = 'SELECT ' . $fk_pk . '
 					FROM ' . mes($_REQUEST['champ']) . ' 
 					WHERE ' . mes($rev[$_REQUEST['curTable']]) . ' = "' . mes($_REQUEST['curId']) . '"
 					
 					';
-        if($_Gconfig['specialListingWhere'][$_REQUEST['champ']])
-        {
+        }
+
+        if ($_Gconfig['specialListingWhere'][$_REQUEST['champ']]) {
             $sql .= $_Gconfig['specialListingWhere'][$_REQUEST['champ']]($_REQUEST['curId']);
         }
 
         $res = GetAll($sql);
 
         $tab = array(0);
-        foreach($res as $row)
-        {
+        foreach ($res as $row) {
             $tab[] = $row[$fk_pk];
         }
 
         $pk2 = getPrimaryKey($fk_table);
 
         $clause = "";
-        if(count($tab))
+        if (count($tab)) {
             $clause = ' AND T.' . $pk2 . ' NOT IN ( ' . implode(',', $tab) . ' )';
-
+        }
 
 
         $s = new genSearchV2($fk_table);
         $res = $s->doFullSearch($_REQUEST['q'], $clause);
 
-        foreach($res as $row)
-        {
+        foreach ($res as $row) {
             print('<option value="' . $row[$pk2] . '">' . getTitleFromRow($fk_table, $row) . '</option>');
         }
         die();
     }
 
-    function searchRelation()
-    {
+    function searchRelation() {
 
         $t = $_REQUEST['table'];
         $fk = str_replace('genform_', '', $_REQUEST['fk']);
@@ -896,21 +791,18 @@ class genXhrAdmin
         $pk2 = getPrimaryKey($table);
         $s = new genSearchV2($table);
         $res = $s->doFullSearch($_REQUEST['q'], $clause, false);
-        foreach($res as $row)
-        {
+        foreach ($res as $row) {
             print('<li><a class="sal" onclick="selectRelationValue(this)" rel="' . $row[$pk2] . '">' . getTitleFromRow($table, $row, ' > ', true) . '</a></li>');
         }
         die();
     }
 
-    function getArboRubs()
-    {
+    function getArboRubs() {
 
         genAdmin::handleOpenRubs();
 
         $this->id = akev($_REQUEST, 'curId');
-        if($this->id)
-        {
+        if ($this->id) {
             $this->row = getSingle('SELECT * FROM s_rubrique WHERE rubrique_id = ' . sql($this->id));
             $this->real_rub_id = $this->row['fk_rubrique_version_id'];
             $this->real_fk_rub = $this->row['fk_rubrique_id'];
@@ -924,21 +816,18 @@ class genXhrAdmin
         p('</div>');
     }
 
-    function recurserub($a, $b, $c)
-    {
+    function recurserub($a, $b, $c) {
 
         $this->sa->recurserub($a, $b, $c);
     }
 
-    function getLinks()
-    {
+    function getLinks() {
         $site = new GenSite();
         $site->initLight();
         $menus = $site->getMenus();
 
         $this->html = '<h1>' . t('choisir_rubrique_ci_dessous') . '</h1><ul>';
-        foreach($menus as $menu)
-        {
+        foreach ($menus as $menu) {
 
             $arbo = $site->g_url->recursRub($menu['rubrique_id']);
             $this->html .= '<li>' . $menu['rubrique_titre_' . LG];
@@ -952,49 +841,40 @@ class genXhrAdmin
     }
 
     private
-            function recursLinks($array, $level = '1', $rootRub = '1')
-    {
-        if(!is_array($array))
-        {
+            function recursLinks($array, $level = '1', $rootRub = '1') {
+        if (!is_array($array)) {
             return;
         }
-        foreach($array as $page)
-        {
+        foreach ($array as $page) {
             $page['url'] = '';
             $url = '@rubrique_id=' . $page['id'];
-            if($level == 1)
-            {
+            if ($level == 1) {
                 $this->html .= ( '<li class="top_div_' . $rootRub . '">');
                 $this->html .= ( '<a onclick="update_links(\'' . $_GET['champ'] . '\',' . $page['id'] . ')" > ' . $page['titre'] . '</a>');
-                if(count($page['sub']) && $level != 3)
-                {
+                if (count($page['sub']) && $level != 3) {
                     $this->html .= ( '<ul class="ul_' . $rootRub . '">');
                     $this->recursLinks($page['sub'], $level + 1, $rootRub);
                     $this->html .= ( '</ul>');
                 }
                 $this->html .= ( '</li>');
-            }
-            else
-            {
+            } else {
                 $this->html .= ( '<li class="level' . $level . '_' . $rootRub . '">');
 
                 $this->html .= ( '<a onclick="update_links(\'' . $_GET['champ'] . '\',' . $page['id'] . ')"  >' . $page['titre'] . '</a>');
-                if(!empty($page['sub']) && $level != 3)
-                {
+                if (!empty($page['sub']) && $level != 3) {
                     $this->html .= ( '<ul>');
                     $this->recursLinks($page['sub'], $level + 1, $rootRub);
                     $this->html .= ( '</ul>');
                 }
                 $this->html .= ( '</li>');
             }
-            if($level == 1)
+            if ($level == 1)
                 $rootRub++;
         }
     }
 
 }
 
-class object
-{
+class object {
     
 }

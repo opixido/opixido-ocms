@@ -238,19 +238,28 @@ function isLoggedIn() {
     return false;
 }
 
-function sqlRubriqueOnlyOnline($alias = '') {
+function sqlRubriqueOnlyOnline($alias = '', $includeDraft = false, $includeMenu = false) {
 
     $sql = ' AND ';
     if (strlen($alias)) {
         $alias = $alias . '.';
         $sql .= $alias;
     }
+    if ($includeDraft && isLoggedIn()) {
+        
+    } else {
+        $sql .= '' . MULTIVERSION_STATE . ' = "' . MV_STATE_ONLINE . '" ';
+    }
 
-    /* if(isLoggedIn())
-      $sql 	.= 'rubrique_etat != "AZ09" ';
-      else
-     */
-    $sql .= 'rubrique_etat = "en_ligne" AND ' . $alias . 'rubrique_type NOT IN ("' . RTYPE_MENUROOT . '")  ';
+    if (!$includeMenu) {
+        $sql .= ' AND ' . $alias . 'rubrique_type NOT IN ("' . RTYPE_MENUROOT . '")  ';
+    }
+
+    global $_Gconfig;
+    $sql .= ' AND ( ' . $alias . $_Gconfig['field_date_online'] . ' <= NOW() OR ' . $alias . $_Gconfig['field_date_online'] . ' = "0000-00-00" )
+		AND (' . $alias . $_Gconfig['field_date_offline'] . ' >= NOW() OR ' . $alias . $_Gconfig['field_date_offline'] . ' = "0000-00-00"  ) ';
+
+
     return $sql;
 }
 
@@ -263,9 +272,9 @@ function sqlMenuOnlyOnline($alias = '') {
     }
 
     if (isLoggedIn())
-        $sql .= 'rubrique_etat != "AZ09" ';
+        $sql .= '' . MULTIVERSION_STATE . '  != "AZ09" ';
     else
-        $sql .= 'rubrique_etat = "en_ligne" AND ' . $alias . 'rubrique_type IN ("' . RTYPE_MENUROOT . '") ';
+        $sql .= '' . MULTIVERSION_STATE . ' = "' . MV_STATE_ONLINE . '" AND ' . $alias . 'rubrique_type IN ("' . RTYPE_MENUROOT . '") ';
     return $sql;
 }
 
@@ -273,14 +282,14 @@ function isRealRubrique($row) {
     if (empty($row)) {
         return false;
     }
-    if ($row['fk_rubrique_version_id'] != 'NULL' && $row['fk_rubrique_version_id'] != '') {
+    if ($row[MULTIVERSION_FIELD] !== $row['rubrique_id']) {
         return false;
     }
     return true;
 }
 
 function isVersionRubrique($row) {
-    if ($row['fk_rubrique_version_id'] != 'NULL' && $row['fk_rubrique_version_id'] != '') {
+    if ($row[MULTIVERSION_FIELD] !== $row['rubrique_id']) {
         return true;
     }
     return false;
@@ -296,7 +305,7 @@ function isRubriqueOnline($roworid) {
     if (!isRealRubrique($row)) {
         $row = getRealForRubrique($row);
     }
-    return $row['rubrique_etat'] == 'en_ligne' ? true : false;
+    return $row[MULTIVERSION_STATE] == MV_STATE_ONLINE ? true : false;
 }
 
 function isRubriqueRealAndOnline($roworid) {
@@ -312,18 +321,14 @@ function isRubriqueRealAndOnline($roworid) {
     if (!in_array($row['rubrique_type'], array("folder", "page", "link", "siteroot")))
         return false;
 
-    return $row['rubrique_etat'] == 'en_ligne' ? true : false;
+    return $row[MULTIVERSION_STATE] == MV_STATE_ONLINE ? true : false;
 }
 
 function sqlRubriqueOnlyReal($alias = "") {
-    return sqlRubriqueChoix('NULL', $alias);
+    return sqlRubriqueChoix('IN (' . sql(MV_STATE_ONLINE) . ' , ' . sql(MV_STATE_OFFLINE) . ')', $alias);
 }
 
-function sqlRubriqueVersions($id, $alias = '') {
-    return sqlRubriqueChoix($id, $alias);
-}
-
-function getVersionForRubrique($roworid) {
+function getVersionsForRubrique($roworid) {
     if (!is_array($roworid)) {
         $row = GetRowFromId('s_rubrique', $roworid);
     } else {
@@ -331,8 +336,8 @@ function getVersionForRubrique($roworid) {
     }
 
     if (!isVersionRubrique($row)) {
-        $sql = 'SELECT * FROM s_rubrique WHERE fk_rubrique_version_id = "' . $row['rubrique_id'] . '"';
-        return GetSingle($sql);
+        $sql = 'SELECT * FROM s_rubrique WHERE ' . MULTIVERSION_FIELD . ' = "' . $row['rubrique_id'] . '" AND rubrique_id != ' . $row['rubrique_id'];
+        return DoSql($sql);
     } else {
         return $row;
     }
@@ -351,8 +356,8 @@ function getRealForRubrique($roworid) {
         $row = $roworid;
     }
 
-    if (!isRealRubrique($row) && !empty($row['fk_rubrique_version_id'])) {
-        $sql = 'SELECT * FROM s_rubrique WHERE rubrique_id = "' . $row['fk_rubrique_version_id'] . '"';
+    if (!isRealRubrique($row) && !empty($row[MULTIVERSION_FIELD])) {
+        $sql = 'SELECT * FROM s_rubrique WHERE rubrique_id = "' . $row[MULTIVERSION_FIELD] . '"';
         return GetSingle($sql);
     } else {
         return $row;
@@ -365,7 +370,7 @@ function UpdateArboTime() {
 }
 
 function sqlRubriqueOnlyVersions($alias = '') {
-    return sqlRubriqueChoix('NOT NULL', $alias);
+    return sqlRubriqueChoix('!= ' . sql(MV_STATE_ONLINE), $alias);
 }
 
 $GLOBALS['actionSaved'] = array();
@@ -387,7 +392,7 @@ function sqlRubriqueChoix($id, $alias = '') {
     if (strlen($alias)) {
         $sql .= $alias . '.';
     }
-    $sql .= 'fk_rubrique_version_id ' . sqlParam($id);
+    $sql .= MULTIVERSION_STATE . ' ' . ($id);
     return $sql;
 }
 
@@ -457,8 +462,10 @@ function tablerelGetOtherTable($tablerela, $curtable) {
 
     global $tablerel;
     $ar = array();
+    $i = 0;
     foreach ($tablerel[$tablerela] as $k => $v) {
-        if ($v != $curtable) {
+        $i++;
+        if ($v != $curtable || $i == 2) {
             $ar['champ'] = $k;
             $ar['table'] = $v;
         } else {
@@ -514,19 +521,33 @@ function getGabaritSubRubs($rub, $gabid) {
 }
 
 function getEnumValues($table, $champ) {
-    $sql = 'SHOW COLUMNS FROM ' . $table . ' LIKE "' . $champ . '"';
-    $row = GetSingle($sql);
 
-    $enum = str_replace(array('enum(', '\'', '"', ')'), '', $row['Type']);
+    if (is_array($table)) {
+        $tab = $table;
+    } else {
+        $tab = getTabField($table);
+    }
+    $enum = str_replace(array('enum(', '\'', '"', ')'), '', implode(',', $tab[$champ]->enums));
     $enums = explode(',', $enum);
     return $enums;
 }
 
 function getSetValues($table, $champ) {
 
-    $tab = getTabField($table);
+    if (is_array($table)) {
+        $tab = $table;
+    } else {
+        $tab = getTabField($table);
+    }
+    $name = $tab[$champ]->type;
+    $set = parseSetValues($name);
 
-    $set = explode(",", substr($tab[$champ]->type, 4, -1));
+    return $set;
+}
+
+function parseSetValues($name) {
+    $set = explode(",", substr($name, 4, -1));
+
     foreach ($set as $k => $v) {
         $set[$k] = substr($v, 1, -1);
     }
@@ -534,3 +555,12 @@ function getSetValues($table, $champ) {
     return $set;
 }
 
+function sqlOnlyReal($table, $alias = '') {
+    global $_Gconfig;
+    if ($alias != '') {
+        $alias = $alias . '.';
+    }
+    if (in_array($table, $_Gconfig['multiVersionTable'])) {
+        return ' AND ' . $alias . MULTIVERSION_FIELD . ' = ' . $alias . getPrimaryKey($table);
+    }
+}

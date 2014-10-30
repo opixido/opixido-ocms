@@ -10,7 +10,7 @@ function hideLoadObj(o) {
 
 jQuery.fn.mload = function(url, data, complete) {
     var o = $(this[0]);
-    if(!data) {
+    if (!data) {
         data = {};
     }
 
@@ -19,17 +19,17 @@ jQuery.fn.mload = function(url, data, complete) {
     /**
      * Chargement Ajax
      */
-    o.load(url, data ,function() {
+    o.load(url, data, function() {
         /**
-			 * Repositionnement au cas où la div de destination aie changée
-			 * Puis disparition
-			 */
+         * Repositionnement au cas où la div de destination aie changée
+         * Puis disparition
+         */
         hideLoadObj(o);
 
         /**
-    		 * Et appel de la fonction du callback
-    		 */
-        if(complete) {
+         * Et appel de la fonction du callback
+         */
+        if (complete) {
             complete();
         }
     });
@@ -39,24 +39,24 @@ jQuery.fn.mload = function(url, data, complete) {
 
 
 function XHR_links(champ) {
-    XHR('index.php?xhr=links&champ='+champ,'',gid(champ+'_links'),'handler_links("'+champ+'")');
+    XHR('index.php?xhr=links&champ=' + champ, '', gid(champ + '_links'), 'handler_links("' + champ + '")');
 }
 
 
-function update_links(champ,id) {
-    gid(champ).value = "@rubrique_id="+id;
+function update_links(champ, id) {
+    gid(champ).value = "@rubrique_id=" + id;
     //gid(champ+'_links').style.display = 'none';
-    showHide(champ+'_links');
+    showHide(champ + '_links');
 }
 
 function handler_links(champ) {
     //gid(champ+'_links').style.display = 'block';
-    showHide(champ+'_links');
+    showHide(champ + '_links');
 }
 
-function XHR_menuArbo(url,obj) {
-    $(".tipsy").hide();
-    $('#arbo_rubs').mload(url+'&xhr=arbo');
+function XHR_menuArbo(url, obj) {
+    $(".tooltip").hide();
+    $('#arbo_rubs').mload(url + '&xhr=arbo');
 }
 
 function XHR_editTrad(obj) {
@@ -64,8 +64,8 @@ function XHR_editTrad(obj) {
 
     $.post("index.php", {
         xhr: "editTrad",
-        nom: obj.name ,
-        valeur : $(obj).val()
+        nom: obj.name,
+        valeur: $(obj).val()
     });
 
 
@@ -75,33 +75,73 @@ function XHR_editTrad(obj) {
 
 }
 
-lastChampRel= '';
+lastChampRel = '';
 lastQ = '';
-function XHR_tablerel(table,id,champ,obj) {
-    if(obj.hasAttribute("value"))
+window.tableRelDef = [];
+function XHR_tablerel(table, id, champ, obj) {
+    if (obj.hasAttribute("value"))
         var q = obj.value;
     else
         var q = obj;
-    if(champ == lastChampRel && q == lastQ) {
+    if (champ == lastChampRel && q == lastQ) {
+       // return;
+    }
+    if (!q) {
+        /**
+         * Champ vide : valeur par défaut
+         */
+        $('#' + champ).html(window.tableRelDef[champ]);
         return;
     }
     lastChampRel = champ;
     lastQ = q;
-    XHR('index.php','?xhr=tablerel&curTable='+table+'&curId='+id+'&champ='+champ+'&q='+q,'','handler_filltablerel(http.responseText)',obj);
+    if (!window.tableRelDef[champ]) {
+        window.tableRelDef[champ] = $('#' + champ).html();
+    }
+    XHR('index.php', '?xhr=tablerel&curTable=' + table + '&curId=' + id + '&champ=' + champ + '&q=' + q, '', 'handler_filltablerel(http.responseText)', obj);
 }
 
 
-function XHRDel404(id,obj) {
-    XHR('index.php','?xhr=del404&id='+id,'');
+$(document).ready(function() {
+    /**
+     * Suppression de la touche enter sur les champs de recherche dans un form
+     * sur les tablerel
+     *
+     * @param {type} param
+     */
+    $('.selectMSearch').on('keypress', function(evt) {
+        var evt = (evt) ? evt : ((event) ? event : null);
+        var node = (evt.target) ? evt.target : ((evt.srcElement) ? evt.srcElement : null);
+        if ((evt.keyCode === 13)) {
+            evt.preventDefault();
+            return false;
+        }
+
+    }).on('keyup', function(evt) {
+        /**
+         * Validation de la recherche autocomplétion sur les tablerel
+         */
+        XHR_tablerel($('#curTable').val(), $('#curId').val(), $(this).closest('.genform_champ').attr('data-champ'), this);
+    });
+
+});
+
+function XHRDel404(id, obj) {
+    XHR('index.php', '?xhr=del404&id=' + id, '');
     obj.parentNode.parentNode.innerHTML = '';
 }
 
 
 function handler_filltablerel(val) {
-    if(lastChampRel){
+
+    if (lastChampRel) {
+
+        if (val.length <= 1) {
+            val = "<option value='' disabled>(aucun résultat)</option>";
+        }
         gid(lastChampRel).innerHTML = val;
-        if(document.all)
-            gid(lastChampRel).outerHTML = gid(lastChampRel+"_").outerHTML;
+        if (document.all)
+            gid(lastChampRel).outerHTML = gid(lastChampRel + "_").outerHTML;
     }
     lastChampRel = false;
 }
@@ -111,24 +151,24 @@ lastClickedElement = false;
 function showLoader(obj) {
     var lood = gid('xhrloader');
 
-    if(obj) {
+    if (obj) {
         var poses = findPos(obj);
 
-        lood.style.left = (poses[0] -16)+"px";
-        lood.style.top = poses[1]+"px";
+        lood.style.left = (poses[0] - 16) + "px";
+        lood.style.top = poses[1] + "px";
 
     } else {
         /*else if(lastClickedElement) {
 
-		var poses = findPos(lastClickedElement);
+         var poses = findPos(lastClickedElement);
 
-		lood.style.left = (poses[0])+"px";
-		lood.style.top = poses[1]+"px";
+         lood.style.left = (poses[0])+"px";
+         lood.style.top = poses[1]+"px";
 
-	}*/
+         }*/
 
-        lood.style.left = (mouseX+20)+"px";
-        lood.style.top = (mouseY+20)+"px";
+        lood.style.left = (mouseX + 20) + "px";
+        lood.style.top = (mouseY + 20) + "px";
     }
 
     lood.style.display = "block";
@@ -136,26 +176,29 @@ function showLoader(obj) {
 
 jsevents = "";
 
-function addJsEvent(event,value) {
+function addJsEvent(event, value) {
 //var d = new Date();
 //jsevents = '<b>'+event+'</b><br/><pre>'+replace(replace(value,'<',('&lt;')),'>',('&gt;'))+'</pre><hr/>' + jsevents;
 //$('#jsevents').innerHTML = jsevents;
 }
 
 
-function replace(string,text,by) {
+function replace(string, text, by) {
     // Replaces text with by in string
     var strLength = string.length, txtLength = text.length;
-    if ((strLength == 0) || (txtLength == 0)) return string;
+    if ((strLength == 0) || (txtLength == 0))
+        return string;
 
     var i = string.indexOf(text);
-    if ((!i) && (text != string.substring(0,txtLength))) return string;
-    if (i == -1) return string;
+    if ((!i) && (text != string.substring(0, txtLength)))
+        return string;
+    if (i == -1)
+        return string;
 
-    var newstr = string.substring(0,i) + by;
+    var newstr = string.substring(0, i) + by;
 
-    if (i+txtLength < strLength)
-        newstr += replace(string.substring(i+txtLength,strLength),text,by);
+    if (i + txtLength < strLength)
+        newstr += replace(string.substring(i + txtLength, strLength), text, by);
 
     return newstr;
 }
@@ -163,9 +206,9 @@ function replace(string,text,by) {
 
 function XHRs(url) {
 
-    if(window.XMLHttpRequest) // Firefox
+    if (window.XMLHttpRequest) // Firefox
         var http = new XMLHttpRequest();
-    else if(window.ActiveXObject) // Internet Explorer
+    else if (window.ActiveXObject) // Internet Explorer
         var http = new ActiveXObject("Microsoft.XMLHTTP");
     else { // XMLHttpRequest non support矰ar le navigateur
         alert("Votre navigateur ne supporte pas les objets XMLHTTPRequest...");
@@ -181,11 +224,11 @@ function XHRs(url) {
 
 }
 
-function XHR(url, paramsUrl, divToFill,dosomethingelse,obj) {
+function XHR(url, paramsUrl, divToFill, dosomethingelse, obj) {
 
-    if(window.XMLHttpRequest) // Firefox
+    if (window.XMLHttpRequest) // Firefox
         var http = new XMLHttpRequest();
-    else if(window.ActiveXObject) // Internet Explorer
+    else if (window.ActiveXObject) // Internet Explorer
         var http = new ActiveXObject("Microsoft.XMLHTTP");
     else { // XMLHttpRequest non support矰ar le navigateur
         alert("Votre navigateur ne supporte pas les objets XMLHTTPRequest...");
@@ -193,61 +236,61 @@ function XHR(url, paramsUrl, divToFill,dosomethingelse,obj) {
 
     showLoader(obj);
 
-    http.open("GET", url+paramsUrl, true);
-    addJsEvent('XHR_SENT',url+paramsUrl);
+    http.open("GET", url + paramsUrl, true);
+    addJsEvent('XHR_SENT', url + paramsUrl);
     http.onreadystatechange = function()
     {
         if (http.readyState == 4)
         {
 
             gid('xhrloader').style.display = "none";
-            addJsEvent('XHR_RECEIVED',http.responseText);
+            addJsEvent('XHR_RECEIVED', http.responseText);
 
-            if(typeof dosomethingelse == 'string') {
-                if(dosomethingelse.length > 0) {
+            if (typeof dosomethingelse == 'string') {
+                if (dosomethingelse.length > 0) {
                     //alert(dosomethingelse);
                     eval(dosomethingelse);
                 }
             }
-            if ( typeof divToFill == 'string') {
-                if(divToFill == 'none') {
+            if (typeof divToFill == 'string') {
+                if (divToFill == 'none') {
                     //alert(http.responseText);
                     return;
-                } else if(divToFill == 'javascript_eval') {
+                } else if (divToFill == 'javascript_eval') {
                     eval(http.responseText);
                     return;
                 }
-                if(gid(divToFill))
+                if (gid(divToFill))
                     divToFill = gid(divToFill);
             }
 
             var resp = http.responseText;
-            if(divToFill) {
+            if (divToFill) {
                 divToFill.innerHTML = http.responseText;
                 checkScripts(divToFill);
             }
 
 
 
-            if(resp.indexOf('//-TOEVAL-') > 0 && resp.indexOf('//-ENDEVAL-') > 0) {
+            if (resp.indexOf('//-TOEVAL-') > 0 && resp.indexOf('//-ENDEVAL-') > 0) {
                 var toev1 = resp.split('//-TOEVAL-');
                 var s = '';
                 var toev = '';
                 for (var p in toev1) {
-                    if(p == 0 )
+                    if (p == 0)
                         continue;
                     s = toev1[p];
-                    toev = s.substring(0,s.indexOf('//-ENDEVAL-'));
+                    toev = s.substring(0, s.indexOf('//-ENDEVAL-'));
                     //alert(toev);
                     eval(toev);
                 }
 
 
             }
-        /*if(scrollto) {
-			scrollToObject(divToFill);
-		}
-		*/
+            /*if(scrollto) {
+             scrollToObject(divToFill);
+             }
+             */
 
         }
     };
@@ -259,21 +302,21 @@ function checkScripts(obj) {
 
     scr = obj.getElementsByTagName('script');
 
-    for(p=0;p<scr.length;p++) {
-        if(scr[p].src) {
-            loadjscssfile(scr[p].src,'js');
+    for (p = 0; p < scr.length; p++) {
+        if (scr[p].src) {
+            loadjscssfile(scr[p].src, 'js');
         } else {
             //eval(scr[p].innerHTML);
-            var fileref=document.createElement('script');
-            fileref.setAttribute("type","text/javascript");
+            var fileref = document.createElement('script');
+            fileref.setAttribute("type", "text/javascript");
             fileref.text = scr[p].innerHTML;
             document.getElementsByTagName("head")[0].appendChild(fileref);
-        //fileref.setAttribute("src", filename)
+            //fileref.setAttribute("src", filename)
         }
     }
 }
-function ajaxSaveValue(obj,table,champ,id) {
-    if(obj.value) {
+function ajaxSaveValue(obj, table, champ, id) {
+    if (obj.value) {
         v = obj.value;
     } else {
         v = obj;
@@ -283,10 +326,10 @@ function ajaxSaveValue(obj,table,champ,id) {
     $.post("index.php", {
         xhr: "ajaxForm",
         table: table,
-        champ : champ ,
-        id : id ,
-        save : v
-    } );
+        champ: champ,
+        id: id,
+        save: v
+    });
 //var url = "index.php?xhr=ajaxForm&table="+table+"&champ="+champ+"&id="+id+"&save="+v+"&";
 //XHR(url);
 }
@@ -303,32 +346,33 @@ function ajaxLgs(divname) {
 
     var sel = div.getElementsByTagName("select");
 
-    if(!sel.length) {
+    if (!sel.length) {
         return;
     }
     sel = sel[0];
     sel.onchange = function() {
         window.ajax_cur_lg[divname] = this.value;
+        showLgField("", this.value);
         sel.style.background = sel.options[sel.selectedIndex].style.background;
-        doAjaxLgs(div,sel.options[sel.selectedIndex].value);
+        doAjaxLgs(div, sel.options[sel.selectedIndex].value);
     };
 
     sel.style.background = sel.options[sel.selectedIndex].style.background;
-    doAjaxLgs(div,curlg);
+    doAjaxLgs(div, curlg);
 }
 
 
-function doAjaxLgs(div,curlg) {
+function doAjaxLgs(div, curlg) {
 
     var spans = div.getElementsByTagName("span");
-    for ( p  in spans ) {
+    for (p  in spans) {
         spa = spans[p];
 
-        if(!spa.style) {
+        if (!spa.style) {
             continue;
         }
 
-        if(spa.className == "lg_"+curlg) {
+        if (spa.className == "lg_" + curlg) {
             spa.style.display = "inline";
         } else {
             spa.style.display = "none";

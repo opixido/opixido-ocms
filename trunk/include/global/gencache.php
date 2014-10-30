@@ -38,7 +38,7 @@ class genCache {
         /**
          * How many times has genCache been instantiated ?
          */
-        $GLOBALS['nbCacheTotal']++;
+        $GLOBALS['nbCacheTotal'] ++;
 
         /**
          * Cache unique filename
@@ -95,8 +95,15 @@ class genCache {
                  * And be newer than content modification
                  */
                 if ($this->cache_time <= filemtime($this->cache_path)) {
-                    $this->cacheChecked = true;
-                    $this->cached = true;
+                    $v = getParam('next_cache_update');
+                    if (!($v) || time() < $v) {
+                        $this->cacheChecked = true;
+                        $this->cached = true;
+                    } else {
+                        $this->cacheChecked = true;
+                        updateNextCacheUpdate();
+                        updateParam('date_update_arbo', time());
+                    }
                 }
             }
         }
@@ -119,7 +126,7 @@ class genCache {
             return;
         }
 
-        $a = file_put_contents($this->cache_path, $str);
+        $a = file_put_contents($this->cache_path, $str, LOCK_EX);
         //chgrp($this->cache_path, 'www-data');
         //chmod($this->cache_path,0777);
         return $a;
@@ -142,7 +149,7 @@ class genCache {
          * Cached version ?
          */
         if (!$this->strCache) {
-            $GLOBALS['nbCacheUsed']++;
+            $GLOBALS['nbCacheUsed'] ++;
             return file_get_contents($this->cache_path);
         }
         return $this->strCache;
@@ -195,7 +202,7 @@ class genCache {
         $GLOBALS['cacheUsed'][] = $this->cache_id;
 
         if (!$this->strCache) {
-            $GLOBALS['nbCacheUsed']++;
+            $GLOBALS['nbCacheUsed'] ++;
             $gza = gzfile($this->cache_path);
             return implode($gza);
         } else {
@@ -204,4 +211,3 @@ class genCache {
     }
 
 }
-

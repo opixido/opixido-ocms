@@ -26,13 +26,14 @@ if (count($_POST)) {
     reset($_POST);
     while (list($k, $v) = each($_POST)) {
         if (substr($k, -2) == "_x" || substr($k, -2) == "_y") {
-            $_POST[substr($k, 0, -2)] = $v;
+            $_POST[ substr($k, 0, -2) ] = $v;
         }
     }
     reset($_POST);
 }
 
-function getNomForOrder($titre) {
+function getNomForOrder($titre)
+{
 
 
     if (is_array($titre)) {
@@ -46,10 +47,6 @@ function getNomForOrder($titre) {
     return $nomSee;
 }
 
-function updateParam($nom, $val) {
-    $sql = 'REPLACE s_param SET param_valeur = "' . mes($val) . '",  param_id = "' . $nom . '" ';
-    DoSql($sql);
-}
 
 if (array_key_exists('editTrads', $_GET)) {
     if ($_GET['editTrads'])
@@ -58,7 +55,8 @@ if (array_key_exists('editTrads', $_GET)) {
         unset($_SESSION['editTrads']);
 }
 
-function getEditTrad($nom) {
+function getEditTrad($nom)
+{
     $html = '';
     if (isset($_SESSION['editTrads'])) {
         $html .= '<a href="javascript:return false;" onclick="gid(\'ET_' . $nom . '\').style.display=\'inline\';return false" >+</a> <input onclick="return false" id="ET_' . $nom . '" type="text" name="ET_' . $nom . '" value=' . alt(t($nom)) . ' style="display:none" onchange="XHR_editTrad(this)" />';
@@ -66,20 +64,21 @@ function getEditTrad($nom) {
     }
 }
 
-function getTableListing($table) {
+function getTableListing($table)
+{
 
     global $_Gconfig;
 
-    if (!empty($GLOBALS['tableListing'][$table])) {
-        return $GLOBALS['tableListing'][$table];
+    if (!empty($GLOBALS['tableListing'][ $table ])) {
+        return $GLOBALS['tableListing'][ $table ];
     }
 
     $liste = akev($_Gconfig['specialListing'], $table);
 
     if ($liste) {
 
-        $GLOBALS['tableListing'][$table] = $_Gconfig['specialListing'][$table]();
-        return $GLOBALS['tableListing'][$table];
+        $GLOBALS['tableListing'][ $table ] = $_Gconfig['specialListing'][ $table ]();
+        return $GLOBALS['tableListing'][ $table ];
     } else {
 
         $sql = 'SELECT G.* FROM ' . $table . ' AS G WHERE 1 ';
@@ -93,9 +92,9 @@ function getTableListing($table) {
         $sql .= 'ORDER BY ' . $nomSql;
         $result = GetAll($sql);
 
-        $GLOBALS['tableListing'][$table] = $result;
+        $GLOBALS['tableListing'][ $table ] = $result;
 
-        return $GLOBALS['tableListing'][$table];
+        return $GLOBALS['tableListing'][ $table ];
     }
 }
 
@@ -106,25 +105,27 @@ function getTableListing($table) {
  * @param unknown_type $row
  * @return unknown
  */
-function getNomForValue($titre, $row) {
+function getNomForValue($titre, $row)
+{
 
 
     if (is_array($titre)) {
         reset($titre);
 
-        while (list(, $chp ) = each($titre)) {
+        while (list(, $chp) = each($titre)) {
 
-            $nomSee .= " " . $row[$chp] . "";
+            $nomSee .= " " . $row[ $chp ] . "";
         }
         // $nomSee = substr($nomSee,0,-2);
     } else {
-        $nomSee = $row[$titre];
+        $nomSee = $row[ $titre ];
     }
 
     return $nomSee;
 }
 
-function tradAdmin($txt, $rel, $table = '') {
+function tradAdmin($txt, $rel, $table = '')
+{
     /* Real name forced : TABLE_NAME.FIELD_NAME */
 
     // $t1 = t( $this->table_name . '.' . $txt );
@@ -158,27 +159,29 @@ function tradAdmin($txt, $rel, $table = '') {
     return $t3;
 }
 
-function rubriqueIsAPage($rubtype) {
+function rubriqueIsAPage($rubtype)
+{
     if (is_object($rubtype))
         $rubtype = $rubtype->tab_default_field['rubrique_type'];
     return in_array($rubtype, array('siteroot', 'page'));
 }
 
-function GetTitleFromTableOLD($table, $separator = " ") {
+function GetTitleFromTableOLD($table, $separator = " ")
+{
     global $tabForms;
     $fields = getTabField($table);
 
     /**
      * Si on a plusieurs champs titre
      */
-    if (!is_array($tabForms[$table]['titre'])) {
-        $tabForms[$table]['titre'] = array($tabForms[$table]['titre']);
+    if (!is_array($tabForms[ $table ]['titre'])) {
+        $tabForms[ $table ]['titre'] = array($tabForms[ $table ]['titre']);
     }
 
     /**
      * On parcourt tous les champs
      */
-    foreach ($tabForms[$table]['titre'] as $k => $v) {
+    foreach ($tabForms[ $table ]['titre'] as $k => $v) {
 
         /**
          * On ne met le séparateur qu'à partir du second
@@ -188,7 +191,7 @@ function GetTitleFromTableOLD($table, $separator = " ") {
         /**
          * Si le champ existe c'est un champ normal
          */
-        if ($fields[$v]) {
+        if ($fields[ $v ]) {
             $titre .= $sep . '' . $v;
 
             /**
@@ -225,7 +228,8 @@ function GetTitleFromTableOLD($table, $separator = " ") {
     return $titre;
 }
 
-function truncate($str, $len = 100) {
+function truncate($str, $len = 100)
+{
     $sstr = strip_tags($str);
     if (strlen($sstr) > $len)
         return substr($sstr, 0, $len) . " ...";
@@ -246,7 +250,8 @@ function truncate($str, $len = 100) {
   }
  */
 
-function GetOnlyEditableVersion($table, $aliase = '') {
+function GetOnlyEditableVersion($table, $aliase = '')
+{
 
     global $multiVersionField, $_Gconfig;
     if (strlen($aliase))
@@ -256,11 +261,18 @@ function GetOnlyEditableVersion($table, $aliase = '') {
         return ' AND ( ' . $aliase . VERSION_FIELD . ' IS NOT NULL AND ' . $aliase . VERSION_FIELD . ' != 0 ) ';
     } else if (in_array($table, $_Gconfig['multiVersionTable'])) {
 
-        return ' AND ' . $aliase . MULTIVERSION_FIELD . ' = ' . getPrimaryKey($table);
+        return ' AND ' . $aliase . MULTIVERSION_FIELD . ' = ' . $aliase . getPrimaryKey($table);
+    } else if (isset($_Gconfig['relOne'][ $table ])) {
+        $i = 0;
+        foreach ($_Gconfig['relOne'][ $table ] as $clef => $tabl) {
+            $i++;
+            return ' AND ' . $aliase . '' . $clef . ' = T' . $i . '.' . getPrimaryKey($tabl);
+        }
     }
 }
 
-function GetOnlyVisibleVersion($table, $aliase = '') {
+function GetOnlyVisibleVersion($table, $aliase = '')
+{
 
     global $multiVersionField, $_Gconfig;
     if (strlen($aliase))
@@ -274,11 +286,13 @@ function GetOnlyVisibleVersion($table, $aliase = '') {
     }
 }
 
-function mymail($to, $sujet = '', $text = '', $headers = '') {
+function mymail($to, $sujet = '', $text = '', $headers = '')
+{
     mail($to, $sujet, $text, $headers);
 }
 
-function sendMails($mails, $mail_tpl, $vars) {
+function sendMails($mails, $mail_tpl, $vars)
+{
 
     foreach ($mails as $mail) {
         if (is_array($mail)) {
@@ -288,33 +302,38 @@ function sendMails($mails, $mail_tpl, $vars) {
     }
 }
 
-function isMultiVersion($table) {
+function isMultiVersion($table)
+{
     global $_Gconfig;
     return (in_array($table, $_Gconfig['multiVersionTable']));
 }
 
-function tradExists($str, $lg = false) {
+function tradExists($str, $lg = false)
+{
     global $admin_trads;
     if ($lg) {
-        return (array_key_exists($str, $admin_trads) && $admin_trads[$str][$lg] != '');
+        return (array_key_exists($str, $admin_trads) && $admin_trads[ $str ][ $lg ] != '');
     } else {
         return array_key_exists($str, $admin_trads);
     }
 }
 
-function GetRubTitle($row) {
+function GetRubTitle($row)
+{
 
     return GetTitleFromRow('s_rubrique', $row);
 }
 
-function GetRubUrl($row) {
+function GetRubUrl($row)
+{
     //return 'index.php?r='.$row['rubrique_id'];
     $gurl = new GenUrlV2();
     $url = $gurl->buildUrlFromId($row['rubrique_id']) . GetParam('fake_folder_action') . '/' . GetParam('action_editer ');
     return $url;
 }
 
-function GetCurrentLogin() {
+function GetCurrentLogin()
+{
     global $gs_obj;
 
     return $gs_obj->adminnom;
@@ -322,24 +341,25 @@ function GetCurrentLogin() {
 
 if (!function_exists("ta")) {
 
-    function ta($nom) {
+    function ta($nom)
+    {
 
         global $frontAdminTrads, $admin_trads;
 
         $trads = $admin_trads;
 
-        if (isset($trads[$nom][LG])) {
-            return $trads[$nom][LG];
-        } else if (isset($trads[$nom][LG_DEF])) {
-            return $trads[$nom][LG_DEF];
+        if (isset($trads[ $nom ][ LG ])) {
+            return $trads[ $nom ][ LG ];
+        } else if (isset($trads[ $nom ][ LG_DEF ])) {
+            return $trads[ $nom ][ LG_DEF ];
         } else if (!strstr($nom, ".")) {
 
             $t = explode("_", $nom);
             $text = "";
-            $GLOBALS['MISSINGS'][$nom] = true;
+            $GLOBALS['MISSINGS'][ $nom ] = true;
             if (count($t) > 1) {
                 for ($p = 1; $p < count($t); $p++) {
-                    $text .= ucfirst($t[$p]) . " ";
+                    $text .= ucfirst($t[ $p ]) . " ";
                 }
                 return $text;
             } else {
@@ -352,7 +372,8 @@ if (!function_exists("ta")) {
 
 }
 
-function decodePassword($str) {
+function decodePassword($str)
+{
     if (!strlen($str)) {
         return;
     }
@@ -361,7 +382,8 @@ function decodePassword($str) {
     return $str;
 }
 
-function encodePassword($str) {
+function encodePassword($str)
+{
     if (!strlen($str)) {
         return;
     }
@@ -371,7 +393,8 @@ function encodePassword($str) {
     return $str;
 }
 
-function importSqlFile($FILENAME) {
+function importSqlFile($FILENAME)
+{
 
 
     $linespersession = 300000000;   // Lines to be executed per one import session
@@ -492,10 +515,10 @@ function importSqlFile($FILENAME) {
                 // Stop if query contains more lines as defined by MAX_QUERY_LINES
 
                 if ($querylines > MAX_QUERY_LINES) {
-                    echo ("<p class=\"error\">Stopped at the line $linenumber. </p>");
-                    echo ("<p>At this place the current query includes more than " . MAX_QUERY_LINES . " dump lines. That can happen if your dump file was ");
-                    echo ("created by some tool which doesn't place a semicolon followed by a linebreak at the end of each query, or if your dump contains ");
-                    echo ("extended inserts. Please read the BigDump FAQs for more infos.</p>\n");
+                    echo("<p class=\"error\">Stopped at the line $linenumber. </p>");
+                    echo("<p>At this place the current query includes more than " . MAX_QUERY_LINES . " dump lines. That can happen if your dump file was ");
+                    echo("created by some tool which doesn't place a semicolon followed by a linebreak at the end of each query, or if your dump contains ");
+                    echo("extended inserts. Please read the BigDump FAQs for more infos.</p>\n");
                     $error = true;
                     break;
                 }
@@ -535,7 +558,7 @@ function importSqlFile($FILENAME) {
             else
                 $foffset = gztell($file);
             if (!$foffset) {
-                echo ("<p class=\"error\">UNEXPECTED: Can't read the file pointer offset</p>\n");
+                echo("<p class=\"error\">UNEXPECTED: Can't read the file pointer offset</p>\n");
                 $error = true;
             }
         }
@@ -544,7 +567,65 @@ function importSqlFile($FILENAME) {
     return $QUERIESTODO;
 }
 
-function getArboOrdered($start = 'NULL', $maxlevel = 99999, $curlevel = 0, $tab = array()) {
+class gabarit extends row
+{
+
+    public function __construct($roworid)
+    {
+        parent::__construct('s_gabarit', $roworid);
+    }
+
+    public function includeClasse()
+    {
+        if ($this->row['gabarit_plugin']) {
+            $f = path_concat(PLUGINS_FOLDER, $this->row['gabarit_plugin']);
+        } else {
+            $f = 'bdd';
+        }
+        $GLOBALS['gb_obj']->includeFile($this->row['gabarit_classe'] . '.php', $f);
+    }
+
+    public function showSubRubs($rubrique_id = false)
+    {
+        if (property_exists($this->row['gabarit_classe'], 'ocms_hiddenSubRubs')) {
+            $class = $this->row['gabarit_classe'];
+            $type = $class::$ocms_hiddenSubRubs;
+            if (is_array($type)) {
+                $sql = 'SELECT rubrique_id, ocms_version FROM s_rubrique'
+                    . '  LEFT JOIN s_gabarit ON fk_gabarit_id = gabarit_id WHERE '
+                    . ' fk_rubrique_id = ' . sql($rubrique_id) . ' AND ( (  '
+                    . '  gabarit_classe NOT IN ("' . implode('","', $type) . '") ) OR fk_gabarit_id IS NULL ) ';
+                global $co;
+
+                $forceSubRubs = $co->getAssoc($sql);
+
+                if ($forceSubRubs) {
+                    return $forceSubRubs;
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
+
+}
+
+function showSubRubs($row)
+{
+    if ($row['fk_gabarit_id']) {
+        $g = new gabarit($row['fk_gabarit_id']);
+        $g->includeClasse();
+        $r = $g->showSubRubs($row['rubrique_id']);
+        return $r;
+    }
+    return true;
+}
+
+function getArboOrdered($start = 'NULL', $maxlevel = 99999, $curlevel = 0, $tab = array(), $res = false)
+{
 
     if ($curlevel == 0) {
         $r = getRowFromId('s_rubrique', $start);
@@ -555,35 +636,48 @@ function getArboOrdered($start = 'NULL', $maxlevel = 99999, $curlevel = 0, $tab 
         }
     }
 
-    $sql = 'SELECT * FROM s_rubrique WHERE fk_rubrique_id ' . sqlParam($start) . ' ' . sqlRubriqueOnlyReal() . ' ORDER BY rubrique_ordre ASC ';
-    $res = GetAll($sql);
-
+    if (!$res) {
+        $sql = 'SELECT * FROM s_rubrique WHERE fk_rubrique_id ' . sqlParam($start) . ' ' . sqlRubriqueOnlyReal() . ' ORDER BY rubrique_ordre ASC ';
+        $res = GetAll($sql);
+    } else {
+        $sql = 'SELECT * FROM s_rubrique WHERE rubrique_id IN(' . implode(',', $res) . ' ) ORDER BY rubrique_ordre ASC ';
+        $res = GetAll($sql);
+    }
     foreach ($res as $row) {
         //if($row['rubrique_id'] != $this->row['fk_rubrique_version_id']) {
         $tab[] = array_merge($row, array('level' => $curlevel)); //addRowToTab($row,$curlevel);
         //$tab['sub']  = $this->getArboOrdered($row['rubrique_id'],$maxlevel,$curlevel+1);
-        $tab = getArboOrdered($row['rubrique_id'], $maxlevel, $curlevel + 1, $tab);
+        if ($res = showSubRubs($row)) {
+            if (is_array($res)) {
+                $tab = getArboOrdered($row['rubrique_id'], $maxlevel, $curlevel + 1, $tab, $res);
+            } else {
+                $tab = getArboOrdered($row['rubrique_id'], $maxlevel, $curlevel + 1, $tab);
+            }
+        }
         //}
     }
     return $tab;
 }
 
-function addRowToTab($row, $curlevel) {
-    return array('id' => $row['rubrique_id'], 'titre' => $row['rubrique_titre_' . LG_DEF], 'type' => $row['rubrique_type'], 'level' => $curlevel);
+function addRowToTab($row, $curlevel)
+{
+    return array('id' => $row['rubrique_id'], 'titre' => $row[ 'rubrique_titre_' . LG_DEF ], 'type' => $row['rubrique_type'], 'level' => $curlevel);
 }
 
-function getListingRubrique() {
+function getListingRubrique()
+{
 
     $tab = getArboOrdered();
 
     foreach ($tab as $k => $v) {
-        $tab[$k]['rubrique_titre_' . LG] = str_repeat('&nbsp;&nbsp;&nbsp;', $v['level'] - 1) . ' ' . $v['rubrique_titre_' . LG];
+        $tab[ $k ][ 'rubrique_titre_' . LG ] = str_repeat('&nbsp;&nbsp;&nbsp;', $v['level'] - 1) . ' ' . $v[ 'rubrique_titre_' . LG ];
     }
 
     return $tab;
 }
 
-function backupDbOld() {
+function backupDbOld()
+{
     $backup = new MySQLDump();
     $backup->connect('localhost', 'user', 'lasergun', 'hercules');
     if (!$backup->connected) {
@@ -620,7 +714,8 @@ function backupDbOld() {
 global $_Gconfig;
 $_Gconfig['globalActions'][] = 'backupDb';
 
-function backupDbOld2() {
+function backupDbOld2()
+{
 
     global $_bdd_user, $_bdd_host, $_bdd_pwd, $_bdd_bdd;
     @include(INCLUDE_PATH . '/config/config.server.php');
@@ -646,9 +741,20 @@ function backupDbOld2() {
     die();
 }
 
-function backupDb() {
-
+function backupDb()
+{
     global $_bdd_user, $_bdd_host, $_bdd_pwd, $_bdd_bdd;
+    ob_clean();
+    $file = nicename(t('base_title') . '-database-' . nicename(date('r')) . '.sql');
+    header("Content-Type: application/force-download; name=\"" . basename($file) . "\"");
+    header("Content-Transfer-Encoding: binary");
+    header("Content-Disposition: attachment; filename=\"" . basename($file) . "\"");
+    header("Expires: 0");
+    header("Cache-Control: no-cache, must-revalidate");
+    header("Pragma: no-cache");
+    passthru('mysqldump -u ' . escapeshellarg($_bdd_user) . ' --password="' . ($_bdd_pwd) . '" -h ' . escapeshellarg($_bdd_host) . ' -B ' . escapeshellarg($_bdd_bdd));
+    die();
+
 
     echo include($GLOBALS['gb_obj']->getIncludePath('config.server.php', 'config'));
 
@@ -657,7 +763,6 @@ function backupDb() {
     $dbuser = $_bdd_user;
     $dbpsw = $_bdd_pwd;
     $dbname = $_bdd_bdd;
-
 
 
     $nodata = false;      #!DO NOT DUMP TABLES DATA
@@ -701,7 +806,8 @@ function backupDb() {
 @set_time_limit(720); #720sec
 session_cache_expire(720);   #720 min expire
 
-class MySQLDump {
+class MySQLDump
+{
 
     public $omitDataTables = array();
 
@@ -711,7 +817,8 @@ class MySQLDump {
      * @param string $database
      * @return string
      */
-    function dumpDatabase($database, $nodata = false, $nostruct = false) {
+    function dumpDatabase($database, $nodata = false, $nostruct = false)
+    {
 
         // Set content-type and charset
         #header ('Content-Type: text/html; charset=iso-8859-1');
@@ -728,7 +835,7 @@ class MySQLDump {
             for ($x = 0; $x < mysql_num_rows($result); $x++) {
                 $table = mysql_tablename($result, $x);
                 if (!empty($table)) {
-                    $arr_tables[$c] = mysql_tablename($result, $x);
+                    $arr_tables[ $c ] = mysql_tablename($result, $x);
                     $c++;
                 }
             }
@@ -742,7 +849,7 @@ class MySQLDump {
             for ($y = 0; $y < count($arr_tables); $y++) {
 
                 // DB Table name
-                $table = $arr_tables[$y];
+                $table = $arr_tables[ $y ];
                 if ($nostruct == false) {
 
                     // Structure Header
@@ -761,11 +868,11 @@ class MySQLDump {
                         } else {
                             $structure .= (!empty($row->Default)) ? " DEFAULT {$row->Default}" : false;
                         }
-                        $structure .= ( $row->Null != "YES") ? " NOT NULL" : false;
+                        $structure .= ($row->Null != "YES") ? " NOT NULL" : false;
                         if ($row->Null == "YES") {
-                            $NULLS[$row->Field] = $row->Field;
+                            $NULLS[ $row->Field ] = $row->Field;
                         } else {
-                            
+
                         }
 
 
@@ -781,7 +888,7 @@ class MySQLDump {
                     while ($row = mysql_fetch_object($result)) {
 
                         if (($row->Key_name == 'PRIMARY') AND ($row->Index_type == 'BTREE')) {
-                            $index['PRIMARY'][$row->Key_name][] = $row->Column_name;
+                            $index['PRIMARY'][ $row->Key_name ][] = $row->Column_name;
                             /*
                               if($index['PRIMARY'][$row->Key_name])
                               $index['PRIMARY'][$row->Key_name] = array($index['PRIMARY'][$row->Key_name],$row->Column_name);
@@ -791,15 +898,15 @@ class MySQLDump {
                         }
 
                         if (($row->Key_name != 'PRIMARY') AND ($row->Non_unique == '0') AND ($row->Index_type == 'BTREE')) {
-                            $index['UNIQUE'][$row->Key_name] = $row->Column_name;
+                            $index['UNIQUE'][ $row->Key_name ] = $row->Column_name;
                         }
 
                         if (($row->Key_name != 'PRIMARY') AND ($row->Non_unique == '1') AND ($row->Index_type == 'BTREE')) {
-                            $index['INDEX'][$row->Key_name] = $row->Column_name;
+                            $index['INDEX'][ $row->Key_name ] = $row->Column_name;
                         }
 
                         if (($row->Key_name != 'PRIMARY') AND ($row->Non_unique == '1') AND ($row->Index_type == 'FULLTEXT')) {
-                            $index['FULLTEXT'][$row->Key_name] = $row->Column_name;
+                            $index['FULLTEXT'][ $row->Key_name ] = $row->Column_name;
                         }
                     }
 
@@ -818,12 +925,12 @@ class MySQLDump {
                                 if (is_array($column_name)) {
                                     $column_name = implode(',', $column_name);
                                 }
-                                $AA .= $structure .= ( $xy == "PRIMARY") ? "  PRIMARY KEY  (" . $column_name . ")" : false;
-                                $structure .= ( $xy == "UNIQUE") ? "  UNIQUE KEY `{$column_key}` (`{$column_name}`)" : false;
-                                $structure .= ( $xy == "INDEX") ? "  KEY `{$column_key}` (`{$column_name}`)" : false;
-                                $structure .= ( $xy == "FULLTEXT") ? "  FULLTEXT `{$column_key}` (`{$column_name}`)" : false;
+                                $AA .= $structure .= ($xy == "PRIMARY") ? "  PRIMARY KEY  (" . $column_name . ")" : false;
+                                $structure .= ($xy == "UNIQUE") ? "  UNIQUE KEY `{$column_key}` (`{$column_name}`)" : false;
+                                $structure .= ($xy == "INDEX") ? "  KEY `{$column_key}` (`{$column_name}`)" : false;
+                                $structure .= ($xy == "FULLTEXT") ? "  FULLTEXT `{$column_key}` (`{$column_name}`)" : false;
 
-                                $structure .= ( $c < (count($index[$xy]))) ? ",\n" : false;
+                                $structure .= ($c < (count($index[ $xy ]))) ? ",\n" : false;
                             }
                         }
                     }
@@ -857,7 +964,7 @@ class MySQLDump {
                             $field_name = mysql_field_name($result, $x);
 
                             $data .= "`{$field_name}`";
-                            $data .= ( $x < ($num_fields - 1)) ? ", " : false;
+                            $data .= ($x < ($num_fields - 1)) ? ", " : false;
                         }
 
                         $data .= ") VALUES (";
@@ -866,20 +973,20 @@ class MySQLDump {
                         for ($x = 0; $x < $num_fields; $x++) {
                             $field_name = mysql_field_name($result, $x);
 
-                            if ($NULLS[$field_name] && $row->$field_name == "") {
+                            if ($NULLS[ $field_name ] && $row->$field_name == "") {
                                 $data .= "NULL";
                             } else {
                                 $data .= "'" . str_replace('\"', '"', mysql_escape_string($row->$field_name)) . "'";
                             }
-                            $data .= ( $x < ($num_fields - 1)) ? ", " : false;
+                            $data .= ($x < ($num_fields - 1)) ? ", " : false;
                         }
 
-                        $data.= ");\n";
+                        $data .= ");\n";
                     }
                     $data .= "-- Dumping data for table `$table` finished <<< \n";
                     $data .= "-- -------------------------------------------- \n\n";
 
-                    $data.= "\n";
+                    $data .= "\n";
                 }
             }
             $dump .= $structure . $data;
@@ -888,7 +995,8 @@ class MySQLDump {
         return $dump;
     }
 
-    function sendAttachFile($data, $contenttype = 'text/html', $filename = 'mysqldump.sql', $write = false) {
+    function sendAttachFile($data, $contenttype = 'text/html', $filename = 'mysqldump.sql', $write = false)
+    {
         if ($write) {
             $path = getcwd();
             $handle = fopen($path . '/' . date('mdY') . "$filename", 'w');
@@ -898,10 +1006,11 @@ class MySQLDump {
         header("Content-type: $contenttype");
         header("Content-Disposition: attachment; filename=" . date('mdY') . $filename);
         header('Content-length:' . mb_strlen($data));
-        echo ($data);
+        echo($data);
     }
 
-    function sendAttachFileGzip($data, $filename = 'mysqldump.sql.gz') {
+    function sendAttachFileGzip($data, $filename = 'mysqldump.sql.gz')
+    {
         $path = getcwd();
         $data = gzencode($data, 9);
         $handle = fopen($path . '/' . date('mdY') . "$filename", 'w');
@@ -918,7 +1027,8 @@ class MySQLDump {
  * Remet tous les champs de langue à la meilleure valeur trouvée
  *
  */
-function setAllUrls() {
+function setAllUrls()
+{
     global $_Gconfig;
 
     if ($_GET['langue_source']) {
@@ -934,11 +1044,11 @@ function setAllUrls() {
 
     $f = new simpleForm('', 'get', '');
     $f->add('hidden', 'setAllUrls', '', 'globalAction');
-	
-	$langues_sources = array();
-	foreach ($_Gconfig['LANGUAGES'] as $v) {
-		$langues_sources[$v] = $v;
-	}
+
+    $langues_sources = array();
+    foreach ($_Gconfig['LANGUAGES'] as $v) {
+        $langues_sources[ $v ] = $v;
+    }
     $f->add('select', $langues_sources, t('langue_source'), 'langue_source');
     //$f->add('select', $_Gconfig['LANGUAGES'], t('langue_source'), 'langue_source');
 
@@ -947,14 +1057,15 @@ function setAllUrls() {
     echo $f->gen();
 }
 
-function getPicto($nom, $taille = "32x32") {
+function getPicto($nom, $taille = "32x32")
+{
     global $tabForms;
     if (!$nom) {
         return;
     }
     $p = '';
-    if (!empty($tabForms[$nom]['picto'])) {
-        $p = $tabForms[$nom]['picto'];
+    if (!empty($tabForms[ $nom ]['picto'])) {
+        $p = $tabForms[ $nom ]['picto'];
     } else if (tradExists($nom)) {
         $p = t($nom);
     }
@@ -979,10 +1090,10 @@ function getPicto($nom, $taille = "32x32") {
     return $a;
 }
 
-function cleanFiles() {
+function cleanFiles()
+{
 
     global $uploadRep, $specialUpload;
-
 
 
     if ($_POST['todelfi']) {
@@ -1000,7 +1111,7 @@ function cleanFiles() {
 
         while (false !== ($table = readdir($tables))) {
 
-            if ($table != '.' && $table != '..' && is_dir('../' . $uploadRep . '/' . $table) && !$specialUpload[$table] && in_array($table, $tbs)) {
+            if ($table != '.' && $table != '..' && is_dir('../' . $uploadRep . '/' . $table) && !$specialUpload[ $table ] && in_array($table, $tbs)) {
 
                 $handle = opendir('../' . $uploadRep . '/' . $table);
                 while (false !== ($file = readdir($handle))) {
@@ -1052,14 +1163,15 @@ function cleanFiles() {
     echo '<hr/><a class="button" onclick="$(\'#todels input\').attr(\'checked\',\'checked\')" >Tout sélectionner</a> | <a class="button" onclick="$(\'#todels input\').attr(\'checked\',false)">Tout déselectionner</a>';
 }
 
-function autoGeocodeAllFields() {
+function autoGeocodeAllFields()
+{
     global $_Gconfig, $co;
 
     if ($_REQUEST['table'] && count($_REQUEST['table'])) {
 
         foreach ($_REQUEST['table'] as $table) {
 
-            $code = $_Gconfig['mapsFields'][$table];
+            $code = $_Gconfig['mapsFields'][ $table ];
             foreach ($code as $chps) {
 
                 if (!$chps) {
@@ -1129,5 +1241,60 @@ function autoGeocodeAllFields() {
         echo '</ul>
                 <input type="submit" />
 ';
+    }
+}
+
+function updateDatabase()
+{
+
+    $plugins = GetPlugins();
+    global $co;
+    foreach ($plugins as $plugin) {
+        $upPl = path_concat(INCLUDE_PATH, 'plugins', $plugin, '_updates');
+        if (file_exists($upPl)) {
+            $row = getRowFromId('s_plugin', $plugin);
+            $updates = explode(',', $row['plugin_updates']);
+            $res = glob(path_concat($upPl, '*.{php,sql}'), GLOB_BRACE);
+
+            echo '<h2>' . $plugin . '</h2>';
+            foreach ($res as $file) {
+                $filename = basename($file);
+                $parse = explode('_', $filename);
+
+                if (!in_array($parse[0], $updates)) {
+                    echo '<div class="alert alert-info">A FAIRE : ' . $file . '<br/>';
+                    if (strstr($file, '.sql') !== false) {
+                        $res = importSqlFile($file);
+                        foreach ($res as $sql) {
+                            DoSql($sql);
+                        }
+                    } else {
+                        include($file);
+                    }
+                    echo '</div>';
+                    $updates[] = $parse[0];
+                } else {
+                    echo '<div class="alert alert-success">FAIT ' . $file . '<br/>';
+                    echo '</div>';
+                }
+            }
+            $co->autoExecute('s_plugin', array('plugin_updates' => implode(',', $updates)), 'UPDATE', 'plugin_nom=' . sql($plugin));
+        }
+    }
+}
+
+function getAdminLink($menu)
+{
+    $tables = getTables();
+    if (in_array($menu, $tables)) {
+        return 'index.php?curTable=' . $menu;
+    } else if (tradExists('cp_link_' . $menu)) {
+        return ta('cp_link_' . $menu);
+    } else if (strstr($menu, '/')) {
+        $m = explode('/', $menu);
+        return '?curTable=' . $m[0] . '&relOne=' . $m[1];
+    } else {
+
+        return 'index.php?userAction=' . $menu;
     }
 }

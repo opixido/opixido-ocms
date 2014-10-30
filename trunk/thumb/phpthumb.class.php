@@ -229,7 +229,7 @@ class phpthumb {
     }
 
     // public:
-    function setSourceData($rawImageData, $sourceFilename='') {
+    function setSourceData($rawImageData, $sourceFilename = '') {
         //$this->resetObject();
         //$this->sourceFilename = null;
         $this->rawImageData = $rawImageData;
@@ -534,6 +534,8 @@ class phpthumb {
             return $this->ErrorImage('OutputThumbnail() failed - headers already sent');
             exit;
         }
+
+        header("Expires: " . date("r", time() + ( 60 * 60 * 24 * 366 )));
 
         $downloadfilename = phpthumb_functions::SanitizeFilename(is_string($this->sia) ? $this->sia : ($this->down ? $this->down : 'phpThumb_generated_thumbnail' . '.' . $this->thumbnailFormat));
         $this->DebugMessage('Content-Disposition header filename set to "' . $downloadfilename . '"', __FILE__, __LINE__);
@@ -1050,7 +1052,7 @@ class phpthumb {
         return $AbsoluteFilename;
     }
 
-    function file_exists_ignoreopenbasedir($filename, $cached=true) {
+    function file_exists_ignoreopenbasedir($filename, $cached = true) {
         static $open_basedirs = null;
         static $file_exists_cache = array();
         if (!$cached || !isset($file_exists_cache[$filename])) {
@@ -1137,7 +1139,7 @@ class phpthumb {
         return $commandline;
     }
 
-    function ImageMagickVersion($returnRAW=false) {
+    function ImageMagickVersion($returnRAW = false) {
         static $versionstring = null;
         if (is_null($versionstring)) {
             $versionstring = array(0 => false, 1 => false);
@@ -3092,8 +3094,8 @@ class phpthumb {
         if (!$this->sourceFilename && !$this->rawImageData && $this->src) {
             $this->sourceFilename = $this->ResolveFilenameToAbsolute($this->src);
         }
-        
-        $this->cache_filename = $this->config_cache_directory . DIRECTORY_SEPARATOR . md5(str_replace($_REQUEST['src'],'',$_SERVER['REQUEST_URI'])).DIRECTORY_SEPARATOR.  filesize($this->src).DIRECTORY_SEPARATOR.basename($_REQUEST['src']);
+
+        $this->cache_filename = $this->config_cache_directory . DIRECTORY_SEPARATOR . md5(str_replace($_REQUEST['src'], '', $_SERVER['REQUEST_URI'])) . DIRECTORY_SEPARATOR . filesize($this->src) . DIRECTORY_SEPARATOR . basename($_REQUEST['src']);
         return true;
 
         if ($this->config_cache_default_only_suffix && $this->sourceFilename) {
@@ -3569,7 +3571,7 @@ class phpthumb {
         return gettype($var);
     }
 
-    function phpThumbDebug($level='') {
+    function phpThumbDebug($level = '') {
         if ($level && ($this->phpThumbDebug !== $level)) {
             return true;
         }
@@ -3719,7 +3721,7 @@ class phpthumb {
         return true;
     }
 
-    function ErrorImage($text, $width=0, $height=0, $forcedisplay=false) {
+    function ErrorImage($text, $width = 0, $height = 0, $forcedisplay = false) {
         $width = ($width ? $width : $this->config_error_image_width);
         $height = ($height ? $height : $this->config_error_image_height);
 
@@ -3811,7 +3813,7 @@ class phpthumb {
         return true;
     }
 
-    function ImageCreateFromStringReplacement(&$RawImageData, $DieOnErrors=false) {
+    function ImageCreateFromStringReplacement(&$RawImageData, $DieOnErrors = false) {
         // there are serious bugs in the non-bundled versions of GD which may cause
         // PHP to segfault when calling ImageCreateFromString() - avoid if at all possible
         // when not using a bundled version of GD2
@@ -3950,12 +3952,12 @@ class phpthumb {
         return $tempnam;
     }
 
-    function DebugMessage($message, $file='', $line='') {
+    function DebugMessage($message, $file = '', $line = '') {
         $this->debugmessages[] = $message . ($file ? ' in file "' . (basename($file) ? basename($file) : $file) . '"' : '') . ($line ? ' on line ' . $line : '');
         return true;
     }
 
-    function DebugTimingMessage($message, $file='', $line='', $timestamp=0) {
+    function DebugTimingMessage($message, $file = '', $line = '', $timestamp = 0) {
         if (!$timestamp) {
             $timestamp = array_sum(explode(' ', microtime()));
         }

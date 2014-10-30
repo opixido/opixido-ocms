@@ -59,6 +59,11 @@ class genUrl {
     public $paramsUrl = array();
 
     /**
+     * Liste des paramètres passés dans l'URL par ordre
+     */
+    public $paramsOrdered = array();
+
+    /**
      * Rubrique de niveau 0
      */
     public $topRubId;
@@ -427,6 +432,7 @@ class genUrl {
             if ($param) {
                 $t = explode(getParam('param_val_sep'), $param);
                 $paramNom = akev($t, 0);
+                $this->paramsOrdered[] = $param;
                 $param = akev($t, 1);
                 if (substr($paramNom, -6) == '__list') {
                     $paramNom = substr($paramNom, 0, -6);
@@ -1208,8 +1214,9 @@ class genUrl {
             $curId = $GLOBALS['site']->getCurId();
         }
 
-        if (!array_key_exists($curId, $GLOBALS['tabUrl']))
+        if (!array_key_exists($curId, $GLOBALS['tabUrl'])) {
             $this->reversRecursRub($curId);
+        }
 
         $lg = $this->lg;
         $key = $curId;
@@ -1280,8 +1287,8 @@ class genUrl {
 
     /* Methode qui permet d'ajouter un element au tableau des rubriques hors bdd */
 
-    function addRoad($titre, $url) {
-        $this->roadSup[] = array('titre' => $titre, 'url' => $url);
+    function addRoad($titre, $url, $id = null) {
+        $this->roadSup[] = array('titre' => $titre, 'url' => $url, 'id' => $id);
     }
 
     /* Methode qui retourne le niveau de profondeur */

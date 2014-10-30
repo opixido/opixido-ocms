@@ -3,7 +3,7 @@
  * Ou bien est il pour l'instant sans identifiant ?
  * */
 function isCurrentFormNew() {
-    if($('#curId').val() == 'new')  {
+    if ($('#curId').val() == 'new') {
         return true;
     } else {
         return false;
@@ -19,41 +19,63 @@ function isCurrentFormNew() {
  *
  **/
 function insertIdForNewForm(callBack) {
-    if(!window.insertingNewIdForForm  && isCurrentFormNew()) {
+    if (!window.insertingNewIdForForm && isCurrentFormNew()) {
         window.insertingNewIdForForm = true;
         window.callbackAfterNewId = callBack;
 
-        $.post('index.php',{
-            xhr:"insertIdForNewForm",
-            table:$('#curTable').val(),
-            curId:'new',
-            'genform_fromForm':1
-        },fillCurrentFormNewId);
+        $.post('index.php', {
+            xhr: "insertIdForNewForm",
+            table: $('#curTable').val(),
+            curId: 'new',
+            'genform_fromForm': 1
+        }, fillCurrentFormNewId);
     }
 }
 
-/**
+
+
+/**a
  * CallBack de insertIdForNewForm
  **/
 function fillCurrentFormNewId(resp) {
     $('#curId').val(resp);
-    if(window.callbackAfterNewId) {
+    if (window.callbackAfterNewId) {
         window.callbackAfterNewId();
     }
 }
 
+/**
+ * Sauvegarde le formulaire et Recharge uniquement le champ field
+ * @param {type} field
+ * @returns {undefined}
+ */
+function genformReloadField(field) {
+    var div = $("#genform_div_" + field);
+    div.css('opacity', 0.5);
+    doSaveAllAndStay(function() {
+        $.get('?xhr=genformReloadField&curField=' + field + '&curTable=' + $('#curTable').val() + '&curId=' + $('#curId').val(), function(data) {
+            div.replaceWith(data);
+            if (window.currentLg) {
+                showLgField(field, window.currentLg);
+            } else {
+                $("#genform_div_" + field).find('.lgbtn').eq(0).click();
+            }
+        });
+    });
 
-function deleteFile(table,champ,id,obj,small) {
-    if(!small) {
+}
+
+function deleteFile(table, champ, id, obj, small) {
+    if (!small) {
         small = "";
     }
-    $(obj).closest('.genform_uploadfile').load('index.php?xhr=deleteFile&curTable='+table+'&curChamp='+champ+'&curId='+id+'&small='+small+' div.genform_uploadfile');
+    $(obj).closest('.genform_uploadfile').load('index.php?xhr=deleteFile&curTable=' + table + '&curChamp=' + champ + '&curId=' + id + '&small=' + small + ' div.genform_uploadfile');
 }
 
 
-function arSaveValue(obj,table,champ,id,curtable) {
+function arSaveValue(obj, table, champ, id, curtable) {
 
-    if(obj.value) {
+    if (obj.value) {
         v = obj.value;
     }
     else {
@@ -64,70 +86,88 @@ function arSaveValue(obj,table,champ,id,curtable) {
     $.post("index.php", {
         xhr: "ajaxForm",
         table: table,
-        champ : champ ,
-        id : id ,
-        save : v
-    } );
+        champ: champ,
+        id: id,
+        save: v
+    });
 
     return;
-    url = "index.php?xhr=ajaxRelinv&table="+table+"&field="+champ+"&id="+id+"&save="+v+"&curtable="+curtable;
+    url = "index.php?xhr=ajaxRelinv&table=" + table + "&field=" + champ + "&id=" + id + "&save=" + v + "&curtable=" + curtable;
     //alert(url);
     XHR(url);
 }
 
-function arAddValue(obj,table,fake,id) {
+function doSaveAllAndStay(func) {
+
+    $("#genform_stay").val("ajaxsave");
+    $.post("index.php", $("#genform_formulaire").serialize(), function(data) {
+        $("#curId").val($.trim(data));
+        if (func) {
+            func();
+        }
+    });
+    $("#genform_stay").val("");
+
+    return;
+
+
+}
+
+function arAddValue(obj, table, fake, id) {
     var tableId = $(obj).closest('table').attr('id');
-    if(isCurrentFormNew()) {
+    if (isCurrentFormNew()) {
         doSaveAllAndStay(function() {
-            url = "index.php?xhr=ajaxRelinv&table="+table+"&fake="+fake+"&id="+$('#curId').val();
-            XHR(url,"","","addRowToTable(\'"+tableId+"\', http.responseText)");
+            url = "index.php?xhr=ajaxRelinv&table=" + table + "&fake=" + fake + "&id=" + $('#curId').val();
+            XHR(url, "", "", "addRowToTable(\'" + tableId + "\', http.responseText)");
         });
     }
     else {
-        url = "index.php?xhr=ajaxRelinv&table="+table+"&fake="+fake+"&id="+id;
-        XHR(url,"","","addRowToTable(\'"+tableId+"\', http.responseText)");
+        url = "index.php?xhr=ajaxRelinv&table=" + table + "&fake=" + fake + "&id=" + id;
+        XHR(url, "", "", "addRowToTable(\'" + tableId + "\', http.responseText)");
     }
 }
 
-function addRowToTable(table,contenu) {
-    $("#"+table+" tbody").append(""+contenu+"");
-    $("#"+table+"").tableDnDUpdate();
-    checkScripts($("#"+table+" tbody tr:last")[0]);
+function addRowToTable(table, contenu) {
+    $("#" + table + " tbody").append("" + contenu + "");
+    $("#" + table + "").tableDnDUpdate();
+    checkScripts($("#" + table + " tbody tr:last")[0]);
 }
 
-function is_ignorable( nod )
+function is_ignorable(nod)
 {
-    return ( nod.nodeType == 8) || // A comment node
-    ( (nod.nodeType == 3) && is_all_ws(nod) ); // a text node, all ws
+    return (nod.nodeType == 8) || // A comment node
+            ((nod.nodeType == 3) && is_all_ws(nod)); // a text node, all ws
 }
 
-function node_before( sib )
+function node_before(sib)
 {
     while ((sib = sib.previousSibling)) {
-        if (!is_ignorable(sib)) return sib;
+        if (!is_ignorable(sib))
+            return sib;
     }
     return null;
 }
 
-function is_all_ws( nod )
+function is_all_ws(nod)
 {
     // Use ECMA-262 Edition 3 String and RegExp features
     return !(/[^\t\n\r ]/.test(nod.data));
 }
 
-function node_after( sib )
+function node_after(sib)
 {
     while ((sib = sib.nextSibling)) {
-        if (!is_ignorable(sib)) return sib;
+        if (!is_ignorable(sib))
+            return sib;
     }
     return null;
 }
 
-function arDelete(obj,faketable,id) {
-    url = "index.php?xhr=ajaxRelinv&table="+faketable+"&delete="+id+"&";
+function arDelete(obj, faketable, id) {
+    url = "index.php?xhr=ajaxRelinv&table=" + faketable + "&delete=" + id + "&";
     //obj.parentNode.parentNode.parentNode.parentNode.removeChild(obj.parentNode.parentNode.parentNode);
     XHR(url);
-    $(obj).closest('tr').hide('normal',function(){
+    $(obj).closest('tr').hide('normal', function() {
         $(this).remove()
     });
 }
@@ -137,8 +177,8 @@ function arGoUp(obj) {
     var tabl = tbod.parentNode;
 
     var prev = node_before(tbod);
-    if(prev) {
-        tabl.insertBefore(tbod,prev);
+    if (prev) {
+        tabl.insertBefore(tbod, prev);
     }
 }
 
@@ -147,8 +187,8 @@ function arGoDown(obj) {
     var tabl = tbod.parentNode;
     var nex = node_after(tbod);
 
-    if(nex) {
-        tabl.insertBefore(nex,tbod);
+    if (nex) {
+        tabl.insertBefore(nex, tbod);
     }
 
 }
@@ -156,9 +196,9 @@ function arGoDown(obj) {
 
 
 // SUPPRESSION D'UN NOEUD
-function FArem(child,nom,id){
+function FArem(child, nom, id) {
     // si c'est le dernier enfant, on supprimer le UL au dessus
-    if(child.parentNode.parentNode.childNodes.length == 1){
+    if (child.parentNode.parentNode.childNodes.length == 1) {
         child.parentNode.parentNode.parentNode.removeChild(child.parentNode.parentNode);
     }
     // sinon juste le LI
@@ -169,14 +209,14 @@ function FArem(child,nom,id){
 }
 
 // AJOUT D'UN NOEUD
-function FAadd(obj,nom,id){
+function FAadd(obj, nom, id) {
     var ul = obj.parentNode.getElementsByTagName('ul')[0];
     var newLi = document.createElement("li");
     ul.appendChild(newLi);
 
-    newLi.id = nom+"_"+Math.round(Math.random()*1000000);
+    newLi.id = nom + "_" + Math.round(Math.random() * 1000000);
 
-    XHR(ajaxActionUrl('add',window.arboFull[nom]['vtable'],id,(window.arboFull[nom])),'',newLi.id,'checkUpDown();');
+    XHR(ajaxActionUrl('add', window.arboFull[nom]['vtable'], id, (window.arboFull[nom])), '', newLi.id, 'checkUpDown();');
 
     //newLi.innerHTML = "csddsdfsd";
     return false;
@@ -184,15 +224,15 @@ function FAadd(obj,nom,id){
 
 
 
-function FAgoUp(obj,nom,id) {
+function FAgoUp(obj, nom, id) {
     var tbod = obj.parentNode;
     var tabl = tbod.parentNode;
 
     var prev = node_before(tbod);
 
-    if(prev) {
-        ajaxAction('goup',window.arboFull[nom]['vtable'],id,window.arboFull[nom]);
-        tabl.insertBefore(tbod,prev);
+    if (prev) {
+        ajaxAction('goup', window.arboFull[nom]['vtable'], id, window.arboFull[nom]);
+        tabl.insertBefore(tbod, prev);
         checkUpDown(obj);
     }
 
@@ -202,24 +242,24 @@ function FAgoUp(obj,nom,id) {
 
 
 
-function FAgoDown(obj,nom,id) {
+function FAgoDown(obj, nom, id) {
     var tbod = obj.parentNode;
     var tabl = tbod.parentNode;
     var nex = node_after(tbod);
 
-    if(nex) {
-        ajaxAction('godown',window.arboFull[nom]['vtable'],id,window.arboFull[nom]);
-        tabl.insertBefore(nex,tbod);
+    if (nex) {
+        ajaxAction('godown', window.arboFull[nom]['vtable'], id, window.arboFull[nom]);
+        tabl.insertBefore(nex, tbod);
         checkUpDown(obj);
     }
     return false;
 }
 
 function checkUpDown(obj) {
-    var objs = getElementsByClassName('FAgoUp','a',gid("racine"));
+    var objs = getElementsByClassName('FAgoUp', 'a', gid("racine"));
     //alert(objs);
-    for(p in objs) {
-        if( node_before(objs[p].parentNode)) {
+    for (p in objs) {
+        if (node_before(objs[p].parentNode)) {
             objs[p].style.opacity = "1";
         } else {
 
@@ -227,9 +267,9 @@ function checkUpDown(obj) {
         }
     }
 
-    var objs = getElementsByClassName('FAgoDown','a',gid("racine"));
-    for(p in objs) {
-        if(node_after(objs[p].parentNode)) {
+    var objs = getElementsByClassName('FAgoDown', 'a', gid("racine"));
+    for (p in objs) {
+        if (node_after(objs[p].parentNode)) {
             objs[p].style.opacity = "1";
         } else {
             objs[p].style.opacity = "0.5";
@@ -241,28 +281,28 @@ function checkUpDown(obj) {
 
 
 
-function FAdel(obj,nom,id) {
+function FAdel(obj, nom, id) {
     //url = "index.php?xhr=ajaxRelinv&table="+faketable+"&delete="+id+"&";
-    ajaxAction('del',window.arboFull[nom]['vtable'],id);
+    ajaxAction('del', window.arboFull[nom]['vtable'], id);
     obj.parentNode.parentNode.removeChild(obj.parentNode);
     return false;
 //XHR(url);
 }
 
 
-function ajaxAction(action,table,id,params) {
+function ajaxAction(action, table, id, params) {
 
-    XHRs(ajaxActionUrl(action,table,id,params));
+    XHRs(ajaxActionUrl(action, table, id, params));
 
 
 }
 
-function ajaxActionUrl(action,table,id,params) {
-    url = "index.php?xhr=ajaxAction&table="+table+"&action="+action+"&id="+id+"&params="+serialize(params);
+function ajaxActionUrl(action, table, id, params) {
+    url = "index.php?xhr=ajaxAction&table=" + table + "&action=" + action + "&id=" + id + "&params=" + serialize(params);
     return url;
 }
 
-function serialize( mixed_value ) {
+function serialize(mixed_value) {
     // Returns a string representation of variable (which can later be unserialized)
     //
     // version: 906.1807
@@ -279,7 +319,7 @@ function serialize( mixed_value ) {
     // *     returns 1: 'a:3:{i:0;s:5:"Kevin";i:1;s:3:"van";i:2;s:9:"Zonneveld";}'
     // *     example 2: serialize({firstName: 'Kevin', midName: 'van', surName: 'Zonneveld'});
     // *     returns 2: 'a:3:{s:9:"firstName";s:5:"Kevin";s:7:"midName";s:3:"van";s:7:"surName";s:9:"Zonneveld";}'
-    var _getType = function( inp ) {
+    var _getType = function(inp) {
         var type = typeof inp, match;
         var key;
         if (type == 'object' && !inp) {
@@ -324,15 +364,15 @@ function serialize( mixed_value ) {
         case "object":
             val = "a";
             /*
-            if (type == "object") {
-                var objname = mixed_value.constructor.toString().match(/(\w+)\(\)/);
-                if (objname == undefined) {
-                    return;
-                }
-                objname[1] = serialize(objname[1]);
-                val = "O" + objname[1].substring(1, objname[1].length - 1);
-            }
-            */
+             if (type == "object") {
+             var objname = mixed_value.constructor.toString().match(/(\w+)\(\)/);
+             if (objname == undefined) {
+             return;
+             }
+             objname[1] = serialize(objname[1]);
+             val = "O" + objname[1].substring(1, objname[1].length - 1);
+             }
+             */
             var count = 0;
             var vals = "";
             var okey;
@@ -345,7 +385,7 @@ function serialize( mixed_value ) {
 
                 okey = (key.match(/^[0-9]+$/) ? parseInt(key, 10) : key);
                 vals += serialize(okey) +
-                serialize(mixed_value[key]);
+                        serialize(mixed_value[key]);
                 count++;
             }
             val += ":" + count + ":{" + vals + "}";
@@ -364,53 +404,53 @@ function serialize( mixed_value ) {
 
 
 
-function set_it(){
+function set_it() {
     document.getElementById('s').outerHTML = '<span id="s">' + document.getElementById('html').value + '</span>';
 }
 
-function loadjscssfile(filename, filetype){
-    if (filetype=="js"){ //if filename is a external JavaScript file
-        var fileref=document.createElement('script');
-        fileref.setAttribute("type","text/javascript");
+function loadjscssfile(filename, filetype) {
+    if (filetype == "js") { //if filename is a external JavaScript file
+        var fileref = document.createElement('script');
+        fileref.setAttribute("type", "text/javascript");
         fileref.setAttribute("src", filename);
     }
-    else if (filetype=="css"){ //if filename is an external CSS file
-        var fileref=document.createElement("link");
+    else if (filetype == "css") { //if filename is an external CSS file
+        var fileref = document.createElement("link");
         fileref.setAttribute("rel", "stylesheet");
         fileref.setAttribute("type", "text/css");
         fileref.setAttribute("href", filename);
     }
-    if (typeof fileref!="undefined") {
+    if (typeof fileref != "undefined") {
         document.getElementsByTagName("head")[0].appendChild(fileref);
-    //alert(fileref);
+        //alert(fileref);
     }
 }
 
 
 
 /**
-ARBO
+ ARBO
 
-*/
+ */
 
 // AJOUT D'UN NOEUD
-function addChild(param){
+function addChild(param) {
 
     var num = param.parentNode.id.substring(3);
-    var childrenId = 'ul_'+num;
+    var childrenId = 'ul_' + num;
     var hasChild = document.getElementById(childrenId);
 
     // Le noeud courant n'a pas d'enfant
-    if(!hasChild){
+    if (!hasChild) {
 
         var childTagUl = document.createElement('ul');
 
-        childTagUl.setAttribute('id',childrenId);
+        childTagUl.setAttribute('id', childrenId);
         param.parentNode.appendChild(childTagUl);
 
         childTagLi = document.createElement('li');
-        var liId = 'li_'+num+'_0';
-        childTagLi.setAttribute('id',liId);
+        var liId = 'li_' + num + '_0';
+        childTagLi.setAttribute('id', liId);
         childTagUl.appendChild(childTagLi);
 
     }
@@ -418,11 +458,11 @@ function addChild(param){
     else {
 
         var numLastChild = document.getElementById(childrenId).lastChild.id.substring(3);
-        var next = parseInt(numLastChild.substring(numLastChild.length-1))+1;
-        var liId = 'li_'+numLastChild.substring(0,numLastChild.length-2)+'_'+next;
+        var next = parseInt(numLastChild.substring(numLastChild.length - 1)) + 1;
+        var liId = 'li_' + numLastChild.substring(0, numLastChild.length - 2) + '_' + next;
         var childTagLi = document.createElement('li');
-        childTagLi.setAttribute('id',liId);
-        document.getElementById('ul_'+num).appendChild(childTagLi);
+        childTagLi.setAttribute('id', liId);
+        document.getElementById('ul_' + num).appendChild(childTagLi);
 
     }
 
@@ -432,11 +472,11 @@ function addChild(param){
     var inputName = 'n[0][fils]';
 
     // si le noeud courant n'a pas encore des fils
-    if(!hasChild){
+    if (!hasChild) {
 
-        for(i=1;i<=(num.length-1)/2;i++){
-            n = num.substring(2*i,1 + 2*i);
-            inputName = inputName + '['+ n +'][fils]';
+        for (i = 1; i <= (num.length - 1) / 2; i++) {
+            n = num.substring(2 * i, 1 + 2 * i);
+            inputName = inputName + '[' + n + '][fils]';
         }
 
         inputName = inputName + '[0][value]';
@@ -445,12 +485,12 @@ function addChild(param){
     // si le noeud courant a déjà des fils
     else {
 
-        for(i=1;i<(numLastChild.length-1)/2;i++){
-            n = numLastChild.substring(2*i,1 + 2*i);
-            inputName = inputName + '['+ n +'][fils]';
+        for (i = 1; i < (numLastChild.length - 1) / 2; i++) {
+            n = numLastChild.substring(2 * i, 1 + 2 * i);
+            inputName = inputName + '[' + n + '][fils]';
         }
 
-        inputName = inputName + '['+ next +'][value]';
+        inputName = inputName + '[' + next + '][value]';
 
     }
 
@@ -458,48 +498,48 @@ function addChild(param){
 
 
 
-    for(k=0; k < lgs.length; k++){
+    for (k = 0; k < lgs.length; k++) {
         // flag
         var lagLG = document.createElement('img');
-        lagLG.setAttribute('src','./img/flags/' + lgs[k] + '.gif');
+        lagLG.setAttribute('src', './img/flags/' + lgs[k] + '.gif');
         childTagLi.appendChild(lagLG);
 
         // champ de saisie
         var childTagInput = document.createElement('input');
-        childTagInput.setAttribute('type','text');
+        childTagInput.setAttribute('type', 'text');
         inputNameLG = inputName + '[' + lgs[k] + ']';
-        childTagInput.setAttribute('name',inputNameLG);
+        childTagInput.setAttribute('name', inputNameLG);
         childTagLi.appendChild(childTagInput);
     }
 
     var childTagButton = document.createElement('a');
-    childTagButton.setAttribute('href','#');
-    childTagButton.setAttribute('class','addChild');
-    childTagButton.setAttribute('onclick','addChild(this)');
+    childTagButton.setAttribute('href', '#');
+    childTagButton.setAttribute('class', 'addChild');
+    childTagButton.setAttribute('onclick', 'addChild(this)');
     childTagLi.appendChild(childTagButton);
 
     var imgAdd = document.createElement('img');
-    imgAdd.setAttribute('src','./pictos/list-add.png');
+    imgAdd.setAttribute('src', './pictos/list-add.png');
     childTagButton.appendChild(imgAdd);
 
     var childTagButton = document.createElement('a');
-    childTagButton.setAttribute('href','#');
-    childTagButton.setAttribute('class','delChild');
-    childTagButton.setAttribute('onclick','delChild(this)');
+    childTagButton.setAttribute('href', '#');
+    childTagButton.setAttribute('class', 'delChild');
+    childTagButton.setAttribute('onclick', 'delChild(this)');
     childTagLi.appendChild(childTagButton);
 
     var imgDel = document.createElement('img');
-    imgDel.setAttribute('src','./pictos/process-stop.png');
+    imgDel.setAttribute('src', './pictos/process-stop.png');
     childTagButton.appendChild(imgDel);
 
 }
 
 
 // SUPPRESSION D'UN NOEUD
-function delChild(child){
+function delChild(child) {
 
     // si c'est le dernier enfant, on supprimer le UL au dessus
-    if(child.parentNode.parentNode.childNodes.length == 1){
+    if (child.parentNode.parentNode.childNodes.length == 1) {
         child.parentNode.parentNode.parentNode.removeChild(child.parentNode.parentNode);
     }
     // sinon juste le LI
@@ -511,12 +551,12 @@ function delChild(child){
 
 window.uploaders = new Array();
 function refreshUploaders() {
-    for(p in window.uploaders) {
-        if(window.uploaders[p]) {
-            if(document.getElementById(window.uploaders[p].settings.container)) {
+    for (p in window.uploaders) {
+        if (window.uploaders[p]) {
+            if (document.getElementById(window.uploaders[p].settings.container)) {
                 try {
                     window.uploaders[p].refresh();
-                } catch(e) {
+                } catch (e) {
                     delete(window.uploaders[p]);
                 }
             } else {
@@ -529,12 +569,12 @@ function refreshUploaders() {
 
 
 function refreshUploaders() {
-    for(p in window.uploaders) {
-        if(window.uploaders[p]) {
-            if(document.getElementById(window.uploaders[p].settings.container)) {
+    for (p in window.uploaders) {
+        if (window.uploaders[p]) {
+            if (document.getElementById(window.uploaders[p].settings.container)) {
                 try {
                     window.uploaders[p].refresh();
-                } catch(e) {
+                } catch (e) {
                     delete(window.uploaders[p]);
                 }
             } else {
@@ -545,3 +585,37 @@ function refreshUploaders() {
     }
 }
 
+/**
+ * Boutons de prévisualisation
+ * @type Boolean|@exp;window@call;open
+ */
+window.previewWindow = false;
+$(document).ready(function() {
+    $('.previsu a').click(function(e) {
+        e.preventDefault();
+        /**
+         * Pour virer le cache
+         */
+        var href = $(this).attr('href') + "&nocache=" + Math.random();
+        /**
+         * On met à jour après enregistrement via ajax de la page
+         */
+        doSaveAllAndStay(function() {
+            window.previewWindow.location = href + Math.random();
+        });
+
+        /**
+         * Si la fenetre est déjà ouverte
+         * ET que son objet contient toujours un objet "window"
+         * Sinon ça signifie qu'elle a été fermée, mais previewWindow
+         * reste disponible ...
+         */
+        if (window.previewWindow && window.previewWindow.window) {
+            window.previewWindow.location = href;
+        } else {
+            window.previewWindow = window.open(href, 'preview', 'width=1024,height=600,scrollbars=yes');
+        }
+
+        window.previewWindow.focus();
+    });
+});

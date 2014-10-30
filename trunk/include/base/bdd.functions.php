@@ -36,28 +36,23 @@ function insertEmptyRecord($table, $id = false, $champs = array())
     /**
      * if $id in parameters, inserting with this ID
      */
-    if($id)
-    {
+    if ($id) {
 
         $sql = 'INSERT INTO ' . $table . ' (' . getPrimaryKey($table) . ' ';
         $postSql = ' ) VALUES  ( ' . sql($id) . ' ';
 
-        foreach($champs as $k => $v)
-        {
+        foreach ($champs as $k => $v) {
             $sql .= ' , ' . $k;
             $postSql .= ' ,' . sql($v);
         }
 
         $res = DoSql($sql . $postSql . ' ) ');
 
-        if($res)
-        {
+        if ($res) {
             $gr = new genRecord($table, $id);
             $gr->onInsert();
             return $id;
-        }
-        else
-        {
+        } else {
             return false;
         }
     }
@@ -69,54 +64,43 @@ function insertEmptyRecord($table, $id = false, $champs = array())
     $auto = false;
     $tableInfo = MetaColumns($table);
 
-    if($tableInfo[strtoupper(getPrimaryKey($table))]->auto_increment > 0)
-    {
+    if ($tableInfo[ strtoupper(getPrimaryKey($table)) ]->auto_increment > 0) {
         $auto = true;
     }
 
     /**
      * If table has auto increment ...
      */
-    if($auto)
-    {
+    if ($auto) {
 
         $sql = 'INSERT INTO ' . $table . ' (' . getPrimaryKey($table) . ' ';
         $postSql = ' ) VALUES  ( "" ';
 
-        foreach($champs as $k => $v)
-        {
+        foreach ($champs as $k => $v) {
             $sql .= ' , ' . $k;
             $postSql .= ' ,' . sql($v);
         }
 
         $res = DoSql($sql . $postSql . ' ) ');
 
-        if($res)
-        {
+        if ($res) {
             $id = InsertId();
             $gr = new genRecord($table, $id);
             $gr->onInsert();
             return $id;
-        }
-        else
-        {
+        } else {
             return false;
         }
-    }
-    /**
+    } /**
      * else if a specific function is defined for this table
-     */
-    else if($_Gconfig['insertRules'][$table])
-    {
+     */ else if ($_Gconfig['insertRules'][ $table ]) {
 
-        return $_Gconfig['insertRules'][$table]();
+        return $_Gconfig['insertRules'][ $table ]();
 
         /**
          * Otherwise : select max()+1 on primary key
          */
-    }
-    else
-    {
+    } else {
 
         $sql = 'SELECT MAX(' . getPrimaryKey($table) . ') AS MAXI FROM ' . $table;
         $row = GetSingle($sql);
@@ -127,16 +111,11 @@ function insertEmptyRecord($table, $id = false, $champs = array())
 
 function sqlParam($param)
 {
-    if(in_array($param, array('NULL', 'NOT NULL')))
-    {
+    if (in_array($param, array('NULL', 'NOT NULL'))) {
         return ' IS ' . $param;
-    }
-    else if((int) $param == $param)
-    {
+    } else if ((int)$param == $param) {
         return ' = ' . $param . ' ';
-    }
-    else
-    {
+    } else {
         return ' LIKE "' . $param . '" ';
     }
 }
@@ -150,8 +129,7 @@ function sqlParam($param)
  */
 function sqlLgValue($champ, $alias = '')
 {
-    if($alias)
-    {
+    if ($alias) {
         $alias = $alias . '.';
     }
     return ' IF(LENGTH(TRIM(' . $alias . $champ . '_' . LG . '))>=1,' . $alias . $champ . '_' . LG . ',' . $alias . $champ . '_' . LG_DEF . ')  ';
@@ -172,21 +150,18 @@ function sqlLgTitle($table, $sep = ' - ')
 
     $sql .= 'CONCAT(""';
 
-    $nb = count($tabForms[$table]['titre']);
+    $nb = count($tabForms[ $table ]['titre']);
 
-    foreach($tabForms[$table]['titre'] as $k => $v)
-    {
+    foreach ($tabForms[ $table ]['titre'] as $k => $v) {
 
         $sql .= ',';
 
-        if(isBaseLgField($v, $table))
-        {
+        if (isBaseLgField($v, $table)) {
             //$sql .= ' IF(LENGTH(TRIM('.$champ.'_'.LG.'))>=1,'.$champ.'_'.LG.','.$champ.'_'.LG_DEF.') ';
             $sql .= sqlLgValue($v);
         }
 
-        if($k < ($nb - 1))
-        {
+        if ($k < ($nb - 1)) {
             $sql .= ' , ' . sql($sep) . '';
         }
     }
@@ -201,25 +176,61 @@ $getRowFromId_cacheRow = array();
 
 function getRowFromId($table, $id, $onlyOnline = false)
 {
+    if (!is_string($table) || !$table) {
+        return false;
+    }
+    if (is_array($id)) {
+        return false;
+    }
+    global $getRowFromId_cacheRow, $_Gconfig;
 
-    global $getRowFromId_cacheRow;
-
-    if(!array_key_exists($table . "_-_" . $id, $getRowFromId_cacheRow) || !$getRowFromId_cacheRow[$table . "_-_" . $id] || IN_ADMIN)
-    {
-        $sql = 'SELECT * FROM ' . $table . ' WHERE ' . GetPrimaryKey($table) . ' = ' . sql($id) . ' '; //. sqlOnlyOnline($table);
-        $row = GetSingle($sql);
-        if(IN_ADMIN)
-        {
-            return $row;
+    if (IN_ADMIN || !array_key_exists($table . "_-_" . $id, $getRowFromId_cacheRow) || !$getRowFromId_cacheRow[ $table . "_-_" . $id ]) {
+        $select = 'SELECT NULL ';
+        $from = ' FROM ' . $table . ' AS T ';
+        $where = ' WHERE T.' . GetPrimaryKey($table) . ' = ' . sql($id);
+        if (isset($_Gconfig['relOne'][ $table ])) {
+            $i = 0;
+            foreach ($_Gconfig['relOne'][ $table ] as $fk_table => $clef) {
+                $i++;
+                $select .= ' , ' . $fk_table . '.*';
+                $from .= ' LEFT JOIN ' . $fk_table . '  ON ' . $fk_table . '.' . $clef . ' = T.' . getPrimaryKey($table);
+            }
         }
-        else
-        {
-            $getRowFromId_cacheRow[$table . "_-_" . $id] = $row;
+
+        $select .= ' , T.* ';
+
+        if ($onlyOnline) {
+            $where .= sqlOnlyOnline($table);
+        }
+
+        $row = GetSingle($select . $from . $where);
+
+        if (IN_ADMIN) {
+            return $row;
+        } else {
+            $getRowFromId_cacheRow[ $table . "_-_" . $id ] = $row;
         }
     }
 
 
-    return $getRowFromId_cacheRow[$table . "_-_" . $id];
+    return $getRowFromId_cacheRow[ $table . "_-_" . $id ];
+}
+
+function getSelectTables($table, $alias = 'T')
+{
+
+    $sql = ' ' . $table . ' AS ' . $alias;
+
+    global $_Gconfig;
+    if (isset($_Gconfig['relOne'][ $table ])) {
+        $i = 0;
+        foreach ($_Gconfig['relOne'][ $table ] as $table => $clef) {
+            $i++;
+            $sql .= ' , ' . $table;
+        }
+    }
+
+    return $sql;
 }
 
 function sqlOnlyOnline($table, $alias = '')
@@ -227,35 +238,37 @@ function sqlOnlyOnline($table, $alias = '')
 
     global $_Gconfig;
 
-    if(IN_ADMIN)
-    {
+    if ($table === 's_rubrique') {
+        return sqlRubriqueOnlyOnline($alias);
+    }
+
+    if (IN_ADMIN) {
         return '';
     }
     $sql = '';
 
     $t = getTabField($table);
 
-    if(strlen($alias))
-    {
+    if (strlen($alias)) {
         $alias = $alias . '.';
         //$sql .= $alias;
     }
 
-    if(ake('date_online', $t) && ake('date_offline', $t) && $t['date_online'] && $t['date_offline'])
-    {
-        $sql .= ' AND ( date_online <= NOW() OR date_online = "0000-00-00" )
-		AND (date_offline >= NOW() OR date_offline = "0000-00-00"  ) ';
+    if (ake($_Gconfig['field_date_online'], $t) && ake($_Gconfig['field_date_online'], $t) && $t[ $_Gconfig['field_date_online'] ] && $t[ $_Gconfig['field_date_online'] ]) {
+        $sql .= ' AND ( ' . $_Gconfig['field_date_online'] . ' <= NOW() OR ' . $_Gconfig['field_date_online'] . ' = "0000-00-00" )
+		AND (' . $_Gconfig['field_date_offline'] . ' >= NOW() OR ' . $_Gconfig['field_date_offline'] . ' = "0000-00-00"  ) ';
     }
-    if(!@in_array($table, $_Gconfig['hideableTable']) && !@in_array($table, $_Gconfig['versionedTable']))
-    {
+    if (!@in_array($table, $_Gconfig['hideableTable']) && !@in_array($table, $_Gconfig['versionedTable'])) {
+
         return $sql;
     }
+
+
     $sql = ' AND ';
 
     $sql .= $alias . ONLINE_FIELD . ' = "1" ';
 
-    if(in_array($table, $_Gconfig['versionedTable']))
-    {
+    if (in_array($table, $_Gconfig['versionedTable'])) {
 
         $sql .= 'AND ' . $alias . '' . VERSION_FIELD . ' IS NULL ';
     }
@@ -268,14 +281,12 @@ function sqlVersionOnline($table = '', $alias = '')
 
     $sql = '';
 
-    if(strlen($alias))
-    {
+    if (strlen($alias)) {
         $alias = $alias . '.';
         $sql .= $alias;
     }
 
-    if(!strlen($table) || in_array($table, $_Gconfig['versionedTable']))
-    {
+    if (!strlen($table) || in_array($table, $_Gconfig['versionedTable'])) {
         $sql .= 'AND ' . $alias . VERSION_FIELD . ' IS NULL AND ' . $alias . ONLINE_FIELD . ' = "1" ';
     }
 
@@ -291,7 +302,7 @@ function GetRowFromFieldLike($table, $champ, $val)
 /**
  * Retourne le premier enregistrement d'une requete SQL
  *
- * @param string  $sql
+ * @param string $sql
  * @param bool $cache
  * @param string $connexion
  * @return array
@@ -300,26 +311,23 @@ function GetSingle($sql, $cache = 0, $connexion = '')
 {
     global $co, $sqlTime, $nbRSql, $nbRetSql, $co_bdd;
 
-    if(!$co)
-    {
+    if (!$co) {
         return false;
     }
-    if($cache != 2)
+    if ($cache != 2)
         $cache = false;
     $t = getmicrotime();
     $nbRSql++;
     $cache = 0;
     debugEvent($sql);
 
-    if(strlen($connexion))
-    {
-        if(!$cache)
+    if (strlen($connexion)) {
+        if (!$cache)
             $res = $co_bdd->GetRow($sql);
         else
             $res = $co_bdd->CacheGetRow($sql);
-    } else
-    {
-        if(!$cache)
+    } else {
+        if (!$cache)
             $res = $co->GetRow($sql);
         else
             $res = $co->CacheGetRow($sql);
@@ -329,12 +337,9 @@ function GetSingle($sql, $cache = 0, $connexion = '')
 
     $sqlTime += (getmicrotime() - $t);
 
-    if(is_array($res))
-    {
+    if (is_array($res)) {
         $nbRetSql++;
-    }
-    else
-    {
+    } else {
         sqlError($sql);
     }
 
@@ -353,13 +358,11 @@ function GetAll($sql, $cache = 0, $connexion = '')
 {
     global $co, $sqlTime, $nbRSql, $nbRetSql, $co_bdd;
 
-    if(!$co)
-    {
+    if (!$co) {
         return false;
     }
 
-    if(function_exists('debugEvent'))
-    {
+    if (function_exists('debugEvent')) {
         debugEvent($sql);
     }
     $cache = false;
@@ -371,17 +374,15 @@ function GetAll($sql, $cache = 0, $connexion = '')
       else
       $res = $co->CacheGetAll($sql);
      */
-    if(strlen($connexion))
-    {
+    if (strlen($connexion)) {
 
-        if(!$cache)
+        if (!$cache)
             $res = $co_bdd->GetAll($sql);
         else
             $res = $co_bdd->CacheGetAll($sql);
-    } else
-    {
+    } else {
 
-        if(!$cache)
+        if (!$cache)
             $res = $co->GetAll($sql);
         else
             $res = $co->CacheGetAll($sql);
@@ -390,15 +391,12 @@ function GetAll($sql, $cache = 0, $connexion = '')
     debugEnd();
 
     $sqlTime += (getmicrotime() - $t);
-    if(!is_array($res))
-    {
+    if (!is_array($res)) {
 
         sqlError($sql);
 
         return array();
-    }
-    else
-    {
+    } else {
 
         $nbRetSql += count($res);
 
@@ -421,7 +419,6 @@ function GetAllArr($sql, $arr)
 function MetaColumns($table)
 {
     global $co;
-
     return $co->MetaColumns($table);
 }
 
@@ -447,11 +444,13 @@ function mes($str)
 function dosql($sql, $msg = '')
 {
     global $co;
+    if (!$co) {
+        return;
+    }
     debugEvent($sql);
     $res = $co->execute($sql);
     debugEnd();
-    if(!$res)
-    {
+    if (!$res) {
         sqlError($sql, $msg);
         return false;
     }
@@ -491,15 +490,13 @@ function TrySql($sql)
 function getTables()
 {
     global $co;
-    if(empty($_SESSION['cache'][UNIQUE_SITE]))
-    {
-        $_SESSION['cache'][UNIQUE_SITE] = array();
+    if (empty($GLOBALS['GlobalObjCache'][ UNIQUE_SITE ])) {
+        $GLOBALS['GlobalObjCache'][ UNIQUE_SITE ] = array();
     }
-    if(!ake($_SESSION['cache'][UNIQUE_SITE], 'tables'))
-    {
-        $_SESSION['cache'][UNIQUE_SITE]['tables'] = $co->MetaTables('TABLES');
+    if (!ake($GLOBALS['GlobalObjCache'][ UNIQUE_SITE ], 'tables') && $co) {
+        $GLOBALS['GlobalObjCache'][ UNIQUE_SITE ]['tables'] = $co->MetaTables('TABLES');
     }
-    return $_SESSION['cache'][UNIQUE_SITE]['tables'];
+    return $GLOBALS['GlobalObjCache'][ UNIQUE_SITE ]['tables'];
 }
 
 /**
@@ -508,8 +505,8 @@ function getTables()
  */
 function clearCache()
 {
-    $_SESSION['cache'] = array();
-    $_SESSION['cache'][UNIQUE_SITE] = array();
+    $GLOBALS['GlobalObjCache'] = array();
+    $GLOBALS['GlobalObjCache'][ UNIQUE_SITE ] = array();
 }
 
 /**
@@ -523,39 +520,41 @@ function InsertId()
     return $co->Insert_ID();
 }
 
-$_SESSION['cache'][UNIQUE_SITE]['tabfield'] = choose(akev($_SESSION['cache'], 'tabfield'), array(''));
+$GLOBALS['GlobalObjCache'][ UNIQUE_SITE ]['tabfield'] = choose(akev($GLOBALS['GlobalObjCache'], 'tabfield'), array(''));
 
 /**
  * Retourne la liste des champs de la table
  *
- * @param string  $table
+ * @param string $table
  * @return array
  */
 function getTabField($table)
 {
     global $co;
 
+    if (strpos($table, '/')) {
+        $t = explode('/', $table);
+        return array_merge(getTabField($t[0]), getTabField($t[1]));
+    }
+
     //return $co->MetaColumns($table,false);
-    if(empty($_SESSION['cache'][UNIQUE_SITE]['tabField_' . $table]))
-    {
+    if (empty($GLOBALS['GlobalObjCache'][ UNIQUE_SITE ][ 'tabField_' . $table ])) {
 
         $t = MetaColumns($table);
-        if(!is_array($t))
-        {
+        if (!is_array($t)) {
             derror('GetTabField : Badtable : "' . $table . '"');
             return array();
         }
-        while(list($k, $v) = each($t))
-        {
-            $t2[strtolower($k)] = $v;
+        while (list($k, $v) = each($t)) {
+            $v->table = $table;
+            $t2[ strtolower($k) ] = $v;
         }
 
-        //reset($t);
-        $_SESSION['cache'][UNIQUE_SITE]['tabField_' . $table] = $t2;
+        $GLOBALS['GlobalObjCache'][ UNIQUE_SITE ][ 'tabField_' . $table ] = $t2;
         return $t2;
     }
 
-    return $_SESSION['cache'][UNIQUE_SITE]['tabField_' . $table];
+    return $GLOBALS['GlobalObjCache'][ UNIQUE_SITE ][ 'tabField_' . $table ];
 }
 
 /**
@@ -568,22 +567,16 @@ function getTabField($table)
 function sql($param, $type = 'string')
 {
 
-    if(is_object($param) && get_class($param) == 'ADORecordSet_empty')
-    {
+    if (is_object($param) && get_class($param) == 'ADORecordSet_empty') {
         echo "\n\n---------------------------------\n\n";
         debug_print_backtrace();
         return '""';
     }
-    if($type == 'int')
-    {
-        $param = (int) $param;
-    }
-    else if($param == 'NULL')
-    {
+    if ($type == 'int') {
+        $param = (int)$param;
+    } else if ($param == 'NULL') {
         return $param;
-    }
-    else
-    {
+    } else {
 
         $param = str_replace('\\', '\\\\', $param);
         $param = (str_replace('"', '\"', $param));
@@ -591,33 +584,29 @@ function sql($param, $type = 'string')
     return '"' . $param . '"';
 }
 
-if(empty($_SESSION['cache'][UNIQUE_SITE]))
-{
-    $_SESSION['cache'][UNIQUE_SITE] = array();
+if (empty($GLOBALS['GlobalObjCache'][ UNIQUE_SITE ])) {
+    $GLOBALS['GlobalObjCache'][ UNIQUE_SITE ] = array();
 }
 
-$_SESSION['cache'][UNIQUE_SITE]['pks'] = choose(akev($_SESSION['cache'][UNIQUE_SITE], 'pks'), array(''));
+$GLOBALS['GlobalObjCache'][ UNIQUE_SITE ]['pks'] = choose(akev($GLOBALS['GlobalObjCache'][ UNIQUE_SITE ], 'pks'), array(''));
 
-if(!function_exists('getPrimaryKey'))
-{
+if (!function_exists('getPrimaryKey')) {
 
     function getPrimaryKey($table)
     {
 
 
-        if(strlen($table))
-        {
-            if(empty($_SESSION['cache'][UNIQUE_SITE]['pks'][$table]))
-            {
+        if (strlen($table)) {
+            if (empty($GLOBALS['GlobalObjCache'][ UNIQUE_SITE ]['pks'][ $table ])) {
                 global $co;
                 $t = $co->MetaPrimaryKeys($table);
-                if(count($t) == 1)
-                    $_SESSION['cache'][UNIQUE_SITE]['pks'][$table] = $t[0];
+                if (count($t) == 1)
+                    $GLOBALS['GlobalObjCache'][ UNIQUE_SITE ]['pks'][ $table ] = $t[0];
                 else
-                    $_SESSION['cache'][UNIQUE_SITE]['pks'][$table] = false;
+                    $GLOBALS['GlobalObjCache'][ UNIQUE_SITE ]['pks'][ $table ] = false;
             }
         }
-        return $_SESSION['cache'][UNIQUE_SITE]['pks'][$table];
+        return $GLOBALS['GlobalObjCache'][ UNIQUE_SITE ]['pks'][ $table ];
     }
 
 }
@@ -631,10 +620,28 @@ if(!function_exists('getPrimaryKey'))
  */
 function rubHasOption($set, $option)
 {
-    if(strstr($set, $option) !== false)
-    {
+    if (strstr($set, $option) !== false) {
         return true;
     }
     return false;
 }
 
+function createGabarit($nom, $id, $plugin)
+{
+
+    $r = getGabaritByClass($id);
+
+    if (!$r) {
+        $r = array(
+            'gabarit_id'     => '',
+            'gabarit_titre'  => $nom,
+            'gabarit_classe' => $id,
+            'gabarit_plugin' => $plugin
+        );
+        global $co;
+        $co->autoexecute('s_gabarit', $r, 'INSERT');
+        return InsertId();
+    }
+
+    return $r['gabarit_id'];
+}

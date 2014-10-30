@@ -93,10 +93,17 @@ class genform_tablerel extends genform_base {
         /**
          * Preparation de la requete
          */
-        if (in_array($this->fk_table, $_Gconfig['versionedTable']))
-            $sqlversioned = sqlOnlyRealAndOnline($this->fk_table);
-        else
+        if (in_array($this->fk_table, $_Gconfig['versionedTable']) || in_array($this->fk_table, $_Gconfig['multiVersionTable'])) {
+            $sqlversioned = sqlOnlyReal($this->fk_table);
+        } else {
             $sqlversioned = '';
+        }
+
+        if (!empty($_Gconfig['relationToRelOne'][$this->table . '.' . $this->champ])) {
+            $sqlversioned .= '';
+        }
+
+
 
         if (!empty($_Gconfig['specialListingWhere'][$this->champ])) {
 
@@ -205,8 +212,11 @@ class genform_tablerel extends genform_base {
         $vals = 'SELECT * FROM ' . $this->fk_table . ' WHERE ' . $this->pk2 . ' IN (' . $sel . ') ';
         $res = DoSql($vals);
 
+
+
         $assi = '';
         foreach ($res as $row) {
+            debug($row);
             $t = array();
             foreach ($fields as $v) {
                 $t[] = $row[$v];
@@ -300,7 +310,7 @@ class genform_tablerel extends genform_base {
             <div class="input-prepend ">
                 <span class="add-on add-on-mini">
                 <i class="icon-search"></i></span><input
-                class="input-mini selectMSearch" type="text" id="qxhr_' . $this->champ . '" value="" onkeyup="XHR_tablerel(\'' . $this->table . '\',\'' . $this->id . '\',\'' . $this->champ . '\',this);">
+                class="input-mini selectMSearch" type="text" id="qxhr_' . $this->champ . '" value="" >
             </div>');
         }
 

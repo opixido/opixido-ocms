@@ -22,7 +22,8 @@
 # @package ocms
 #
 
-class genInstall {
+class genInstall
+{
 
     /**
      * Simpleform
@@ -38,7 +39,8 @@ class genInstall {
      */
     var $f2;
 
-    function __construct() {
+    function __construct()
+    {
 
         define('IN_INSTALL', true);
 
@@ -60,10 +62,9 @@ class genInstall {
             foreach ($quers as $sql) {
                 if (!DoSql($sql)) {
                     $res = false;
-                    echo ("<p class=\"error\">Error at the line $linenumber: " . trim($dumpline) . "</p>\n");
-                    echo ("<p>Query: " . trim(nl2br(htmlentities($query))) . "</p>\n");
-                    echo ("<p>MySQL: " . mysql_error() . "</p>\n");
-                    debug($query);
+                    echo("<p>Query: " . trim(nl2br(htmlentities($sql))) . "</p>\n");
+                    echo("<p>MySQL: " . $co->errorMsg() . "</p>\n");
+                    debug($sql);
                 }
             }
 
@@ -80,7 +81,7 @@ class genInstall {
 
             global $co;
             echo '<div class="start">';
-            $co = NewADOConnection($_POST['bdd_type']);
+            $co = ADONewConnection($_POST['bded_type']);
             echo '</div>';
             if (!$co) {
                 $this->error('Database type is not supported');
@@ -134,88 +135,19 @@ class genInstall {
                 define('LG_TEMP', $_SESSION['LG_TEMP']);
             }
 
-
-
-            DoSql('TRUNCATE TABLE s_role');
-            DoSql('TRUNCATE TABLE s_role_table');
-            DoSql('TRUNCATE TABLE s_admin');
-            DoSql('TRUNCATE TABLE s_admin_role');
-            DoSql('INSERT INTO s_role (role_nom) VALUES ("ADMINISTRATEUR")');
-            $roleId = InsertId();
-            DoSql('INSERT INTO `s_role_table` ( `role_table_id` , `role_table_table` , `fk_role_id` , `role_table_type` , `role_table_specific` , `role_table_view` , `role_table_add` , `role_table_edit` , `role_table_delete` , `role_table_actions` , `role_table_champs` )
-					VALUES (
-						NULL , "all", "' . $roleId . '", "all", "", "1", "1", "1", "1", "", ""
-					);');
-
-
-            DoSql('INSERT INTO s_admin (admin_nom,admin_login,admin_pwd) VALUES (' . sql($_POST['admin_login']) . ',' . sql($_POST['admin_login']) . ',' . sql($GLOBALS['gs_obj']->encrypt($_POST['admin_pwd'])) . ')');
+            DoSql('TRUNCATE s_admin');
+            DoSql('INSERT INTO s_admin (admin_nom,admin_login,admin_pwd) VALUES (' . sql($_POST['admin_login']) . ',' . sql($_POST['admin_login']) . ',' . sql(password_hash($_POST['admin_pwd'], PASSWORD_BCRYPT)) . ')');
 
             $adminId = InsertId();
 
-            DoSql('INSERT INTO s_admin_role (fk_admin_id,fk_role_id)VALUES (' . $adminId . ',' . $roleId . ')');
+            DoSql('REPLACE INTO s_trad (trad_id,trad_fr) VALUES ("base_title",' . sql($_POST['site_nom']) . ')');
+            DoSql('REPLACE INTO s_admin_trad (admin_trad_id,admin_trad_fr) VALUES ("base_title",' . sql($_POST['site_nom']) . ')');
 
-            DoSql('INSERT INTO s_trad (trad_id,trad_fr) VALUES ("base_title",' . sql($_POST['site_nom']) . ')');
-            DoSql('INSERT INTO s_admin_trad (admin_trad_id,admin_trad_fr) VALUES ("base_title",' . sql($_POST['site_nom']) . ')');
-
-
-            DoSql("REPLACE INTO `s_rubrique` SET
-							 rubrique_id = '1' , 
-							 rubrique_ordre = 1 ,
-							 rubrique_etat =  'en_ligne', 
+            DoSql("UPDATE `s_rubrique` SET
 							 rubrique_url_" . LG_TEMP . " = " . sql(';' . $_SERVER['HTTP_HOST'] . ';') . ", 
-							 rubrique_titre_" . LG_TEMP . " = " . sql($_POST['site_nom']) . ",
-							 rubrique_type = 'siteroot',
-							 rubrique_date_crea = NOW(),
-							 rubrique_date_modif = NOW(),
-							 rubrique_date_publi = NOW()");
+							 rubrique_titre_" . LG_TEMP . " = " . sql($_POST['site_nom']) . "
+							 WHERE ocms_version = 1");
 
-
-            $rubEnLigne = InsertId();
-            //DoSql("INSERT INTO `s_rubrique` VALUES ('', NULL, ".$rubEnLigne.", 0, 'redaction', '', 0, 0, 1, ".sql($_SERVER['HTTP_HOST']).", '',  ".sql($_POST['site_nom']).", '', '', '', '', '', '', '', '', '', NOW(), '0000-00-00 00:00:00', '0000-00-00 00:00:00', 'siteroot', '', '', '', '', '', '');");
-
-            DoSql("REPLACE INTO `s_rubrique` SET
-							 rubrique_id = '2' , 
-							 rubrique_ordre = 1 ,
-							 fk_rubrique_version_id = 1,
-							 rubrique_etat =  'redaction', 
-							 rubrique_url_" . LG_TEMP . " = " . sql(';' . $_SERVER['HTTP_HOST'] . ';') . ", 
-							 rubrique_titre_" . LG_TEMP . " = " . sql($_POST['site_nom']) . ",
-							 rubrique_type = 'siteroot',
-							 rubrique_date_crea = NOW(),
-							 rubrique_date_modif = NOW(),
-							 rubrique_date_publi = NOW()");
-
-
-            $rubMasquee = InsertId();
-
-            DoSql('INSERT INTO `s_para_type` VALUES ("1", "Titre + texte", "<h2><' . '?=$this->get(\'titre\')?' . '></h2>\r\n<div class=\'para\'><' . '?=$this->get(\'texte\')?' . '></div>\r\n", "","", 0, 0, 0, 1, 0, "", "");');
-            $paraType = InsertId();
-
-
-            $sql = 'REPLACE INTO s_paragraphe SET
-							paragraphe_id = "1",
-							fk_para_type_id = 1,
-							paragraphe_titre_' . LG_TEMP . ' = "Bienvenue"
-							,
-							paragraphe_contenu_' . LG_TEMP . '  = "<p>Ceci est la page d&#39;accueil de votre site.</p><p> Vous pouvez désormais rajouter d&#39;autres pages, des menus, ...</p><p>&nbsp;</p><p>' . str_repeat('Lorem ipsum ', 20) . '" 
-							,
-							fk_rubrique_id = "1"
-							
-							';
-
-            DoSql($sql);
-
-            $sql = 'REPLACE INTO s_paragraphe SET
-							paragraphe_id = "2",
-							fk_para_type_id = 1,
-							paragraphe_titre_' . LG_TEMP . ' = "Bienvenue"
-							,
-							paragraphe_contenu_' . LG_TEMP . '  = "<p>Ceci est la page d&#39;accueil de votre site.</p><p> Vous pouvez désormais rajouter d&#39;autres pages, des menus, ...</p><p>&nbsp;</p><p>' . str_repeat('Lorem ipsum ', 20) . '" 
-							,
-							fk_rubrique_id = "2"
-							
-							';
-            DoSql($sql);
 
             global $genMessages;
 
@@ -223,11 +155,21 @@ class genInstall {
 
             $this->doForm = 3;
         } else {
-            
+            try {
+                @mkdir('../c', 0755);
+                @mkdir('../admin/c', 0755);
+                @mkdir('../include/cache', 0755);
+                @mkdir('../include/cache_agr', 0755);
+                @mkdir('../thumb/cache', 0755);
+                @mkdir('../fichier', 0755);
+            } catch (Exception $e) {
+
+            }
         }
     }
 
-    public function checkConfig() {
+    public function checkConfig()
+    {
 
         echo '<table>';
         $this->errorVersion('PHP', 'PHP 5 ou sup&eacute;rieur est n&eacute;cessaire', version_compare(phpversion(), '5'));
@@ -269,7 +211,8 @@ class genInstall {
         }
     }
 
-    function errorVersion($obj, $txt, $vrai) {
+    function errorVersion($obj, $txt, $vrai)
+    {
 
         if (!$vrai) {
             $this->errorsConf = true;
@@ -279,7 +222,8 @@ class genInstall {
         }
     }
 
-    function infoVersion($obj, $txt, $vrai) {
+    function infoVersion($obj, $txt, $vrai)
+    {
         if (!$vrai) {
             echo '<tr style="background:yellow;color:black;"><td>' . $obj . '</td><td>' . $txt . '</td></tr>';
         } else {
@@ -287,7 +231,8 @@ class genInstall {
         }
     }
 
-    function createConfigFile() {
+    function createConfigFile()
+    {
 
         $contenu = file_get_contents(path_concat($GLOBALS['gb_obj']->include_path, 'config', 'config.server.php.base'));
         if (!$contenu) {
@@ -299,8 +244,23 @@ class genInstall {
         $_POST['UNIQUE_SITE'] = uniqid();
         $vars = array('bdd_bdd', 'bdd_user', 'bdd_pwd', 'bdd_type', 'bdd_host', 'CRYPTO_KEY', 'ADMIN_URL', 'WEB_URL', 'session_cookie_server', 'current_ip', 'UNIQUE_SITE');
         foreach ($vars as $var) {
-            $contenu = str_replace('**' . $var . '**', $_POST[$var], $contenu);
+            $contenu = str_replace('**' . $var . '**', $_POST[ $var ], $contenu);
         }
+
+
+        $locale = '<?php
+
+    global $sqlTime, $baseWebPath, $_Gconfig,$_bdd_host,$_bdd_type,$_bdd_pwd,$_bdd_bdd,$_bdd_user;
+
+    $_bdd_user = \'' . $_POST['bdd_user'] . '\';
+    $_bdd_pwd = \'' . $_POST['bdd_pwd'] . '\';
+    $_bdd_bdd = \'' . $_POST['bdd_bdd'] . '\';
+    $_bdd_host = \'' . $_POST['bdd_host'] . '\';
+    $_bdd_type = \'' . $_POST['bdd_type'] . '\';
+
+    $_Gconfig[\'debugIps\'] =array(\'' . $_SERVER['REMOTE_ADDR'] . '\');
+
+        ';
 
         $contenu = str_replace('**LG_DEF**', $_POST['LG_DEF'], $contenu);
 
@@ -311,28 +271,35 @@ class genInstall {
         $_SESSION['LG_TEMP'] = LG_TEMP;
 
 
-        $res = file_put_contents(path_concat($GLOBALS['gb_obj']->include_path, 'config', 'config.server.php'), $contenu);
-        if (!$res) {
-            $this->error('Can\'t write to configuration file');
+        $res1 = file_put_contents(path_concat($GLOBALS['gb_obj']->include_path, 'config', 'config.locale.php'), $locale);
+        if (!$res1) {
+            $this->error('Can\'t write to configuration file config.locale');
+            return;
+        }
+        $res2 = file_put_contents(path_concat($GLOBALS['gb_obj']->include_path, 'config', 'config.server.php'), $contenu);
+        if (!$res2) {
+            $this->error('Can\'t write to configuration file config.server');
             return;
         }
     }
 
-    function configServer() {
-
+    function configServer()
+    {
 
 
         if ($_POST['bdd_import']) {
+            global $co;
             //$res =  importSqlFile(path_concat($GLOBALS['gb_obj']->include_path,'config','INSTALL.SQL'));
             $quers = importSqlFile(path_concat($GLOBALS['gb_obj']->include_path, 'config', 'INSTALL.SQL'));
             $res = true;
+            //var_dump($quers);
             foreach ($quers as $sql) {
                 if (!DoSql($sql)) {
                     $res = false;
-                    echo ("<p class=\"error\">Error at the line $linenumber: " . trim($dumpline) . "</p>\n");
-                    echo ("<p>Query: " . trim(nl2br(htmlentities($query))) . "</p>\n");
-                    echo ("<p>MySQL: " . mysql_error() . "</p>\n");
-                    debug($query);
+
+                    echo("<p>Query: " . trim(nl2br(htmlentities($sql))) . "</p>\n");
+                    echo("<p>MySQL: " . $co->errorMsg() . "</p>\n");
+                    echo($sql);
                 }
             }
 
@@ -355,17 +322,20 @@ class genInstall {
         $this->doForm = 2;
     }
 
-    function error($txt) {
+    function error($txt)
+    {
 
         print('<div class="error" style="">' . $txt . '</div>');
     }
 
-    function info($txt) {
+    function info($txt)
+    {
 
         print('<div class="info" style="">' . $txt . '</div>');
     }
 
-    function setForms() {
+    function setForms()
+    {
 
         $this->f1 = new simpleForm('', 'post', 'page1');
 
@@ -410,7 +380,6 @@ class genInstall {
         $this->f1->add('submit', ' > Suivant', '', 'next');
 
 
-
         $this->f2 = new simpleForm('', 'post', 'page2');
 
         $this->f2->add('html', '<p><h2>Installation de l\'OCMS</h2> Veuillez saisir ci-dessous le nom d\'utilisateur et le mot de passe du premier administrateur</p><p>&nbsp;</p>', '');
@@ -428,7 +397,8 @@ class genInstall {
         $this->f2->add('submit', ' > Suivant', '', 'next');
     }
 
-    function gen() {
+    function gen()
+    {
 
 
         echo '<div id="install">';

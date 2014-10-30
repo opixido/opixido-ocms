@@ -22,7 +22,8 @@
 # @package ocms
 #
 
-class genContact extends ocmsGen {
+class genContact extends ocmsGen
+{
 
     /**
      * Gensite
@@ -32,6 +33,27 @@ class genContact extends ocmsGen {
     public $site;
 
     /**
+     * public send message
+     *
+     * @String sendMessage
+     */
+    public $sendMessage;
+
+    /**
+     * public error message
+     *
+     * @String errorMessage
+     */
+    public $errorMessage;
+
+    /**
+     * private isVisible
+     *
+     * @bool isVisible
+     */
+    private $isVisible;
+
+    /**
      * simpleform
      *
      * @var simpleform
@@ -39,19 +61,33 @@ class genContact extends ocmsGen {
     private $form;
     private $isValid = false;
 
-    public function __construct($site, $params) {
+    public function __construct($site, $params)
+    {
 
         parent::__construct($site, $params);
+
+        $this->sendMessage = t('confirm_send_contact');
+        $this->errorMessage = t('contact_error');
+
+        /**
+         * check les contacts
+         */
+        $this->checkContact();
 
         /**
          * Default CSS
          */
-        $this->site->g_headers->addCss('contact.css');
+        //$this->site->g_headers->addCss('contact.css');
+
+        if (!$this->isVisible) {
+            return;
+        }
 
         /**
          * New Form
          */
         $this->form = new simpleForm('./', 'post', 'contact_form');
+
 
         /**
          * On selectionne les champs supplémentaires à afficher
@@ -62,63 +98,20 @@ class genContact extends ocmsGen {
 
         $this->champs = GetAll($sql);
 
-        $this->addFields($this->champs, 'top');
 
-        /**
-         * Champ email obligatoire
-         */
-        if (isTrue($this->params['contact_show_email']) && $this->params['contact_email_position'] == 'top') {
-            $this->form->add('email', akev($_REQUEST, 'c_email'), t('c_email'), 'c_email', false, true);
-        }
         /**
          * Liste de destinataires possibles
          */
         $this->addContactList();
 
-        $this->addFields($this->champs, 'middle');
-
-        /**
-         * Champ email obligatoire
-         */
-        if (isTrue($this->params['contact_show_email']) && $this->params['contact_email_position'] != 'top') {
-            $this->form->add('email', akev($_REQUEST, 'c_email'), t('c_email'), 'c_email', false, true);
-        }
-
+        $this->addFields($this->champs);
 
 
         /**
-         * Champ de commentaire, obligatoire
+         * Boutons Submit
          */
-        if (isTrue($this->params['contact_show_comment'])) {
-            $this->form->add('textarea', akev($_REQUEST, 'c_comment'), t('c_comment'), 'c_comment', false, true);
-        }
+        $this->form->add('submit', t('c_submit'), '', 'contact_submit', 'contact_submit');
 
-        /**
-         * Si on utilise le captcha on le rajoute ...
-         */
-        if (isTrue(getParam('formulaireContact_useCaptcha')) && pluginExists('captcha')) {
-
-            $this->form->add('captcha', '', t('c_captcha'));
-        }
-
-        $this->addFields($this->champs, 'bottom');
-
-        /**
-         * Si on utilise le captcha on le rajoute ...
-         */
-        if (isTrue(getParam('formulaireContact_useCaptchaQuestion'))) {
-
-            $this->form->add('captcha_question', '', t('c_captcha_question'), '', '', true);
-        }
-
-        /**
-         * Boutons Submit 
-         */
-        $s = $this->form->add('submit', t('c_submit'), '', 'contact_submit', 'contact_submit');
-        /**
-         * Pour un submit image : 
-         * $this->form->fields['contact_submit']['image'] = BU . '/img/envoyer_' . LG . '.gif';
-         */
         /**
          * Si le formulaire a été soumis sans erreurs
          * Il est valide et on n'affiche plus les paragraphes
@@ -127,7 +120,7 @@ class genContact extends ocmsGen {
             $this->isValid = true;
             $this->site->g_rubrique->showParagraphes = false;
         } else {
-            
+
         }
     }
 
@@ -136,12 +129,28 @@ class genContact extends ocmsGen {
 
       } */
 
-    function addContactList() {
+    /**
+     * verfifie si il y a des contacts
+     * sur la rubrique
+     *
+     */
+    private function checkContact()
+    {
+        $sql = 'SELECT * FROM plug_contact WHERE fk_rubrique_id = ' . sql($this->site->getCurId()) . ' ';
+        $row = GetAll($sql);
+        if (empty($row)) {
+            $this->isVisible = false;
+        } else
+            $this->isVisible = true;
+    }
+
+    function addContactList()
+    {
 
         /**
          * Par défaut on cherche dans les contacts
          */
-        $sql = 'SELECT * FROM plug_contact WHERE fk_rubrique_id = "' . (int) $this->site->getCurId() . '"  ORDER BY contact_ordre , contact_titre_' . LG . ', contact_titre_' . LG_DEF;
+        $sql = 'SELECT * FROM plug_contact WHERE fk_rubrique_id = "' . (int)$this->site->getCurId() . '"  ORDER BY contact_ordre , contact_titre_' . LG . ', contact_titre_' . LG_DEF;
         $res = GetAll($sql);
 
 
@@ -173,69 +182,84 @@ class genContact extends ocmsGen {
         }
     }
 
-    function addFields($arrayOfFields, $position) {
+    function addFields($arrayOfFields)
+    {
 
         /**
          * Et on les affiche
          */
         foreach ($arrayOfFields as $row) {
 
+
+            $var = getLgValue('contact_field_values', $row);
+            if (empty($row['contact_field_name'])) {
+                $row['contact_field_name'] = nicename($row[ 'contact_field_nom_' . LG_DEF ]);
+            }
+
             /*
-              $displayed = ($row['contact_field_top'] && $position == 'top')
-              || ($row['contact_field_bottom'] && $position == 'bottom')
-              || (!$row['contact_field_top'] && !$row['contact_field_bottom'] && $position == 'middle');
+              if(strpos($var,";") === false)
+              $field_value = $var;
+              else
+              $field_value = explode(";",$var);
              */
-            $displayed = true;
 
-            if ($displayed) {
-
-                $var = getLgValue('contact_field_values', $row);
-
-                /*
-                  if(strpos($var,";") === false)
-                  $field_value = $var;
-                  else
-                  $field_value = explode(";",$var);
-                 */
-
-                if ($row['contact_field_type'] == 'select' || $row['contact_field_type'] == 'selectm') {
-                    if (strpos(';', $var)) {
-                        $field_value = explode(";", $var);
-                    } else {
-                        $field_value = explode(",", $var);
-                    }
-
-                    $var = array();
-                    foreach ($field_value as $v) {
-                        $v = explode('=', $v);
-
-                        if (count($v) > 1) {
-
-                            $var[] = array('label' => $v[1], 'value' => $v[0]);
-                        } else {
-                            $var[] = array('label' => $v[0], 'value' => $v[0]);
-                        }
-                    }
-                    $this->form->add(
-                            $row['contact_field_type'], $var, getLgValue('contact_field_nom', $row), $row['contact_field_name'], $row['contact_field_name'], $row['contact_field_needed'], array($_REQUEST[$row['contact_field_name']])
-                    );
+            if ($row['contact_field_type'] == 'select' || $row['contact_field_type'] == 'selectm') {
+                if (strpos(';', $var)) {
+                    $field_value = explode(";", $var);
                 } else {
-
-                    $this->form->add(
-                            $row['contact_field_type'], getLgValue('contact_field_values', $row), getLgValue('contact_field_nom', $row), $row['contact_field_name'], $row['contact_field_name'], $row['contact_field_needed']
-                    );
+                    $field_value = explode(",", $var);
                 }
+
+                $var = array();
+                foreach ($field_value as $v) {
+                    $v = explode('=', $v);
+
+                    if (count($v) > 1) {
+
+                        $var[] = array('label' => $v[1], 'value' => $v[0]);
+                    } else {
+                        $var[] = array('label' => $v[0], 'value' => $v[0]);
+                    }
+                }
+                $this->form->add(
+                    $row['contact_field_type'], $var, getLgValue('contact_field_nom', $row), $row['contact_field_name'], $row['contact_field_name'], $row['contact_field_needed'], array(akev($_REQUEST, $row['contact_field_name']))
+                );
+            } else {
+
+                $this->form->add(
+                    $row['contact_field_type'], getLgValue('contact_field_values', $row), getLgValue('contact_field_nom', $row), $row['contact_field_name'], $row['contact_field_name'], $row['contact_field_needed']
+                );
             }
         }
+
+    }
+
+    public static function ocms_getPicto()
+    {
+
+        return ADMIN_PICTOS_FOLDER . ADMIN_PICTOS_ARBO_SIZE . '/apps/internet-mail.png';
+    }
+
+    public static function ocms_getParams()
+    {
+
+        $params = array();
+
+        return $params;
     }
 
     /**
      * On génère tout juste avant les paragraphes de la rubrique
-     * 
+     *
      *
      * @return unknown
      */
-    public function gen() {
+    public function gen()
+    {
+
+        if (!$this->isVisible) {
+            return '';
+        }
 
         $html = '<div id="contact_rub" >';
 
@@ -264,14 +288,14 @@ class genContact extends ocmsGen {
                      */
                     dinfo($res2);
                 }
-
-                $html .= '<div id="mail_ok"><p class="para">' . t('confirm_send_contact') . '</p></div>';
+                $this->saveForm();
+                $html .= '<div id="mail_ok"><p class="secondary alert">' . $this->sendMessage . '</p></div>';
             } else {
                 /**
                  * Erreur d'envoi
                  */
                 dinfo($res1);
-                $html .= '<div id="mail_ok"><p class="para">' . t('contact_error') . '</p></div>';
+                $html .= '<div id="mail_ok"><p class="danger alert">' . $this->errorMessage . '</p></div>';
             }
         } else {
             /**
@@ -282,49 +306,21 @@ class genContact extends ocmsGen {
 
         $html .= '</div>';
         $html .= '<div class="clearer" style="clear:both:">&nbsp;<br/></div>';
-        return ( $html );
+        return ($this->isVisible) ? ($html) : false;
     }
 
     /**
-     * Envoi la réponse automatique à l'utilisateur
-     * qui a envoyé le message
-     *
-     * @return mixed status de l'envoi
-     */
-    private function sendAutoResponse() {
-
-
-        return true;
-
-        $to = $_REQUEST['c_email'];
-
-        $subject = '[' . t('base_title') . '] ' . t('contact_auto_subject');
-
-        $content = t('contact_auto_response') . '';
-
-        $m = includeMail();
-
-
-
-        $m->Body = ($content);
-        $m->Subject = ($subject);
-
-        $m->AddAddress($to);
-
-        return $m->Send() . $m->ErrorInfo;
-    }
-
-    /**
-     * Envoi le message à la personne 
+     * Envoi le message à la personne
      * concernée par le contact
      *
      */
-    private function sendMailContact() {
+    private function sendMailContact()
+    {
 
         /**
          * On sélectionne la personne
          */
-        $sql = 'SELECT * FROM plug_contact WHERE contact_id = "' . (int) $_REQUEST['c_qui'] . '"';
+        $sql = 'SELECT * FROM plug_contact WHERE contact_id = "' . (int)$_REQUEST['c_qui'] . '"';
         $row = GetSingle($sql);
 
         /**
@@ -359,17 +355,18 @@ class genContact extends ocmsGen {
         /**
          * Envoyeur
          */
-        $from = $_REQUEST['c_email'];
+        $from = akev($_REQUEST, 'c_email');
 
         /**
          * Sujet du mail
          */
-        $subject = '[' . t('base_title') . '] ' . t('contact_subject') . ' - ' . getLgValue('contact_titre', $row);
+        $subject = '[' . $this->site->g_rubrique->rObj->getTitle() . '] ' . getLgValue('contact_titre', $row);
 
         /**
          * Contenu
          */
-        $content = t('contact_body') . '' . "\n\n" . $from . ' ';
+
+        $content = t('contact_body') . ' ' . $this->site->g_rubrique->rObj->getTitle() . "\n\n" . $from . ' ';
 
         /**
          * PhpMailer
@@ -384,25 +381,27 @@ class genContact extends ocmsGen {
         /**
          * On rajoute les champs
          */
-        $content .= '<table style="border-collapse:collapse;">';
+        $content .= '<table>';
         foreach ($this->champs as $champ) {
+            if (empty($champ['contact_field_name'])) {
+                $champ['contact_field_name'] = nicename($champ[ 'contact_field_nom_' . LG_DEF ]);
+            }
             if ($champ['contact_field_type'] == 'file') {
-                if ($_FILES[$champ['contact_field_name']]) {
-                    $m->AddAttachment($_FILES[$champ['contact_field_name']]['tmp_name'], $champ['contact_field_name'] . '_' . $_FILES[$champ['contact_field_name']]['name']);
+                if ($_FILES[ $champ['contact_field_name'] ]) {
+                    $m->AddAttachment($_FILES[ $champ['contact_field_name'] ]['tmp_name'], $champ['contact_field_name'] . '_' . $_FILES[ $champ['contact_field_name'] ]['name']);
                 }
             } else if ($champ['contact_field_type'] == 'captcha_question') {
                 // nothing to do
             } else {
-                $content .= "<tr><th style='border:1px solid;text-align:right;padding:3px'>" . getLgValue('contact_field_nom', $champ) . '</th><td style="border:1px solid;padding:3px">' . "" . $_REQUEST[$champ['contact_field_name']] . '</td></tr>';
+                $content .= "<tr><th style='text-align:left;padding:3px'>" . getLgValue('contact_field_nom', $champ) . ' : </th><td style="padding:3px">' . "" . nl2br(htmlentities($_REQUEST[ $champ['contact_field_name'] ], ENT_QUOTES, 'utf-8')) . '</td></tr>';
             }
         }
 
-        $content .= "</table>" . $_REQUEST['c_comment'];
+        $content .= "</table>" .
+            akev($_REQUEST, 'c_comment');
 
 
-
-
-        $m->ReplyTo = $_REQUEST['c_email'];
+        //$m->ReplyTo = akev($_REQUEST, 'c_email');
 
         $m->Body = ($content);
         $m->Subject = ($subject);
@@ -420,27 +419,55 @@ class genContact extends ocmsGen {
         return $m->Send() . $m->ErrorInfo;
     }
 
-    private function showForm() {
+    /**
+     * Envoi la réponse automatique à l'utilisateur
+     * qui a envoyé le message
+     *
+     * @return mixed status de l'envoi
+     */
+    private function sendAutoResponse()
+    {
+
+
+        return true;
+
+        $to = $_REQUEST['c_email'];
+
+        $subject = '[' . t('base_title') . '] ' . t('contact_auto_subject');
+
+        $content = t('contact_auto_response') . '';
+
+        $m = includeMail();
+
+
+        $m->Body = ($content);
+        $m->Subject = ($subject);
+
+        $m->AddAddress($to);
+
+        return $m->Send() . $m->ErrorInfo;
+    }
+
+    /**
+     * sauvgarde les infos du formulaire
+     * @return type
+     */
+    public function saveForm()
+    {
+
+    }
+
+    private function showForm()
+    {
 
         return $this->form->gen();
     }
 
-    public static function ocms_getPicto() {
-
-        return ADMIN_PICTOS_FOLDER . ADMIN_PICTOS_ARBO_SIZE . '/apps/internet-mail.png';
-    }
-
-    public static function ocms_getParams() {
+    public function ocms_defaultParams()
+    {
 
         $params = array();
-
-        $params['contact_show_email'] = array('select', array(1 => 'yes', 0 => 'no'));
-        $params['contact_show_comment'] = array('select', array(1 => 'yes', 0 => 'no'));
-        $params['contact_email_position'] = array('select', array('top' => 'top', 'bottom' => 'bottom'));
-
         return $params;
     }
 
 }
-
-?>

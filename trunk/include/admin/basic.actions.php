@@ -244,65 +244,6 @@ function mostUsedWords() {
     p('</pre>');
 }
 
-/* User defined functions */
-
-function s_rubrique_createAll($id, $row = array(), $obj = '') {
-
-    /*
-      La rubrique vient d'être créée !
-      On créé une seconde rubrique à modifier
-     */
-
-    if (is_object($obj)) {
-        $obj->recordData();
-    }
-
-    global $gs_obj;
-
-
-    $sql = 'INSERT INTO s_rubrique  ( fk_rubrique_id,rubrique_ordre )
-		 ( SELECT fk_rubrique_id,rubrique_ordre
-		 	 FROM s_rubrique WHERE rubrique_id = "' . $id . '" ) ';
-
-    $res = DoSql($sql);
-    $_REQUEST['showRub'] = $id;
-
-    $_REQUEST['curId'] = $_POST['curId'] = $newId = InsertId();
-
-    if (is_object($obj)) {
-        $obj->id = $newId;
-    }
-
-    $sql = 'UPDATE s_rubrique SET
-                fk_rubrique_version_id = "' . $id . '" , 
-                rubrique_date_crea = NOW() , 
-                fk_creator_id = "' . $gs_obj->adminid . '"  
-                WHERE rubrique_id = "' . $newId . '"';
-
-    $res = DoSql($sql);
-
-
-    return $newId;
-}
-
-function s_rubrique_beforeDelete($id, $row = array()) {
-
-    $sql = 'SELECT fk_rubrique_version_id FROM s_rubrique WHERE rubrique_id = "' . mes($id) . '"';
-    $row = GetSingle($sql);
-
-    $gr = new GenRecord('s_rubrique', $row['fk_rubrique_version_id']);
-    $gr->DeleteRow($row['fk_rubrique_version_id']);
-}
-
-function s_rubrique_update($id, $row = array()) {
-    $sql = 'UPDATE s_rubrique SET rubrique_date_modif = NOW()  WHERE rubrique_id = "' . $id . '"';
-    $res = DoSql($sql);
-}
-
-function t_document_update($id, $row = array()) {
-    //debug('update liens');
-    DoSql('UPDATE s_param SET param_valeur = "' . time() . '" WHERE param_id = "timestamp_modif_pro"');
-}
 
 function du($dir) {
     $res = `/usr/bin/du -sk $dir`;             // Unix command

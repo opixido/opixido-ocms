@@ -120,13 +120,13 @@ class genFile {
                 $this->valeur = $val;
             } else {
 
-                if ($this->valeur[$this->champ . '_' . LG]) {
+                if (isset($this->valeur[$this->champ . '_' . LG])) {
 
                     $this->champ = $this->champ . '_' . LG;
 
                     $this->valeur = $valeur[$this->champ];
                     $this->valeurFound = true;
-                } else if ($this->valeur[$this->champ . '_' . $GLOBALS['otherLg']]) {
+                } else if (isset($this->valeur[$this->champ . '_' . $GLOBALS['otherLg']])) {
 
                     $this->champ = $this->champ . '_' . $GLOBALS['otherLg'];
 
@@ -139,6 +139,8 @@ class genFile {
                 }
             }
         }
+
+
 
 
         if (is_array($this->valeur) && array_key_exists($champ, $this->valeur)) {
@@ -217,6 +219,11 @@ class genFile {
             $this->systemPath = $s[0];
 
             $this->webPath = str_replace($_SERVER['DOCUMENT_ROOT'], '', $this->systemPath);
+        } else if (strpos($this->valeur, '/') !== false) {
+
+            $this->systemPath = dirname(path_concat($_SERVER['DOCUMENT_ROOT'], $this->valeur)) . '/';
+            $this->webPath = dirname($this->valeur) . '/';
+            $this->fileName = $this->realName;
         } else {
 
             /**
@@ -347,7 +354,7 @@ class genFile {
             return $this->getWebUrl();
 
         if ($this->imageExists) {
-            return $this->getCacheFile(path_concat(THUMBPATH) . '?q=' . $this->quality . '&amp;w=' . $w . '&amp;h=' . $h . '&amp;src=' . $this->getSystemPath() . '' . $this->getFilters($fltr));
+            return $this->getCacheFile(path_concat(THUMBPATH) . '?q=' . $this->quality . '&amp;w=' . $w . '&amp;h=' . $h . '&amp;src=' . $this->getSystemPath(true) . '' . $this->getFilters($fltr));
             //return path_concat(THUMBPATH).'?q='.$this->quality.'&amp;w='.$w.'&amp;h='.$h.'&amp;table='.$this->table.'&amp;champ='.$this->champ.'&amp;id='.$this->id;
         } else {
             return '';
@@ -363,7 +370,7 @@ class genFile {
      */
     function getThumbUrlExact($w = 200, $h = 200, $fltr = array()) {
         if ($this->imageExists) {
-            return $this->getCacheFile(path_concat(THUMBPATH) . '?q=' . $this->quality . '&amp;zc=1&amp;w=' . $w . '&amp;h=' . $h . '&amp;src=' . $this->getSystemPath() . $this->getFilters($fltr));
+            return $this->getCacheFile(path_concat(THUMBPATH) . '?q=' . $this->quality . '&amp;zc=1&amp;w=' . $w . '&amp;h=' . $h . '&amp;src=' . $this->getSystemPath(true) . $this->getFilters($fltr));
             return path_concat(THUMBPATH) . '?q=' . $this->quality . '&amp;zc=1&amp;w=' . $w . '&amp;h=' . $h . '&amp;table=' . $this->table . '&amp;champ=' . $this->champ . '&amp;id=' . $this->id;
         } else {
             return '';
@@ -379,7 +386,7 @@ class genFile {
      */
     function getCropUrl($w = 200, $h = 200, $fltr = array()) {
         if ($this->imageExists) {
-            return $this->getCacheFile(path_concat(THUMBPATH) . '?q=' . $this->quality . '&amp;zc=1&amp;w=' . $w . '&amp;h=' . $h . '&amp;src=' . $this->getSystemPath() . $this->getFilters($fltr));
+            return $this->getCacheFile(path_concat(THUMBPATH) . '?q=' . $this->quality . '&amp;zc=1&amp;w=' . $w . '&amp;h=' . $h . '&amp;src=' . $this->getSystemPath(true) . $this->getFilters($fltr));
             return path_concat(THUMBPATH) . '?q=' . $this->quality . '&amp;zc=1&amp;w=' . $w . '&amp;h=' . $h . '&amp;src=' . $this->getSystemPath() . $this->getFilters($fltr);
             return path_concat(THUMBPATH) . '?q=' . $this->quality . '&amp;zc=1&amp;sw=' . $w . '&amp;sh=' . $h . '&amp;table=' . $this->table . '&amp;champ=' . $this->champ . '&amp;id=' . $this->id;
         } else {
@@ -442,6 +449,12 @@ class genFile {
     function getExactImgtag($w = 0, $h = 0, $alt = '', $tag = '', $filters = array()) {
 
         $url = $this->getThumbUrlExact($w, $h, $filters);
+        if (strstr($tag, 'srcset') === false) {
+            $url02 = $this->getThumbUrlExact(round($w * 0.3), round($h * 0.3), $filters);
+            $url05 = $this->getThumbUrlExact(round($w * 0.6), round($h * 0.6), $filters);
+            $url2x = $this->getThumbUrlExact($w * 2, $h * 2, $filters);
+            $tag .= ' srcset="' . $url02 . ' 0.3x,' . $url05 . ' 0.6x, ' . $url . ' 1x, ' . $url2x . ' 2x" ';
+        }
 
         if (strlen($url)) {
             return '<img src="' . $url . '" alt="' . $alt . '" ' . $tag . ' />';
@@ -477,6 +490,13 @@ class genFile {
 
         $url = $this->getThumbUrl($w, $h, $filters);
 
+        if (strstr($tag, 'srcset') === false) {
+            $url02 = $this->getThumbUrl(round($w * 0.3), round($h * 0.3), $filters);
+            $url05 = $this->getThumbUrl(round($w * 0.6), round($h * 0.6), $filters);
+            $url2x = $this->getThumbUrl($w * 2, $h * 2, $filters);
+            $tag .= ' srcset="' . $url02 . ' 0.3x,' . $url05 . ' 0.6x, ' . $url . ' 1x, ' . $url2x . ' 2x" ';
+        }
+
         if (strlen($url)) {
             return '<img src="' . $url . '" alt="' . $alt . '" ' . $tag . ' />';
         } else {
@@ -494,6 +514,13 @@ class genFile {
     function getCropImgtag($w = 0, $h = 0, $alt = '', $tag = '', $filters = array()) {
 
         $url = $this->getCropUrl($w, $h, $filters);
+
+        if (strstr($tag, 'srcset') === false) {
+            $url02 = $this->getCropUrl(round($w * 0.3), round($h * 0.3), $filters);
+            $url05 = $this->getCropUrl(round($w * 0.6), round($h * 0.6), $filters);
+            $url2x = $this->getCropUrl($w * 2, $h * 2, $filters);
+            $tag .= ' srcset="' . $url02 . ' 0.3x,' . $url05 . ' 0.6x, ' . $url . ' 1x, ' . $url2x . ' 2x" ';
+        }
 
         if (strlen($url)) {
             return '<img src="' . $url . '" alt="' . $alt . '" ' . $tag . ' />';
@@ -814,10 +841,7 @@ class genFile {
         $MB = 1048576;  // number of bytes in 1M
         $K64 = 65536;    // number of bytes in 64K
         $TWEAKFACTOR = 50;  // Or whatever works for you
-        $memoryNeeded = round(( $imageInfo[0] * $imageInfo[1]
-                * ($imageInfo['bits'] ? $imageInfo['bits'] : 8)
-                * ($imageInfo['channels'] ? $imageInfo['channels'] : 8) / 8
-                + $K64
+        $memoryNeeded = round(( $imageInfo[0] * $imageInfo[1] * ($imageInfo['bits'] ? $imageInfo['bits'] : 8) * ($imageInfo['channels'] ? $imageInfo['channels'] : 8) / 8 + $K64
                 ) * $TWEAKFACTOR
         );
         //ini_get('memory_limit') only works if compiled with "--enable-memory-limit" also
@@ -827,9 +851,7 @@ class genFile {
         $memoryLimit = $memoryLimitMB * $MB;
         if (function_exists('memory_get_usage') &&
                 memory_get_usage() + $memoryNeeded > $memoryLimit) {
-            $newLimit = $memoryLimitMB + ceil(( memory_get_usage()
-                            + $memoryNeeded
-                            - $memoryLimit
+            $newLimit = $memoryLimitMB + ceil(( memory_get_usage() + $memoryNeeded - $memoryLimit
                             ) / $MB
             );
 
@@ -959,23 +981,27 @@ class genFile {
      * @return  le chemin (path) sur le systeme vers le fichier (ex; /home/user/www/fichier/foo.pdf)
      *
      */
-    function getSystemPath() {
+    function getSystemPath($short = false) {
 
         if ($this->classe) {
 
             return $this->classe->getSystemPath();
         }
 
-        if ($this->realSystemPath) {
+        if (!$this->realSystemPath) {
+            if ($this->imageExists) {
+                $this->realSystemPath = ($this->systemPath . $this->fileName);
+            } else {
+                $this->realSystemPath = ($this->systemPath . $this->fileName);
+                //return '';
+            }
+        }
+
+        if ($short) {
+            return str_replace(array($_SERVER['DOCUMENT_ROOT'], ' '), array('', '%20'), $this->realSystemPath);
+        } else {
             return $this->realSystemPath;
         }
-        if ($this->imageExists) {
-            $this->realSystemPath = ($this->systemPath . $this->fileName);
-        } else {
-            $this->realSystemPath = ($this->systemPath . $this->fileName);
-            //return '';
-        }
-        return $this->realSystemPath;
     }
 
     /**

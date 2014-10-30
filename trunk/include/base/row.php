@@ -27,6 +27,7 @@ class row {
     public $table = '';
     public $id = 0;
     public $tabField = array();
+    public $relOne = false;
 
     function __construct($table, $roworid) {
 
@@ -55,6 +56,11 @@ class row {
         }
     }
 
+    public function isRelOne($otherTable) {
+        $this->relOne = $otherTable;
+        $this->tabField = getTabField($this->table . '/' . $this->relOne);
+    }
+
     /**
      * Returns nice value for the specified $field
      * 
@@ -64,6 +70,11 @@ class row {
      * @return mixed
      */
     function get($field, $raw = false) {
+
+        if (!$this->row) {
+            $this->id = 0;
+            return false;
+        }
 
         /**
          * Raw value ...
@@ -81,11 +92,24 @@ class row {
          * Upload => genfile
          */
         if (isUploadField($field)) {
-            $this->$field = new genFile($this->table, $field, $this->row);
+
+            if (isBaseLgField($field, $this->table, $this->tabField)) {
+                $f = $field . '_' . LG;
+                if (empty($this->row[$field . '_' . LG])) {
+                    $olg = getOtherLg();
+                    if (!empty($this->row[$field . '_' . $olg])) {
+                        $f = $field . '_' . $olg;
+                    }
+                }
+            } else {
+                $f = $field;
+            }
+            $table = $this->tabField[$f]->table;
+            $this->$field = new genFile($table, $f, $this->row);
         }
         /**
          * LG Field
-         */ else if (isBaseLgField($field, $this->table)) {
+         */ else if (isBaseLgField($field, $this->table, $this->tabField)) {
             $this->$field = getLgValue($field, $this->row);
         }
         /**
@@ -153,7 +177,7 @@ class row {
 				    FROM ' . $foreignTable . '
 				    WHERE ' . $relinv[$this->table][$field][1] . ' = ' . $this->id;
 
-            if ($orderFields[$foreignTable]) {
+            if (!empty($orderFields[$foreignTable])) {
 
                 $sql .= ' ORDER BY ' . $orderFields[$foreignTable][0];
             }

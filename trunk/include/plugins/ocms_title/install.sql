@@ -1,0 +1,1 @@
+ALTER TABLE `s_rubrique` ADD `rubrique_titre_page_[LG]` VARCHAR( 255 ) NOT NULL AFTER `rubrique_titre_[LG]`;

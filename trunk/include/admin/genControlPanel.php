@@ -47,13 +47,8 @@ class genControlPanel {
 
             $this->tpl_cp->set('pictoGrid', $this->genPictoGrid());
 
-
             $this->tpl_cp->set('infoTime', $this->getInfoTime());
             $this->tpl_cp->set('userInfos', $this->genUserInfo());
-
-            $this->tpl_cp->set('updatedRubs', $this->getUpdatedRubs());
-            $this->tpl_cp->set('validatedRubs', $this->getValidatedRubs());
-            $this->tpl_cp->set('lastCreatedRubs', $this->getLastCreatedRubs());
 
             $this->tpl_cp->set('lastActions', $this->getLastActions());
             $this->tpl_cp->set('globalActions', $this->getGlobalActions());
@@ -65,22 +60,26 @@ class genControlPanel {
     }
 
     public function getLastActions() {
-
+        global $_Gconfig;
         $sql = 'SELECT * FROM s_log_action WHERE fk_admin_id = ' . sql($GLOBALS['gs_obj']->adminid) . '
                     AND log_action_action = "update" 
                     GROUP BY CONCAT(log_action_table,log_action_fk_id)
                     ORDER BY log_action_time DESC LIMIT 0, 10';
+
         $res = DoSql($sql);
-
-
-
+        $tables = array_merge($_Gconfig['bigMenus'], $_Gconfig['adminMenus']);        
+        $tables = call_user_func_array('array_merge', $tables);
+        
         $h = '<ul class="nav nav-list"><li class="nav-header">' . ta('lastActions') . '</li>';
         if ($res->NumRows() == 0) {
             $h .= '<li><span class="badge">' . ta('lastActions_none') . '</span></li>';
         } else {
             foreach ($res as $row) {
-                $h .= '<li><a href="?curTable=' . $row['log_action_table'] . '&curId=' . $row['log_action_fk_id'] . '">
-                        <img src="' . getPicto($row['log_action_table'], '16x16') . '" alt="" />  ' . limit(strip_tags(getTitleFromRow($row['log_action_table'], getRowFromId($row['log_action_table'], $row['log_action_fk_id'])))) . '</a></li>';
+                $r = getRowFromId($row['log_action_table'], $row['log_action_fk_id']);
+                if ($r && in_array($row['log_action_table'], $tables) && (!isset($r[MULTIVERSION_FIELD]) || $r[MULTIVERSION_FIELD] === $r[getPrimaryKey($row['log_action_table'])])) {
+                    $h .= '<li><a href="?curTable=' . $row['log_action_table'] . '&curId=' . $row['log_action_fk_id'] . '">
+                        <img src="' . getPicto($row['log_action_table'], '16x16') . '" alt="" />  ' . limit(strip_tags(getTitleFromRow($row['log_action_table'], $r))) . '</a></li>';
+                }
             }
         }
         $h .= '</ul>';
@@ -221,12 +220,12 @@ class genControlPanel {
     }
 
     private function getUpdatedRubs() {
+        global $_Gconfig;
         $sql = 'select *
 			   from s_rubrique
-			   where rubrique_etat=\'attente\'
-			   and fk_rubrique_id!=0
-			   and fk_rubrique_version_id IS NOT NULL
-			   order by rubrique_date_modif desc';
+			   where  fk_rubrique_id!=0
+			   and ' . MULTIVERSION_FIELD . ' = rubrique_id
+			   order by ' . $_Gconfig['field_date_maj'] . ' desc';
 
         $res = GetAll($sql);
 
@@ -254,13 +253,13 @@ class genControlPanel {
     }
 
     private function getValidatedRubs() {
+        global $_Gconfig;
         $sql = 'select r1.*, r2.rubrique_date_publi as date_publi
 			   from s_rubrique r1, s_rubrique r2
-			   where r2.rubrique_etat=\'en_ligne\'
-			   and r1.fk_rubrique_version_id=r2.rubrique_id
-			   and r1.fk_rubrique_id!=0
-			   and r1.fk_rubrique_version_id IS NOT NULL
-			   order by r2.rubrique_date_publi desc limit 10';
+			   where 
+			   r1.fk_rubrique_id!=0
+			   and r1.' . MULTIVERSION_FIELD . ' = rubrique_id
+			   order by r2.' . $_Gconfig['field_date_maj'] . ' desc limit 10';
 
         $res = GetAll($sql);
 
@@ -288,35 +287,7 @@ class genControlPanel {
         return $tpl->gen();
     }
 
-    private function getLastCreatedRubs() {
-        $sql = 'select *
-			   from s_rubrique
-			   where fk_rubrique_id!=0
-			   and rubrique_etat ="redaction"
-			   and fk_rubrique_version_id IS NOT NULL
-			   order by rubrique_date_crea desc LIMIT 15';
-
-        $res = GetAll($sql);
-
-        $tpl = new genTemplate();
-        $tpl->loadTemplate('cp.created.rubs');
-        $temp = '';
-        foreach ($res as $k => $v) {
-            if ($v['rubrique_titre_fr'] == '')
-                $v['rubrique_titre_fr'] = '*** Titre en-cours d\'ecriture';
-
-            $temp .= '
-			<tr class="ligne">
-			  <td><a href="?curTable=s_rubrique&curId=' . $v['rubrique_id'] . '">' . $v['rubrique_titre_fr'] . '</a></td>
-			  <td>' . nicedate(substr($v['rubrique_date_crea'], 0, -9)) . '</td>
-			</tr>';
-        }
-
-        $tpl->set('list_rubs', $temp);
-
-        return $tpl->gen();
-    }
-
+   
     private function getLastPublishedRub() {
         $sql = 'select * from s_rubrique order by rubrique_date_publi desc';
         $res = GetSingle($sql);

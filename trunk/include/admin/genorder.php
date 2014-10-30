@@ -78,9 +78,9 @@ class GenOrder {
     function GetUp() {
         global $_Gconfig;
 
-        if (!$this->DoIt)
+        if (!$this->DoIt) {
             return;
-
+        }
 
         logAction('get_up', $this->table, $_REQUEST['curId']);
 
@@ -127,6 +127,7 @@ class GenOrder {
         	FROM ' . $this->table . '
         	WHERE ' . $this->order_field . ' > ' . $this->curOrderValue . '
         	AND ' . $this->fk_champ . ' = "' . $this->fk_id . '"';
+
         if (!empty($_Gconfig['fullArboRev'][$this->table])) {
             if ($this->fk_champ == $_Gconfig['fullArboRev'][$this->table][0]) {
                 $sql .= ' AND ' . $_Gconfig['fullArboRev'][$this->table][1] . ' IS NULL ';
@@ -142,13 +143,16 @@ class GenOrder {
 
         //debug($row[$this->pk] ." -> ".$this->curOrderValue);
         //debug($this->id ." -> ".$row[$this->order_field]);
-
+        $pk = $this->pk;
+        if (isMultiVersion($this->table)) {
+            $pk = MULTIVERSION_FIELD;
+        }
 
         if (count($row)) {
 
 
-            $sql1 = 'UPDATE ' . $this->table . ' SET ' . $this->order_field . ' = ' . $this->curOrderValue . ' WHERE ' . $this->pk . ' = ' . $row[$this->pk];
-            $sql2 = 'UPDATE ' . $this->table . ' SET ' . $this->order_field . ' = ' . $row[$this->order_field] . ' WHERE ' . $this->pk . ' = ' . $this->id;
+            $sql1 = 'UPDATE ' . $this->table . ' SET ' . $this->order_field . ' = ' . $this->curOrderValue . ' WHERE ' . $pk . ' = ' . $row[$this->pk];
+            $sql2 = 'UPDATE ' . $this->table . ' SET ' . $this->order_field . ' = ' . $row[$this->order_field] . ' WHERE ' . $pk . ' = ' . $this->id;
 
 
             DoSql($sql1);
@@ -156,7 +160,26 @@ class GenOrder {
         }
     }
 
-    function ReOrder() {
+    /**
+     * Reorder after a delete inside a list
+     * @param type $order
+     * @return type
+     */
+    public function reOrderAfterDelete($order) {
+
+        if (!$this->DoIt) {
+            return;
+        }
+        if ($this->fk_id && strlen($this->fk_champ)) {
+            $sql = 'UPDATE ' . $this->table . ' SET ' . $this->order_field . ' = ' . $this->order_field . ' - 1 WHERE '
+                    . ' ' . $this->order_field . ' > ' . $order;
+            $sql .= ' AND ' . $this->fk_champ . ' = "' . $this->fk_id . '"';
+            DoSql($sql);
+        }
+    }
+
+    function reOrder() {
+
         /*
          * Reorder the whole table
          */
@@ -202,19 +225,37 @@ class GenOrder {
         if (!$this->DoIt || !$this->fk_id)
             return;
 
+        if (!$GLOBALS['gs_obj']->can('edit', 'anything')) {
+            return;
+        }
+
         if (!$res) {
-            $res = GetAll('SELECT * FROM ' . $this->table . ' WHERE ' . $this->fk_champ . ' = ' . sql($this->fk_id) . ' ORDER BY ' . $this->order_field);
+            $res = GetAll('SELECT ' . $this->order_field . ', ' . $this->pk . ' FROM ' . $this->table . ' '
+                    . ' WHERE ' . $this->fk_champ . ' = ' . sql($this->fk_id) . ' ORDER BY ' . $this->order_field);
         }
 
         $normalOrder = 0;
+        $ord = array();
         foreach ($res as $row) {
             $normalOrder++;
             /* Si l'ordre ne correspond pas on le change */
             if ($row[$this->order_field] != $normalOrder) {
-                $sql = 'UPDATE ' . $this->table . ' SET ' . $this->order_field . ' = ' . $normalOrder . ' WHERE ' . $this->pk . ' = "' . $row[$this->pk] . '"';
-                $res = DoSql($sql);
-                // echo $sql . '<br/>';
+                $ord[$row[$this->pk]] = $normalOrder;
             }
+        }
+        if ($ord) {
+            /**
+             * On fait tout en une seule requete
+             * BEAUCOUP plus rapide quand on en a beaucoup de résultats
+             * à trier 
+             */
+            $ids = implode(',', array_keys($ord));
+            $sql = "UPDATE " . $this->table . " SET " . $this->order_field . " = CASE  " . $this->pk;
+            foreach ($ord as $id => $ordinal) {
+                $sql .= sprintf(" WHEN %d THEN %d ", $id, $ordinal);
+            }
+            $sql .= " END WHERE " . $this->pk . " IN ($ids)";
+            DoSql($sql);
         }
     }
 
@@ -271,4 +312,3 @@ class GenOrder {
     }
 
 }
-

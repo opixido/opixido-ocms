@@ -50,7 +50,7 @@ class ajaxUpload {
     $("#pickfiles_' . $name . '").hover(function() {
         $(this).unbind("hover");
         window.uploader_' . $name . ' = new plupload.Uploader({
-                runtimes : "gears,flash,html5,silverlight",
+                runtimes : "html5,flash,gears,silverlight",
                 browse_button : "pickfiles_' . $name . '",
                 container: "container_' . $name . '",
                 max_file_size : "5000mb",
@@ -125,4 +125,3 @@ class ajaxUpload {
     }
 
 }
-

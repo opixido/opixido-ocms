@@ -46,34 +46,10 @@
 			
 			
 				<?php
-			
-				/**
-				 * Top Nav : Title, sub rubs, description, ...
-				 */
-				
-				echo $this->plugins['topNav']->genColonne();
-				
-				?>	
-			
-				<?php 
-					echo $this->g_rubrique->genOutside(); 
-				?>			
-			
-				<?php
-					echo $this->g_rubrique->Execute('gen1');
-				?>
-			
-				<?php 
+
 					echo $this->g_rubrique->genMain() 
 				?>
-			
-				<?php
-					echo $this->g_rubrique->Execute('gen2');
-				?>
-			
-				<?php
-					echo $this->g_rubrique->Execute('genLast');
-				?>
+
 			
 			</div>
 			<div class="clearer">&nbsp;</div>
@@ -84,6 +60,8 @@
 	</div>
 	
 </div>
+    
+
 
 </body>
 </html>

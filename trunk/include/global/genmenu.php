@@ -80,10 +80,6 @@ class genMenu {
         /**
          * Cache for menu
          */
-        $this->cache2 = new GenCache('arbo' . md5($this->site->g_url->topRubId . '-' . $this->site->getCurId() . '_' . $this->nom_menu), GetParam('date_update_arbo'));
-        if (!$this->cache2->cacheExists()) {
-            $this->genTab();
-        }
     }
 
     /**
@@ -92,8 +88,11 @@ class genMenu {
      * @return string
      */
     function getTab() {
-        if (!$this->cache2->cacheExists())
+        $this->cache2 = new GenCache('arbo' . md5($this->site->g_url->topRubId . '-' . $this->site->getCurId() . '_' . $this->nom_menu), GetParam('date_update_arbo'));
+        if (!$this->cache2->cacheExists()) {
+            $this->genTab();
             $this->cache2->saveCache($this->gen($this->tabPrincipal, 2));
+        }
 
         return $this->cache2->getCache();
     }
@@ -104,6 +103,7 @@ class genMenu {
      */
     function genTab() {
         global $rootId;
+
 
         if (!count($this->tabPrincipal))
             $this->tabPrincipal = $this->site->g_url->recursRub($this->id_menu, 1, $this->conf['max_levels']);
@@ -321,4 +321,3 @@ class genMenu {
     }
 
 }
-

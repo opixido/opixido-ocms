@@ -22,7 +22,8 @@
 # @package ocms
 #
 
-class genRubrique {
+class genRubrique
+{
 
     /**
      * gensite
@@ -37,7 +38,6 @@ class genRubrique {
      * @var int
      */
     public $rubrique_id;
-    private $cache_id;
     private $contexteOnTop;
     private $contextBoxes;
     public $showParagraphes;
@@ -51,6 +51,12 @@ class genRubrique {
     public $fk_rubrique_version_id = 0;
     public $params = array();
     public $bddClasse = '';
+
+    /**
+     *
+     * @var rubrique
+     */
+    public $rObj;
 
     /**
      * Liste des objets plugins
@@ -67,27 +73,32 @@ class genRubrique {
     var $gabarit;
 
     /**
-     * Genere la rubrique avec les classes, paragraphes, ...
-
-      Objets accessibles :
-      Lexique : $this->g_boxLexique  (Methode addMot($idMot))
-      Telechargements : $this->dwlBox (Method add())
-      En savoir plus : $this->linksBox (Method add())
-
-      @param showParagraphes bool Definit si l'on utilise les paragraphes ou non
-      @param showBoxLexique = Definit si l'on affiche la boite Lexique
-      @param showBoxDwl = Definit si l'on affiche la boite Telechargement
-      @param showBoxLinks = Definit si l'on affiche la boite "En savoir plus"
-
-      @param contexteOnTop = Definit si l'on affiche les contextes a "top"  ou "right"
-
-      @param html_after_paras = Code HTML ajoute apres la generation des paragraphes
-
-
+     *
+     * @var rubrique
      */
-    function __construct(genSite $site) {
+    var $row;
 
-        global $gb_obj, $co;
+    /**
+     * Genere la rubrique avec les classes, paragraphes, ...
+     *
+     * Objets accessibles :
+     * Lexique : $this->g_boxLexique  (Methode addMot($idMot))
+     * Telechargements : $this->dwlBox (Method add())
+     * En savoir plus : $this->linksBox (Method add())
+     *
+     * @param showParagraphes bool Definit si l'on utilise les paragraphes ou non
+     * @param showBoxLexique = Definit si l'on affiche la boite Lexique
+     * @param showBoxDwl = Definit si l'on affiche la boite Telechargement
+     * @param showBoxLinks = Definit si l'on affiche la boite "En savoir plus"
+     *
+     * @param contexteOnTop = Definit si l'on affiche les contextes a "top"  ou "right"
+     *
+     * @param html_after_paras = Code HTML ajoute apres la generation des paragraphes
+     */
+    function __construct(genSite $site)
+    {
+
+        global $_Gconfig;
 
         $this->site = &$site;
         $this->doGenMain = true;
@@ -104,9 +115,10 @@ class genRubrique {
         $this->rubrique_id = $this->site->getCurId();
 
         /* Et de son contenu */
-        $this->rubrique = GetRowFromId('s_rubrique', $this->rubrique_id);
+        $this->rubrique = GetRowFromId('s_rubrique', $this->rubrique_id, empty($_REQUEST['_version']));
+        $this->row = new rubrique($this->rubrique);
 
-        $this->fk_rubrique_version_id = $this->rubrique['fk_rubrique_version_id'];
+        $this->fk_rubrique_version_id = $this->rubrique[ MULTIVERSION_FIELD ];
 
         $_REQUEST['para'] = ake($_REQUEST, 'para') ? $_REQUEST['para'] : '';
 
@@ -126,10 +138,7 @@ class genRubrique {
         $this->params = SplitParams($this->rubrique['rubrique_gabarit_param']);
 
 
-
-
-
-
+        $this->rObj = $r = new rubrique($this->rubrique);
         /* Definition des Headers de la page relatifs a cette rubrique */
 
         $this->road = $this->site->g_url->buildRoad($this->rubrique_id);
@@ -139,55 +148,30 @@ class genRubrique {
 
         $this->site->g_headers->setTitle($title);
 
-        $this->site->g_headers->setMetaKeywords($this->site->GetLgValue('rubrique_keywords', $this->rubrique, false));
+        $this->site->g_headers->setMetaKeywords($r->rubrique_keywords);
 
-        $this->site->g_headers->setMetaDescription($this->site->GetLgValue('rubrique_desc', $this->rubrique, false));
+        $this->site->g_headers->setMetaDescription($r->rubrique_desc);
 
-        $this->date_publi = strtotime($this->rubrique['rubrique_date_publi']);
-
-
-
-
-
-        /*
-         * ***************
-          Cache ou pas ?
-         */
-        $this->cache_id = 'rub_' . $this->rubrique_id . '.' . $_REQUEST['para'] . '_' . $this->fk_rubrique_version_id . '_main';
-        $this->cache = new genCache($this->cache_id, $this->date_publi);
-
-        /* Les paragraphes */
-        if ($this->hasBddInfo) {
-
-            $this->use_cache = false;
-            $this->use_cache_contexte = false;
-            $this->getParagraphes();
-
-            //	$this->getSubRubs();
-        } else {
-
-
-            $this->cache_id_contexte = 'rub_' . $this->rubrique_id . '_' . $this->fk_rubrique_version_id . '_contexte';
-
-            $this->cache_contexte = new genCache($this->cache_id_contexte, $this->date_publi);
-
-            $this->use_cache = true;
-            $this->use_cache_contexte = true;
-
-            if (!$this->cache->cacheExists()) {
-                $this->use_cache = false;
-                $this->getParagraphes();
-            }
-            if (!$this->cache_contexte->cacheExists()) {
-                $this->use_cache_contexte = false;
-            }
+        $this->site->g_headers->setMeta('og:site_name', t('base_title'));
+        $this->site->g_headers->setMeta('og:title', $r->rubrique_titre);
+        $this->site->g_headers->setMeta('og:type', 'website');
+        $this->site->g_headers->setMeta('og:description', $r->rubrique_desc);
+        $img = $r->rubrique_picto->getWebUrl();
+        if ($img) {
+            $this->site->g_headers->setMeta('og:image', getServerUrl() . $img);
         }
+
+        $this->date_publi = strtotime($this->rubrique[ $_Gconfig['field_date_maj'] ]);
+
+
+        $this->getParagraphes();
     }
 
     /**
      * Chargement des plugins
      */
-    function loadPlugins() {
+    function loadPlugins()
+    {
 
         $p = GetPlugins();
 
@@ -203,7 +187,7 @@ class genRubrique {
         foreach ($p as $v) {
             $adminClassName = $v . 'Front';
             if (class_exists($adminClassName)) {
-                $this->plugins[$v] = new $adminClassName($this->site);
+                $this->plugins[ $v ] = new $adminClassName($this->site);
             }
         }
         $GLOBALS['times']['LoadingPlugins'] = getmicrotime() - $t;
@@ -217,14 +201,16 @@ class genRubrique {
      *
      * @return : true si le plugin est actif, false sinon
      */
-    public function isActivePlugin($plugin) {
-        return isset($this->plugins[$plugin]);
+    public function isActivePlugin($plugin)
+    {
+        return isset($this->plugins[ $plugin ]);
     }
 
     /**
-      On est sur la vrai rubrique ou bien celle modifiable ?
+     * On est sur la vrai rubrique ou bien celle modifiable ?
      */
-    function isRealRubrique() {
+    function isRealRubrique()
+    {
 
 
         if ($this->site->g_url->action == "editer") {
@@ -234,9 +220,10 @@ class genRubrique {
     }
 
     /**
-      Gestion des classes externes
+     * Gestion des classes externes
      */
-    function afterInit() {
+    function afterInit()
+    {
         global $co, $gb_obj;
 
 
@@ -245,27 +232,12 @@ class genRubrique {
         $GLOBALS['times']['BDD'] = 0;
         if ($this->hasBddInfo) {
             $startTimeBdd = getmicrotime();
-            //debug($startTimeBdd);
 
             $this->bddClasse = getGabaritClass($this->gabarit, $this->rubrique['rubrique_gabarit_param']);
 
-            $GLOBALS['times']['BDD'] += ( getmicrotime() - $startTimeBdd);
+            $GLOBALS['times']['BDD'] += (getmicrotime() - $startTimeBdd);
             $GLOBALS['times']['Plugins'] += $GLOBALS['times']['BDD'];
         }
-
-        /*
-          if(is_object($this->g_boxAdmin))
-          $this->site->g_headers->addFirstBody($this->g_boxAdmin->gen());
-
-
-          $this->cache_road = new genCache('road_'.$this->rubrique_id,GetParam('date_update_arbo'));
-          gen
-          if(!$this->cache_road->cacheExists() || $this->hasBddInfo) {
-          $this->road = $this->site->g_url->buildRoad($this->site->getCurId());
-
-          $this->rubrique_niveau = count($this->road) - 1;
-          }
-         */
 
 
         $this->Execute('init');
@@ -273,7 +245,8 @@ class genRubrique {
         $this->Execute('postInit');
     }
 
-    function Execute($what) {
+    function Execute($what)
+    {
 
         $p = GetPlugins();
 
@@ -282,8 +255,8 @@ class genRubrique {
         $t = getmicrotime();
 
         foreach ($p as $v) {
-            if (ake($this->plugins, $v) && method_exists($this->plugins[$v], $what)) {
-                $html .= $this->plugins[$v]->{$what}();
+            if (ake($this->plugins, $v) && method_exists($this->plugins[ $v ], $what)) {
+                $html .= $this->plugins[ $v ]->{$what}();
             }
         }
 
@@ -291,8 +264,8 @@ class genRubrique {
             $html .= $this->bddClasse->{$what}();
         }
 
-        $GLOBALS['times']['Execute' . $what] = getmicrotime() - $t;
-        $GLOBALS['times']['Plugins'] += $GLOBALS['times']['Execute' . $what];
+        $GLOBALS['times'][ 'Execute' . $what ] = getmicrotime() - $t;
+        $GLOBALS['times']['Plugins'] += $GLOBALS['times'][ 'Execute' . $what ];
 
         return $html;
     }
@@ -301,7 +274,8 @@ class genRubrique {
      * GenTop
      *
      */
-    function genTop() {
+    function genTop()
+    {
 
         return $this->Execute('genTop');
     }
@@ -311,23 +285,26 @@ class genRubrique {
      * et retourne le contenu
      *
      */
-    function genOutside() {
+    function genOutside()
+    {
 
         return $this->Execute('genOutside');
     }
 
     /**
-     * 
+     *
      * Execute la methode genOutside de la classe associee si presente
      * et retourne le contenu
      *
      */
-    function gen1() {
+    function gen1()
+    {
 
         return $this->Execute('gen1');
     }
 
-    function getFullTitle() {
+    function getFullTitle()
+    {
 
 
         $i = 1;
@@ -355,7 +332,7 @@ class genRubrique {
                 $html .= '' . $titre . '';
                 $html .= ' - '; // Separateur
             } else {
-                
+
             }
 
             $i++;
@@ -365,16 +342,16 @@ class genRubrique {
         return substr($html, 0, -2);
     }
 
-    function genBeforePara() {
+    public function genBeforePara()
+    {
         return $this->Execute('genBeforePara');
     }
 
     /**
-      Generation des paragraphes
+     * Generation des paragraphes
      */
-    function genMain() {
-
-
+    public function genMain()
+    {
 
 
         if (!$this->doGenMain) {
@@ -388,27 +365,17 @@ class genRubrique {
 
         if ($this->showParagraphes) {
 
-            if ($this->hasBddInfo || !$this->cache->cacheExists()) {
+            if (method_exists($this->bddClasse, 'genParagraphes')) {
 
-
-                if (method_exists($this->bddClasse, 'genParagraphes')) {
-
-                    $html .= $this->bddClasse->genParagraphes();
-                } else {
-
-                    $par = new genParagraphes($this->site, $this->paragraphes);
-                    $html .= $par->gen();
-                }
-
-                /* Liens de nav en bas */
-                $html .= $this->html_after_paras;
+                $html .= $this->bddClasse->genParagraphes();
             } else {
-                /**
-                 * Recuperation du cache
-                 *
-                 */
-                $html = $this->cache->getCache();
+
+                $par = new genParagraphes($this->site, $this->paragraphes);
+                $html .= $par->gen();
             }
+
+            /* Liens de nav en bas */
+            $html .= $this->html_after_paras;
         }
 
         $html .= $this->Execute('gen');
@@ -418,9 +385,10 @@ class genRubrique {
     }
 
     /**
-      Selectionne les paragraphes
+     * Selectionne les paragraphes
      */
-    function getParagraphes() {
+    function getParagraphes()
+    {
 
 
         $sql = 'SELECT * FROM s_paragraphe AS P LEFT JOIN s_para_type AS PT ON P.fk_para_type_id = PT.para_type_id
@@ -429,15 +397,16 @@ class genRubrique {
 				ORDER BY paragraphe_ordre ASC
 				';
 
-        // debug($sql);
+
         $this->paragraphes = GetAll($sql);
     }
 
     /**
-      Selectionne les sous rubriques
+     * Selectionne les sous rubriques
 
      */
-    function getSubRubs() {
+    function getSubRubs()
+    {
 
         if ($this->isRealRubrique()) {
             $tid = $this->rubrique_id;
@@ -458,4 +427,3 @@ class genRubrique {
     }
 
 }
-

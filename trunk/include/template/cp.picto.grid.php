@@ -4,6 +4,7 @@
 
     global $_Gconfig;
 
+    
     p('<div class="bigmenus">');
 //p('<h2>'.t('main').'</h2>');
     ksort($_Gconfig['bigMenus']);
@@ -11,15 +12,15 @@
         if (!count($menus)) {
             continue;
         }
-        $head = ('<div><h2>' . t($k) . '</h2><ul class="row-fluid nav nav-tabs nav-stacked">');
+        $head = ('<div><h2>' . t($k) . '</h2><ul class="nav nav-pills">');
         $in = '';
         foreach ($menus as $menu) {
 
             if ($GLOBALS['gs_obj']->can('edit', $menu)) {
-                $url = in_array($menu, $tables) ? 'index.php?curTable=' . $menu : (tradExists('cp_link_' . $menu) ? ta('cp_link_' . $menu) : 'index.php?userAction=' . $menu);
+                $url = getAdminLink($menu);
 
-                $in .= ('<li class="span4">
-			<a   href="' . $url . '">
+                $in .= ('<li >
+			<a class="well" style="margin-right:10px"  href="' . $url . '">
 				<img src="' . getPicto($menu, '48x48') . '" alt="" />
 				<span>' . t('cp_txt_' . $menu) . '</span>
 			</a></li>
@@ -35,15 +36,15 @@
     p('</div>');
 
 
-    p('<div class="row-fluid">');
+    p('<ul class="nav nav-pills">');
 
     foreach ($_Gconfig['adminMenus'] as $k => $menus) {
 
 
-        p('<div id="mm_' . $k . '" class="span3" >');
+        p('<li id="mm_' . $k . '" class="" style="margin-right:10px;" >');
 
         if (strlen($k) > 1) {
-            p('<h2 >' . t($k) . '</h2>');
+            p('<h3 >' . t($k) . '</h3>');
         }
 
         $dones = 0;
@@ -56,22 +57,13 @@
 
                 $dones++;
 
-                $url = in_array($menu, $tables) ? 'index.php?curTable=' . $menu : ta('cp_link_' . $menu);
+                $url =  getAdminLink($menu);
                 ?>
                 <li>
                     <a  href="<?= $url ?>"   >
                         <?php
-                        /*
-                        global $tabForms;
-                        if (isset($tabForms[$menu]) && isset($tabForms[$menu]['picto'])) {
-                            $src = $tabForms[$menu]['picto'];
-                        } else
-                        if (file_exists('./img/picto_' . $menu . '.gif')) {
-                            $src = './img/picto_' . $menu . '.gif';
-                        } else {
-                            $src = './img/picto_default.gif';
-                        }*/
-                        $src = getPicto($menu,'16x16');
+
+                        $src = getPicto($menu, '16x16');
                         ?>
                         <img src="<?= $src ?>" alt=""  />
                         <?= t('cp_txt_' . $menu); ?></a>
@@ -80,13 +72,12 @@
             }
         }
 
-        p('</ul></div></div>');
+        p('</ul></div></li>');
 
         if (!$dones) {
             p('<style type="text/css">#mm_' . $k . ' {display:none;}</style>');
         }
     }
-    p('</div>');
-    //p('<div id="mm_' . $k . '" class="picto_section" style="padding-top:20px;">');
+    p('</ul>');
     ?>
 </div>
