@@ -33,9 +33,11 @@ class simpleForm {
     public $maxFileSize = 3000000;
     public $addDivSeparation = TRUE;
     public $simpleformNeeded = NULL;
+    public $nbField = 0;
 
-    function __construct($action = '', $method = 'get', $id = '') {
+    function __construct($action = '', $method = 'get', $id = '', $class = false) {
 
+        $this->class = $class;
         $this->action = $action;
         $this->method = $method;
         $this->id = $id ? $id : 'form_' . rand(1, 1000);
@@ -57,10 +59,7 @@ class simpleForm {
      * @return Code HTML du formulaire
      */
     function gen($needEnd = false) {
-
-        $s = '<form id="' . $this->id . '" ' . $this->form_attr . ' class="simpleform" enctype="multipart/form-data" method="' . strtolower($this->method) . '" action="' . $this->action . '">' . "\n";
-
-
+        $s = '<form id="' . $this->id . '" ' . $this->form_attr . ' class="simpleform ' . $this->class . '" enctype="multipart/form-data" method="' . strtolower($this->method) . '" action="' . $this->action . '">' . "\n";
         reset($this->fields);
         $atLeastOneNeeded = false;
         foreach ($this->fields as $field) {
@@ -72,7 +71,7 @@ class simpleForm {
 
         if ($atLeastOneNeeded && $needEnd === false) {
 
-            $s .= '<div class="important need ' . (count($this->badFields) && $this->isSubmited() ? 'formError' : '') . '">' . $this->simpleformNeeded . '</div>';
+            $s .= '<p class="important need ' . (count($this->badFields) && $this->isSubmited() ? 'formError' : '') . '">' . $this->simpleformNeeded . '</p>';
         }
 
         $this->add('hidden', $this->id, '', 'simpleform_submitted');
@@ -109,30 +108,21 @@ class simpleForm {
                         $s .= $this->getLabel($field);
                         $s .= $this->getPassword($field);
                         break;
-
                     case 'text':
-
                         $s .= $this->getLabel($field);
                         $s .= $this->getInputText($field);
                         break;
-
                     case 'textarea':
                         $s .= $this->getLabel($field);
                         $s .= $this->getTextarea($field);
-
                         break;
-
                     case 'wysiwyg':
                         $s .= $this->getLabel($field);
                         $s .= $this->getWysiwyg($field);
-
                         break;
-
                     case 'email':
-
                         $s .= $this->getLabel($field);
                         $s .= $this->getInputText($field);
-
                         break;
                     case 'submit':
                         $s .= $this->getSubmit($field);
@@ -141,7 +131,6 @@ class simpleForm {
                         $s .= $this->getSubmitImage($field);
                         break;
                     case 'hidden':
-
                         $s .= $this->getHidden($field);
                         break;
                     case 'select':
@@ -156,7 +145,6 @@ class simpleForm {
                         $s .= $this->getLabel($field);
                         $s .= $this->getInputText($field);
                         break;
-
                     case 'radio':
                         if ($this->radioBeforeLabel) {
                             $s .= $this->getRadio($field);
@@ -166,33 +154,26 @@ class simpleForm {
                             $s .= $this->getRadio($field);
                         }
                         break;
-
                     case 'captcha':
                         $s .= $this->getLabel($field);
                         $s .= $this->getCaptcha($field);
                         break;
-
                     case 'captcha_question':
                         $s .= $this->getLabel($field);
                         $s .= $this->getCaptchaQuestion($field);
                         break;
-
                     case 'html':
                         $s .= $field['value'];
                         break;
-
                     case 'file':
                         $s .= $this->getLabel($field);
                         $s .= $this->getFile($field);
                         break;
-
                     case 'date':
                         $s .= $this->getLabel($field);
                         $s .= $this->getDate($field);
                         break;
-
                     case 'checkbox':
-
                         $s .= $this->getCheckbox($field);
                         break;
 
@@ -204,7 +185,25 @@ class simpleForm {
                         if ($field['needed']) {
                             $field['name'] = $field['name'] . '_confirmation';
                             $field['label'] = $field['label'] . t('simpleform_confirmation');
-                            if ($_REQUEST[$field['name']]) {
+                            debug($_REQUEST);
+                            if (!empty($_REQUEST[$field['name']])) {
+                                $field['value'] = $_REQUEST[$field['name']];
+                            }
+
+                            $s .= $this->getLabel($field);
+                            $s .= $this->getInputText($field);
+                        }
+                        break;
+
+                    case 'pass_conf':
+
+                        $s .= $this->getLabel($field);
+                        $s .= $this->getInputText($field);
+
+                        if ($field['needed']) {
+                            $field['name'] = $field['name'] . '_confirmation';
+                            $field['label'] = $field['label'] . ' ' . t('simpleform_confirmation');
+                            if (!empty($_REQUEST[$field['name']])) {
                                 $field['value'] = $_REQUEST[$field['name']];
                             }
 
@@ -234,8 +233,8 @@ class simpleForm {
         $s .= '</form>' . "\n";
 
         $s .= '
-				<script type="text/javascript">		
-				$("#' . $this->id . '").submit(function(){
+				<script>		
+				document.getElementById("' . $this->id . '").submit = (function(){
 				
 					var neededFields  = new Array(0	';
 
@@ -404,7 +403,6 @@ class simpleForm {
      * @param array $field
      */
     function getSelect($field, $ismultiple = false) {
-
         $s = '' . "\n";
         $multi = false;
         if ($ismultiple) {
@@ -412,10 +410,10 @@ class simpleForm {
             $field['name'] = $field['name'] . '[]';
         }
 
-        $s = '<select ' . akev($field, 'tag') . ' ' . $this->classError($field) . ' ' . $multi . ' name="' . akev($field, 'name') . '" id="' . akev($field, 'id') . '" >' . "\n";
-        if (!akev($field, 'needed'))
-            $s .= '<option value="">-------------</option>';
-
+        $s = '<span class="select"><select ' . akev($field, 'tag') . ' ' . $this->classError($field) . ' ' . $multi . ' name="' . akev($field, 'name') . '" id="' . akev($field, 'id') . '" >' . "\n";
+        if (!akev($field, 'needed')) {
+            $s .= '<option value="">' . (isset($field['unselected']) ? $field['unselected'] : '-------------') . '</option>';
+        }
         if ($field['selected'] && !is_array($field['selected'])) {
             $field['selected'] = array($field['selected']);
         }
@@ -445,7 +443,7 @@ class simpleForm {
 
         //debug($field['selected']);
 
-        $s .='</select>' . "\n";
+        $s .='</select></span>' . "\n";
 
         return $s;
     }
@@ -524,9 +522,14 @@ class simpleForm {
      * @return Code HTML du input
      */
     function getInputText($field) {
-
         $r = akev($field, 'type') == 'email' ? 'rel="email"' : '';
-        $s = '<input  ' . akev($field, 'tag') . ' ' . $r . ' ' . (akev($field, 'disabled') ? 'disabled="disabled"' : '' ) . ' class="text" ' . $this->classError($field) . ' type="text" name="' . akev($field, 'name') . '" id="' . $field['id'] . '" value=' . alt($field['value']) . ' />' . "\n";
+        if (akev($field, 'type') == 'email' || akev($field, 'type') == 'email_conf')
+            $ty = 'email';
+        else if (akev($field, 'type') == 'password' || akev($field, 'type') == 'pass_conf')
+            $ty = 'password';
+        else
+            $ty = 'text';
+        $s = '<input  ' . akev($field, 'tag') . ' ' . $r . ' ' . (akev($field, 'disabled') ? 'disabled="disabled"' : '' ) . ' class="text" ' . $this->classError($field) . ' type="' . $ty . '" name="' . akev($field, 'name') . '" id="' . $field['id'] . '" value=' . alt($field['value']) . ' />' . "\n";
 
         return $s;
     }
@@ -538,8 +541,7 @@ class simpleForm {
      * @return Code HTML du input
      */
     function getCheckbox($field) {
-
-        $s = '<div class="checkbox" >' . "\n";
+        $s = '<div class="checkbox" id="' . $field['id'] . '">' . "\n";
 
         if (!is_array($field['value'])) {
             return '';
@@ -554,25 +556,27 @@ class simpleForm {
             }
             $end = '</div>';
         }
-        if ($ismultiple) {
-            $multi = ($ismultiple ? 'multiple="multiple"' : '');
-            $field['name'] = $field['name'] . '[]';
-        }
-
 
         if ($field['selected'] && !is_array($field['selected'])) {
             $field['selected'] = array($field['selected']);
         }
+        if ($field['tag']) {
+            $tag = $field['tag'];
+        } else
+            $tag = '';
 
-        foreach ($field['value'] as $k => $value) {
+        foreach ($field['value'] as $value) {
             if (!is_array($value)) {
                 $val = $value;
                 $value = array();
                 $value['label'] = $val;
                 $value['value'] = $val;
             }
-            $sel = @in_array(trim($value['value']), $field['selected']) ? 'checked="checked"' : '';
-            $s .= '<input type="checkbox" id="' . $field['name'] . '_' . $value['value'] . '" name="' . $field['name'] . '[]" ' . $sel . ' value="' . $value['value'] . '"><label id="label_' . $field['name'] . '_' . $value['value'] . '" for="' . $field['name'] . '_' . $value['value'] . '">' . $value['label'] . '</label>' . "\n";
+            $sel = is_array($field['selected']) && in_array(trim($value['value']), $field['selected']) ? 'checked="checked"' : '';
+            $s .= '<label id="label_' . $field['name'] . '_' . $value['value'] . '" for="' . $field['name'] . '_' . $value['value'] . '">'
+                    . '<input type="checkbox" id="' . $field['name'] . '_' . $value['value'] . '" name="' . $field['name'] . '[]" ' . $tag . ' ' . $sel . ' value="' . $value['value'] . '">'
+                    . '<p>' . $value['label'] . '</p>'
+                    . '<div class="clearfix"></div></label>' . "\n";
         }
 
         $s .=$end;
@@ -628,7 +632,7 @@ class simpleForm {
      */
     function getTextArea($field) {
 
-        $s = '<textarea   ' . akev($field, 'tag') . ' rows="5" cols="20" ' . $this->classError($field) . ' name="' . $field['name'] . '" id="' . $field['id'] . '" >' . $field['value'] . '</textarea>' . "\n";
+        $s = '<textarea   ' . akev($field, 'tag') . ' rows="5" cols="20" ' . $this->classError($field) . ' name="' . $field['name'] . '" id="' . $field['id'] . '" >' . htmlentities($field['value']) . '</textarea>' . "\n";
 
         return $s;
     }
@@ -641,7 +645,7 @@ class simpleForm {
      */
     function getWysiwyg($field) {
 
-        $s = '<textarea   ' . akev($field, 'tag') . ' rows="5" cols="60" ' . $this->classError($field) . ' name="' . $field['name'] . '" id="' . $field['id'] . '" >' . $field['value'] . '</textarea>' . "\n";
+        $s = '<textarea   ' . akev($field, 'tag') . ' rows="5" cols="60" ' . $this->classError($field) . ' name="' . $field['name'] . '" id="' . $field['id'] . '" >' . htmlentities($field['value']) . '</textarea>' . "\n";
         //$s .= '<script type="text/javascript" src="'.BU.'/wyzz/wyzz.js"></script>';
         $s .= '<script type="text/javascript" src="' . BU . '/nicedit/nicEdit.js"></script>';
         //$s .= '<script type="text/javascript">make_wyzz("'.$field['id'].'");</script>';
@@ -743,9 +747,15 @@ class simpleForm {
             $needed = true;
             $name = 'captcha_code';
         }
-
         if (is_array($value) && !empty($_REQUEST[$name]) && !is_array($_REQUEST[$name]) && !$selected) {
             $selected = array($_REQUEST[$name]);
+        }
+        if (is_array($value) && !empty($_REQUEST[$name]) && is_array($_REQUEST[$name]) && !$selected) {
+            $selected = $_REQUEST[$name];
+        }
+
+        if ($needed) {
+            $tag .= ' required="required" ';
         }
 
         $this->fields[$id] = array(
@@ -773,4 +783,3 @@ class simpleForm {
     }
 
 }
-

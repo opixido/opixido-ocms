@@ -57,7 +57,7 @@ if (!$this->editMode) {
 
 
 
-    $sets = getsetValues($this->table_name, $name);
+    $sets = getsetValues($this->tab_field, $name);
 
     $curSet = explode(',', $this->tab_default_field[$name]);
 

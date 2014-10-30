@@ -38,8 +38,8 @@ function updateParagraphes() {
 			//gid("genform_div_paragraphe_img_2").style.display = para_value[vals[0]];
 		    //gid("genform_div_paragraphe_img_2_alt").style.display = para_value[vals[0]];	
 		    
-		    // gid("genform_div_paragraphe_img_2_legend").style.display = para_value[vals[0]];	
-		    // gid("genform_div_paragraphe_img_1_legend").style.display = para_value[vals[0]];		    
+		    //gid("genform_div_paragraphe_img_2_legend").style.display = para_value[vals[0]];	
+		    gid("genform_div_paragraphe_img_1_legend").style.display = para_value[vals[0]];		    
 		    
 		    // gid("genform_div_paragraphe_img_2_copyright").style.display = para_value[vals[0]];	
 		    //gid("genform_div_paragraphe_img_1_copyright").style.display = para_value[vals[0]];	
@@ -95,7 +95,7 @@ $form->genlg('paragraphe_contenu');
 
 $form->genlg('paragraphe_img_1');
 $form->genlg('paragraphe_img_1_alt');
-//$form->genlg('paragraphe_img_1_legend');
+$form->genlg('paragraphe_img_1_legend');
 //$form->gen('paragraphe_img_1_copyright');
 /*
 $form->genlg('paragraphe_img_2');

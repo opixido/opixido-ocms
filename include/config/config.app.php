@@ -2,44 +2,42 @@
 
 global $isTopNavRub, $noCopyTable, $tab_noCopyField, $tabForms, $uploadRep, $relations, $relinv, $tablerel, $searchField, $specialUpload, $previewField, $orderFields, $adminMenus, $rteFields, $neededFields, $neededSymbol, $uploadFields, $mailFields, $validateFields, $adminInfos, $gs_roles, $gs_actions, $formsRep, $frontAdminTrads, $gr_on, $rootId, $homeId, $headRootId, $footRootId, $basePath, $baseWebPath, $lexiqueId, $languages, $google_key, $_Gconfig, $adminTypesToMail, $functionField, $multiVersionField, $_Gconfig;
 
-
+$sid = session_id();
+if (empty($sid)) {
+    session_start();
+}
 
 /**
  * On utilise le cache ?
  *
  */
-if ($_GET['nocache']) {
+if (!empty($_GET['nocache'])) {
     define('CACHE_IS_ON', false);
 } else {
-    define('CACHE_IS_ON', false);
+    define('CACHE_IS_ON', true);
 }
 
 /**
  * Compression et union des JS et CSS ?
  */
-$_Gconfig['compressCssFiles'] = false;
-$_Gconfig['compressJsFiles'] = false;
+$_Gconfig['groupCssFiles'] = true;
+$_Gconfig['compressCssFiles'] = true;
+$_Gconfig['compressJsFiles'] = true;
 
 
 /**
  * On log toutes les requetes SQL
  */
 $_Gconfig['debugSql'] = false;
-$_Gconfig['debugSql'] = $_GET['debugSql'] ? true : $_Gconfig['debugSql'];
+$_Gconfig['debugSql'] = isset($_GET['debugSql']) ? true : $_Gconfig['debugSql'];
 
 
 /**
  * Quel schéma d'URL ?
  * genUrlSimple ou genUrl
  */
-if ($_SERVER['REMOTE_ADDR'] == '192.168.1.199') {
-    $_Gconfig['URL_MANAGER'] = 'genUrlV2';
-} else {
-    $_Gconfig['URL_MANAGER'] = 'genUrlV2';
-}
-define('THUMBPATH', BU . '/thumb');
-define('IMG_GENERATOR', BU . '/imgps.php');
 
+$_Gconfig['URL_MANAGER'] = 'genUrlV2';
 
 /**
  * Titre du site (pour l'admin)
@@ -98,14 +96,12 @@ $_Gconfig['rubLinkToSub'] = true;
 $tabForms;
 
 
-
 /**
  * Ratio des champs pour la recherche
  * Ratio par défaut : 1
  * $_Gconfig['searchRatio']['TABLE'] = array('CHAMP1'=>15,'CHAMP2'=>10);
  */
-$_Gconfig['searchRatio'];
-
+$_Gconfig['searchRatio'] = array();
 
 
 /**
@@ -139,14 +135,12 @@ $relations;
 $relinv;
 
 
-
 /**
  *  On definit les tables de relation
  *
  *  $tablerel['TABLE_RELATION'] = array('FK_CHAMP1'=>'FK_TABLE1','FK_CHAMP2'=>'FK_TABLE2');
  */
 $tablerel;
-
 
 
 /**
@@ -162,7 +156,6 @@ $_Gconfig['reloadOnChange'];
  * $searchField['TABLE'][] = CHAMP;;
  */
 $searchField;
-
 
 
 /**
@@ -183,7 +176,6 @@ $_Gconfig['passwordFields'];
 $specialUpload;
 
 
-
 /**
  * On definit la liste des champs
  * qui afficheront un bouton preview
@@ -197,7 +189,7 @@ $previewField;
  *      On definit la liste des champs
  *       qui gerent l'ordre
  *       On ajoute et regenere l'ordre directement
- * 	Définit si on ajoute au debut ou a la fin les nouveaux enregistrements
+ *    Définit si on ajoute au debut ou a la fin les nouveaux enregistrements
  *  $orderFields['TABLE'] = array('CHAMP_ORDRE','EVENTUELLEMENT LE CHAMP DE SELECTION (seulement pour le fk = ....','bottom|top');
  */
 $orderFields;
@@ -211,7 +203,7 @@ $orderFields;
  * $_Gconfig['imageAutoResize'] = array('FIELD_NAME'=>array(MAXWIDTH,MAXHEIGHT));
  *
  */
-$_Gconfig['imageAutoResize'];
+$_Gconfig['imageAutoResize'] = array();
 
 
 /**
@@ -221,14 +213,12 @@ $_Gconfig['imageAutoResize'];
 $rteFields;
 
 
-
 /**
  *  Liste des champs obligatoires
  *
  * $neededFields[] = CHAMP;;
  * */
 $neededFields;
-
 
 
 /**
@@ -244,8 +234,6 @@ $neededFields;
 $mailFields;
 
 
-
-
 /**
  * Images a retailler automatiquement
  * RETAILLAGE EXACT !
@@ -254,7 +242,6 @@ $mailFields;
  * $_Gconfig['imageAutoResize']['CHAMP'] = array(LARGEUR,HAUTEUR);
  */
 $_Gconfig;
-
 
 
 /**
@@ -302,39 +289,39 @@ $_Gconfig['fileListingFromFolder'] = array();
 
 
 /**
-  @example
-  $_Gconfig['menus']['haut_gauche'] = array(
-  'max_levels'=>2,
-  'use_images'=>false,
-  'open_selected'=>false,
-  'profile'=>'menu_haut',
-  'rollover'=>'menu_haut',
-  'width'=>array(81,81,81,85),
-  'imgW'=>array(81,81,81,85),
-  'caps'=>true
-  );
+ * @example
+ * $_Gconfig['menus']['haut_gauche'] = array(
+ * 'max_levels'=>2,
+ * 'use_images'=>false,
+ * 'open_selected'=>false,
+ * 'profile'=>'menu_haut',
+ * 'rollover'=>'menu_haut',
+ * 'width'=>array(81,81,81,85),
+ * 'imgW'=>array(81,81,81,85),
+ * 'caps'=>true
+ * );
  */
 $_Gconfig['menus']['__default__'] = array(
-    'max_levels' => 1,
-    'use_images' => false,
+    'max_levels'         => 1,
+    'use_images'         => false,
     'use_premade_images' => false,
-    'open_selected' => false,
-    'max_open_selected' => 3,
-    'tpl_name' => 'menu.item',
-    'tpl_folder' => 'template',
-    'profile' => 'menu_gauche',
-    'rollover' => 'menu_gauche_hover',
-    'rollovers' => array(),
-    'width' => array(),
-    'imgW' => array(),
-    'caps' => false
+    'open_selected'      => false,
+    'max_open_selected'  => 3,
+    'tpl_name'           => 'menu.item',
+    'tpl_folder'         => 'template',
+    'profile'            => 'menu_gauche',
+    'rollover'           => 'menu_gauche_hover',
+    'rollovers'          => array(),
+    'width'              => array(),
+    'imgW'               => array(),
+    'caps'               => false
 );
 
 /**
  * Pour la sécurité si malgré les relations certaines tables sont interdites
  * $_Gconfig['gsNoFollowRel'] = array('TABLE.SECONDETABLE');
  */
-$_Gconfig['gsNoFollowRel'];
+$_Gconfig['gsNoFollowRel'] = array();
 
 
 /**
@@ -342,7 +329,6 @@ $_Gconfig['gsNoFollowRel'];
  * $_Gconfig['mapsFields']['TABLE']['IDENTIFIANT_CHAMP'] = array('CHAMP_LAT','CHAMP_LNG',array('LISTE','DES','CHAMPS','ADRESSE'));
  */
 $_Gconfig['mapsFields'] = array();
-
 
 
 $tabForms["s_rubrique"]["picto"] = ADMIN_PICTOS_FOLDER . ADMIN_PICTOS_BIG_SIZE . "/apps/system-file-manager.png";
@@ -353,40 +339,48 @@ $tabForms["s_param"]["picto"] = ADMIN_PICTOS_FOLDER . ADMIN_PICTOS_BIG_SIZE . "/
 $tabForms["s_admin_trad"]["picto"] = ADMIN_PICTOS_FOLDER . ADMIN_PICTOS_BIG_SIZE . "/apps/preferences-desktop-font.png";
 
 
+foreach ($_Gconfig['LANGUAGES'] as $lg) {
+    $specialUpload["s_paragraphe"][ "paragraphe_img_1_" . $lg ]["system"] = $basePath . "/fichier/s_rubrique/*fk_rubrique_id*/";
+    $specialUpload["s_paragraphe"][ "paragraphe_img_1_" . $lg ]["name"] = "*NAME*.*EXT*";
+    $specialUpload["s_paragraphe"][ "paragraphe_img_1_" . $lg ]["web"] = "/fichier/s_rubrique/*fk_rubrique_id*/";
+
+    $specialUpload["s_paragraphe"][ "paragraphe_file_1_" . $lg ]["system"] = $basePath . "/fichier/s_rubrique/*fk_rubrique_id*/";
+    $specialUpload["s_paragraphe"][ "paragraphe_file_1_" . $lg ]["name"] = "*NAME*.*EXT*";
+    $specialUpload["s_paragraphe"][ "paragraphe_file_1_" . $lg ]["web"] = "/fichier/s_rubrique/*fk_rubrique_id*/";
+}
+
 
 /**
  * Liste des directives supplémentaires pour tinymce
  * @example $_Gconfig['tinyMce']['addConf']['theme_advanced_blockformats'] = 'p,div,h1,h2,h3,h4,h5,h6,blockquote,dt,dd,code,samp';
  */
 $_Gconfig['tinyMce']['conf'] = array(
-    'mode' => "exact",
-    'theme' => "advanced",
-    'skin' => "cirkuit",
-    'language' => "en",
-    'plugins' => "paste,fullscreen,advimage,xhtmlxtras,contextmenu",
-    'entity_encoding' => "raw",
-    'content_css' => BU . "/css/baseadmin.css",
-    'theme_advanced_styles' => '',
-    'theme_advanced_buttons1' => "bold,italic,underline,separator,removeformat,separator,hr,image,link,unlink,separator,pastetext,separator,bullist,bullnum,separator,code,cleanup,separator,sub,sup,separator,abbr,acronym,charmap,fullscreen",
-    'theme_advanced_buttons2' => "formatselect",
-    'theme_advanced_buttons3' => "",
-    'theme_advanced_toolbar_location' => "top",
-    'theme_advanced_toolbar_align' => "left",
-    'theme_advanced_statusbar_location' => "",
-    'plugi2n_insertdate_dateFormat' => "%d/%m/%Y",
-    'plugi2n_insertdate_dateFormat' => "%d/%m/%Y",
-    'relative_urls' => 'false',
-    'auto_reset_designmode' => 'true',
-    'file_browser_callback' => "fileBrowserCallBack",
-    'theme_advanced_resize_horizontal' => false,
-    'paste_auto_cleanup_on_paste' => true,
-    'paste_text_use_dialog' => true,
-    'paste_convert_headers_to_strong' => true,
-    'paste_strip_class_attributes' => "all",
-    'paste_remove_spans' => true,
-    'paste_remove_styles' => true,
-    'convert_fonts_to_spans' => true,
-    'verify_html' => false,
-    'forced_root_block' => 'p',
-    'remove_linebreaks' => false
+    'mode'                      => "exact",
+    'theme'                     => "modern",
+    'language'                  => "fr_FR",
+    'width'                     => '100%',
+    'plugins'                   => "autoresize autolink lists link image charmap print preview hr anchor pagebreak searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime mediawithclassvideo nonbreaking save table contextmenu directionality emoticons template paste textcolor responsivefilemanager",
+    'entity_encoding'           => "raw",
+    'content_css'               => BU . "/css/baseadmin.css",
+    'theme_advanced_styles'     => '',
+    'toolbar1'                  => "pastetext insertfile undo redo | styleselect | bold italic | bullist numlist outdent indent | link image mediawithclassvideo responsivefilemanager ",
+    'toolbar2'                  => "",
+    'toolbar3'                  => "",
+    'browser_spellcheck'        => 'true',
+    'visual'                    => 'true',
+    'resize'                    => 'both',
+    'paste_as_text'             => 'true',
+    'external_filemanager_path' => ADMIN_URL . '/filemanager/',
+    'filemanager_title'         => "Médiathèque",
+    'external_plugins'          => array("filemanager" => ADMIN_URL . "/filemanager/plugin.min.js"),
+    'relative_urls'             => 0,
+    'insertdatetime_formats'    => array("%H:%M:%S", "%Y-%m-%d", "%I:%M:%S %p", "%D", '%d/%m/%Y'),
+    'content_css'               => array('/css/global.css', '/css/specialadmin.css'
+    ),
+    'body_id'                   => 'paragraphes',
+    'body_class'                => 'paragraphe',
+    'style_formats'             => ""
+        . "[{title: 'Chapeau',inline:'span', classes:'para-chapeau'},"
+        . "{title: 'Légende', inline:'span', classes:'para-legende'}]"
 );
+

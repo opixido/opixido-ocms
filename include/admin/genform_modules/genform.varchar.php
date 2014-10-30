@@ -21,6 +21,7 @@
 # @link http://code.google.com/p/opixido-ocms/
 # @package ocms
 #
+
 if (!$this->editMode) {
 
     /**
@@ -154,7 +155,7 @@ if (!$this->editMode) {
 							name="genform_' . $name . '"
 							size="12"
 							maxlength="' . $this->tab_field[$name]->max_length . '"
-							value=' . alt($this->tab_default_field[$name]) . ' />');
+							value="" />');
 
 
         if (!$this->editMode) {
@@ -299,11 +300,13 @@ if (!$this->editMode) {
                     ( $this->tab_default_field[$name] ) . '
 								</a>');
         }
-    } else {
+    }else if (in_array($name, $_Gconfig['passwordFields'])) {
+        $this->addBuffer(ta('password_encrypted'));
+    }else {
+    
         /**
          * Pour les autres on affiche
          */
         $this->addBuffer(( $this->tab_default_field[$name]));
     }
 }
-?>

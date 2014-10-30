@@ -137,8 +137,7 @@ class GenForm {
             $this->setTabDefaultField(' ' . $this->pk . ' = "' . $this->id . '"');
 
         if (isset($_SESSION[gfuid()]['nbLevels']) && (isset($_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]) &&
-                $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['insertOtherField'] )
-                || isset($_SESSION[gfuid()]['genform__add_sub_table'])) {
+                $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['insertOtherField'] ) || isset($_SESSION[gfuid()]['genform__add_sub_table'])) {
 
             global $relinv;
             reset($relinv);
@@ -166,9 +165,31 @@ class GenForm {
         // * initialisation de 'language' *
         $this->language = LG;
 
+        global $tabForms;
+        $this->pages = $tabForms[$this->table_name]["pages"];
 
 
         $this->getLgs();
+
+        $this->initRelOne();
+    }
+
+    public function initRelOne() {
+
+        global $_Gconfig, $tabForms;
+        if (empty($_Gconfig['relOne'][$this->table])) {
+            return;
+        }
+
+        foreach ($_Gconfig['relOne'][$this->table] as $table => $clef) {
+
+            if (!empty($this->tab_default_field[$clef])) {
+                if ($tabForms[$table]['pages']) {
+                    $this->pages = array_merge($tabForms[$table]['pages']);
+                    $this->tab_field = array_merge($this->tab_field, getTabField($table));
+                }
+            }
+        }
     }
 
     /**
@@ -235,7 +256,8 @@ class GenForm {
 
     // rempli le tableau "tab_default_field" avec un enregistrement de la table
     function setTabDefaultField($where_query) {
-        $row = GetSingle('SELECT * FROM ' . $this->table_name . ' WHERE ' . $where_query);
+
+        $row = getRowFromId($this->table, $this->id);
 
         if ($row) {
             $this->tab_default_field = $row;
@@ -246,7 +268,6 @@ class GenForm {
         }
         while (list($k, $v) = each($_REQUEST)) {
             if (strstr($k, 'genform_default__')) {
-                //debug($k);
                 $this->tab_default_field[str_replace('genform_default__', '', $k)] = $_REQUEST[$k];
             }
         }
@@ -322,10 +343,11 @@ class GenForm {
     function genPages() {
         global $tabForms, $formsRep, $form, $_Gconfig;
 
-        if (empty($tabForms[$this->table_name]["pages"])) {
+        if (empty($this->pages)) {
+
             while (list($k, $v) = each($this->tab_field)) {
                 if (strlen($k) > 2 && $k != $this->pk && $k != $_Gconfig['field_date_maj']) {
-                    //debug($k.' : '.isBaseLgField($k,$this->table).' : '.getBaseLgField($k));
+
                     if (isLgField($k) && isDefaultLgField($k, $this->table)) {
                         $this->genlg(getBaseLgField($k));
                     } else if (!isLgField($k)) {
@@ -337,7 +359,7 @@ class GenForm {
 
             $i = 0;
             p('<div class="tab-content">');
-            foreach ($tabForms[$this->table_name]["pages"] as $k => $page) {
+            foreach ($this->pages as $k => $page) {
 
                 $this->fieldsDone = 0;
                 $i++;
@@ -427,7 +449,7 @@ class GenForm {
 
         $action = !$editMode ? 'edit' : 'view';
         $toHide = '';
-        //debugopix("DOIT TESTER CHAMP $action $this->table_name $this->id $tab_name ");
+
         if (!$this->gs->can($action, $this->table_name, '', $this->id, $tab_name . '_' . LG_DEF) && !$this->gs->can($action, $this->table_name, '', $this->id, $tab_name)) {
             //debug($tab_name.'_'.LG_DEF);
             return false;
@@ -456,7 +478,7 @@ class GenForm {
             $this->addBuffer('&nbsp; &nbsp; ');
 
             foreach ($lgs as $lg) {
-                $this->addBuffer('<a class="lgbtn btn btn-mini"  id="lgbtn_' . $name . '_' . $lg . '" onclick="showLgField(\'' . $name . '\',\'' . $lg . '\');"><img src="' . ADMIN_URL . 'img/flags/' . $lg . '.gif" alt="" /></a>');
+                $this->addBuffer('<a class="lgbtn btn btn-mini lgbtn_' . $lg . '"  id="lgbtn_' . $name . '_' . $lg . '" onclick="showLgField(\'' . $name . '\',\'' . $lg . '\');"><img src="' . ADMIN_URL . 'img/flags/' . $lg . '.gif" alt="" /></a>');
             }
         }
 
@@ -472,25 +494,25 @@ class GenForm {
             $lgdef = $lgs[0];
 
             foreach ($lgs as $lg) {
-                $this->addBuffer('<div class="genform_champ lg_' . $lg . '" id="lgfield_' . $name . '_' . $lg . '">');
+                $this->addBuffer('<div class="genform_champ lg_' . $lg . ' lgfield lgfield_' . $lg . '" id="lgfield_' . $name . '_' . $lg . '">');
                 $this->genFields($tab_name . '_' . $lg, $fk_table = "", $traduction = "", $attributs = "", $preValues = array());
                 $this->addBuffer('</div>');
-                if ($lg != $lgdef) {
-                    $toHide .= '$("#lgfield_' . $name . '_' . $lg . '").hide();';
-                }
+                /* if ($lg != $lgdef) {
+                  $toHide .= '$("#lgfield_' . $name . '_' . $lg . '").hide();';
+                  } */
 
                 $_SESSION[gfuid()]['curFields'][] = $tab_name . '_' . $lg;
             }
 
             $lg = !empty($_SESSION['onlyLg']) && $_SESSION['onlyLg'] != 'ALL' ? $_SESSION['onlyLg'] : LG_DEF;
 
-            $this->addBuffer('
-			<script type="text/javascript">
-				' . $toHide . '
-				lgfieldcur["' . $name . '"] = "";
-				showLgField("' . $name . '","' . $lg . '");
-			</script>
-			');
+            /* $this->addBuffer('
+              <script type="text/javascript">
+              ' . $toHide . '
+              lgfieldcur["' . $name . '"] = "";
+              showLgField("' . $name . '","' . $lg . '");
+              </script>
+              '); */
         } else {
             $this->addBuffer('</div>');
 
@@ -528,10 +550,10 @@ class GenForm {
         $name = $tab_name;
 
         $img = $alt = '';
-        if (!$this->onlyData)
+        if (!$this->onlyData) {
 
 
-        /* Si on a des traductions ... On récupère le nom du champ dans les traductions */
+            /* Si on a des traductions ... On récupère le nom du champ dans les traductions */
             if (!$this->onlyData) {
 
                 /* Image correspondante */
@@ -571,6 +593,7 @@ class GenForm {
 
                 $this->addBuffer($T);
             }
+        }
 
         if (isNeeded($this->table, $name) && (!$this->editMode ))
             $this->addBuffer("" . $neededSymbol);
@@ -640,7 +663,7 @@ class GenForm {
 
         if (!$this->onlyData) {
 
-            $this->addBuffer('<div class="genform_champ">');
+            $this->addBuffer('<div class="genform_champ" data-champ="' . $tab_name . '">');
         }
 
 
@@ -738,16 +761,10 @@ class GenForm {
 
         $name = $tab_name;
 
-        /*
-          if(!$this->gs->can($action,$this->table_name,'',$this->id,$tab_name)) {
 
-          return false;
-
-          } else {
-         */
         $this->fieldsDone++;
-        //}
-        //  debug($name);
+
+
 
         /* Function Specific for this field */
         if (array_key_exists($name, $functionField)) {
@@ -756,8 +773,6 @@ class GenForm {
             }
         }
 
-        //debug($name.' : '.isLgField($name).' : '.getBaseLgField($name).' : '.in_array(getBaseLgField($name), $uploadFields  ));
-        //( isLgField($name) && in_array(getBaseLgField($name), $uploadFields  ))
 
         $lastBuffer = $this->getBuffer();
 
@@ -874,7 +889,8 @@ class GenForm {
              */
             include($gb_obj->getIncludePath('genform.set.php', 'admin/genform_modules'));
         } else {
-            debug("Error - $name item inexistant - " . $this->tab_field[$name]->type . "");
+
+            //debug("Error - $name item inexistant - " . $this->tab_field[$name]->type . "");
             unset($_SESSION['cache']);
         }
 
@@ -948,7 +964,7 @@ class GenForm {
     }
 
     function genHeaderForm() {
-        p("<form method='" . $this->form_method . "' name='genform_formulaire' class='span8' action='' enctype='multipart/form-data' onSubmit='return doSubmitForm();' id='genform_formulaire' >");
+        p("<form method='" . $this->form_method . "' name='genform_formulaire' class='' action='' enctype='multipart/form-data' onSubmit='return doSubmitForm();' id='genform_formulaire' >");
 
         p('
 		<script type="text/javascript">
@@ -960,6 +976,7 @@ class GenForm {
 
 		</script>
 		');
+        $this->genHiddenItem('relOne', $_REQUEST['relOne']);
         $this->genHiddenItem('genform_stay', '');
         $this->genHiddenItem('genform_fromForm', '1');
 
@@ -998,32 +1015,17 @@ class GenForm {
 
     // cree la fin du formulaire
     function genFooter($submit_value = "") {
-        /*         * ****************************
-         *   FIN DU FORMULAIRE
-         *   Diff�entes variables JS sont imprim�s
-         * ***************************** */
+
         print ('</div>');
-        // print('</td></tr></table>');
+
 
 
         global $tabForms;
-        // p('</div>');
-        if (!$this->editMode) {
-            // fixPositions() puts everything back in the right place after a resize.
-            // Et il permet de g�er pas mal de trucs ...
-            p('<script type="text/javascript">');
-            /*
-              if ( count( $this->dateFields ) ) {
-              p( 'function fixPositions() ' );
-              p( '{' );
-              // add a fixPosition call here for every element
-              // you think might get stranded in a resize/reflow.
-              while ( list( , $v ) = each( $this->dateFields ) )
-              p( "fixPosition('" . $v . "');" );
 
-              p( '}' );
-              }
-             */
+        if (!$this->editMode) {
+
+            p('<script type="text/javascript">');
+            p('showLgField("","' . LG_DEF . '");');
             p('multiField = new Array();');
 
             if (count($this->multiFields)) {
@@ -1038,44 +1040,11 @@ class GenForm {
 
             p('$("#genform_navi > ul li:eq(' . $_REQUEST["curPage"] . ') a").tab("show");');
 
-
-            p('
-
-                function doSaveAllAndStay(func) {
-
-                        $("#genform_stay").val("ajaxsave");                        
-                        $.post("index.php", $("#genform_formulaire").serialize(),function(data) {
-                           // alert(data);
-                            $("#curId").val(data);
-                            if(func) {
-                                func();
-                            }
-                        });
-                        $("#genform_stay").val("");
-
-                        return;
-
-                       $("#genform_formulaire")[0].onsubmit = false;
-                        $("#genform_stay").val("autosave");
-                        if(func) {
-                            $("#autosave_frame").load(func);
-                        }
-                        $("#genform_formulaire").attr("target","autosave_frame").submit().attr("target","");
-                        $("#genform_stay").val("");
-
-                        return false;
-
-                }
-            ');
-
             p('</script>');
 
-            //$this->genButtons();
 
             $this->genFooterForm();
-            // debug($_REQUEST);
         }
-        // p($this->divsToAdd);
     }
 
     function genFooterForm() {
@@ -1105,12 +1074,12 @@ class GenForm {
         global $tabForms, $_Gconfig;
 
 
-        if (!empty($tabForms[$this->table]['pages'])) {
+        if (!empty($this->pages)) {
 
             $i = 0;
             $alt = '';
             p('<ul class="nav nav-tabs">');
-            foreach ($tabForms[$this->table]['pages'] as $k => $page) {
+            foreach ($this->pages as $k => $page) {
                 /*
                   if ($i == $_REQUEST['curPage']) {
                   $cl = 'active';
@@ -1242,8 +1211,6 @@ class GenForm {
     function genActions() {
 
 
-
-
         global $gs_obj, $_Gconfig;
 
 
@@ -1256,7 +1223,7 @@ class GenForm {
 
         if ($GLOBALS['inScreen'] == 'form') {
 
-            p('<div id="gen_actions">');
+            p('<div id="gen_actions" class="gen_actions-form">');
 
 
 
@@ -1264,13 +1231,13 @@ class GenForm {
             if ($this->gs->can('edit', $this->table, $this->tab_default_field)) {
                 p(' <button class="btn btn-primary" id="genform_ok" name="genform_ok"  >');
                 p('<img src="' . ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_FORM_SIZE . '/actions/document-save.png"  alt="" />');
-                p(t('save') . '</button><br/>');
+                p('<span>' . t('save') . '</span></button><br/>');
             }
 
             //onclick="validInsideSubmit(this)"
             p('<button class="btn btn-warning" name="genform_cancel" >');
             p('<img src="' . t('src_cancel') . '"  alt="" />');
-            p(t('cancel'));
+            p('<span>' . t('cancel') . '</span>');
             p('</button>');
 
 
@@ -1311,6 +1278,7 @@ class GenForm {
         foreach ($actions as $action) {
             if ($action != 'view') {
                 if ($GLOBALS['gs_obj']->can($action, $this->table_name, $this->id)) {
+
                     $ga = new GenAction($action, $this->table_name, $this->id, $this->tab_default_field);
 
                     if ($ga->checkCondition()) {
@@ -1326,56 +1294,12 @@ class GenForm {
                                 $srcBtn = ADMIN_PICTOS_FOLDER . ADMIN_PICTOS_FORM_SIZE . '/emblems/emblem-system.png';
                             }
 
-                            p('<a class="btn ' . ($action == 'edit' ? 'btn-primary' : '') . '" href="?genform_action%5B' . $action . '%5D=1&amp;curTable=' . $this->table . '&amp;curId=' . $this->id . '"><img src="' . $srcBtn . '" /> ' . t($action) . ' </a>');
+                            p('<a class="btn ' . ($action == 'edit' ? 'btn-primary' : '') . '" href="?genform_action%5B' . $action . '%5D=1&amp;curTable=' . $this->table . '&amp;curId=' . $this->id . '&relOne=' . akev($_REQUEST, 'relOne') . '"><img src="' . $srcBtn . '" /> ' . t($action) . ' </a>');
                         }
                     }
                 }
             }
         }
-
-
-        /**
-         * Pour la table s_rubrique
-         * Affichage des liens de visualisation en ligne
-         */
-        if ($this->table == 's_rubrique') {
-
-            if (isRubriqueOnline($this->tab_default_field)) {
-
-                //p('<p>' . t('version_masquee') . '</p><br/>');
-
-                $urlView = path_concat($gurl->BuildUrlFromId($this->tab_default_field['fk_rubrique_version_id']));
-                $action = 'voir_version_en_ligne';
-                p('<a target="_blank" class="btn" href="' . $urlView . '" >');
-
-
-                p('<img class="inputimage" src="' . t('src_' . $action) . '" alt="" />');
-                p(t($action));
-                p('</a>');
-            } else {
-                p('<p>' . t('version_masquee') . '</p><br/>');
-            }
-
-
-            $urlView = path_concat($gurl->BuildUrlFromId($this->tab_default_field['fk_rubrique_version_id'], '', array(), 'editer'));
-            $action = 'voir_version_modifiable';
-            p('<a class="btn" href="' . $urlView . '" target="_blank">');
-
-
-            p('<img src="' . t('src_' . $action) . '" alt="" />');
-            p(t($action));
-            p('</a>');
-
-
-            p('<p>&nbsp;</p>');
-        }
-        /**/
-
-
-        p('');
-
-
-
 
 
         p('</div>');
@@ -1389,12 +1313,34 @@ class GenForm {
         if ($this->editMode) {
             return;
         }
+
+
+        if (tradExists('fieldset_img_' . $nom)) {
+            $img = t('fieldset_img_' . $nom);
+        }
+
         echo '<fieldset  id="fieldset_' . $nom . '" class="' . ($open ? 'fieldopen' : 'fieldclosed') . '" ><legend>
-				<a href="#" title=' . alt(t('deplier') . ' ' . t('fieldset_' . $nom)) . ' onclick="return toggleFieldset(this);" class="btn" >
-				<span></span>' . t('fieldset_' . $nom) . getEditTrad('fieldset_' . $nom) . '</a></legend>';
+            <a href="#" title=' . alt(t('deplier') . ' ' . t('fieldset_' . $nom)) . ' onclick="return toggleFieldset(this);" class="btn" >
+				';
+        if ($img) {
+            echo ('<img style="vertical-align:middle" src="' . $img . '" alt="" />&nbsp;');
+        }
+
+        if (isset($_SESSION['editTrads'])) {
+            if (!$img) {
+                echo('<img style="vertical-align:middle" src="pictos/media-playback-stop.png" alt="" />&nbsp;');
+            }
+            $h = '';
+            echo('<input type="text" name="ET_fieldset_img_' . $nom . '" style="width:2px;" onclick="window.fieldToUpdate=this;$(\'#divImgPicto\').css(\'top\',mouseY+\'px\').css(\'left\',mouseX+\'px\').slideToggle()" onchange=""  value="' . $img . '"/>');
+        }
+
+
+        $this->fieldsDoneAtFieldSet = $this->fieldsDone;
+        echo '<span></span>' . t('fieldset_' . $nom) . getEditTrad('fieldset_' . $nom) . '</a></legend>';
 
         $this->fieldsetOpen = $open;
         $this->fieldsetId = $nom;
+
 
         echo '<div id="fieldsetd_' . $nom . '" >';
     }
@@ -1404,9 +1350,11 @@ class GenForm {
             return;
         }
         echo '</div>';
-
+        $nbFieldDone = ($this->fieldsDone - $this->fieldsDoneAtFieldSet);
         if (!$this->fieldsetOpen) {
+
             echo '<script>$("#fieldsetd_' . $this->fieldsetId . '").hide();</script>';
+            echo '<div class="fieldset-nbfields">' . $nbFieldDone . ' ' . t('fieldset-nbfields') . '</div>';
         }
 
         echo '</fieldset><br/>';

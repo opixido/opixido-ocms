@@ -150,20 +150,41 @@ if (!$this->onlyData) {
 if (!$this->editMode) {
 
 
-    if (true || $name == 'programme_video_url') {
+    if (true) {
+        $_SESSION[gfuid()]['curFields'][] = $name . "_importmanager";
         $this->addBuffer('
                     <div id="container_' . $name . '" class="upload_container">
                         <div id="filelist_' . $name . '" class="upload_filelist"></div>
+                            <input type="hidden" value="" id="genform_' . $name . '_importmanager" name="genform_' . $name . '_importmanager"  />
+                          <a class="btn btn-inverse" id="genform_' . $name . '_importmanager_link" href="./filemanager/dialog.php?popup=1&type=2&field_id=genform_' . $name . '_importmanager"><img src="' . path_concat(ADMIN_PICTOS_FOLDER . ADMIN_PICTOS_ARBO_SIZE . '/actions/document-open.png') . '" alt="" /> ' . t('choisir') . '</a>  
                         <a class="btn btn-inverse" id="pickfiles_' . $name . '" href="javascript:;"><img src="' . path_concat(ADMIN_PICTOS_FOLDER . ADMIN_PICTOS_ARBO_SIZE . '/actions/document-save-as.png') . '" alt="" /> ' . t('upload_parcourir') . ' </a>
                         
                             <div class="clearer"></div>
                     </div>
 <script type="text/javascript">
-     $("#pickfiles_' . $name . '").hover(function() {
+    $("#genform_' . $name . '_importmanager_link").click(function(e) {
+        e.preventDefault();
+        var w = window.open(this.href,\'pick\',\'width=900,height=600\');
+        w.focus();
+        var inp = $("#genform_' . $name . '_importmanager");
+            var vali = inp.val();
+            $(window).off("focus.filemanager");
+            $(window).on("focus.filemanager",function(){
+                $(window).off("focus.filemanager");
+                if(inp.val() != vali) {
+                    var field = inp.closest(".genform_champ_out").attr("id").replace("genform_div_","");
+                    genformReloadField(field);
+                }
+            });
+        return false;
+    });
+
+
+     $("#pickfiles_' . $name . '").on("hover dragover dragenter",function() {
         if(window.uploader_' . $name . ') {
              return;
         } 
-        $("#pickfiles_' . $name . '").unbind("hover").hover(refreshUploaders);
+        $("#pickfiles_' . $name . '").unbind("hover dragover dragenter").hover(refreshUploaders);
         window.uploader_' . $name . ' = new plupload.Uploader({
                 runtimes : "html5,flash,gears,silverlight,html4",
                 browse_button : "pickfiles_' . $name . '",
@@ -171,7 +192,7 @@ if (!$this->editMode) {
                 max_file_size : "5000mb",
                 drop_element: "container_' . $name . '",
                 url : "index.php",
-                chunk_size : "6mb",
+                chunk_size : "2mb",
                 flash_swf_url : "' . BU . '/admin/plupload/js/plupload.flash.swf",
                 silverlight_xap_url : "../js/plupload.silverlight.xap",
                 headers:{champ:"' . $name . '",curTable:"' . $this->table_name . '",curId:"' . $this->id . '",xhr:"upload"},

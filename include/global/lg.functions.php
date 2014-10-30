@@ -165,10 +165,12 @@ function isDefaultLgField($champ) {
 function isLgField($champ) {
     global $_Gconfig;
     $lastpos = strrpos($champ, '_');
-    if (in_array(substr($champ, $lastpos + 1), $_Gconfig['LANGUAGES']))
-        return true;
-    else
+    $lpos = substr($champ, $lastpos + 1);
+    if (in_array($lpos, $_Gconfig['LANGUAGES'])) {
+        return $lpos;
+    } else {
         return false;
+    }
 }
 
 /**
@@ -370,7 +372,7 @@ function getLgValue($k, $tab, $addspan = '') {
     /**
      * Si on l'a dans la langue normale
      */
-    if (ake($tab, $k . '_' . $curLg) && strlen(trim(strip_tags($tab[$k . '_' . $curLg])))) {
+    if (ake($tab, $k . '_' . $curLg) && strlen(trim(strip_tags($tab[$k . '_' . $curLg], '<img><iframe><embed><object><picture>')))) {
 
         if ($addspan) {
 
@@ -417,8 +419,7 @@ function getDynamicTitle($res) {
           $t = eval('return ( '.$classe.'::genTitle("'.$res['rubrique_gabarit_param'].'"));');
          */
         return $t;
-    }
-    else
+    } else
         return false;
 }
 
@@ -491,11 +492,13 @@ function getLgUrl($v) {
  * @param unknown_type $table
  * @return unknown
  */
-function isBaseLgField($field, $table) {
+function isBaseLgField($field, $table, $tab = array()) {
     if (isset($GLOBALS['cache']['isBaseLgField'][$table . $field])) {
         return $GLOBALS['cache']['isBaseLgField'][$table . $field];
     }
-    $tab = GetTabField($table);
+    if (!$tab) {
+        $tab = GetTabField($table);
+    }
     $GLOBALS['cache']['isBaseLgField'][$table . $field] = false;
     if (ake($tab, $field . '_' . LG_DEF) && !ake($tab, $field)) {
         $GLOBALS['cache']['isBaseLgField'][$table . $field] = true;
@@ -797,6 +800,15 @@ function compressCSS($buffer) {
     $buffer = str_replace(array(' : ', ' :', ': '), ':', $buffer);
     $buffer = str_replace(array(' ; ', ' ;', '; '), ';', $buffer);
     $buffer = str_replace(array(' {'), '{', $buffer);
+    $buffer = str_replace(array(' {'), '{', $buffer);
+    $buffer = str_replace(array(' {'), '{', $buffer);
+    $buffer = str_replace(array('{ '), '{', $buffer);
+    $buffer = str_replace(array('{ '), '{', $buffer);
+    $buffer = str_replace(array('{ '), '{', $buffer);
+    $buffer = str_replace(array('{ '), '{', $buffer);
+    $buffer = str_replace(array('} '), '}', $buffer);
+    $buffer = str_replace(array('} '), '}', $buffer);
+    $buffer = str_replace(array('} '), '}', $buffer);
     $buffer = str_replace(array(';}'), '}', $buffer);
 
     return $buffer;
@@ -818,3 +830,18 @@ function compressJs($buffer) {
     return $buffer;
 }
 
+/**
+ * Insere une trad pour la valeur et la langue donnée
+ * @global type $co
+ * @param type $id
+ * @param type $val
+ * @param type $plugin
+ * @param string $lg
+ */
+function insertTrad($id, $val, $plugin = '', $lg = false) {
+    if ($lg === false) {
+        $lg = LG_DEF;
+    }
+    global $co;
+    $co->autoExecute('s_trad', array('trad_id' => $id, 'trad_' . $lg => $val, 'fk_plugin_id' => $plugin), 'INSERT');
+}

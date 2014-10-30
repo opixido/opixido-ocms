@@ -133,7 +133,7 @@ class genTemplate {
         if ($this->doreplace && !in_array('@@' . $nom . '@@', $this->replaces) && !is_array($valeur)) {
             $this->replaces[] = '@@' . $nom . '@@';
         }
-        
+
         return $this;
     }
 
@@ -207,7 +207,7 @@ class genTemplate {
         $this->imgs[$nom]['gf'] = $gf;
         return $this;
     }
-    
+
     public function getGfImg($nom) {
         return $this->imgs[$nom]['gf'];
     }
@@ -496,6 +496,7 @@ class genTemplate {
      */
     public function gen() {
 
+
         /**
          * Pour récupérer tous les print
          */
@@ -568,6 +569,7 @@ class genTemplate {
         /**
          * Conditions
          */
+        $initTemplate = $this->template;
         $this->template = $html;
         foreach ($this->conditions as $k => $v) {
 
@@ -588,7 +590,7 @@ class genTemplate {
             }
         }
         $html = $this->template;
-
+        $this->template = $initTemplate;
 
         /**
          * On génère tous les blocs

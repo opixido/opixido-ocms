@@ -97,6 +97,7 @@ img {
 }
 
 #arbo_actions {
+    position: fixed;
     background: url(../img/fond.bloc2.gif) #ccc;
     border-right: 1px solid #555;
     padding: 5px;
@@ -109,6 +110,9 @@ img {
     vertical-align: middle;
 }
 
+#arbo_rubs {
+    padding-top: 20px;
+}
 #menug h1 {
     margin-top: 0px;
     /*background:url(../pictos/picto.dossier.gif) no-repeat #bbbbbb ;*/

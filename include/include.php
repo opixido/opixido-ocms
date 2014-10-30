@@ -22,7 +22,8 @@
 # @package ocms
 #
 
-class genBase {
+class genBase
+{
     /* Sous dossiers de configuration */
 
     public $include_path;
@@ -34,7 +35,8 @@ class genBase {
     private $include_base_path = 'base';
     private $cacheLoadedFiles = array();
 
-    public function __construct() {
+    public function __construct()
+    {
         ini_set('short_open_tags', 'on');
         $this->getBasePath();
     }
@@ -43,7 +45,8 @@ class genBase {
      * Tries to get the full path of the "include" folder
      *
      */
-    private function getBasePath() {
+    private function getBasePath()
+    {
 
         $inc_files = get_included_files();
         foreach ($inc_files as $file) {
@@ -60,7 +63,8 @@ class genBase {
      * Includes all needed files for the Admin section
      *
      */
-    public function includeAllForAdmin() {
+    public function includeAllForAdmin()
+    {
 
         $this->includeConfig();
         $this->includeBase();
@@ -75,7 +79,8 @@ class genBase {
      *
      * @return bool
      */
-    public function includeGlobal() {
+    public function includeGlobal()
+    {
 
         /**
          * "Global" folder
@@ -112,7 +117,8 @@ class genBase {
      *
      * @return unknown
      */
-    public function includeBase() {
+    public function includeBase()
+    {
 
 
         $curfolder = $this->include_path . '/' . $this->include_base_path;
@@ -131,19 +137,20 @@ class genBase {
      *
      * THIS DOES NOT INCLUDE ALL FILES IN THE FOLDER
      * ONLY SPECIFIED ONES
-     * 
+     *
      * @return bool
      */
-    public function includeConfig() {
+    public function includeConfig()
+    {
 
         $curfolder = $this->include_path . '/' . $this->include_config_path;
 
-        $list = array('config.server.php', 'connect.php', 'config.base.php', 'config.app.php');
+        $list = array('config.server.php', 'config.locale.php', 'connect.php', 'config.base.php', 'config.app.php');
 
         foreach ($list as $file) {
-            $res = @include_once($curfolder . '/' . $file);
+            $res = include_once($curfolder . '/' . $file);
             if (!$res) {
-                echo ('File : ' . $file . ' not included yet : Install Mode');
+                echo('File : ' . $file . ' not included yet : Install Mode');
             }
         }
 
@@ -155,7 +162,8 @@ class genBase {
      *
      * @return bool
      */
-    public function includeAdmin() {
+    public function includeAdmin()
+    {
 
         $curfolder = $this->include_path . '/' . $this->include_admin_path;
         $list = $this->getFileListing($curfolder);
@@ -169,20 +177,21 @@ class genBase {
 
     /**
      * Lists all files in a folder
-     * 
+     *
      *
      * @param unknown_type $folder
      * @param unknown_type $usecache
      * @return unknown
      */
-    public function getFileListing($folder, $usecache = true) {
+    public function getFileListing($folder, $usecache = true)
+    {
 
         /**
          * Cache in session
          */
         $cachename = 'cache_' . md5($_SERVER['SCRIPT_FILENAME']);
-        if (array_key_exists($cachename, $_SESSION) && array_key_exists('gb_folderList', $_SESSION[$cachename]) && array_key_exists($folder, $_SESSION[$cachename]['gb_folderList']) && $usecache) {
-            return $_SESSION[$cachename]['gb_folderList'][$folder];
+        if (array_key_exists($cachename, $_SESSION) && array_key_exists('gb_folderList', $_SESSION[ $cachename ]) && array_key_exists($folder, $_SESSION[ $cachename ]['gb_folderList']) && $usecache) {
+            return $_SESSION[ $cachename ]['gb_folderList'][ $folder ];
         }
 
         /**
@@ -198,7 +207,7 @@ class genBase {
                     }
                 }
             }
-            $_SESSION[$cachename]['gb_folderList'][$folder] = $nlist;
+            $_SESSION[ $cachename ]['gb_folderList'][ $folder ] = $nlist;
             return $nlist;
         } else {
             die('Wrong configuration can\'t include anything : ' . $folder);
@@ -211,7 +220,8 @@ class genBase {
      * @param string $folder
      * @return unknown
      */
-    public function getFolderListing($folder) {
+    public function getFolderListing($folder)
+    {
 
         $folder = path_concat($this->include_path, $folder);
 
@@ -225,7 +235,7 @@ class genBase {
                     }
                 }
             }
-            $_SESSION['cache'][UNIQUE_SITE]['gb_folderList'][$folder] = $nList;
+            $_SESSION['cache'][ UNIQUE_SITE ]['gb_folderList'][ $folder ] = $nList;
             return $nlist;
         } else {
             debug('no such directory : ' . $folder);
@@ -240,7 +250,8 @@ class genBase {
      * @param string $fold Foldername (after include/)
      * @return bool
      */
-    public function includeFile($file, $fold) {
+    public function includeFile($file, $fold)
+    {
 
         $folder = '';
         if (property_exists($this, 'include_' . $fold)) {
@@ -266,7 +277,8 @@ class genBase {
      * @param string $fold
      * @return string
      */
-    public function getIncludePath($file, $fold) {
+    public function getIncludePath($file, $fold)
+    {
         return $this->include_path . '/' . $fold . '/' . $file;
     }
 
@@ -277,7 +289,8 @@ class genBase {
      * @param unknown_type $fold
      * @return unknown
      */
-    public function loadFile($file, $fold) {
+    public function loadFile($file, $fold)
+    {
 
         $folder = '';
 
@@ -290,11 +303,11 @@ class genBase {
         $path = $this->getIncludePath($file, $folder);
         if (!ake($this->cacheLoadedFiles, $path)) {
             if (is_file($path)) {
-                $this->cacheLoadedFiles[$path] = file_get_contents($path);
+                $this->cacheLoadedFiles[ $path ] = file_get_contents($path);
             }
         }
 
-        return $this->cacheLoadedFiles[$path];
+        return $this->cacheLoadedFiles[ $path ];
 
         return false;
     }

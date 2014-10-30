@@ -199,7 +199,7 @@ class baseGen extends baseObj {
         if (method_exists($this, 'ocms_defaultParams')) {
             $defParams = $this->ocms_defaultParams();
             foreach ($defParams as $k => $v) {
-                if (!$this->params[$k]) {
+                if (empty($this->params[$k])) {
                     $this->params[$k] = $v;
                 }
             }
@@ -211,8 +211,8 @@ class baseGen extends baseObj {
          * Rajouts automatique au titre ou chemin de fer
          */
         if ($this->row) {
-            $this->site->g_headers->addTitle(GetTitleFromRow($this->table, $this->row));
-            $this->site->g_url->addRoad(GetTitleFromRow($this->table, $this->row), getUrlWithParams(array($this->clef => $this->id)));
+            //$this->site->g_headers->addTitle(GetTitleFromRow($this->table, $this->row));
+            //$this->site->g_url->addRoad(GetTitleFromRow($this->table, $this->row), getUrlWithParams(array($this->clef => $this->id)));
         }
     }
 
@@ -353,7 +353,24 @@ class rubrique extends row {
      */
     public function getParagraphes() {
         $sql = 'SELECT * FROM s_paragraphe, s_para_type WHERE fk_rubrique_id = ' . sql($this->id) . ' AND fk_para_type_id = para_type_id ORDER BY paragraphe_ordre ASC ';
-        return getAll($sql);
+        return GetAll($sql);
     }
 
+    /**
+     *
+     * @global type $_Gconfig
+     * @return ADOdb_RECORDSET
+     */
+    public function getDrafts() {
+        global $_Gconfig;
+        $sql = 'SELECT * FROM s_rubrique WHERE '
+                . '     ' . MULTIVERSION_FIELD . ' = ' . sql($this->row[MULTIVERSION_FIELD]) . ' AND '
+                . ' ' . MULTIVERSION_STATE . ' = ' . sql(MV_STATE_DRAFT) . ' ORDER BY ' . $_Gconfig['field_date_maj'] . ' DESC';
+
+        return doSql($sql);
+    }
+
+    /**
+     * Return all images
+     */
 }

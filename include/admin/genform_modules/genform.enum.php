@@ -63,7 +63,7 @@ if (!$this->editMode) {
 
 
 
-    $enums = getEnumValues($this->table_name, $name);
+    $enums = getEnumValues($this->tab_field, $name);
 
 
     foreach ($enums as $enum) {

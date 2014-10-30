@@ -61,36 +61,42 @@
     });
     $("div.radio").buttonset();
 <?php if (!empty($GLOBALS['rteElements'])) { ?>
-        if (tinyMCE_GZ) {
-        tinyMCE_GZ.init({
-        theme : "advanced",
-                skin : "default",
-                language : "en",
-                plugins : "safari,paste,fullscreen,advimage,xhtmlxtras,contextmenu"
-        });
+        if (tinyMCE) {
+            tinyMCE.init({
+                skin: "default",
+                language: "en",
+                plugins: "safari,paste,fullscreen,advimage,contextmenu"
+            });
         }
-        <?php } ?></script>
-    <script type="text/javascript">
+<?php } ?></script>
+<script type="text/javascript">
+<?php
+global $_Gconfig;
+if ($GLOBALS['rteElements']) {
+    ?>
+        function setupTinymce(elementsId) {
+            tinyMCE.init({
+                elements: elementsId
     <?php
-    global $_Gconfig;
-    if ($GLOBALS['rteElements']) {
-        ?>
-            function setupTinymce(elementsId) {
-                tinyMCE.init({
-                elements : elementsId
-        <?php
-        foreach ($_Gconfig['tinyMce']['conf'] as $k => $v) {
+    foreach ($_Gconfig['tinyMce']['conf'] as $k => $v) {
+        if (is_array($v)) {
+            $v = json_encode($v);
+        } else
+        if (strpos($v, '{') !== false) {
+            $v = $v;
+        } else {
             $v = $v == 'false' || $v == 'true' ? $v : alt($v);
-            echo ',' . $k . ' : ' . $v . "\n";
         }
-        ?>
-
-
-                });
-            }
-        <?php
+        echo ',' . $k . ' : ' . $v . "\n";
     }
     ?>
+
+
+            });
+        }
+    <?php
+}
+?>
 
 </script>
 

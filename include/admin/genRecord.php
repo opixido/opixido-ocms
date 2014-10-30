@@ -105,16 +105,10 @@ class genRecord {
                 $auto = false;
                 $tableInfo = MetaColumns($this->table);
 
-                if ($tableInfo[strtoupper($_REQUEST['curTableKey'])]->auto_increment > 0)
+                if ($tableInfo[strtoupper($_REQUEST['curTableKey'])]->auto_increment > 0) {
                     $auto = true;
+                }
 
-                /* La table est elle en auto_increment */
-
-                /* $fe = mysql_field_flags($res,$_REQUEST['curTableKey']);
-
-                  if(strstr($fe,'auto_increment'))
-                  $auto = true;
-                 */
 
                 /* On fait confiance a l'auto_increment */
                 if ($auto || $_REQUEST['genform_' . $_REQUEST['curTableKey']] != '') {
@@ -143,6 +137,14 @@ class genRecord {
                         if (DoSql($sql))
                             break;
                     }
+                }
+
+                /**
+                 * Si on est dans une relOne on ajoute l'enregistrement 
+                 * dans l'autre table
+                 */
+                if (!empty($_REQUEST['relOne'])) {
+                    insertEmptyRecord($_REQUEST['relOne'], $this->id);
                 }
 
                 $_GET['curId'] = $_POST['curId'] = $_REQUEST['curId'] = $this->id;
@@ -405,7 +407,7 @@ class genRecord {
          * Supprime un enregistrement, ses liaisons, et ses fichiers
          */
 
-        global $uploadFields, $uploadRep, $orderFields;
+        global $orderFields, $_Gconfig;
 
         if (($id > 0 || $id != '') && $id != 'new') {
 
@@ -427,8 +429,6 @@ class genRecord {
                     $gf->deleteFile();
                 }
             }
-            if (is_dir($uploadRep . "/" . $this->table . '/' . $id))
-                rmdir($uploadRep . "/" . $this->table . '/' . $id) or derror(t('impossible_supprimer_repertoire'));
 
 
             /**
@@ -461,6 +461,7 @@ class genRecord {
             if (!empty($orderFields[$this->table]) && !empty($orderFields[$this->table][1])) {
                 $fk_id = $obj->tab_default_field[$orderFields[$this->table][1]];
                 $ord = new GenOrder($this->table, 0, $fk_id);
+                $ord->reorderAfterDelete($obj->tab_default_field[$orderFields[$this->table][0]]);
                 $ord->reOrder();
             }
 
@@ -479,6 +480,16 @@ class genRecord {
                 }
             }
 
+            if (!empty($_Gconfig['relOne'][$this->table])) {
+                foreach ($_Gconfig['relOne'][$this->table]as $relTable => $relPk) {
+                    $r = getRowFromId($relTable, $id);
+                    if ($r) {
+                        $gr = new genRecord($relTable, $id);
+                        $gr->DeleteRow($id);
+                    }
+                }
+            }
+
             /**
              * Suppression des traductions
              */
@@ -489,6 +500,27 @@ class genRecord {
         }
         // dinfo(t('suppression_ok').t($this->table).' /  '.$id);
         $this->onDelete();
+    }
+
+    public function initRelOne() {
+
+        global $_Gconfig, $tabForms;
+
+        $this->tab_default_field = getRowFromId($this->table, $this->id);
+        $this->tables = array($this->table);
+        $this->wheres = array(' ' . getPrimaryKey($this->table) . ' = ' . sql($this->id));
+
+        if (empty($_Gconfig['relOne'][$this->table])) {
+            return;
+        }
+
+        foreach ($_Gconfig['relOne'][$this->table] as $table => $clef) {
+            if (!empty($this->tab_default_field[$clef])) {
+                $this->tables[] = $table;
+                $this->wheres[] = ' ' . $clef . ' = ' . getPrimaryKey($this->table);
+                $this->tab_field = array_merge($this->tab_field, getTabField($table));
+            }
+        }
     }
 
     function recordData() {
@@ -505,10 +537,15 @@ class genRecord {
         }
 
         $this->onUpdate();
+        $this->tab_field = getTabField($this->table);
+        $this->initRelOne();
 
-        $pre_query = "UPDATE " . $this->table . " SET ";
+        $pre_query = "UPDATE " . implode(',', $this->tables) . " SET ";
         $query = "";
-        $this->tab_field = $tab_field = getTabField($this->table);
+
+
+        $tab_field = $this->tab_field;
+
         reset($_POST);
 
         if (!$this->gs->can('edit', $this->table, array(), $this->id) && !$this->JustInserted) {
@@ -726,7 +763,7 @@ class genRecord {
 
                 /* Est-il dans la liste des champs que j'ai le droit de modifier */
 
-                if (in_array($name, $_SESSION[gfuid()]['curFields'])) {
+                if (!empty($_SESSION[gfuid()]['curFields']) && in_array($name, $_SESSION[gfuid()]['curFields'])) {
 
 
                     if (isset($tab_field[$name])) {
@@ -798,8 +835,7 @@ class genRecord {
                         $value = "";
 
                     $value = trim($value);
-                    if (($value == "" || $value == "0" || $value == "0.0" || $value == "NULL" || $value == "::"
-                            || (is_array($value) && count($value) == 0)) && isNeeded($this->table, $name)) {
+                    if (($value == "" || $value == "0" || $value == "0.0" || $value == "NULL" || $value == "::" || (is_array($value) && count($value) == 0)) && isNeeded($this->table, $name)) {
                         $isError = 1;
                         $fieldError[$name] = 1;
                     }
@@ -853,6 +889,19 @@ class genRecord {
                         $value = '';
                     }
 
+                    /**
+                     * Gestion des fichiers � copier depuis le filemanager
+                     */
+                    if ((substr($name, -14) == "_importmanager") && $value != "0" && $value != "NULL" && $value) {
+                        $name = substr($name, 0, -14);
+                        debug($name);
+                        debug($value);
+                    } else if (substr($name, -14) == "_importmanager") {
+                        $name = '';
+                        $value = '';
+                    }
+
+
 
                     /**
                      * CHAMPS RTE
@@ -866,6 +915,20 @@ class genRecord {
                                 array('<b>', '</b>', '<u>', '</u>', '<i>', '</i>'), array('<strong>', '</strong>', '<span style="text-decoration:underline">', '</span>', '<em>', '</em>'), $value);
                         $value = strip_tags($value, '<p><a><abbr><accronym><sup><sub><ul><li><ol><br><br/><strong><em><span>');
                     }
+
+
+                    /**
+                     * CHAMPS RTE
+                     */
+                    if (in_array($name, $_Gconfig['passwordFields'])) {
+                        if (strlen($value) > 0) {
+                            $value = password_hash($value, PASSWORD_BCRYPT);
+                        } else {
+                            $name = '';
+                        }
+                    }
+
+
 
                     $aid = $this->JustInserted ? 'new' : $this->id;
                     if (!$this->gs->can('edit', $this->table, '', $aid, $name, $value) && !$this->gs->can('edit', $this->table, '', $aid, getBaseLgField($name), $value)) {
@@ -920,7 +983,8 @@ class genRecord {
         $res = false;
         if ($query && $this->id != "new" && $this->id != "") {
             $query = $pre_query . substr($query, 0, strlen($query) - 2);
-            $query .= " WHERE " . $_REQUEST['curTableKey'] . ' = "' . $this->id . '"';
+            // $query .= " WHERE " . $_REQUEST['curTableKey'] . ' = "' . $this->id . '"';
+            $query .= ' WHERE ' . implode(' AND ', $this->wheres);
 
             $res = DoSql($query);
         }
@@ -964,5 +1028,3 @@ class genRecord {
     }
 
 }
-
-?>

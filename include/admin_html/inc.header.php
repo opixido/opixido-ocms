@@ -121,7 +121,8 @@
                                         $h = '';
                                         foreach ($menus as $menu) {
                                             if ($GLOBALS['gs_obj']->can('edit', $menu)) {
-                                                $url = in_array($menu, $tables) ? 'index.php?curTable=' . $menu : ta('cp_link_' . $menu);
+                                                $url = getAdminLink($menu);
+                                                //$url = in_array($menu, $tables) ? 'index.php?curTable=' . $menu : ta('cp_link_' . $menu);
                                                 $h .= '<li><a href="' . $url . '" ><img src="' . getPicto($menu, '16x16') . '" alt=""/> <span>' . ta('cp_txt_' . $menu) . '</span></a></li>';
                                             }
                                         }

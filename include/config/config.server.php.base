@@ -166,7 +166,7 @@ $_Gconfig['CDN'] = '';
 
 
 /**
- * On pourait définir des variables ci-dessus dans les blocs ci-dessous 
+ * On pourait définir des variables ci-dessus dans les blocs ci-dessous
  * pour une configuration propre à chaque serveur.
  */
 if ($_SERVER['SERVER_ADDR'] == "**current_ip**") {
@@ -181,7 +181,7 @@ if ($_SERVER['SERVER_ADDR'] == "**current_ip**") {
     $_bdd_type = '**bdd_type**';
 
     $_Gconfig['debugIps'] =array('192.168.1.');
-    
+
 } else {
 
     /**

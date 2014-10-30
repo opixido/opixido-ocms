@@ -1,4 +1,5 @@
 <?php
+
 #
 # This file is part of oCMS.
 #
@@ -21,13 +22,16 @@
 # @package ocms
 #
 
-class bloc {
+class bloc
+{
 
     public $contenu = array();
     public $visible = true;
     public $nom = 'default';
     public $toAddBefore = array();
     public $toAddAfter = array();
+    public $tag = '';
+
     /**
      * gensite
      *
@@ -40,7 +44,8 @@ class bloc {
      *
      * @param genSite $site
      */
-    function __construct($site) {
+    function __construct($site)
+    {
 
         $this->site = $site;
     }
@@ -49,10 +54,11 @@ class bloc {
      * Si il est bien visible, on décale le contenu
      *
      */
-    function afterInit() {
+    function afterInit()
+    {
 
         if ($this->visible) {
-            
+
         }
     }
 
@@ -60,7 +66,8 @@ class bloc {
      * Sets this bloc not to render
      *
      */
-    function hide() {
+    function hide()
+    {
 
         $this->visible = false;
         return $this;
@@ -70,24 +77,32 @@ class bloc {
      * Makes this box visible
      *
      */
-    function show() {
+    function show()
+    {
 
         $this->visible = true;
         return $this;
+    }
+
+    public function gen()
+    {
+        return $this->genBloc();
     }
 
     /**
      * returns content
      *
      */
-    function genBloc() {
+    function genBloc()
+    {
 
         if ($this->visible) {
-            $html = '<div id="bloc_' . $this->nom . '">';
 
-            foreach ($this->contenu as $v) {
+            $this->sort();
+            $html = '<div id="bloc_' . $this->nom . '" ' . $this->tag . '>';
 
-                $html .= ( $v);
+            foreach ($this->contenu as $nom => $v) {
+                $html .= ($v['contenu']);
             }
 
             $html .= '</div>';
@@ -101,57 +116,55 @@ class bloc {
      * @param string $nom Nom de la boite
      * @param string $html code HTML
      */
-    function add($nom, $html, $class = '') {
+    function add($nom, $html, $class = '', $poids = 100)
+    {
 
-        if (ake($this->toAddBefore, $nom)) {
+        $this->contenu[ $nom ] = array(
+            'poids'   => $poids,
+            'contenu' => '<div class="bloc ' . $class . '" id="bloc_' . $this->nom . '_' . $nom . '">' . $html . '</div>'
+        );
 
-            foreach ($this->toAddBefore[$nom] as $k => $v) {
-                $this->contenu[$k] = $v;
-            }
-        }
 
-        $this->contenu[$nom] = '<div class="bloc ' . $class . '" id="bloc_' . $this->nom . '_' . $nom . '">' . $html . '</div>';
-
-        if (ake($this->toAddAfter, $nom)) {
-
-            foreach ($this->toAddAfter[$nom] as $k => $v) {
-                $this->contenu[$k] = $v;
-            }
-        }
         return $this;
     }
 
     /**
      * Ajoute une boite $nom apres la boite $other
      *
-     * @param string $other
-     * @param string $nom
-     * @param string $html
-     */
-    function addAfter($other, $nom, $html) {
-
-        if (ake($other, $this->contenu)) {
-            
-        } else {
-            $this->toAddAfter[$other][$nom] = '<div class="bloc" id="col_' . $nom . '">' . $html . '</div>';
-        }
-        return $this;
-    }
-
-    /**
-     * Ajoute une boite $nom apres la boite $other
+     * @deprecated Ne plus utiliser, utiliser ->add() avec l'argument "poids"
      *
      * @param string $other
      * @param string $nom
      * @param string $html
      */
-    function addBefore($other, $nom, $html) {
-
-        if (ake($other, $this->contenu)) {
-            
+    function addAfter($other, $nom, $html, $class = '')
+    {
+        if ($this->contenu[ $other ]) {
+            $poids = $this->contenu[ $other ]['poids'] + 1;
+            $this->add($nom, $html, $class, $poids);
         } else {
-            $this->toAddBefore[$other][$nom] = '<div class="bloc" id="col_' . $nom . '">' . $html . '</div>';
+            $this->add($nom, $html, $class);
         }
+
+        return $this;
+    }
+
+    /**
+     * Ajoute une boite $nom avant la boite $other
+     *
+     * @param string $other
+     * @param string $nom
+     * @param string $html
+     */
+    function addBefore($other, $nom, $html, $class = '')
+    {
+        if ($this->contenu[ $other ]) {
+            $poids = $this->contenu[ $other ]['poids'] - 1;
+            $this->add($nom, $html, $class, $poids);
+        } else {
+            $this->add($nom, $html, $class);
+        }
+
         return $this;
     }
 
@@ -161,17 +174,39 @@ class bloc {
      * @param string $nom
      * @param string $html
      */
-    function addAtTop($nom, $html) {
+    function addAtTop($nom, $html, $class = '')
+    {
+        /**
+         * On tri nos contenus actuels
+         * pour récupérer l'actuel premier
+         */
+        $this->sort();
+        reset($this->contenu);
+        $first = val($this->contenu);
+        $poids = $first['poids'] - 1;
 
-        $this->contenu = array_merge(array($nom => '<div class="bloc" id="bloc_' . $this->nom . '_' . $nom . '">' . $html . '</div>'), $this->contenu);
+        $this->add($nom, $html, $class, $poids);
         return $this;
+    }
+
+    private
+    function sort()
+    {
+        usort($this->contenu, "bloc::cmp");
+    }
+
+    private
+    static function cmp($a, $b)
+    {
+        return strcmp($a["poids"], $b["poids"]);
     }
 
     /**
      * Vide tout
      *
      */
-    function clean() {
+    function clean()
+    {
 
         $this->contenu = array();
         return $this;
@@ -181,7 +216,8 @@ class bloc {
      * Ajoute un petit délimiteur
      *
      */
-    function addSmallDelim($size=6) {
+    function addSmallDelim($size = 6)
+    {
 
         global $nbDelim;
         $nbDelim++;
@@ -197,13 +233,15 @@ class bloc {
      * Ajoute un grand délimiteur
      *
      */
-    function addBigDelim() {
+    function addBigDelim()
+    {
         return $this;
     }
 
-    function remove($nom) {
+    function remove($nom)
+    {
 
-        unset($this->contenu[$nom]);
+        unset($this->contenu[ $nom ]);
         return $this;
     }
 

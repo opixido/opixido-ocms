@@ -52,7 +52,7 @@
 
 /* Item that is put to the List */
 .tagedit-list li.tagedit-listelement-old {
-    background: #eee url(../img/disc.png) 4px center no-repeat;
+    background: #eee url(../../img/disc.png) 4px center no-repeat;
     border: 1px solid #ccc;
     padding: 2px 0 2px 13px;
   /*  -moz-border-radius: 8px 4px 4px 8px;
@@ -78,21 +78,21 @@
     cursor: pointer;
     border-left: 1px dotted #7E9DD6;
     margin: 0 2px 0 5px;
-    background: url(../img/cross.png) center center no-repeat;
+    background: url(../../img/cross.png) center center no-repeat;
 }
 
 .tagedit-list li.tagedit-listelement-old a.tagedit-save {
-    background-image: url(../img/tick.png);
+    background-image: url(../../img/tick.png);
     margin-right: 0;
 }
 
 .tagedit-list li.tagedit-listelement-old a.tagedit-break {
-    background-image: url(../img/undo.png);
+    background-image: url(../../img/undo.png);
     margin-right: 0;
 }
 
 .tagedit-list li.tagedit-listelement-old a.tagedit-delete {
-    background-image: url(../img/delete.png);
+    background-image: url(../../img/delete.png);
     margin: 0 5px 0 2px;
     background-position: right center;
 }
