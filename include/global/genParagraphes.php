@@ -26,20 +26,23 @@
  * Generates the Paragraphes of the page
  *
  */
-class genParagraphes {
+class genParagraphes
+{
 
     var $paragraphes;
     var $site;
     var $rubrique;
     var $id = 'paragraphes';
 
-    function __construct($site, $paragraphes) {
+    function __construct($site, $paragraphes)
+    {
         $this->site = $site;
         $this->rubrique = $this->site->g_rubrique;
         $this->paragraphes = $paragraphes;
     }
 
-    function getHtmlParagraphes() {
+    function getHtmlParagraphes()
+    {
 
         $curpara = 0;
         $nbpara = count($this->paragraphes);
@@ -59,12 +62,11 @@ class genParagraphes {
                 $folder = dirname($para['para_type_tpl_file']);
                 $tpl->loadTemplate($file, $folder);
             } else
-            if (ake($_REQUEST, 'ocms_mode') && $para['para_type_template_' . $_REQUEST['ocms_mode']]) {
-                $tpl->setTemplate($para['para_type_template_' . $_REQUEST['ocms_mode']]);
-            } else {
-                $tpl->setTemplate('' . $para['para_type_template']);
-            }
-
+                if (ake($_REQUEST, 'ocms_mode') && $para[ 'para_type_template_' . $_REQUEST['ocms_mode'] ]) {
+                    $tpl->setTemplate($para[ 'para_type_template_' . $_REQUEST['ocms_mode'] ]);
+                } else {
+                    $tpl->setTemplate('' . $para['para_type_template']);
+                }
 
 
             if ($para['para_type_gabarit']) {
@@ -85,15 +87,13 @@ class genParagraphes {
             $conte = GetLgValue('paragraphe_contenu', $para);
 
 
-
             $tpl->setVar('titre', GetLgValue('paragraphe_titre', $para));
             $tpl->setVar('texte', ($conte));
 
             /**
-             *  Images associees 
+             *  Images associees
              * */
             $img = new GenFile('s_paragraphe', 'paragraphe_img_1', $para['paragraphe_id'], $para, true, true);
-
 
 
             $img2 = new GenFile('s_paragraphe', 'paragraphe_img_2', $para['paragraphe_id'], $para, true, true);
@@ -122,7 +122,7 @@ class genParagraphes {
             $tpl->setVar('file1_size', $fichier->getNiceSize());
             $tpl->setVar('file1_type', mb_strtoupper($fichier->getExtension()));
             $tpl->setVar('file1_name', $fichier->getRealName());
-            $tpl->setVar('file1_legend', choose(getLgValue('paragraphe_file_1_legend', $para),$fichier->getRealName()));
+            $tpl->setVar('file1_legend', choose(getLgValue('paragraphe_file_1_legend', $para), $fichier->getRealName()));
             $tpl->setVar('link1', getLgValue('paragraphe_link_1', $para));
 
             if (strlen(trim(GetLgValue('paragraphe_contenu_csv', $para)))) {
@@ -148,14 +148,15 @@ class genParagraphes {
             $html .= '</div>';
 
 
-            $this->paragraphes[$nbparaK]['html'] = $html;
-            $this->paragraphes[$nbparaK]['titre'] = getLgValue('paragraphe_titre', $para);
+            $this->paragraphes[ $nbparaK ]['html'] = $html;
+            $this->paragraphes[ $nbparaK ]['titre'] = getLgValue('paragraphe_titre', $para);
         }
 
         return $this->paragraphes;
     }
 
-    function gen() {
+    function gen()
+    {
 
         $c = new genCache('para_' . $this->id . '_' . $this->site->getCurId(), ($this->rubrique->date_publi));
 

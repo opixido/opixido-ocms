@@ -64,21 +64,26 @@ function getEditTrad($nom)
     }
 }
 
-function getTableListing($table)
+function getTableListing($table, $from = '')
 {
 
     global $_Gconfig;
 
-    if (!empty($GLOBALS['tableListing'][ $table ])) {
-        return $GLOBALS['tableListing'][ $table ];
+
+    if (!empty($GLOBALS['tableListing'][ $from . $table ])) {
+        return $GLOBALS['tableListing'][ $from . $table ];
     }
 
-    $liste = akev($_Gconfig['specialListing'], $table);
+    if ($from) {
+        $liste = akev($_Gconfig['specialListing'], $from . '.' . $table);
+
+    } else {
+        $liste = akev($_Gconfig['specialListing'], $table);
+    }
 
     if ($liste) {
-
-        $GLOBALS['tableListing'][ $table ] = $_Gconfig['specialListing'][ $table ]();
-        return $GLOBALS['tableListing'][ $table ];
+        $GLOBALS['tableListing'][ $from . $table ] = $_Gconfig['specialListing'][ $from . '.' . $table ]();
+        return $GLOBALS['tableListing'][ $from . $table ];
     } else {
 
         $sql = 'SELECT G.* FROM ' . $table . ' AS G WHERE 1 ';
@@ -87,9 +92,11 @@ function getTableListing($table)
 
         if (in_array($table, $_Gconfig['versionedTable'])) {
             $sql .= ' AND(  ' . VERSION_FIELD . ' = ""  OR  ' . VERSION_FIELD . ' IS NULL   OR  ' . VERSION_FIELD . ' = 0  )';
+        } else if (isMultiVersion($table)) {
+            $sql .= ' ' . sqlOnlyReal($table);
         }
 
-        $sql .= 'ORDER BY ' . $nomSql;
+        $sql .= ' ORDER BY ' . $nomSql;
         $result = GetAll($sql);
 
         $GLOBALS['tableListing'][ $table ] = $result;
@@ -231,8 +238,8 @@ function GetTitleFromTableOLD($table, $separator = " ")
 function truncate($str, $len = 100)
 {
     $sstr = strip_tags($str);
-    if (strlen($sstr) > $len)
-        return substr($sstr, 0, $len) . " ...";
+    if (mb_strlen($sstr) > $len)
+        return mb_substr($sstr, 0, $len, 'utf8') . " ...";
     else
         return $str;
 }

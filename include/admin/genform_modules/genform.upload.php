@@ -23,7 +23,7 @@
 #
 global $_Gconfig;
 /* Upload particulier */
-$gf = new GenFile($this->table_name, $name, $this->id, $this->tab_default_field[$name]);
+$gf = new GenFile($this->table_name, $name, $this->id, $this->tab_default_field[ $name ]);
 
 $chemin = $gf->GetWebUrl();
 $systemCh = $gf->GetSystemPath();
@@ -31,7 +31,7 @@ $systemCh = $gf->GetSystemPath();
 
 $doCloseDiv = false;
 
-if (isset($_Gconfig['fileListingFromFolder'][$this->table_name]) && ( $fileListing = akev($_Gconfig['fileListingFromFolder'][$this->table_name], getBaseLgField($name)) ) && !$this->editMode) {
+if (isset($_Gconfig['fileListingFromFolder'][ $this->table_name ]) && ($fileListing = akev($_Gconfig['fileListingFromFolder'][ $this->table_name ], getBaseLgField($name))) && !$this->editMode) {
 
     $files = glob($fileListing, GLOB_BRACE);
 
@@ -47,13 +47,13 @@ if (isset($_Gconfig['fileListingFromFolder'][$this->table_name]) && ( $fileListi
 
     $this->addBuffer('<div id="genform_' . $name . '_divupload">');
     $doCloseDiv = true;
-    $_SESSION[gfuid()]['curFields'][] = $name . "_fromfolder";
+    $_SESSION[ gfuid() ]['curFields'][] = $name . "_fromfolder";
 }
 
 if (!$this->onlyData) {
     $this->addBuffer('<div class="upload_fileview">');
 }
-if ($this->tab_default_field[$name]) {
+if ($this->tab_default_field[ $name ]) {
 
 
     if (!$this->onlyData) {
@@ -86,16 +86,16 @@ if ($this->tab_default_field[$name]) {
                 }
                 $this->addBuffer('</a> ');
             } else
-            if ($gf->getExtension() == 'flv') {
+                if ($gf->getExtension() == 'flv') {
 
-                $this->addBuffer(' <a href="' . $chemin . '" target="_blank">' . $this->trad('voir') . '</a> ');
-            } else {
+                    $this->addBuffer(' <a href="' . $chemin . '" target="_blank">' . $this->trad('voir') . '</a> ');
+                } else {
 
-                /*
-                 *  Ce n'est pas une image donc on affiche le lien uniquement
-                 */
-                $this->addBuffer(' <a href="' . $chemin . '" target="_blank">' . $this->trad('voir') . '</a> ');
-            }
+                    /*
+                     *  Ce n'est pas une image donc on affiche le lien uniquement
+                     */
+                    $this->addBuffer(' <a href="' . $chemin . '" target="_blank">' . $this->trad('voir') . '</a> ');
+                }
         } else {
 
             /*
@@ -109,7 +109,7 @@ if ($this->tab_default_field[$name]) {
 
             $this->addBuffer($gf->genAdminTag());
 
-            $_SESSION[gfuid()]['curFields'][] = $name . "_del";
+            $_SESSION[ gfuid() ]['curFields'][] = $name . "_del";
         }
     } else {
         /* Si only Data : on retourne juste l'url */
@@ -151,7 +151,7 @@ if (!$this->editMode) {
 
 
     if (true) {
-        $_SESSION[gfuid()]['curFields'][] = $name . "_importmanager";
+        $_SESSION[ gfuid() ]['curFields'][] = $name . "_importmanager";
         $this->addBuffer('
                     <div id="container_' . $name . '" class="upload_container">
                         <div id="filelist_' . $name . '" class="upload_filelist"></div>
@@ -195,8 +195,8 @@ if (!$this->editMode) {
                 chunk_size : "2mb",
                 flash_swf_url : "' . BU . '/admin/plupload/js/plupload.flash.swf",
                 silverlight_xap_url : "../js/plupload.silverlight.xap",
-                headers:{champ:"' . $name . '",curTable:"' . $this->table_name . '",curId:"' . $this->id . '",xhr:"upload"},
-                multipart_params:{champ:"' . $name . '",curTable:"' . $this->table_name . '",curId:"' . $this->id . '",xhr:"upload"},
+                headers:{champ:"' . $name . '",curTable:"' . $this->table_name . '",curId:"' . $this->id . '",xhr:"upload",relOne:' . sql(akev($_REQUEST, 'relOne')) . '},
+                multipart_params:{champ:"' . $name . '",curTable:"' . $this->table_name . '",curId:"' . $this->id . '",xhr:"upload",relOne:' . sql(akev($_REQUEST, 'relOne')) . '},
                 button_browse_hover : true,
                 multiple_queues: true,
                 multi_selection : false,
@@ -254,7 +254,7 @@ if (!$this->editMode) {
         /* Bouton parcourir pour uploader le fichier */
 
         $this->addBuffer("<label for='genform_" . $name . "'>");
-        if ($this->tab_default_field[$name])
+        if ($this->tab_default_field[ $name ])
             $this->addBuffer(t('fichier_remplacer'));
         else
             $this->addBuffer(t('fichier_uploader'));
@@ -262,13 +262,13 @@ if (!$this->editMode) {
         // debug($name .' ' .getBaseLgField($name));
 
         if (@ake($_Gconfig['imageAutoResize'], getBaseLgField($name))) {
-            $sizes = $_Gconfig['imageAutoResize'][getBaseLgField($name)];
+            $sizes = $_Gconfig['imageAutoResize'][ getBaseLgField($name) ];
             $this->addBuffer(' <span class="light">[' . t('max_size') . ' ' . $sizes[0] . ' x ' . $sizes[1] . ' px]</span>');
         } else
-        if (@ake($_Gconfig['imageAutoResizeExact'], getBaseLgField($name))) {
-            $sizes = $_Gconfig['imageAutoResizeExact'][getBaseLgField($name)];
-            $this->addBuffer(' <span class="light">[' . t('exact_size') . ' ' . $sizes[0] . ' x ' . $sizes[1] . ' px]</span>');
-        }
+            if (@ake($_Gconfig['imageAutoResizeExact'], getBaseLgField($name))) {
+                $sizes = $_Gconfig['imageAutoResizeExact'][ getBaseLgField($name) ];
+                $this->addBuffer(' <span class="light">[' . t('exact_size') . ' ' . $sizes[0] . ' x ' . $sizes[1] . ' px]</span>');
+            }
 
 
         $this->addBuffer(' </label> <br/>');
@@ -290,8 +290,8 @@ if (!$this->editMode) {
             if (count($liste)) {
                 $ij = 0;
 
-                $_SESSION[gfuid()]['curFields'][] = $name . "_importftp";
-                $_SESSION[gfuid()]['curFields'][] = $name . "_importftp_x";
+                $_SESSION[ gfuid() ]['curFields'][] = $name . "_importftp";
+                $_SESSION[ gfuid() ]['curFields'][] = $name . "_importftp_x";
 
                 $this->addBuffer('
                     <img class="inputimage" onclick="showHide(\'filelisting_' . $name . '\')" type="image" src="' . t('src_importftp') . '"  alt="' . t('import_from_ftp') . '" />
@@ -304,7 +304,6 @@ if (!$this->editMode) {
                     $ij++;
                     $this->addBuffer('<label for="genform_' . $name . '_import_' . $ij . '"><input type="radio" id="genform_' . $name . '_import_' . $ij . '" name="genform_' . $name . '_importftp" value="' . $f . '" />' . $f . '</label>');
                 }
-
 
 
                 $this->addBuffer('

@@ -794,6 +794,10 @@ INSERT INTO `s_admin_trad` (`admin_trad_id`, `admin_trad_[LG]`, `fk_plugin_id`)
 VALUES ('fieldset-nbfields', 'champs masqués', '');
 INSERT INTO `s_admin_trad` (`admin_trad_id`, `admin_trad_[LG]`, `fk_plugin_id`)
 VALUES ('confirm_delete', 'Pour supprimer cet élément saisissez "OUI" ci-dessous', '');
+INSERT INTO `s_admin_trad` (`admin_trad_id`, `admin_trad_[LG]`, `fk_plugin_id`)
+VALUES ('rubrique_picto', 'Image principale / vignette', '');
+INSERT INTO `s_admin_trad` (`admin_trad_id`, `admin_trad_[LG]`, `fk_plugin_id`)
+VALUES ('field_img_rubrique_picto', '[ADMIN_PICTOS_FOLDER]16x16/mimetypes/image-x-generic.png', '');
 
 -- --------------------------------------------------------
 

@@ -1,6 +1,10 @@
 <?php
 
+
+$form->genlg("rubrique_picto");
+
 $form->startFieldset('referencement', false);
+
 
 if ($form->tab_default_field['rubrique_type'] == 'page' || $form->tab_default_field['rubrique_type'] == "siteroot" || $form->tab_default_field['rubrique_type'] == "folder") {
 

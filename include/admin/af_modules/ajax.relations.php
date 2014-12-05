@@ -22,9 +22,11 @@
 # @package ocms
 #
 
-class ajaxRelations {
+class ajaxRelations
+{
 
-    function __construct($af, $champ, $fk_table) {
+    function __construct($af, $champ, $fk_table)
+    {
 
         $this->af = $af;
         $this->fk_table = $fk_table;
@@ -36,14 +38,15 @@ class ajaxRelations {
         $this->champ_id = $this->table . '-' . $champ;
     }
 
-    function gen() {
+    function gen()
+    {
 
         $cur = $this->getCurrent();
         $list = $this->getListing();
 
         $pk = getPrimaryKey($this->fk_table);
         global $_Gconfig;
-        if (!empty($_Gconfig['relationAsAjax'][$this->fk_table])) {
+        if (!empty($_Gconfig['relationAsAjax'][ $this->fk_table ])) {
             $html = '';
             $html = var_export($this->row, true);
             return $html;
@@ -63,12 +66,12 @@ class ajaxRelations {
         foreach ($list as $v) {
 
             $html .= '<option ';
-            if ($v[$pk] == $cur) {
+            if ($v[ $pk ] == $cur) {
                 $html .= ' selected="selected" ';
             }
-            $html .= ' value="' . $v[$pk] . '" ';
+            $html .= ' value="' . $v[ $pk ] . '" ';
             $html .= ' > ';
-            $html.= GetTitleFromRow($this->fk_table, $v);
+            $html .= GetTitleFromRow($this->fk_table, $v);
             $html .= '</option>';
             $html .= "\n";
         }
@@ -85,22 +88,21 @@ class ajaxRelations {
      *
      * @return unknown
      */
-    function getCurrent() {
-
-        return $this->row[$this->champ];
+    function getCurrent()
+    {
+        return $this->row[ $this->champ ];
     }
 
-    function getCurrentValue() {
-
+    function getCurrentValue()
+    {
         $row = getRowFromId($this->fk_table, $this->getCurrent());
-
         return GetTitleFromRow($this->fk_table, $row);
     }
 
-    function getListing() {
+    function getListing()
 
-        $res = getTableListing($this->fk_table);
-
+    {
+        $res = getTableListing($this->fk_table, $this->table);
         return $res;
     }
 
