@@ -1,15 +1,14 @@
 # Cache files #
 ###############
-c
-cache
-cache_agr
 temoinchange
 temoinnextcache
+
 # User generated files #
 ########################
 upload
 fichier
 rtefiles
+/admin/thumbs/
 
 # Developer files #
 ######################
@@ -19,6 +18,8 @@ nbproject
 .svn
 svn-commit.tmp
 xhprof
+.idea
+/include/config/config.locale.php
 
 # OS generated files #
 ######################
@@ -32,9 +33,5 @@ Thumbs.db
 .sass-cache
 
 
-/_solr/solr/collection1/data/
-/_solr/logs/
-/admin/thumbs/
-.idea/
-/include/config/config.locale.php
-include/config/config.log.php
+
+
