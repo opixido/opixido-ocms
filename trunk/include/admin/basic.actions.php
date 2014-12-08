@@ -22,7 +22,8 @@
 # @package ocms
 #
 
-function s_admin_update($id, $row = array()) {
+function s_admin_update($id, $row = array())
+{
 
 
     if (!count($row)) {
@@ -44,7 +45,8 @@ function s_admin_update($id, $row = array()) {
     }
 }
 
-function executeSql() {
+function executeSql()
+{
 
 
     $f = new simpleForm('', 'post', 'executeSql');
@@ -89,7 +91,8 @@ function executeSql() {
  * Rajoute ou supprime une langue globalement pour le site
  *
  */
-function changeTranslations() {
+function changeTranslations()
+{
     if (!$_POST['translationName']) {
 
         $sf = new simpleForm('', 'post');
@@ -105,7 +108,8 @@ function changeTranslations() {
     $_SESSION['cache_tabfield'] = array();
 }
 
-function doTranslations($lg, $action = 'add') {
+function doTranslations($lg, $action = 'add')
+{
     $_SESSION['cache'] = array();
 
     $tables = GetTables();
@@ -118,7 +122,7 @@ function doTranslations($lg, $action = 'add') {
                 $chpnu = fieldWithoutLg($chp->name);
                 $newName = $chpnu . '_' . $lg;
 
-                if ($chps[$newName]) {
+                if ($chps[ $newName ]) {
                     if ($action == 'del') {
 
                         print('<br/>DROPPING : ' . $table . '.' . $newName);
@@ -154,7 +158,8 @@ function doTranslations($lg, $action = 'add') {
     $_SESSION['cache'] = array();
 }
 
-function recheckTranslations() {
+function recheckTranslations()
+{
     global $_Gconfig;
     $ar = array_reverse($_Gconfig['LANGUAGES']);
     foreach ($ar as $v) {
@@ -167,7 +172,8 @@ function recheckTranslations() {
  * Fonction pour reencoder les mots de passe des utilisateurs
  * Soit avec une clef diff�rents, un cipher different, ...
  */
-function encodePasswords() {
+function encodePasswords()
+{
 
     $crypto = new crypto(crypto_cipher, crypto_mode, crypto_key);
     $crypto2 = new crypto('saferplus', crypto_mode, 'fdfsdfsd');
@@ -181,7 +187,8 @@ function encodePasswords() {
     }
 }
 
-function showPhpInfo() {
+function showPhpInfo()
+{
 
     ob_start();
     phpinfo();
@@ -232,7 +239,8 @@ function showPhpInfo() {
      */
 }
 
-function mostUsedWords() {
+function mostUsedWords()
+{
 
     $sql = 'SELECT IW.word, COUNT(IR.fkword) AS SOMME FROM is_rel AS IR, is_word AS IW WHERE IW.id = IR.fkword GROUP BY IR.fkword ORDER BY SOMME DESC LIMIT 0,50';
     $res = GetAll($sql);
@@ -245,14 +253,16 @@ function mostUsedWords() {
 }
 
 
-function du($dir) {
+function du($dir)
+{
     $res = `/usr/bin/du -sk $dir`;             // Unix command
     preg_match('/\d+/', $res, $KB); // Parse result
     $MB = round($KB[0] / 1024, 1);  // From kilobytes to megabytes
     return $MB;
 }
 
-function emptyCache() {
+function emptyCache()
+{
     global $_Gconfig;
     echo '<ul class="nav nav-list">';
     foreach ($_Gconfig['cachePaths'] as $k => $v) {
@@ -275,7 +285,8 @@ function emptyCache() {
      */
 }
 
-function emptyDir($cachepath, $dirsToo = false) {
+function emptyDir($cachepath, $dirsToo = false)
+{
     if (!is_dir($cachepath)) {
         return;
     }
@@ -294,7 +305,8 @@ function emptyDir($cachepath, $dirsToo = false) {
     }
 }
 
-function rm($fileglob) {
+function rm($fileglob)
+{
     if (is_string($fileglob)) {
         if (is_file($fileglob)) {
             return unlink($fileglob);
@@ -328,6 +340,7 @@ function rm($fileglob) {
     return true;
 }
 
-function saveTemoinChange() {
+function saveTemoinChange()
+{
     @file_put_contents(INCLUDE_PATH . '/temoinchange', date('c'));
 }

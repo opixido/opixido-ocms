@@ -32,7 +32,7 @@
 function insertEmptyRecord($table, $id = false, $champs = array())
 {
 
-
+    global $_Gconfig;
     /**
      * if $id in parameters, inserting with this ID
      */
@@ -41,9 +41,13 @@ function insertEmptyRecord($table, $id = false, $champs = array())
         $sql = 'INSERT INTO ' . $table . ' (' . getPrimaryKey($table) . ' ';
         $postSql = ' ) VALUES  ( ' . sql($id) . ' ';
 
+        $tab = getTabField($table);
+
         foreach ($champs as $k => $v) {
-            $sql .= ' , ' . $k;
-            $postSql .= ' ,' . sql($v);
+            if (ake($tab, $k)) {
+                $sql .= ' , ' . $k;
+                $postSql .= ' ,' . sql($v);
+            }
         }
 
         $res = DoSql($sql . $postSql . ' ) ');
@@ -279,6 +283,7 @@ function sqlOnlyOnline($table, $alias = '')
 function sqlVersionOnline($table = '', $alias = '')
 {
 
+    global $_Gconfig;
     $sql = '';
 
     if (strlen($alias)) {
@@ -437,18 +442,18 @@ function mes($str)
 /**
  * Exécute une requete SQL
  *
- * @param string $sql
+ * @param String $sql
  * @param string $msg Message en cas d'erreur
  * @return ADORecordSet $res
  */
-function dosql($sql, $msg = '')
+function dosql($sql, $msg = '', $params = array())
 {
     global $co;
     if (!$co) {
         return;
     }
     debugEvent($sql);
-    $res = $co->execute($sql);
+    $res = $co->execute($sql, $params);
     debugEnd();
     if (!$res) {
         sqlError($sql, $msg);

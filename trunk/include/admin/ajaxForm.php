@@ -22,13 +22,15 @@
 # @package ocms
 #
 
-class ajaxForm {
+class ajaxForm
+{
 
     public $table;
     public $id;
     public $row;
 
-    function __construct($table, $id = "new") {
+    function __construct($table, $id = "new")
+    {
 
         $this->table = $table;
         $this->id = $id;
@@ -36,19 +38,22 @@ class ajaxForm {
         if ($this->id != 'new') {
             $this->row = getRowFromId($this->table, $this->id);
         }
-        
+
         $this->tab_field = getTabField($this->table);
     }
 
-    function gen() {
+    function gen()
+    {
 
     }
 
-    function genLabel() {
+    function genLabel()
+    {
 
     }
 
-    function genField($champ) {
+    function genField($champ)
+    {
 
         global $_Gconfig;
 
@@ -84,65 +89,63 @@ class ajaxForm {
         }
     }
 
-    function genOneField($champ) {
+    function genOneField($champ)
+    {
 
 
         global $relations, $uploadFields;
 
-        if (( in_array($champ, $uploadFields) || in_array(getBaseLgField($champ), $uploadFields) )) {
+        if ((in_array($champ, $uploadFields) || in_array(getBaseLgField($champ), $uploadFields))) {
 
             $GLOBALS['gb_obj']->includeFile('ajax.upload.php', 'admin/af_modules');
 
             $f = new ajaxUpload($this, $champ);
 
             $this->addBuffer($f->gen());
-        } else if (!empty($relations[$this->table][$champ])) {
+        } else if (!empty($relations[ $this->table ][ $champ ])) {
 
             $GLOBALS['gb_obj']->includeFile('ajax.relations.php', 'admin/af_modules');
 
-            $f = new ajaxRelations($this, $champ, $relations[$this->table][$champ]);
+            $f = new ajaxRelations($this, $champ, $relations[ $this->table ][ $champ ]);
 
             $this->addBuffer($f->gen());
-        } else if ($this->tab_field[$champ]->type == 'enum') {
+        } else if ($this->tab_field[ $champ ]->type == 'enum') {
 
             $GLOBALS['gb_obj']->includeFile('ajax.enum.php', 'admin/af_modules');
 
             $f = new ajaxEnum($this, $champ);
 
             $this->addBuffer($f->gen());
-        } else if ($this->tab_field[$champ]->type == 'tinyint' && $this->tab_field[$champ]->size < 2) {
+        } else if ($this->tab_field[ $champ ]->type == 'tinyint' && $this->tab_field[ $champ ]->size < 2) {
 
             $GLOBALS['gb_obj']->includeFile('ajax.bool.php', 'admin/af_modules');
 
             $f = new ajaxBool($this, $champ);
 
             $this->addBuffer($f->gen());
-        } else if ($this->tab_field[$champ]->type == 'datetime') {
+        } else if ($this->tab_field[ $champ ]->type == 'datetime') {
 
             $GLOBALS['gb_obj']->includeFile('ajax.datetime.php', 'admin/af_modules');
 
             $f = new ajaxDateTime($this, $champ);
 
             $this->addBuffer($f->gen());
-        }
-        /* -----------------------
+        } /* -----------------------
          * Ajout Timothée octobre 2013
          * -----------------------
          * Textarea
          */
-        else if ($this->tab_field[$champ]->type == 'text')
-        {
+        else if ($this->tab_field[ $champ ]->type == 'text') {
             $GLOBALS['gb_obj']->includeFile('ajax.text.php', 'admin/af_modules');
 
-            $f = new ajaxText($this, $champ, $this->tab_field[$champ]->max_length);
+            $f = new ajaxText($this, $champ, $this->tab_field[ $champ ]->max_length);
 
             $this->addBuffer($f->gen());
-        }
-        else {
+        } else {
 
             $GLOBALS['gb_obj']->includeFile('ajax.varchar.php', 'admin/af_modules');
 
-            $f = new ajaxVarchar($this, $champ, $this->tab_field[$champ]->max_length);
+            $f = new ajaxVarchar($this, $champ, $this->tab_field[ $champ ]->max_length);
 
             $this->addBuffer($f->gen());
         }
@@ -150,17 +153,20 @@ class ajaxForm {
         return $this->getBuffer();
     }
 
-    function addBuffer($str) {
+    function addBuffer($str)
+    {
 
         $this->strBuffer .= $str;
     }
 
-    function cleanBuffer() {
+    function cleanBuffer()
+    {
 
         $this->strBuffer = '';
     }
 
-    function getBuffer($andClean = false) {
+    function getBuffer($andClean = false)
+    {
         $str = $this->strBuffer;
         if ($andClean) {
             $this->cleanBuffer();

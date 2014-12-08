@@ -189,16 +189,14 @@ class bloc
         return $this;
     }
 
-    private
-    function sort()
+    private function sort()
     {
         usort($this->contenu, "bloc::cmp");
     }
 
-    private
-    static function cmp($a, $b)
+    private static function cmp($a, $b)
     {
-        return strcmp($a["poids"], $b["poids"]);
+        return $a["poids"] > $b["poids"];
     }
 
     /**

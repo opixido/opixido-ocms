@@ -22,20 +22,22 @@
 # @package ocms
 #
 
-class row {
+class row
+{
 
     public $table = '';
     public $id = 0;
     public $tabField = array();
     public $relOne = false;
 
-    function __construct($table, $roworid) {
+    function __construct($table, $roworid)
+    {
 
         $this->table = $table;
 
         if (is_array($roworid) && count($roworid)) {
             $this->row = $roworid;
-            $this->id = $this->row[getPrimaryKey($table)];
+            $this->id = $this->row[ getPrimaryKey($table) ];
         } else {
             $this->id = $roworid;
             $this->row = getRowFromId($this->table, $this->id);
@@ -45,7 +47,7 @@ class row {
             $this->id = 0;
             return false;
         }
-        $this->id = $this->row[getPrimaryKey($table)];
+        $this->id = $this->row[ getPrimaryKey($table) ];
 
         $this->tabField = getTabField($this->table);
         $this->site = akev($GLOBALS, 'site');
@@ -56,20 +58,22 @@ class row {
         }
     }
 
-    public function isRelOne($otherTable) {
+    public function isRelOne($otherTable)
+    {
         $this->relOne = $otherTable;
         $this->tabField = getTabField($this->table . '/' . $this->relOne);
     }
 
     /**
      * Returns nice value for the specified $field
-     * 
+     *
      *
      * @param string $field
      * @param bool $raw returns the raw value of the field, not parsed
      * @return mixed
      */
-    function get($field, $raw = false) {
+    function get($field, $raw = false)
+    {
 
         if (!$this->row) {
             $this->id = 0;
@@ -80,7 +84,7 @@ class row {
          * Raw value ...
          */
         if ($raw) {
-            return $this->row[$field];
+            return $this->row[ $field ];
         }
 
         /**
@@ -95,28 +99,26 @@ class row {
 
             if (isBaseLgField($field, $this->table, $this->tabField)) {
                 $f = $field . '_' . LG;
-                if (empty($this->row[$field . '_' . LG])) {
+                if (empty($this->row[ $field . '_' . LG ])) {
                     $olg = getOtherLg();
-                    if (!empty($this->row[$field . '_' . $olg])) {
+                    if (!empty($this->row[ $field . '_' . $olg ])) {
                         $f = $field . '_' . $olg;
                     }
                 }
             } else {
                 $f = $field;
             }
-            $table = $this->tabField[$f]->table;
+            $table = $this->tabField[ $f ]->table;
             $this->$field = new genFile($table, $f, $this->row);
-        }
-        /**
+        } /**
          * LG Field
          */ else if (isBaseLgField($field, $this->table, $this->tabField)) {
             $this->$field = getLgValue($field, $this->row);
-        }
-        /**
+        } /**
          * Foreign key
-         */ else if (!empty($relations[$this->table][$field])) {
+         */ else if (!empty($relations[ $this->table ][ $field ])) {
 
-            $fk_table = $relations[$this->table][$field];
+            $fk_table = $relations[ $this->table ][ $field ];
             $coup = mb_substr($fk_table, strpos($this->table, '_') + 1);
             $classe = false;
             if (class_exists($fk_table)) {
@@ -126,18 +128,18 @@ class row {
             }
 
             if ($classe) {
-                $this->$field = new $classe($this->row[$field]);
+                $this->$field = new $classe($this->row[ $field ]);
             }
 
-            $this->$field = new row($fk_table, $this->row[$field]);
-        } else if (!empty($tablerel[$field])) {
+            $this->$field = new row($fk_table, $this->row[ $field ]);
+        } else if (!empty($tablerel[ $field ])) {
 
             /**
              * Table de relation
              */
             $found = false;
-            reset($tablerel[$field]);
-            while (list( $k, $v ) = each($tablerel[$field])) {
+            reset($tablerel[ $field ]);
+            while (list($k, $v) = each($tablerel[ $field ])) {
 
                 if ($v == $this->table && !$found) {
                     $found = true;
@@ -155,31 +157,31 @@ class row {
 						WHERE T.' . getPrimaryKey($fk_table) . ' = R.' . $pk2 . '
 						AND R.' . $pk1 . ' = ' . sql($this->id) . '';
 
-                if (!empty($orderFields[$field])) {
-                    $sql .= ' ORDER BY R.' . $orderFields[$field][0];
+                if (!empty($orderFields[ $field ])) {
+                    $sql .= ' ORDER BY R.' . $orderFields[ $field ][0];
                 }
 
                 $this->$field = GetAll($sql);
             } else {
-                
+
             }
 
 
             /**
              * Relation inverse
              */
-        } else if (!empty($relinv[$this->table][$field])) {
+        } else if (!empty($relinv[ $this->table ][ $field ])) {
 
 
-            $foreignTable = $relinv[$this->table][$field][0];
+            $foreignTable = $relinv[ $this->table ][ $field ][0];
 
             $sql = 'SELECT *
 				    FROM ' . $foreignTable . '
-				    WHERE ' . $relinv[$this->table][$field][1] . ' = ' . $this->id;
+				    WHERE ' . $relinv[ $this->table ][ $field ][1] . ' = ' . $this->id;
 
-            if (!empty($orderFields[$foreignTable])) {
+            if (!empty($orderFields[ $foreignTable ])) {
 
-                $sql .= ' ORDER BY ' . $orderFields[$foreignTable][0];
+                $sql .= ' ORDER BY ' . $orderFields[ $foreignTable ][0];
             }
 
             $this->$field = GetAll($sql);
@@ -190,21 +192,21 @@ class row {
         } else {
 
             $type = '';
-            if (!empty($this->tabField[$field])) {
-                $type = $this->tabField[$field]->type;
+            if (!empty($this->tabField[ $field ])) {
+                $type = $this->tabField[ $field ]->type;
             }
 
             if ($type == 'date' || $type == 'datetime') {
 
-                $this->$field = new Date($this->row[$field]);
+                $this->$field = new Date($this->row[ $field ]);
             }
 
             if (substr($type, 0, 4) == 'set(') {
-                $this->$field = explode(',', $this->row[$field]);
+                $this->$field = explode(',', $this->row[ $field ]);
             }
 
             if (array_key_exists($field, $this->row)) {
-                return $this->row[$field];
+                return $this->row[ $field ];
             }
 
             return false;
@@ -213,7 +215,8 @@ class row {
         return $this->$field;
     }
 
-    function __get($name) {
+    function __get($name)
+    {
         return $this->get($name);
     }
 

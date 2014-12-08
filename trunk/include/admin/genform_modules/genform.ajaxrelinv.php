@@ -22,7 +22,8 @@
 # @package ocms
 #
 
-class ajaxRelinv {
+class ajaxRelinv
+{
 
     var $cur_table;
     var $cur_id;
@@ -31,7 +32,8 @@ class ajaxRelinv {
     var $fake_name;
     var $nb_line = 0;
 
-    function __construct($cur_table, $cur_id, $fk_table, $fk_field, $fake_name) {
+    function __construct($cur_table, $cur_id, $fk_table, $fk_field, $fake_name)
+    {
 
         $this->cur_table = $cur_table;
         $this->cur_id = $cur_id;
@@ -40,14 +42,15 @@ class ajaxRelinv {
         $this->fake_name = $fake_name;
     }
 
-    function getCurrent() {
+    function getCurrent()
+    {
         global $orderFields;
         if ($this->cur_id == 'new') {
             return array();
         }
         $sql = 'SELECT * FROM ' . $this->fk_table . ' WHERE ' . $this->fk_field . ' = ' . sql($this->cur_id) . ' ORDER BY ';
-        if (!empty($orderFields[$this->fk_table])) {
-            $sql .= $orderFields[$this->fk_table][0] . " ,  ";
+        if (!empty($orderFields[ $this->fk_table ])) {
+            $sql .= $orderFields[ $this->fk_table ][0] . " ,  ";
         }
 
         $sql .= GetTitleFromTable($this->fk_table, ' , ');
@@ -57,11 +60,13 @@ class ajaxRelinv {
         return $res;
     }
 
-    function addOne() {
+    function addOne()
+    {
 
     }
 
-    function getValue() {
+    function getValue()
+    {
 
         $cur = $this->getCurrent();
         $html = '';
@@ -72,7 +77,8 @@ class ajaxRelinv {
         return $html;
     }
 
-    function getForm($fields) {
+    function getForm($fields)
+    {
 
         global $orderFields;
         $liste = $this->getCurrent();
@@ -81,22 +87,22 @@ class ajaxRelinv {
         $html = '<div class="ajaxRelinv">';
 
         $ofield = $sort = '';
-        if(!empty($orderFields[$this->fk_table][0])) {
-            $ofield = $orderFields[$this->fk_table][0];
+        if (!empty($orderFields[ $this->fk_table ][0])) {
+            $ofield = $orderFields[ $this->fk_table ][0];
             $sort = 'sortable';
         }
         $html .= '
 
-		<table width="590" rel="' . $this->fk_table . '__' . $ofield . '" class="'.$sort.' genform_table ajax_table table table-striped table-bordered table-condensed" id="ar_' . $this->cur_table . '-' . '' . $this->fake_name . '-'.$this->cur_id.'">';
+		<table width="590" rel="' . $this->fk_table . '__' . $ofield . '" class="' . $sort . ' genform_table ajax_table table table-striped table-bordered table-condensed" id="ar_' . $this->cur_table . '-' . '' . $this->fake_name . '-' . $this->cur_id . '">';
 
         global $restrictedMode;
         $restrictedMode = true;
         //$this->nbLines = count($liste);
         $colspan = '1';
         if (ake($this->fk_table, $orderFields)) {
-           $colspan = '2';
+            $colspan = '2';
         }
-        $html .= '<thead><tr><th colspan="'.$colspan.'"><a class="btn" href="" onclick="arAddValue(this,\'' . $this->cur_table . '\',\'' . $this->fake_name . '\','.$this->cur_id.');$(this).closest(\'table\').tableDnDUpdate();return false;">
+        $html .= '<thead><tr><th colspan="' . $colspan . '"><a class="btn" href="" onclick="arAddValue(this,\'' . $this->cur_table . '\',\'' . $this->fake_name . '\',' . $this->cur_id . ');$(this).closest(\'table\').tableDnDUpdate();return false;">
 		<img src="' . ADMIN_PICTOS_FOLDER . ADMIN_PICTOS_FORM_SIZE . '/actions/list-add.png" alt="" />' . t('nouveau') . '</a></th>';
 
         foreach ($fields as $v) {
@@ -113,18 +119,19 @@ class ajaxRelinv {
         return $html;
     }
 
-    function getLine($row, $fields) {
+    function getLine($row, $fields)
+    {
 
         global $restrictedMode, $orderFields;
         $restrictedMode = true;
         $html = '';
         $this->nb_line++;
-        $idd = $row[getPrimaryKey($this->fk_table)];
+        $idd = $row[ getPrimaryKey($this->fk_table) ];
 
         /**
          * TR
          */
-        $html .= "\n" . '<tr id="ar_' . $idd . '" rel="'.$idd.'">';
+        $html .= "\n" . '<tr id="ar_' . $idd . '" rel="' . $idd . '">';
 
         /**
          * Cellule Delete
@@ -143,7 +150,6 @@ class ajaxRelinv {
 				</td>';
 
 
-        
         $af = new ajaxForm($this->fk_table, $idd);
         foreach ($fields as $v) {
             $html .= '<td class="ajaxrelinv_' . $v . '">' . $af->genField($v) . '</td>';
