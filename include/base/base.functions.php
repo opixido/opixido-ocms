@@ -812,7 +812,7 @@ function altify($str)
 /**
  * Stocke la liste des requetes SQL executées
  *
- * @param unknown_type $str
+ * @param string $str
  */
 function debugEvent($str)
 {
@@ -2653,6 +2653,7 @@ class pagination
     public $requestParamName = 'page';
     public $tplName = 'pagination';
     public $tplFolder = 'template';
+    public $useGenUrl = true;
 
     public function __construct($nbPages)
     {
@@ -2674,7 +2675,7 @@ class pagination
         unset($this->params['gs_fromForm']);
         unset($this->params['gs_askedFor']);
         unset($this->params['gs_fromForm']);
-        if ($_GET['curTable'] && !$this->params['curTable']) {
+        if (isset($_GET['curTable']) && !$this->params['curTable']) {
             $this->params['curTable'] = $_GET['curTable'];
         }
     }
@@ -2689,7 +2690,7 @@ class pagination
             return;
         }
 
-        $page = $_REQUEST[ $this->requestParamName ] ? $_REQUEST[ $this->requestParamName ] : 1;
+        $page = isset($_REQUEST[ $this->requestParamName ]) ? $_REQUEST[ $this->requestParamName ] : 1;
 
         /**
          * Template de pagination
@@ -2781,7 +2782,7 @@ class pagination
 
     function getUrlWithParams($p)
     {
-        if ($GLOBALS['site']->g_url) {
+        if ($GLOBALS['site']->g_url && $this->useGenUrl) {
             return getUrlWithParams($p);
         } else {
             return '?' . http_build_str($p);

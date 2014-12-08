@@ -13,16 +13,18 @@ if (empty($sid)) {
  */
 if (!empty($_GET['nocache'])) {
     define('CACHE_IS_ON', false);
-} else {
+} else if (IN_ADMIN) {
     define('CACHE_IS_ON', true);
+} else {
+    define('CACHE_IS_ON', false);
 }
 
 /**
  * Compression et union des JS et CSS ?
  */
-$_Gconfig['groupCssFiles'] = true;
-$_Gconfig['compressCssFiles'] = true;
-$_Gconfig['compressJsFiles'] = true;
+$_Gconfig['groupCssFiles'] = false;
+$_Gconfig['compressCssFiles'] = false;
+$_Gconfig['compressJsFiles'] = false;
 
 
 /**
@@ -50,7 +52,7 @@ $_Gconfig['titre'] = '';
 $_Gconfig['LANGUAGES'] = array('fr');
 $_Gconfig['ADMIN_LANGUAGES'] = array('fr');
 
-$_Gconfig['onlyOneLgForever'] = false;
+$_Gconfig['onlyOneLgForever'] = true;
 
 define('ADMIN_LG_DEF', 'fr');
 
@@ -309,6 +311,22 @@ $_Gconfig['menus']['__default__'] = array(
     'max_open_selected'  => 3,
     'tpl_name'           => 'menu.item',
     'tpl_folder'         => 'template',
+    'profile'            => 'menu_gauche',
+    'rollover'           => 'menu_gauche_hover',
+    'rollovers'          => array(),
+    'width'              => array(),
+    'imgW'               => array(),
+    'caps'               => false
+);
+
+$_Gconfig['menus']['menu-bas'] = array(
+    'max_levels'         => 1,
+    'use_images'         => false,
+    'use_premade_images' => false,
+    'open_selected'      => false,
+    'max_open_selected'  => 3,
+    'tpl_name'           => 'menu.item',
+    'tpl_folder'         => 'plugins/jukebox/tpl',
     'profile'            => 'menu_gauche',
     'rollover'           => 'menu_gauche_hover',
     'rollovers'          => array(),

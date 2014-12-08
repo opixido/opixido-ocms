@@ -217,8 +217,12 @@ class genUrlV2
             }
         }
 
-        if (count($row)) {
-            $row = $res = $row->fetchRow();
+        if (($row)) {
+            if (is_object($row)) {
+                $row = $res = $row->fetchRow();
+            } else {
+                $res = $row;
+            }
             $GLOBALS['GlobalObjCache']['tabUrl'][ $res['rubrique_id'] ] = array(
                 'fkRub'    => $res['fk_rubrique_id'],
                 'gabarit'  => $res['fk_gabarit_id'],
@@ -1306,8 +1310,8 @@ class genUrlV2
     {
         $rubid = $rubid ? $rubid : $this->getRubId();
 
-        if (!array_key_exists($curId, $GLOBALS['GlobalObjCache']['tabUrl']))
-            $this->reversRecursRub($curId);
+        if (!array_key_exists($rubid, $GLOBALS['GlobalObjCache']['tabUrl']))
+            $this->reversRecursRub($rubid);
     }
 
     /* Methode qui permet de recuperer la langue du navigateur client */

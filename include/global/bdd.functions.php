@@ -22,7 +22,8 @@
 # @package ocms
 #
 
-class tablerel {
+class tablerel
+{
 
     public $table_relation;
     public $table_courante;
@@ -35,22 +36,22 @@ class tablerel {
      * Nouvelle table de relation
      *
      * @param string $table_relation Nom de la table de relation
-     * @param string $table_courante Nom de la table courante 
+     * @param string $table_courante Nom de la table courante
      * @param string $id_courant identifiant de la table courante
      */
-    function __construct($table_relation, $table_courante, $id_courant = 0) {
+    function __construct($table_relation, $table_courante, $id_courant = 0)
+    {
 
         global $tablerel, $tablerel_reverse, $tablerel_fks;
 
-        $this->table_relation = $table_relation;
-        ;
+        $this->table_relation = $table_relation;;
 
         $this->table_courante = $table_courante;
         $this->id_courant = $id_courant;
 
         genTableRelReverse();
 
-        $this->fk_courant = $tablerel_fks[$this->table_courante][$this->table_relation];
+        $this->fk_courant = $tablerel_fks[ $this->table_courante ][ $this->table_relation ];
 
         list($this->table_distante, $this->fk_distant) = $this->getOtherTable();
     }
@@ -58,12 +59,13 @@ class tablerel {
     /**
      * Enregistre les modifications pour l'ID courant
      * avec les valeurs $values
-     * 
+     *
      * @example $values = array(10,25,18084);
      *
      * @param array $values
      */
-    function record($values) {
+    function record($values)
+    {
 
         if ($this->id_courant && $this->fk_courant) {
 
@@ -86,12 +88,13 @@ class tablerel {
      * @param string $tablesource
      * @return array ($table,$fk_champ)
      */
-    function getOtherTable() {
+    function getOtherTable()
+    {
 
         global $tablerel;
 
-        if (is_array($tablerel[$this->table_relation])) {
-            foreach ($tablerel[$this->table_relation] as $k => $v) {
+        if (is_array($tablerel[ $this->table_relation ])) {
+            foreach ($tablerel[ $this->table_relation ] as $k => $v) {
                 if ($v != $this->table_courante) {
                     return array($v, $k);
                 }
@@ -105,7 +108,8 @@ class tablerel {
      *
      * @return unknown
      */
-    function getFullListing() {
+    function getFullListing()
+    {
 
         global $tabForms;
         //sqlLgValue($tabForms[$this->table_distante]['titre'][0]
@@ -117,7 +121,8 @@ class tablerel {
         return $res;
     }
 
-    function getSelectedIds() {
+    function getSelectedIds()
+    {
 
         global $tabForms, $co;
 
@@ -130,16 +135,19 @@ class tablerel {
         return $res;
     }
 
-    function getSelectedListing() {
-        
+    function getSelectedListing()
+    {
+
     }
 
-    function getUnselectedListing() {
-        
+    function getUnselectedListing()
+    {
+
     }
 
-    public function getNamesFromAjax() {
-        
+    public function getNamesFromAjax()
+    {
+
     }
 
 }
@@ -147,15 +155,16 @@ class tablerel {
 /**
  * On reformate le table $tablerel en $tablerel_reverse qui est parfois pas pratique DU TOUT
  */
-function genTableRelReverse() {
+function genTableRelReverse()
+{
     global $tablerel, $tablerel_reverse, $tablerel_fks;
     if (is_array($tablerel)) {
         $tablerel_reverse = array();
         foreach ($tablerel as $k => $v) {
 
             foreach ($v as $kk => $vv) {
-                $tablerel_reverse[$vv][] = array('tablerel' => $k, 'myfk' => $kk);
-                $tablerel_fks[$vv][$k] = $kk;
+                $tablerel_reverse[ $vv ][] = array('tablerel' => $k, 'myfk' => $kk);
+                $tablerel_fks[ $vv ][ $k ] = $kk;
             }
         }
     }
@@ -168,13 +177,15 @@ function genTableRelReverse() {
  * @param string $tablesource
  * @return array ($table,$fk_champ)
  */
-function getOtherTablerel($relname, $tablesource) {
+function getOtherTablerel($relname, $tablesource)
+{
 
     $t = new tablerel($relname, $tablesource);
     return $t->getOtherTable();
 }
 
-function getRowAndRelFromId($table, $id) {
+function getRowAndRelFromId($table, $id)
+{
 
     global $getRowFromId_cacheRow, $relations, $_Gconfig;
     if (!is_array($getRowFromId_cacheRow)) {
@@ -182,8 +193,7 @@ function getRowAndRelFromId($table, $id) {
     }
 
 
-
-    if (!array_key_exists($table . "_-REL_" . $id, $getRowFromId_cacheRow) || !$getRowFromId_cacheRow[$table . "_-REL_" . $id]) {
+    if (!array_key_exists($table . "_-REL_" . $id, $getRowFromId_cacheRow) || !$getRowFromId_cacheRow[ $table . "_-REL_" . $id ]) {
 
         $pk = in_array($table, $_Gconfig['multiVersionTable']) ? ' ocms_etat = "en_ligne" AND ocms_version' : GetPrimaryKey($table);
 
@@ -191,8 +201,8 @@ function getRowAndRelFromId($table, $id) {
         $where = ' WHERE MT.' . $pk . ' = ' . sql($id) . ' ';
 
         // debug($where);
-        if (!empty($relations[$table])) {
-            foreach ($relations[$table] as $k => $v) {
+        if (!empty($relations[ $table ])) {
+            foreach ($relations[ $table ] as $k => $v) {
                 if ($v != $table) {
                     $sql .= ' LEFT JOIN ' . $v . ' AS T' . $k . ' ON T' . $k . '.' . getPrimaryKey($v) . ' = MT.' . $k . '  ';
                 }
@@ -205,13 +215,14 @@ function getRowAndRelFromId($table, $id) {
 
         //debug($sql.$where);
 
-        $getRowFromId_cacheRow[$table . "_-REL_" . $id] = $row;
+        $getRowFromId_cacheRow[ $table . "_-REL_" . $id ] = $row;
     }
 
-    return $getRowFromId_cacheRow[$table . "_-REL_" . $id];
+    return $getRowFromId_cacheRow[ $table . "_-REL_" . $id ];
 }
 
-function formatSqlCode($sql) {
+function formatSqlCode($sql)
+{
     $words = array('SELECT', 'FROM', 'WHERE', 'AND', 'OR', 'ORDER BY', 'GROUP BY', 'UNION', 'DESC', 'ASC', ",");
     $sql = str_replace("\n", " ", $sql);
     $sql = str_replace("\r", " ", $sql);
@@ -230,7 +241,8 @@ function formatSqlCode($sql) {
     print($sql);
 }
 
-function isLoggedIn() {
+function isLoggedIn()
+{
     return false;
     if (is_object($GLOBALS['gs_obj']))
         if ($GLOBALS['gs_obj']->isLogged())
@@ -238,7 +250,8 @@ function isLoggedIn() {
     return false;
 }
 
-function sqlRubriqueOnlyOnline($alias = '', $includeDraft = false, $includeMenu = false) {
+function sqlRubriqueOnlyOnline($alias = '', $includeDraft = false, $includeMenu = false)
+{
 
     $sql = ' AND ';
     if (strlen($alias)) {
@@ -246,7 +259,7 @@ function sqlRubriqueOnlyOnline($alias = '', $includeDraft = false, $includeMenu 
         $sql .= $alias;
     }
     if ($includeDraft && isLoggedIn()) {
-        
+
     } else {
         $sql .= '' . MULTIVERSION_STATE . ' = "' . MV_STATE_ONLINE . '" ';
     }
@@ -263,7 +276,8 @@ function sqlRubriqueOnlyOnline($alias = '', $includeDraft = false, $includeMenu 
     return $sql;
 }
 
-function sqlMenuOnlyOnline($alias = '') {
+function sqlMenuOnlyOnline($alias = '')
+{
 
     $sql = ' AND ';
     if (strlen($alias)) {
@@ -278,24 +292,27 @@ function sqlMenuOnlyOnline($alias = '') {
     return $sql;
 }
 
-function isRealRubrique($row) {
+function isRealRubrique($row)
+{
     if (empty($row)) {
         return false;
     }
-    if ($row[MULTIVERSION_FIELD] !== $row['rubrique_id']) {
+    if ($row[ MULTIVERSION_FIELD ] !== $row['rubrique_id']) {
         return false;
     }
     return true;
 }
 
-function isVersionRubrique($row) {
-    if ($row[MULTIVERSION_FIELD] !== $row['rubrique_id']) {
+function isVersionRubrique($row)
+{
+    if ($row[ MULTIVERSION_FIELD ] !== $row['rubrique_id']) {
         return true;
     }
     return false;
 }
 
-function isRubriqueOnline($roworid) {
+function isRubriqueOnline($roworid)
+{
     if (!is_array($roworid)) {
         $row = GetRowFromId('s_rubrique', $roworid);
     } else {
@@ -305,10 +322,11 @@ function isRubriqueOnline($roworid) {
     if (!isRealRubrique($row)) {
         $row = getRealForRubrique($row);
     }
-    return $row[MULTIVERSION_STATE] == MV_STATE_ONLINE ? true : false;
+    return $row[ MULTIVERSION_STATE ] == MV_STATE_ONLINE ? true : false;
 }
 
-function isRubriqueRealAndOnline($roworid) {
+function isRubriqueRealAndOnline($roworid)
+{
     if (!is_array($roworid)) {
         $row = GetRowFromId('s_rubrique', $roworid);
     } else {
@@ -321,14 +339,16 @@ function isRubriqueRealAndOnline($roworid) {
     if (!in_array($row['rubrique_type'], array("folder", "page", "link", "siteroot")))
         return false;
 
-    return $row[MULTIVERSION_STATE] == MV_STATE_ONLINE ? true : false;
+    return $row[ MULTIVERSION_STATE ] == MV_STATE_ONLINE ? true : false;
 }
 
-function sqlRubriqueOnlyReal($alias = "") {
+function sqlRubriqueOnlyReal($alias = "")
+{
     return sqlRubriqueChoix('IN (' . sql(MV_STATE_ONLINE) . ' , ' . sql(MV_STATE_OFFLINE) . ')', $alias);
 }
 
-function getVersionsForRubrique($roworid) {
+function getVersionsForRubrique($roworid)
+{
     if (!is_array($roworid)) {
         $row = GetRowFromId('s_rubrique', $roworid);
     } else {
@@ -343,7 +363,8 @@ function getVersionsForRubrique($roworid) {
     }
 }
 
-function getRealForRubrique($roworid) {
+function getRealForRubrique($roworid)
+{
 
     if (empty($roworid) || $roworid == 'new') {
         return false;
@@ -356,37 +377,42 @@ function getRealForRubrique($roworid) {
         $row = $roworid;
     }
 
-    if (!isRealRubrique($row) && !empty($row[MULTIVERSION_FIELD])) {
-        $sql = 'SELECT * FROM s_rubrique WHERE rubrique_id = "' . $row[MULTIVERSION_FIELD] . '"';
+    if (!isRealRubrique($row) && !empty($row[ MULTIVERSION_FIELD ])) {
+        $sql = 'SELECT * FROM s_rubrique WHERE rubrique_id = "' . $row[ MULTIVERSION_FIELD ] . '"';
         return GetSingle($sql);
     } else {
         return $row;
     }
 }
 
-function UpdateArboTime() {
+function UpdateArboTime()
+{
     $sql = 'UPDATE s_param SET param_valeur = "' . time() . '" WHERE param_id = "date_update_arbo"';
     return DoSql($sql, 'Mise a jour de la date de modification de l\'arborescence');
 }
 
-function sqlRubriqueOnlyVersions($alias = '') {
+function sqlRubriqueOnlyVersions($alias = '')
+{
     return sqlRubriqueChoix('!= ' . sql(MV_STATE_ONLINE), $alias);
 }
 
 $GLOBALS['actionSaved'] = array();
 
-function logAction($action, $table, $id) {
+function logAction($action, $table, $id)
+{
     global $gs_obj;
     $ignoredActions = array('recorded', 'afterupdate', 'save', 'edit');
     if (!in_array($action, $GLOBALS['actionSaved']) && !in_array($action, $ignoredActions)) {
+        $adminid = $gs_obj ? $gs_obj->adminid : 0;
         $sql = 'INSERT INTO s_log_action (fk_admin_id, log_action_table, log_action_fk_id, log_action_action, log_action_time)
-				VALUES ("' . $gs_obj->adminid . '","' . $table . '","' . $id . '","' . $action . '",NOW()) ';
+				VALUES ("' . $adminid . '","' . $table . '","' . $id . '","' . $action . '",NOW()) ';
         $GLOBALS['actionSaved'][] = $action;
         return DoSql($sql, 'Erreur Mise a jour du Log');
     }
 }
 
-function sqlRubriqueChoix($id, $alias = '') {
+function sqlRubriqueChoix($id, $alias = '')
+{
 
     $sql = ' AND ';
     if (strlen($alias)) {
@@ -396,7 +422,8 @@ function sqlRubriqueChoix($id, $alias = '') {
     return $sql;
 }
 
-function getLgFieldsLike($field, $val) {
+function getLgFieldsLike($field, $val)
+{
     global $languages;
     $sql = '';
     foreach ($languages as $lg) {
@@ -406,11 +433,13 @@ function getLgFieldsLike($field, $val) {
     return $sql;
 }
 
-function updateRubriqueState($state, $rubid) {
-    
+function updateRubriqueState($state, $rubid)
+{
+
 }
 
-function sqlError($sql, $msg = '') {
+function sqlError($sql, $msg = '')
+{
     global $co;
     if (strlen($msg)) {
         debug('Impossible d\'effectuer l\'action : ' . $msg);
@@ -423,11 +452,12 @@ function sqlError($sql, $msg = '') {
     //formatSqlCode($sql);
 }
 
-function getNullValue($val, $field, $table) {
+function getNullValue($val, $field, $table)
+{
 
     if (!strlen($val)) {
         $t = getTabField($table);
-        if (!$t[$field]->not_null) {
+        if (!$t[ $field ]->not_null) {
             /* debug($field);
               debug($t[$field]); */
             return 'NULL';
@@ -443,7 +473,7 @@ global $tablerel, $tablerel_reverse;
 if (is_array($tablerel)) {
     foreach ($tablerel as $k => $v) {
         foreach ($v as $kk => $vv) {
-            $tablerel_reverse[$vv][] = array('tablerel' => $k, 'myfk' => $kk);
+            $tablerel_reverse[ $vv ][] = array('tablerel' => $k, 'myfk' => $kk);
         }
     }
 }
@@ -454,16 +484,17 @@ if (is_array($tablerel)) {
  *  ['champ'] = fk to other table
  *  ['table'] = name of other table
  *  ['mychamp'] = fk to my table
- * 
+ *
  * @param unknown_type $tablerela
  * @param unknown_type $curtable
  */
-function tablerelGetOtherTable($tablerela, $curtable) {
+function tablerelGetOtherTable($tablerela, $curtable)
+{
 
     global $tablerel;
     $ar = array();
     $i = 0;
-    foreach ($tablerel[$tablerela] as $k => $v) {
+    foreach ($tablerel[ $tablerela ] as $k => $v) {
         $i++;
         if ($v != $curtable || $i == 2) {
             $ar['champ'] = $k;
@@ -478,14 +509,15 @@ function tablerelGetOtherTable($tablerela, $curtable) {
 /**
  * Retourne la liste des champs de langue d'un champ donné
  * pour insérer dans une requete SQL
- * 
+ *
  * @example rubrique_titre => rubrique_titre_fr, rubrique_titre_en, ...
  *
  * @param unknown_type $champ
  * @param unknown_type $alias
  * @return unknown
  */
-function sqlLgField($champ, $alias = '') {
+function sqlLgField($champ, $alias = '')
+{
     global $_Gconfig;
     if ($alias != '') {
         $alias .= '.';
@@ -498,7 +530,8 @@ function sqlLgField($champ, $alias = '') {
     return $str;
 }
 
-function getGabaritVisibility($gabid) {
+function getGabaritVisibility($gabid)
+{
 
     $rgab = getGabarit($gabid);
     $GLOBALS['gb_obj']->includeFile($rgab['gabarit_classe'] . '.php', 'bdd');
@@ -507,7 +540,8 @@ function getGabaritVisibility($gabid) {
     return $gab->genvisibility();
 }
 
-function getGabaritSubRubs($rub, $gabid) {
+function getGabaritSubRubs($rub, $gabid)
+{
 
     $rgab = getGabarit($gabid);
 
@@ -520,42 +554,46 @@ function getGabaritSubRubs($rub, $gabid) {
     return $r;
 }
 
-function getEnumValues($table, $champ) {
+function getEnumValues($table, $champ)
+{
 
     if (is_array($table)) {
         $tab = $table;
     } else {
         $tab = getTabField($table);
     }
-    $enum = str_replace(array('enum(', '\'', '"', ')'), '', implode(',', $tab[$champ]->enums));
+    $enum = str_replace(array('enum(', '\'', '"', ')'), '', implode(',', $tab[ $champ ]->enums));
     $enums = explode(',', $enum);
     return $enums;
 }
 
-function getSetValues($table, $champ) {
+function getSetValues($table, $champ)
+{
 
     if (is_array($table)) {
         $tab = $table;
     } else {
         $tab = getTabField($table);
     }
-    $name = $tab[$champ]->type;
+    $name = $tab[ $champ ]->type;
     $set = parseSetValues($name);
 
     return $set;
 }
 
-function parseSetValues($name) {
+function parseSetValues($name)
+{
     $set = explode(",", substr($name, 4, -1));
 
     foreach ($set as $k => $v) {
-        $set[$k] = substr($v, 1, -1);
+        $set[ $k ] = substr($v, 1, -1);
     }
 
     return $set;
 }
 
-function sqlOnlyReal($table, $alias = '') {
+function sqlOnlyReal($table, $alias = '')
+{
     global $_Gconfig;
     if ($alias != '') {
         $alias = $alias . '.';
