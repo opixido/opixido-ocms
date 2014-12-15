@@ -588,33 +588,6 @@ function apost($str)
 }
 
 global $_locale;
-$_locale = array(
-    'en'    => array(
-        'weekdays_short' => array('Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'),
-        'weekdays_long'  => array('Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'),
-        'months_short'   => array('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'),
-        'months_long'    => array('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December')
-    ), 'fr' => array(
-        'weekdays_short' => array('Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'),
-        'weekdays_long'  => array('Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'),
-        'months_short'   => array('Jan', 'Fev', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Aou', 'Sep', 'Oct', 'Nov', 'Dec'),
-        'months_long'    => array('Janvier', 'F&#xe9;vrier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Ao&#xfb;t', 'Septembre', 'Octobre', 'Novembre', 'D&#xe9;cembre')
-    ), 'nl' => array(
-        'weekdays_short' => array(),
-        'weekdays_long'  => array('Zondag', 'Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'vrijdag', 'Samedi', 'Zondag'),
-        'months_short'   => array(),
-        'months_long'    => array('Januari', 'Februari', 'Maart', 'April', 'Mei', 'Juni', 'Juli', 'Augustus', 'September', 'Oktober', 'November', 'December')
-    ), 'de' => array(
-        'weekdays_short' => array(),
-        'weekdays_long'  => array('Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag'),
-        'months_short'   => array(),
-        'months_long'    => array('Januar', 'Februar', 'März', 'April', 'Mag', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember')
-    ), 'es' => array(
-        'weekdays_short' => array('Dom', 'Lun', 'Mar', 'Mi&#xe9;', 'Jue', 'Vie', 'S&#xe1;b'),
-        'weekdays_long'  => array('Domingo', 'Lunes', 'Martes', 'Mi&#xe9;rcoles', 'Jueves', 'Viernes', 'S&#xe1;bado', 'Domingo'),
-        'months_short'   => array('Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'),
-        'months_long'    => array('Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre')
-    ));
 
 $_locale = array(
     'en' => array(
@@ -765,54 +738,60 @@ $_locale = array(
 
 $_locale['us'] = $_locale['uk'] = $_locale['en'];
 
-function mystrftime($format, $timestamp = 0)
+
+/**
+ * Version de strftime avec gestion des locales via un tableau PHP $_locale
+ * plutôt que lar les locales du système
+ *
+ * Syntax compatible avec strftime
+ *
+ * @param $format
+ * @param int $timestamp
+ * @return string
+ */
+function ocms_strftime($format, $timestamp = 0)
 {
     global $_locale;
     if ($timestamp == 0)
         $timestamp = time();
 
-    @setlocale($GLOBALS['CURLOCALE']);
 
     $tab = $_locale[ LG ] ? $_locale[ LG ] : $_locale[ LG_DEF ];
 
-    if ($format == '%B') {
+    $moisnum = ((int)date('n', $timestamp)) - 1;
+    $weekday = ((int)date('w', $timestamp));
 
-        $moisnum = ((int)date('m', $timestamp)) - 1;
 
-        return $tab['months_long'][ $moisnum ];
-    } else if ($format == '%A') {
-
-        $weekday = ((int)date('N', $timestamp));
-        if ($weekday == 7) {
-            $weekday = 0;
-        }
-
-        return $tab['weekdays_long'][ $weekday ];
-    } else {
-        return strftime($format, $timestamp);
-    }
-}
-
-function strftimeloc($format, $timestamp = 0)
-{
-    global $_locale;
-    if ($timestamp == 0)
-        $timestamp = time();
-
-    @setlocale($GLOBALS['CURLOCALE']);
-
-    $tab = $_locale[ LG ] ? $_locale[ LG ] : $_locale[ LG_DEF ];
-
-    $moisnum = ((int)date('m', $timestamp)) - 1;
     $format = str_replace('%B', $tab['months_long'][ $moisnum ], $format);
-    $weekday = ((int)date('N', $timestamp));
-    if ($weekday == 7) {
-        $weekday = 0;
-    }
+    $format = str_replace(array('%h', '%b'), $tab['months_short'][ $moisnum ], $format);
     $format = str_replace('%A', $tab['weekdays_long'][ $weekday ], $format);
+    $format = str_replace('%a', $tab['weekdays_short'][ $weekday ], $format);
 
     return strftime($format, $timestamp);
-    //}
+}
+
+/**
+ * Alias de ocms_strftime
+ *
+ * @deprecated
+ * @param $format
+ * @param int $timestamp
+ */
+function mystrftime($format, $timestamp = 0)
+{
+    return ocms_strftime($format, $timestamp);
+}
+
+/**
+ * Alias de ocms_strftime
+ *
+ * @deprecated
+ * @param $format
+ * @param int $timestamp
+ */
+function strftimeloc($format, $timestamp = 0)
+{
+    return ocms_strftime($format, $timestamp);
 }
 
 function compressCSS($buffer)
