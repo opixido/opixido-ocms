@@ -35,12 +35,12 @@
  *
  * */
 
-$fk_table = $relations[$this->table_name][$name];
+$fk_table = $relations[ $this->table_name ][ $name ];
 
 if (!$fk_table) {
-    $fk_table = $relations[$this->table_name][getBaseLgField($name)];
+    $fk_table = $relations[ $this->table_name ][ getBaseLgField($name) ];
 }
-$fk_champ = $tabForms[$fk_table]['titre'];
+$fk_champ = $tabForms[ $fk_table ]['titre'];
 
 
 $cantBeEmpty = in_array($this->table . "." . $name, $_Gconfig['genform']['nonEmptyForeignKey']);
@@ -76,30 +76,34 @@ if (!$this->editMode) {
         $result = $preValues;
     } else {
 
-        if (isset($_Gconfig['specialListing'][$fk_table]) && $_Gconfig['specialListing'][$fk_table][$this->table_name . '.' . $name]) {
-            $result = $_Gconfig['specialListing'][$fk_table][$this->table_name . '.' . $name]($this);
+        if (isset($_Gconfig['specialListing'][ $fk_table ]) && $_Gconfig['specialListing'][ $fk_table ][ $this->table_name . '.' . $name ]) {
+            $result = $_Gconfig['specialListing'][ $fk_table ][ $this->table_name . '.' . $name ]($this);
         } else
-        if (isset($_Gconfig['specialListing'][$fk_table]) && $_Gconfig['specialListing'][$fk_table][$this->table_name]) {
-            $result = $_Gconfig['specialListing'][$fk_table][$this->table_name]($this);
-        } else {
-            $sql = 'SELECT G.* FROM ' . $fk_table . ' AS G WHERE 1';
+            if (isset($_Gconfig['specialListing'][ $fk_table ]) && $_Gconfig['specialListing'][ $fk_table ][ $this->table_name ]) {
+                $result = $_Gconfig['specialListing'][ $fk_table ][ $this->table_name ]($this);
+            } else {
+                $sql = 'SELECT G.* FROM ' . $fk_table . ' AS G WHERE 1';
 
-            global $_Gconfig;
+                global $_Gconfig;
 
-            if (in_array($fk_table, $_Gconfig['versionedTable'])) {
-                $sql .= ' AND ( G.' . VERSION_FIELD . ' IS NULL  ) ';
-            } else if (in_array($fk_table, $_Gconfig['multiVersionTable'])) {
-                $sql .= ' AND G.' . MULTIVERSION_FIELD . ' = ' . getPrimaryKey($fk_table);
+                if (in_array($fk_table, $_Gconfig['versionedTable'])) {
+                    $sql .= ' AND ( G.' . VERSION_FIELD . ' IS NULL  ) ';
+                } else if (in_array($fk_table, $_Gconfig['multiVersionTable'])) {
+                    $sql .= ' AND G.' . MULTIVERSION_FIELD . ' = ' . getPrimaryKey($fk_table);
+                }
+
+                if (!empty($GLOBALS['gs_obj']->myroles[ $fk_table ]['rows'])) {
+                    $sql .= ' AND ' . getPrimaryKey($fk_table) . ' IN("' . implode('","', $GLOBALS['gs_obj']->myroles[ $fk_table ]['rows']) . '") ';
+                }
+
+                if (!empty($_Gconfig['specialListingWhere'][ $this->table_name . '.' . $name ])) {
+                    $sql .= $_Gconfig['specialListingWhere'][ $this->table_name . '.' . $name ];
+                }
+
+
+                $sql .= ' ORDER BY G.' . $nomSql . ' ';
+                $result = DoSql($sql);
             }
-
-            if (!empty($GLOBALS['gs_obj']->myroles[$fk_table]['rows'])) {
-                $sql .= ' AND ' . getPrimaryKey($fk_table) . ' IN("' . implode('","', $GLOBALS['gs_obj']->myroles[$fk_table]['rows']) . '") ';
-            }
-
-
-            $sql .= ' ORDER BY G.' . $nomSql . ' ';
-            $result = DoSql($sql);
-        }
     }
 
 
@@ -108,8 +112,8 @@ if (!$this->editMode) {
     $this->addBuffer('<div class="ajaxselect"><select  onkeydown="smartOptionFinder(this,event)"  ' . $attributs . ' ');
 
     /* Si c'est une clef avec un champ preview, on rajoute un peu de javascript */
-    if (isset($previewField[$this->table_name][$name]) && strlen($previewField[$this->table_name][$name]))
-        $this->addBuffer(' onchange="genformPreviewFk(\'' . $fk_table . '\',\'' . $name . '\',\'' . $previewField[$this->table_name][$name] . '\');"  ');
+    if (isset($previewField[ $this->table_name ][ $name ]) && strlen($previewField[ $this->table_name ][ $name ]))
+        $this->addBuffer(' onchange="genformPreviewFk(\'' . $fk_table . '\',\'' . $name . '\',\'' . $previewField[ $this->table_name ][ $name ] . '\');"  ');
 
     /* Fin du select */
     $this->addBuffer(' id="genform_' . $name . '" name="genform_' . $name . '">');
@@ -134,10 +138,10 @@ if (!$this->editMode) {
 
         $thisValue = truncate(GetTitleFromRow($fk_table, $row, " , ", false), 100);
 
-        if (strcmp($this->tab_default_field[$name], $row[$clef]) == 0)
-            $this->addBuffer('<option selected="selected" value="' . $row[$clef] . '">' . ( $thisValue ) . '</option>');
+        if (strcmp($this->tab_default_field[ $name ], $row[ $clef ]) == 0)
+            $this->addBuffer('<option selected="selected" value="' . $row[ $clef ] . '">' . ($thisValue) . '</option>');
         else if (!$asAjax)
-            $this->addBuffer('<option  value="' . $row[$clef] . '"> ' . ( $thisValue ) . '</option>');
+            $this->addBuffer('<option  value="' . $row[ $clef ] . '"> ' . ($thisValue) . '</option>');
     }
 
     /* FIN DU SELECT */
@@ -150,7 +154,6 @@ if (!$this->editMode) {
 			</script>
 			');
     }
-
 
 
     /* On peut modifier cet element */
@@ -172,13 +175,13 @@ if (!$this->editMode) {
     }
 
 
-    if (isset($previewField[$this->table_name][$name])) {
+    if (isset($previewField[ $this->table_name ][ $name ])) {
         /*
          * Si c'est un preview on rajoute le bouton et l'IFRAME correspondante
          */
 
         /* Image preview cliquable */
-        $this->addBuffer('<input class="inputimage" id="genform_preview_' . $name . '_btn" src="' . t('src_preview') . '" type="image" name="genform_preview" value="' . $this->trad('preview') . '" onclick="genformPreviewFk(\'' . $fk_table . '\',\'' . $name . '\',\'' . $previewField[$this->table_name][$name] . '\');return false;" />');
+        $this->addBuffer('<input class="inputimage" id="genform_preview_' . $name . '_btn" src="' . t('src_preview') . '" type="image" name="genform_preview" value="' . $this->trad('preview') . '" onclick="genformPreviewFk(\'' . $fk_table . '\',\'' . $name . '\',\'' . $previewField[ $this->table_name ][ $name ] . '\');return false;" />');
 
         /* Iframe pour afficher le contenu */
         $this->addBuffer('<iframe
@@ -196,18 +199,18 @@ if (!$this->editMode) {
      * On est pas en modification, on affiche juste l'element selectionne
      * */
 
-    if ($this->tab_default_field[$tab_name]) {
+    if ($this->tab_default_field[ $tab_name ]) {
         /* Uniquement si on a dï¿½ï¿½une valeur */
 
-        if (!isset($_SESSION['cache'][UNIQUE_SITE][$fk_table]) || !isset($_SESSION['cache'][UNIQUE_SITE][$fk_table][$this->tab_default_field[$tab_name]])) {
-            $sql = 'SELECT ' . $nomSql . ' FROM ' . $fk_table . ' AS G WHERE ' . $clef . ' = "' . $this->tab_default_field[$tab_name] . '" ';
+        if (!isset($_SESSION['cache'][ UNIQUE_SITE ][ $fk_table ]) || !isset($_SESSION['cache'][ UNIQUE_SITE ][ $fk_table ][ $this->tab_default_field[ $tab_name ] ])) {
+            $sql = 'SELECT ' . $nomSql . ' FROM ' . $fk_table . ' AS G WHERE ' . $clef . ' = "' . $this->tab_default_field[ $tab_name ] . '" ';
             //ORDER BY G.' . $nomSql;
             $result = GetSingle($sql);
 
-            $GLOBALS['cache'][UNIQUE_SITE][$fk_table][$this->tab_default_field[$tab_name]] = GetTitleFromRow($fk_table, $result);
+            $GLOBALS['cache'][ UNIQUE_SITE ][ $fk_table ][ $this->tab_default_field[ $tab_name ] ] = GetTitleFromRow($fk_table, $result);
         }
 
-        $this->addBuffer($GLOBALS['cache'][UNIQUE_SITE][$fk_table][$this->tab_default_field[$tab_name]]);
+        $this->addBuffer($GLOBALS['cache'][ UNIQUE_SITE ][ $fk_table ][ $this->tab_default_field[ $tab_name ] ]);
     }
 }
-?>
+

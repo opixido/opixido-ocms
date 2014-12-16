@@ -40,7 +40,7 @@ function smallPopup(href) {
 
     }
     window.open(href, 'test',
-            'width=200,height=200,scrollbars=yes,resizable=yes');
+        'width=200,height=200,scrollbars=yes,resizable=yes');
 
 }
 
@@ -53,7 +53,7 @@ function popup(href, larg, haut) {
 
     }
     window.open(href, 'test', 'width=' + larg + ',height=' + haut
-            + ',scrollbars=yes,resizable=yes');
+    + ',scrollbars=yes,resizable=yes');
 
 }
 
@@ -93,10 +93,10 @@ function genformPreviewFk(curtable, nom, champs, iframenom) {
     }
     valeur = obj.options[obj.selectedIndex].value;
     if ((ifra.style.display == "none" || valeur != oldValIframe)
-            && valeur != "") {
+        && valeur != "") {
 
         ifra.src = "index.php?popup=1&preview=1&curTable=" + curtable
-                + "&curId=" + valeur + "&champs=" + champs;
+        + "&curId=" + valeur + "&champs=" + champs;
         ifra.style.display = "block";
 
         if (btn.value != "X")
@@ -122,7 +122,7 @@ function showLgField(field, lg, skipAjax) {
     $('.lgfield_' + lg).show();
     window.currentLg = lg;
     if (!skipAjax) {
-        $('.ajax_lg_select').each(function() {
+        $('.ajax_lg_select').each(function () {
             if ($(this).val() != lg) {
                 $(this).val(lg).change();
             }
@@ -164,12 +164,12 @@ if (!IE) {
 var tempX = 0;
 var tempY = 0;
 
-document.onmousemove = function(e) {
+document.onmousemove = function (e) {
     x = (navigator.appName.substring(0, 3) == "Net") ? e.pageX : event.x
-            + document.body.scrollLeft;
+    + document.body.scrollLeft;
     mouseX = x;
     y = (navigator.appName.substring(0, 3) == "Net") ? e.pageY : event.y
-            + document.body.scrollTop;
+    + document.body.scrollTop;
     mouseY = y;
 };
 
@@ -206,101 +206,101 @@ function ext(n) {
 function insertLorem(obj) {
 
     a8 = new Array("Il faut savoir ", "Il est de notoriété publique ",
-            "Tout le monde sait ", "Il est connu ", "On sait bien ",
-            "Il y a longtemps qu'on sait ", "Sachez ",
-            "Depuis la nuit des temps on sait ",
-            "Depuis toujours nous savons ", "C'est un fait bien établi ",
-            "Il a été prouvé scientifiquement ",
-            "De tout temps les hommes savent ",
-            "Depuis la plus haute antiquité l'humanité sait ",
-            "Personne de nos jours n'ignore ",
-            "Il est incontestable de nos jours ");
+        "Tout le monde sait ", "Il est connu ", "On sait bien ",
+        "Il y a longtemps qu'on sait ", "Sachez ",
+        "Depuis la nuit des temps on sait ",
+        "Depuis toujours nous savons ", "C'est un fait bien établi ",
+        "Il a été prouvé scientifiquement ",
+        "De tout temps les hommes savent ",
+        "Depuis la plus haute antiquité l'humanité sait ",
+        "Personne de nos jours n'ignore ",
+        "Il est incontestable de nos jours ");
     a1 = new Array("que la maladie", "qu'un mauvais état de santé",
-            "que l'état pathologique",
-            "que la constatation des problêmes de santé actuels",
-            "qu'un état de santé dégradé", "que la médecine allopathique",
-            "que la magie homéopathique", "qu'un désordre psychopathologique",
-            "que la schizophrénie", "qu'une rupture des énergies",
-            "qu'une dysharmonie des corps astraux",
-            "que l'inconsistance de la pensée psychique",
-            "que le processus du dévoilement identitaire",
-            "que la conscience vibratoire de l'humanité",
-            "que le corps éthérique ");
+        "que l'état pathologique",
+        "que la constatation des problêmes de santé actuels",
+        "qu'un état de santé dégradé", "que la médecine allopathique",
+        "que la magie homéopathique", "qu'un désordre psychopathologique",
+        "que la schizophrénie", "qu'une rupture des énergies",
+        "qu'une dysharmonie des corps astraux",
+        "que l'inconsistance de la pensée psychique",
+        "que le processus du dévoilement identitaire",
+        "que la conscience vibratoire de l'humanité",
+        "que le corps éthérique ");
     a2 = new Array(
-            "est une hiérarchisation entre chaque corps énergétique de nature vibratoire de bas en haut et de haut en bas, le fonctionnel, le lésionnel puis le patapsychologique",
-            "est une conséquence de la rupture de l'harmonie cosmique et des blocages des flux énergétiques du corps",
-            "est causée par un dysfonctionnement quantique des foyers énergétiques corporels",
-            "est la conséquence d'une rupture entre les harmonies mystiques du corps et des flux du ch'i à travers le réseau lymphatique",
-            "est causé par un déséquilibre des réseaux cosmo-telluriques au sein de l'environnement proche de chacun",
-            "est une des conséquences d'une dysharmonie dans la fractalité des énergies au milieu du réseau corporel",
-            "repose sur une violation des lois ésotériques du vide cosmique qui couvre l'Univers et constitue sa gangue",
-            "vient de ce que les singularités jouissent d'un processus d'auto-unification mobile et déplacé dans la mesure où un élément paradoxal parcourt et fait résonner des séries aléatoires",
-            "est l'extériorisation d'un processus dont l'énergie hante les surfaces et régénêre les polarités discontinues",
-            "est une sorte d'agencement machinique qui à travers ses diverses composantes, arrache sa consistance en franchissant des seuils ontologiques et d'irréversibilité non linéaires",
-            "représente une circonvolution des affects à l'état brut",
-            "est une représentation des systêmes complexes, métastatiques, virals, voués à la seule dimension exponentielle, à l'excentricité et à la scissiparité fractale indéfinie qui ne peuvent plus prendre fin",
-            "constitue une fonction avancée de l'indécidabilité telle que démontrée par ses propres variables dans un systême formel",
-            "contient l'abstraction mathématique de l'identité phénoménologique qui constitue en soi l'essence de sa propre identité");
+        "est une hiérarchisation entre chaque corps énergétique de nature vibratoire de bas en haut et de haut en bas, le fonctionnel, le lésionnel puis le patapsychologique",
+        "est une conséquence de la rupture de l'harmonie cosmique et des blocages des flux énergétiques du corps",
+        "est causée par un dysfonctionnement quantique des foyers énergétiques corporels",
+        "est la conséquence d'une rupture entre les harmonies mystiques du corps et des flux du ch'i à travers le réseau lymphatique",
+        "est causé par un déséquilibre des réseaux cosmo-telluriques au sein de l'environnement proche de chacun",
+        "est une des conséquences d'une dysharmonie dans la fractalité des énergies au milieu du réseau corporel",
+        "repose sur une violation des lois ésotériques du vide cosmique qui couvre l'Univers et constitue sa gangue",
+        "vient de ce que les singularités jouissent d'un processus d'auto-unification mobile et déplacé dans la mesure où un élément paradoxal parcourt et fait résonner des séries aléatoires",
+        "est l'extériorisation d'un processus dont l'énergie hante les surfaces et régénêre les polarités discontinues",
+        "est une sorte d'agencement machinique qui à travers ses diverses composantes, arrache sa consistance en franchissant des seuils ontologiques et d'irréversibilité non linéaires",
+        "représente une circonvolution des affects à l'état brut",
+        "est une représentation des systêmes complexes, métastatiques, virals, voués à la seule dimension exponentielle, à l'excentricité et à la scissiparité fractale indéfinie qui ne peuvent plus prendre fin",
+        "constitue une fonction avancée de l'indécidabilité telle que démontrée par ses propres variables dans un systême formel",
+        "contient l'abstraction mathématique de l'identité phénoménologique qui constitue en soi l'essence de sa propre identité");
     a3 = new Array("que le surnaturel", "que la médiumnité", "que la voyance",
-            "que l'astrologie", "que la fonction métapsychique",
-            "que l'ètre processuel métaphysique", "que le voyage astral",
-            "que l'énergie vitale par le Chi", "que la réalité métaphysique",
-            "que l'Etre Suprème", "que le paradigme de l'Autre Science",
-            "que l'ésotérisme", "que la médecine holistique",
-            "que la programmation neuro-linguistique",
-            "que la puissance des forces ancestrales de l'humanité",
-            "que la conscience collective", "que la psychanalyse métapsychique");
+        "que l'astrologie", "que la fonction métapsychique",
+        "que l'ètre processuel métaphysique", "que le voyage astral",
+        "que l'énergie vitale par le Chi", "que la réalité métaphysique",
+        "que l'Etre Suprème", "que le paradigme de l'Autre Science",
+        "que l'ésotérisme", "que la médecine holistique",
+        "que la programmation neuro-linguistique",
+        "que la puissance des forces ancestrales de l'humanité",
+        "que la conscience collective", "que la psychanalyse métapsychique");
     a4 = new Array(
-            "n'est que l'expression du théorême de Gaudel appliqué aux forces paranormales",
-            "est consécutif à la révélation de l'expression mystico-surnaturelle de la réalité et de son caractêre quantique",
-            "est une des voies d'expression de la réalité ésotérique d'une autre dimension inconnue",
-            "est un des états métapsychiques relevant d'un surréel issu des forces cosmiques en présence",
-            "constitue ce qu'on peut appeler un rapport esotérico-indépendant de la nature",
-            "est un systême ambivalent de connaissance du paranormal sous-jacent",
-            "est une singularité-évênement correspondant à des séries hétérogênes qui s'organisent en un systême ni stable ni instable",
-            "admet une échappée de l'agencement hors des coordonnées énergico-spatio-temporelles",
-            "représente une relativité ontologique inséparable d'une relativité énonciative, au sens axiologique, et n'est possible qu'à travers la médiation de machines autopoÃÂ¯étiques",
-            "se dissout dans les considérations cosmologiques sur le big bang tandis que s'affirme celle d'irréversibilité",
-            "est une cognitivité se constituant à l'échelle des quarks",
-            "n'est qu'une constante limite qui apparaît comme un rapport dans l'ensemble de l'univers auquel toutes les parties sont soumises sous une condition finie",
-            "est une des expressions littérales de la mécanique quantique appliquée a un renouveau paradigmatique",
-            "aurait cette filiation maintenue de la cohérence, que ce qui excêde intérieurement le tout ne va pas plus loin qu'à nommer le point limite de ce tout",
-            "est la fréquence vibratoire en harmonie avec le corps physique qui agissent de concert sur le haut du cône vibratoire commandant l'ensemble");
+        "n'est que l'expression du théorême de Gaudel appliqué aux forces paranormales",
+        "est consécutif à la révélation de l'expression mystico-surnaturelle de la réalité et de son caractêre quantique",
+        "est une des voies d'expression de la réalité ésotérique d'une autre dimension inconnue",
+        "est un des états métapsychiques relevant d'un surréel issu des forces cosmiques en présence",
+        "constitue ce qu'on peut appeler un rapport esotérico-indépendant de la nature",
+        "est un systême ambivalent de connaissance du paranormal sous-jacent",
+        "est une singularité-évênement correspondant à des séries hétérogênes qui s'organisent en un systême ni stable ni instable",
+        "admet une échappée de l'agencement hors des coordonnées énergico-spatio-temporelles",
+        "représente une relativité ontologique inséparable d'une relativité énonciative, au sens axiologique, et n'est possible qu'à travers la médiation de machines autopoÃÂ¯étiques",
+        "se dissout dans les considérations cosmologiques sur le big bang tandis que s'affirme celle d'irréversibilité",
+        "est une cognitivité se constituant à l'échelle des quarks",
+        "n'est qu'une constante limite qui apparaît comme un rapport dans l'ensemble de l'univers auquel toutes les parties sont soumises sous une condition finie",
+        "est une des expressions littérales de la mécanique quantique appliquée a un renouveau paradigmatique",
+        "aurait cette filiation maintenue de la cohérence, que ce qui excêde intérieurement le tout ne va pas plus loin qu'à nommer le point limite de ce tout",
+        "est la fréquence vibratoire en harmonie avec le corps physique qui agissent de concert sur le haut du cône vibratoire commandant l'ensemble");
     a5 = new Array(" et aussi bien garder à l'esprit ",
-            " et ne pas oublier en outre ", " et faire savoir ",
-            " mais il faut reconnaître", " il faut noter en outre",
-            " et je ne vous apprendrai rien en vous disant",
-            " retenez bien aussi", " et il est de science certaine",
-            " et il est bien entendu dans tous les esprits",
-            "et prendre en considération le fait avéré");
+        " et ne pas oublier en outre ", " et faire savoir ",
+        " mais il faut reconnaître", " il faut noter en outre",
+        " et je ne vous apprendrai rien en vous disant",
+        " retenez bien aussi", " et il est de science certaine",
+        " et il est bien entendu dans tous les esprits",
+        "et prendre en considération le fait avéré");
     a6 = new Array(
-            "C'est pourquoi je pense ",
-            "C'est la raison pour laquelle je crois ",
-            "Ceci expliquant cela, je suis d'accord avec le fait ",
-            "C'est ainsi que je déclare ",
-            "Ainsi il est un fait à prendre en compte ",
-            "C'est pourquoi, l'inconscient collectif se doit de garder à l'esprit ",
-            "Dans ce cas, nous pouvons aisément dire ",
-            "Au regard de ce qui précêde, nous pouvons donc affirmer sans ambages ",
-            "En conclusion il n'est pas interdit de penser et de dire ",
-            "Cela est donc une preuve irréfutable ");
+        "C'est pourquoi je pense ",
+        "C'est la raison pour laquelle je crois ",
+        "Ceci expliquant cela, je suis d'accord avec le fait ",
+        "C'est ainsi que je déclare ",
+        "Ainsi il est un fait à prendre en compte ",
+        "C'est pourquoi, l'inconscient collectif se doit de garder à l'esprit ",
+        "Dans ce cas, nous pouvons aisément dire ",
+        "Au regard de ce qui précêde, nous pouvons donc affirmer sans ambages ",
+        "En conclusion il n'est pas interdit de penser et de dire ",
+        "Cela est donc une preuve irréfutable ");
     a7 = new Array(
-            "que l'affinité vibratoire fréquentielle rectificatrice des affects émotionnels archétypiques perturbés, dont la nature humaine est ponctuellement imprégnée, vont par leur effets énergétiques vibratoires, agir sur la constitution énergétique d'un ètre et non sur la maladie elle-mème",
-            "qu'Heisenberg avait raison, l'incertitude rêgne partout",
-            " que parfois 2 et 2 peuvent ne pas faire 4",
-            "l'énergie potentielle est l'énergie de l'évênement pur tandis que les formes d'actualisation correspondent aux effectuations de l'évênement",
-            "qu'il n'existe aucune correspondance bi-univoque entre des chaînons linéaires signifiants ou d'arché-écriture et cette catalyse machinique multidimensionnelle et multiréférentielle",
-            "que la symétrie d'échelle, la transversalité, le caractêre pathique non discursif de leur expansion nous font sortir de la logique du tiers exclu",
-            "que cela nous conforte à renoncer au binarisme ontologique que nous avons précédemment énoncé",
-            "que c'est la notion d'échelle qu'il conviendrait ici d'élargir afin de penser les symétries fractales, qu'elles traversent en les engendrant, en terme ontologique et substantiel",
-            "qu'il convient qu'un foyer d'appartenance à soi existe quelque part pour que puisse venir à l'existence cognitive quelque étant ou quelque modalité d'ètre que ce soit",
-            " que la biosphêre ou la mécanosphêre, accrochées sur cette planête, focalisent un point de vue d'espace de temps et d'énergie, elles tracent un angle de constitution de notre galaxie",
-            "que hors de ce point de vue particularisé, le reste n'existe qu'à travers la virtualité de l'existence d'autres machines autopoÃÂ¯étiques au sein d'autres biomécanosphêres saupoudrées dans le cosmos",
-            "que l'objectivité résiduelle est ce qui résiste au balayage de l'infinie variation des points de vue constituables sur lui.",
-            "que l'on ne se préoccupe pas assez, dans la théorie du Chaos, du phénomêne inverse, de l'hyposensibilité aux conditions initiales, de l'exponentialité inverse des effets par rapport aux causes",
-            "le perspectivisme ou relativisme scientifique n'est jamais relatif à un sujet, il ne constitue pas une relativité du vrai, mais au contraire une vérité du relatif, c'est-à-dire des variables dont il ordonne des cas d'aprês les valeurs qu'il en dégage dans son systême de coordonnées.",
-            "que la vérité de l'hypothêse du continu ferait loi de ce que l'excês dans le multiple n'a pas d'autre assignation que l'occupation de la place vide, que l'existence de l'inexistant propre du multpile initial.",
-            "que le mode vibratoire de la planête Terre permet à la conscience universelle de s'exprimer selon son expression proprement duale et non équivoque.");
+        "que l'affinité vibratoire fréquentielle rectificatrice des affects émotionnels archétypiques perturbés, dont la nature humaine est ponctuellement imprégnée, vont par leur effets énergétiques vibratoires, agir sur la constitution énergétique d'un ètre et non sur la maladie elle-mème",
+        "qu'Heisenberg avait raison, l'incertitude rêgne partout",
+        " que parfois 2 et 2 peuvent ne pas faire 4",
+        "l'énergie potentielle est l'énergie de l'évênement pur tandis que les formes d'actualisation correspondent aux effectuations de l'évênement",
+        "qu'il n'existe aucune correspondance bi-univoque entre des chaînons linéaires signifiants ou d'arché-écriture et cette catalyse machinique multidimensionnelle et multiréférentielle",
+        "que la symétrie d'échelle, la transversalité, le caractêre pathique non discursif de leur expansion nous font sortir de la logique du tiers exclu",
+        "que cela nous conforte à renoncer au binarisme ontologique que nous avons précédemment énoncé",
+        "que c'est la notion d'échelle qu'il conviendrait ici d'élargir afin de penser les symétries fractales, qu'elles traversent en les engendrant, en terme ontologique et substantiel",
+        "qu'il convient qu'un foyer d'appartenance à soi existe quelque part pour que puisse venir à l'existence cognitive quelque étant ou quelque modalité d'ètre que ce soit",
+        " que la biosphêre ou la mécanosphêre, accrochées sur cette planête, focalisent un point de vue d'espace de temps et d'énergie, elles tracent un angle de constitution de notre galaxie",
+        "que hors de ce point de vue particularisé, le reste n'existe qu'à travers la virtualité de l'existence d'autres machines autopoÃÂ¯étiques au sein d'autres biomécanosphêres saupoudrées dans le cosmos",
+        "que l'objectivité résiduelle est ce qui résiste au balayage de l'infinie variation des points de vue constituables sur lui.",
+        "que l'on ne se préoccupe pas assez, dans la théorie du Chaos, du phénomêne inverse, de l'hyposensibilité aux conditions initiales, de l'exponentialité inverse des effets par rapport aux causes",
+        "le perspectivisme ou relativisme scientifique n'est jamais relatif à un sujet, il ne constitue pas une relativité du vrai, mais au contraire une vérité du relatif, c'est-à-dire des variables dont il ordonne des cas d'aprês les valeurs qu'il en dégage dans son systême de coordonnées.",
+        "que la vérité de l'hypothêse du continu ferait loi de ce que l'excês dans le multiple n'a pas d'autre assignation que l'occupation de la place vide, que l'existence de l'inexistant propre du multpile initial.",
+        "que le mode vibratoire de la planête Terre permet à la conscience universelle de s'exprimer selon son expression proprement duale et non équivoque.");
 
     chaine = ext(a8) + ext(a1) + ' ' + ext(a2);
     chaine += ext(a5) + ' ' + ext(a3) + ' ' + ext(a4);
@@ -312,13 +312,13 @@ function insertLorem(obj) {
 function insertDate(obj) {
     var myDate = new Date();
     obj.value += myDate.getDate() + "/" + myDate.getMonth() + "/"
-            + myDate.getFullYear();
+    + myDate.getFullYear();
 }
 
 function insertTime(obj) {
     var myDate = new Date();
     obj.value += myDate.getHours() + "/" + myDate.getMinutes() + "/"
-            + myDate.getSeconds();
+    + myDate.getSeconds();
 }
 
 function insertUnixTime(obj) {
@@ -334,7 +334,7 @@ function moveMultiBox(fbox, tbox, ordered) {
     $(fbox).find('option:selected').remove().appendTo(tbox);
 
     if (!ordered) {
-        $(tbox).html($.makeArray($("#" + tbox.id + " option")).sort(function(a, b) {
+        $(tbox).html($.makeArray($("#" + tbox.id + " option")).sort(function (a, b) {
             return a.text == b.text ? 0 : a.text < b.text ? -1 : 1;
         }));
     }
@@ -354,7 +354,7 @@ function moveInsideMulti(tbox, direct) {
         for (i = tbox.options.length - 1; i >= 0; i--) {
 
             if (tbox.options[i].selected && tbox.options[i + direct]
-                    && (i + direct) > 0) {
+                && (i + direct) > 0) {
 
                 tomouv_val = tbox.options[i].value;
                 tomouv_txt = tbox.options[i].text;
@@ -375,7 +375,7 @@ function moveInsideMulti(tbox, direct) {
          */
         for (i = 1; i < tbox.options.length; i++) {
             if (tbox.options[i].selected && tbox.options[i + direct]
-                    && (i + direct) > -1) {
+                && (i + direct) > -1) {
 
                 tomouv_val = tbox.options[i].value;
                 tomouv_txt = tbox.options[i].text;
@@ -419,7 +419,7 @@ function findPos(obj) {
 
 /**
  * ARBO
- * 
+ *
  */
 function getElementsByClassName(strClass, strTag, objContElm) {
     strTag = strTag || "*";
@@ -440,7 +440,7 @@ function getElementsByClassName(strClass, strTag, objContElm) {
                 if (arrClass[m] == arrObjClass[k])
                     c++;
                 if ((delim == '|' && c == 1)
-                        || (delim == ' ' && c == arrClass.length)) {
+                    || (delim == ' ' && c == arrClass.length)) {
                     arr.push(objColl[i]);
                     break comparisonLoop;
                 }
@@ -495,17 +495,17 @@ function selectToSearch(obj) {
     var o = $("#" + obj);
     o.hide();
     o.after('<input autocomplete="off" type="hidden" name="' + obj + '" id="' + obj + '"  value="'
-            + $(o).val() + '" />');
+    + $(o).val() + '" />');
 
-    o.after('<ul class="ulajax" id="' + obj + '_liste"></ul>');
+    o.after('<ul class="dropdown-menu" style="position:static;float:none" id="' + obj + '_liste"></ul>');
     $('#' + obj + '_liste').hide();
     o
-            .after('<input autocomplete="off" class="relationSelect" type="text" onclick="prepareSelect(this)" onkeyup="searchSelect(this)" rel="'
-                    + obj
-                    + '"  id="'
-                    + obj
-                    + '_helper" value="'
-                    + o.find('option:selected').text() + '"/>');
+        .after('<input autocomplete="off" class="relationSelect" type="text" onclick="prepareSelect(this)" onkeyup="searchSelect(this)" rel="'
+        + obj
+        + '"  id="'
+        + obj
+        + '_helper" value="'
+        + o.find('option:selected').text() + '"/>');
     o.remove();
 
 }
@@ -524,12 +524,12 @@ function prepareSelect(o) {
         searchSelect(o);
         liste.show();
         $(document).click(
-                function(e) {
-                    if ($(e.target).attr('id') != $(o).attr('id')
-                            && !$(e.target).is('.sal')) {
-                        reinitSelect();
-                    }
-                });
+            function (e) {
+                if ($(e.target).attr('id') != $(o).attr('id')
+                    && !$(e.target).is('.sal')) {
+                    reinitSelect();
+                }
+            });
     }
 }
 
@@ -540,10 +540,10 @@ function reinitSelect() {
 
 function searchSelect(o) {
     var url = "index.php?xhr=searchRelation&table=" + $('#curTable').val()
-            + "&fk=" + $(o).attr('rel') + "&q=" + encodeURIComponent($(o).val());
+        + "&fk=" + $(o).attr('rel') + "&q=" + encodeURIComponent($(o).val());
     $("#" + $(o).attr('rel') + "_liste").show();
     $("#" + $(o).attr('rel') + "_liste").html(
-            '<li><img src="img/loading.gif" alt="Loading" /></li>');
+        '<li><img src="img/loading.gif" alt="Loading" /></li>');
     $("#" + $(o).attr('rel') + "_liste").load(url);
 // alert(url);
 }
@@ -579,9 +579,9 @@ function toggleRteInline(tarea) {
     }
 
     obj.after('<div class="rtePreview well" id="preview_' + tarea
-            + '" title="Cliquez-ici pour modifier ce texte" >' + vval
-            + '</div>');
-    $('#preview_' + tarea + '').click(function() {
+    + '" title="Cliquez-ici pour modifier ce texte" >' + vval
+    + '</div>');
+    $('#preview_' + tarea + '').click(function () {
         obj.show();
 
         setupTinymce(tarea);
@@ -613,8 +613,9 @@ function searchSelectMass(co) {
     $('table.table input[type=checkbox]').attr('checked', co);
 }
 
-(function() {
-    var alphabet = {a: /[\u0061\u24D0\uFF41\u1E9A\u00E0\u00E1\u00E2\u1EA7\u1EA5\u1EAB\u1EA9\u00E3\u0101\u0103\u1EB1\u1EAF\u1EB5\u1EB3\u0227\u01E1\u00E4\u01DF\u1EA3\u00E5\u01FB\u01CE\u0201\u0203\u1EA1\u1EAD\u1EB7\u1E01\u0105\u2C65\u0250]/ig,
+(function () {
+    var alphabet = {
+        a: /[\u0061\u24D0\uFF41\u1E9A\u00E0\u00E1\u00E2\u1EA7\u1EA5\u1EAB\u1EA9\u00E3\u0101\u0103\u1EB1\u1EAF\u1EB5\u1EB3\u0227\u01E1\u00E4\u01DF\u1EA3\u00E5\u01FB\u01CE\u0201\u0203\u1EA1\u1EAD\u1EB7\u1E01\u0105\u2C65\u0250]/ig,
         aa: /[\uA733]/ig,
         ae: /[\u00E6\u01FD\u01E3]/ig,
         ao: /[\uA735]/ig,
@@ -658,7 +659,7 @@ function searchSelectMass(co) {
         z: /[\u007A\u24E9\uFF5A\u017A\u1E91\u017C\u017E\u1E93\u1E95\u01B6\u0225\u0240\u2C6C\uA763]/ig,
         '': /[\u0300\u0301\u0302\u0303\u0308]/ig
     };
-    replaceDiacritics = function(str) {
+    replaceDiacritics = function (str) {
         for (var letter in alphabet) {
             str = str.replace(alphabet[letter], letter);
         }
@@ -738,7 +739,6 @@ function updateChampUrl(champ, valeur, prevalue) {
 }
 
 
-
 /**
  * Verifie que tous les champs de langue ont bien été remplis
  * lors de la creation d'une rubrique
@@ -770,10 +770,9 @@ function checkFields() {
 }
 
 $.extend($.expr[':'], {
-    'containsi': function(elem, i, match, array)
-    {
+    'containsi': function (elem, i, match, array) {
         return (elem.textContent || elem.innerText || '').toLowerCase()
-                .indexOf((match[3] || "").toLowerCase()) >= 0;
+            .indexOf((match[3] || "").toLowerCase()) >= 0;
     }
 });
 

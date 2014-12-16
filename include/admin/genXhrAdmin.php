@@ -6,7 +6,8 @@
  *
  * ******************** */
 
-class genXhrAdmin {
+class genXhrAdmin
+{
 
     /**
      *
@@ -17,14 +18,13 @@ class genXhrAdmin {
     public $real_fk_rub = false;
     public $insideRealRubId = false;
 
-    function __construct($table, $id) {
+    function __construct($table, $id)
+    {
 
         $this->table = $table;
         $this->id = $id;
         $this->sa = new smallAdmin($this);
         $this->gs = $GLOBALS['gs_obj'];
-
-
 
 
         if (!$this->gs->isLogged()) {
@@ -50,7 +50,8 @@ class genXhrAdmin {
      *
      * @return unknown
      */
-    function LoadPlugins() {
+    function LoadPlugins()
+    {
 
         $plugs = GetPlugins();
 
@@ -60,7 +61,7 @@ class genXhrAdmin {
             $adminClassName = $v . 'Admin';
             if (class_exists($adminClassName)) {
 
-                $this->plugins[$v] = new $adminClassName($this);
+                $this->plugins[ $v ] = new $adminClassName($this);
             }
         }
     }
@@ -69,7 +70,8 @@ class genXhrAdmin {
       Dispatcher des actions
      */
 
-    function gen() {
+    function gen()
+    {
 
 
         switch ($_REQUEST['xhr']) {
@@ -160,40 +162,432 @@ class genXhrAdmin {
         }
     }
 
-    function reloadField() {
-        $gf = new GenForm($_REQUEST['curTable'], 'post', $_REQUEST['curId']);
-        if (isBaseLgField($_REQUEST['curField'], $_REQUEST['curTable'])) {
-            $gf->genlg($_REQUEST['curField']);
-        } else {
-            $gf->gen($_REQUEST['curField']);
+    function searchTableRel()
+    {
+
+        global $tablerel, $_Gconfig;
+
+        $tables = array_values($tablerel[ $_REQUEST['champ'] ]);
+        $rev = array_flip($tablerel[ $_REQUEST['champ'] ]);
+        $fk_table = $tables[0] == $_REQUEST['curTable'] ? $tables[1] : $tables[0];
+        $fk_pk = $rev[ $fk_table ];
+
+        if ($this->gd) {
+            $sql = 'SELECT ' . $fk_pk . '
+					FROM ' . mes($_REQUEST['champ']) . '
+					WHERE ' . mes($rev[ $_REQUEST['curTable'] ]) . ' = "' . mes($_REQUEST['curId']) . '"
+
+					';
         }
-    }
 
-    function loadFileTag() {
+        if ($_Gconfig['specialListingWhere'][ $_REQUEST['champ'] ]) {
+            $sql .= $_Gconfig['specialListingWhere'][ $_REQUEST['champ'] ]($_REQUEST['curId']);
+        }
 
-        $gf = new genFile($_REQUEST['curTable'], $_REQUEST['champ'], $_REQUEST['curId']);
-        echo $gf->genAdminTag();
+        $res = GetAll($sql);
+
+        $tab = array(0);
+        foreach ($res as $row) {
+            $tab[] = $row[ $fk_pk ];
+        }
+
+        $pk2 = getPrimaryKey($fk_table);
+
+        $clause = "";
+        if (count($tab)) {
+            $clause = ' AND T.' . $pk2 . ' NOT IN ( ' . implode(',', $tab) . ' )';
+        }
+
+
+        $s = new genSearchV2($fk_table);
+        $res = $s->doFullSearch($_REQUEST['q'], $clause);
+
+        foreach ($res as $row) {
+            print('<option value="' . $row[ $pk2 ] . '">' . getTitleFromRow($fk_table, $row) . '</option>');
+        }
         die();
     }
 
-    function deleteFile() {
-        global $gs_obj;
-        if ($gs_obj->can('edit', $_REQUEST['curTable'], array(), $_REQUEST['curId'], $_REQUEST['curChamp'])) {
-            $gf = new genFile($_REQUEST['curTable'], $_REQUEST['curChamp'], $_REQUEST['curId']);
-            $gf->deleteFile(true);
-            global $getRowFromId_cacheRow;
-            $getRowFromId_cacheRow = array();
-            $gf = new genFile($_REQUEST['curTable'], $_REQUEST['curChamp'], $_REQUEST['curId']);
-            if (!empty($_REQUEST['small'])) {
-                echo $gf->genSmallAdminTag();
+    function searchRelation()
+    {
+        global $_Gconfig;
+        $t = $_REQUEST['table'];
+        $fk = str_replace('genform_', '', $_REQUEST['fk']);
+        global $relations;
+
+        $table = $relations[ $t ][ $fk ];
+
+        $pk2 = getPrimaryKey($table);
+        $s = new genSearchV2($table);
+
+
+        $res = $s->doFullSearch($_REQUEST['q'], akev($_Gconfig['specialListingWhere'], $t . '.' . $fk), false);
+        foreach ($res as $row) {
+            print('<li><a class="sal" onclick="selectRelationValue(this)" rel="' . $row[ $pk2 ] . '">' . getTitleFromRow($table, $row, ' > ', true) . '</a></li>');
+        }
+        die();
+    }
+
+    function getArboRubs()
+    {
+
+        genAdmin::handleOpenRubs();
+
+        $this->id = akev($_REQUEST, 'curId');
+        if ($this->id) {
+            $this->row = getSingle('SELECT * FROM s_rubrique WHERE rubrique_id = ' . sql($this->id));
+            $this->real_rub_id = $this->row['fk_rubrique_version_id'];
+            $this->real_fk_rub = $this->row['fk_rubrique_id'];
+        }
+        $this->arboRubs = $this->sa->getRubs();
+        //$_REQUEST['curId'] = $_REQUEST['showRub'] ?  $_REQUEST['showRub'] :  $_REQUEST['hideRub'];
+
+        $this->sa->getArboActions();
+        p('<div id="arbo">');
+        $this->sa->recurserub('NULL', 0, "1");
+        p('</div>');
+    }
+
+    function getLinks()
+    {
+        $site = new GenSite();
+        $site->initLight();
+        $menus = $site->getMenus();
+
+        $this->html = '<h1>' . t('choisir_rubrique_ci_dessous') . '</h1><ul>';
+        foreach ($menus as $menu) {
+
+            $arbo = $site->g_url->recursRub($menu['rubrique_id']);
+            $this->html .= '<li>' . $menu[ 'rubrique_titre_' . LG ];
+            $this->recursLinks($arbo);
+
+            $this->html .= '</li>';
+        }
+        $this->html .= '</ul>';
+
+        print $this->html;
+    }
+
+    private
+    function recursLinks($array, $level = '1', $rootRub = '1')
+    {
+        if (!is_array($array)) {
+            return;
+        }
+        foreach ($array as $page) {
+            $page['url'] = '';
+            $url = '@rubrique_id=' . $page['id'];
+            if ($level == 1) {
+                $this->html .= ('<li class="top_div_' . $rootRub . '">');
+                $this->html .= ('<a onclick="update_links(\'' . $_GET['champ'] . '\',' . $page['id'] . ')" > ' . $page['titre'] . '</a>');
+                if (count($page['sub']) && $level != 3) {
+                    $this->html .= ('<ul class="ul_' . $rootRub . '">');
+                    $this->recursLinks($page['sub'], $level + 1, $rootRub);
+                    $this->html .= ('</ul>');
+                }
+                $this->html .= ('</li>');
             } else {
-                echo $gf->genAdminTag();
+                $this->html .= ('<li class="level' . $level . '_' . $rootRub . '">');
+
+                $this->html .= ('<a onclick="update_links(\'' . $_GET['champ'] . '\',' . $page['id'] . ')"  >' . $page['titre'] . '</a>');
+                if (!empty($page['sub']) && $level != 3) {
+                    $this->html .= ('<ul>');
+                    $this->recursLinks($page['sub'], $level + 1, $rootRub);
+                    $this->html .= ('</ul>');
+                }
+                $this->html .= ('</li>');
             }
-            die();
+            if ($level == 1)
+                $rootRub++;
         }
     }
 
-    function upload() {
+    function getRealLink()
+    {
+        $id = $_GET['id'];
+
+        $site = new GenSite();
+        $site->initLight();
+
+        print path_concat(WEB_URL, $site->g_url->buildUrlFromId($id));
+    }
+
+    function editTrad()
+    {
+
+        $_REQUEST['nom'] = str_replace('ET_', '', $_REQUEST['nom']);
+        $s = str_replace(str_replace(ADMIN_URL, "", ADMIN_PICTOS_FOLDER), '[ADMIN_PICTOS_FOLDER]', $_REQUEST['valeur']);
+        DoSql('REPLACE INTO s_admin_trad (admin_trad_id,admin_trad_' . LG_DEF . ') VALUES ("' . $_REQUEST['nom'] . '",' . sql($s) . ')');
+
+        print_r($_REQUEST);
+    }
+
+    function gfa()
+    {
+
+        $champ = $_REQUEST['field'];
+        echo '<input type="text" class="gfa_input" value="" />';
+    }
+
+    function ajaxRelinv()
+    {
+
+
+        if (!empty($_REQUEST['save']) && $_REQUEST['field'] && $_REQUEST['id'] && $_REQUEST['table']) {
+
+            if ($GLOBALS['gs_obj']->can('edit', $_REQUEST['table'], array(), $_REQUEST['id'], $_REQUEST['field'])) {
+
+                echo DoSql('UPDATE ' . $_REQUEST['table'] . ' SET ' . $_REQUEST['field'] . ' = ' . sql($_REQUEST['save']) . '
+	    					WHERE ' . getPrimaryKey($_REQUEST['table']) . ' = ' . $_REQUEST['id']);
+            }
+        } else if (!empty($_REQUEST['fake'])) {
+
+            if ($GLOBALS['gs_obj']->can('edit', $_REQUEST['table'], array(), $_REQUEST['id'], $_REQUEST['field'])) {
+
+                global $_Gconfig, $orderFields;
+
+                //$GLOBALS['gb_obj']->includeFile('genform.ajaxRelinv.php','admin/genform_modules');
+                include($GLOBALS['gb_obj']->getIncludePath('genform.ajaxrelinv.php', 'admin/genform_modules'));
+
+                $vals = $_Gconfig['ajaxRelinv'][ $_REQUEST['table'] ][ $_REQUEST['fake'] ];
+                /* print_r($_Gconfig['ajaxRelinv']);
+                  print_r($vals); */
+                //die();
+                $a = new ajaxRelinv($_REQUEST['table'], $_REQUEST['id'], $vals[0], $vals[1], $_REQUEST['fake']);
+
+                $id = insertEmptyRecord($vals[0], false, array($vals[1] => $_REQUEST['id']));
+                /* $sqlInsert = 'INSERT INTO ' . $vals[0] . ' (' . getPrimaryKey($vals[0]) . ' , ' . $vals[1] . ') VALUES ("",' . sql($_REQUEST['id']) . ')';
+                  //echo $sqlInsert;
+                  $res = DoSql($sqlInsert);
+                  $id = InsertId(); */
+
+
+                if (!$_REQUEST['id'] || $_REQUEST['id'] == 'new') {
+                    $_SESSION['sqlWaitingForInsert'][] = 'UPDATE ' . $vals[0] . ' SET ' . $vals[1] . ' = [INSERTID] WHERE ' . getPrimaryKey($vals[0]) . ' = ' . sql($id);
+                }
+                if ($orderFields[ $vals[0] ] && $orderFields[ $vals[0] ][1] == $vals[1]) {
+                    $clefEx = $orderFields[ $vals[0] ][1];
+                    $champOrdre = $orderFields[ $vals[0] ][0];
+                    $r = getSingle('SELECT MAX(' . $champOrdre . ') AS MAXX FROM ' . $vals[0] . ' WHERE ' . $clefEx . ' = ' . sql($_REQUEST['id']));
+                    $maxx = $r['MAXX'] + 1;
+                    //echo $maxx;
+                    //echo ' : '.
+                    DoSql('UPDATE ' . $vals[0] . ' SET ' . $champOrdre . ' = ' . $maxx . ' WHERE ' . getPrimaryKey($vals[0]) . ' = ' . sql($id));
+                }
+
+                $row = getRowFromId($vals[0], $id);
+
+                echo $a->getLine($row, $vals[2]);
+            }
+        } else if (!empty($_REQUEST['delete'])) {
+            if ($GLOBALS['gs_obj']->can('delete', $_REQUEST['table'], array(), $_REQUEST['delete'])) {
+                $gr = new genRecord($_REQUEST['table'], $_REQUEST['delete']);
+                echo $gr->DeleteRow($_REQUEST['delete']);
+                //echo DoSql('DELETE FROM '.$_REQUEST['table'].' WHERE '.getPrimaryKey($_REQUEST['table']). ' = '.sql($_REQUEST['delete']));
+            } else {
+                echo 'CANTDO';
+            }
+        }
+
+        die();
+    }
+
+    function ajaxForm()
+    {
+
+        if (!empty($_REQUEST['upload'])) {
+            echo 'UPLOAD';
+            print_r($_REQUEST);
+            print_r($_FILES);
+        } else
+            if (ake($_REQUEST, 'save') && $_REQUEST['champ'] && $_REQUEST['id'] && $_REQUEST['table']) {
+
+                if ($GLOBALS['gs_obj']->can('edit', $_REQUEST['table'], array(), $_REQUEST['id'], $_REQUEST['champ'])) {
+
+                    DoSql('UPDATE ' . $_REQUEST['table'] . '
+	    						SET ' . $_REQUEST['champ'] . ' = ' . sql($_REQUEST['save']) . '
+	    					WHERE ' . getPrimaryKey($_REQUEST['table']) . ' = ' . sql($_REQUEST['id']));
+
+                    echo Affected_Rows();
+                }
+            }
+    }
+
+    function ajaxAction()
+    {
+
+        $action = $_REQUEST['action'];
+        $id = $_REQUEST['id'];
+        $table = $_REQUEST['table'];
+        $params = unserialize($_REQUEST['params']);
+
+
+        if ($GLOBALS['gs_obj']->can($action, $_REQUEST['table'], array(), $_REQUEST['id'])) {
+
+            if ($action == 'goup') {
+                $row = getRowFromId($_REQUEST['table'], $_REQUEST['id']);
+                $fkC = $row[ $params['vfk2'] ] ? $params['vfk2'] : $params['vfk1'];
+                $o = new GenOrder($_REQUEST['table'], $_REQUEST['id'], $row[ $fkC ], $fkC);
+                $o->GetUp();
+            } else if ($action == 'godown') {
+
+                $row = getRowFromId($_REQUEST['table'], $_REQUEST['id']);
+                $fkC = $row[ $params['vfk2'] ] ? $params['vfk2'] : $params['vfk1'];
+                echo 'Descend ' . $_REQUEST['table'] . ' - ' . $_REQUEST['id'] . ' - ' . $fkC;
+
+                $o = new GenOrder($_REQUEST['table'], $_REQUEST['id'], $row[ $fkC ], $fkC);
+
+                $o->GetDown();
+            }
+            if ($action == 'add') {
+
+                /* print_r($_REQUEST);
+                  print_r(unserialize($_REQUEST['params']));
+                 */
+
+
+                $xfk = $id ? $params['vfk2'] : $params['vfk1'];
+                $id = $id ? $id : $params['id'];
+
+
+                $sql = 'SELECT MAX(' . $params['order'] . ') AS MAXI FROM ' . $table . ' WHERE ' . $xfk . ' = ' . sql($id);
+                $row = GetSingle($sql);
+
+                $record[ $xfk ] = $id;
+                $record[ $params['order'] ] = $row['MAXI'] + 1;
+
+                global $co;
+                DoSqL($co->getInsertSql($table, $record));
+
+                $ide = InsertId();
+                $GLOBALS['gb_obj']->includeFile('genform.fullarbo.php', 'admin/genform_modules/');
+
+                $row = getRowFromId($table, $ide);
+
+                global $_Gconfig;
+
+                $fa = new fullArbo($params['table'], $params['id'], $_Gconfig['fullArbo'][ $params['table'] ][ $params['field'] ], $params['field']);
+
+                $fa->html = '';
+                $fa->getLine($row, false);
+
+                echo $fa->html;
+            } else if ($action == 'del') {
+
+                $gr = new genRecord($table, $id);
+                $gr->DeleteRow($id);
+            } else if ($action == 'reorderRelinv') {
+                foreach ($params['order'] as $k => $v) {
+                    $sql = ('UPDATE ' . $table . ' SET ' . $params['relinv'] . ' = ' . sql($k + 1) . ' WHERE ' . getPrimaryKey($table) . ' = ' . sql($v));
+                    echo $sql;
+                    Dosql($sql);
+                }
+                die();
+            }
+        } else {
+            echo 'CANTDO';
+        }
+    }
+
+    function autocompletesearch()
+    {
+
+        $x = array('query' => $_REQUEST['query'], 'suggestions' => array(), 'data' => array());
+
+        global $tabForms;
+        if (!$tabForms[ $_REQUEST['table'] ]) {
+            die();
+        }
+
+        $sql = 'SELECT * FROM ' . $_REQUEST['table'] . '
+					WHERE ' . $_REQUEST['champ'] . '
+					LIKE ' . sql('%' . $_REQUEST['query'] . '%') . '';
+        $res = GetAll($sql);
+
+
+        $add = true;
+        if (strpos(getTitleFromtable($_REQUEST['table']), $_REQUEST['champ'])) {
+            $add = false;
+        }
+
+        $pk = getPrimaryKey($_REQUEST['table']);
+
+
+        /**
+         * Formatage pour JSON
+         */
+        foreach ($res as $row) {
+            if (true) {
+                $x['suggestions'][] = limitwords(strip_tags($row[ $_REQUEST['champ'] ]));
+            } else
+                if ($add) {
+                    $x['suggestions'][] = limitwords(strip_tags($row[ $_REQUEST['champ'] ] . ' - ' . GetTitleFromRow($_REQUEST['table'], $row, ' - ')), 50);
+                } else {
+                    $x['suggestions'][] = limitwords(strip_tags(GetTitleFromRow($_REQUEST['table'], $row, ' - ')), 50);
+                }
+            $x['data'][] = $row[ $pk ];
+        }
+
+        /**
+         * Retour
+         */
+        echo json_encode($x);
+        die();
+    }
+
+    function insertIdForNewForm()
+    {
+
+        $gr = new genRecord($_REQUEST['table'], 'new');
+        $id = $gr->doRecord();
+
+        echo $id;
+        die();
+    }
+
+    function tablerelAsTags()
+    {
+        global $tablerel, $_Gconfig;
+
+
+        $fields = $_Gconfig['tablerelAsTags'][ $_REQUEST['tablerel'] ]['label'];
+        $_GET['order'] = $_REQUEST['order'] = $fields[0];
+        $_GET['to'] = $_REQUEST['to'] = 'asc';
+        $s = new genSearchV2($_REQUEST['table']);
+        $clause = '';
+        if ($_Gconfig['specialListingWhere'][ $_REQUEST['tablerel'] ]) {
+            $clause .= $_Gconfig['specialListingWhere'][ $_REQUEST['tablerel'] ]($_REQUEST['curId']);
+        }
+        $res = $s->doFullSearch($_REQUEST['term'], $clause);
+
+
+        $re = array();
+        $pk = getPrimaryKey($_REQUEST['table']);
+
+
+        $fieldsD = akev($_Gconfig['tablerelAsTags'][ $_REQUEST['tablerel'] ], 'desc');
+        if (!is_array($fieldsD)) {
+            $fieldsD = array();
+        }
+        $tr = $_REQUEST['tablerel'];
+
+        foreach ($res as $row) {
+            $td = $t = array();
+            foreach ($fields as $v) {
+                $t[] = $row[ $v ];
+            }
+
+            $label = $value = implode($t, " - ");
+
+            $re[] = array('id' => $row[ $pk ], 'label' => $label, 'value' => $value);
+        }
+
+        echo json_encode($re);
+        die();
+    }
+
+    function upload()
+    {
 
 
         header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
@@ -226,7 +620,6 @@ class genXhrAdmin {
             $contentType = $_SERVER["CONTENT_TYPE"];
 
         $tempName = md5($_SESSION['gs_admin_id'] . '_' . $_REQUEST['curTable'] . '_' . $_REQUEST['curId'] . '_' . $_REQUEST['champ']);
-
 
 
         global $gb_obj;
@@ -301,7 +694,8 @@ class genXhrAdmin {
         die('{"jsonrpc" : "2.0", "result" : null, "id" : "id"}');
     }
 
-    function uploadDiaporama() {
+    function uploadDiaporama()
+    {
 
         global $gs_obj;
         if ($gs_obj->can('edit', 'c_programme', array(), $_REQUEST['curId'])) {
@@ -315,7 +709,8 @@ class genXhrAdmin {
         }
     }
 
-    function uploadRP() {
+    function uploadRP()
+    {
 
 
         header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
@@ -344,7 +739,6 @@ class genXhrAdmin {
             $contentType = $_SERVER["CONTENT_TYPE"];
 
         $tempName = md5($_SESSION['gs_admin_id'] . '_' . $_REQUEST['curTable'] . '_' . $_REQUEST['curId'] . '_' . $_REQUEST['champ']);
-
 
 
         global $gb_obj;
@@ -431,7 +825,7 @@ class genXhrAdmin {
 
                 //print_r($tc);
                 $n = explode('/', $image['name']);
-                $n = $n[count($n) - 1];
+                $n = $n[ count($n) - 1 ];
                 $sql = 'SELECT * FROM c_diaporama WHERE fk_programme_id = ' . sql($_REQUEST['curId']) . ' AND diaporama_img LIKE "%' . $n . '"';
                 $r = getSingle($sql);
                 if (!$r) {
@@ -450,431 +844,59 @@ class genXhrAdmin {
         die('{"jsonrpc" : "2.0", "result" : null, "id" : "id"}');
     }
 
-    function reloadChamp() {
+    function reloadChamp()
+    {
 
         $gf = new GenForm($_REQUEST['curTable'], 'post', $_REQUEST['curId']);
         echo $gf->gen($_REQUEST['curChamp']);
         die();
     }
 
-    function tablerelAsTags() {
-        global $tablerel, $_Gconfig;
+    function loadFileTag()
+    {
 
+        $gf = new genFile($_REQUEST['curTable'], $_REQUEST['champ'], $_REQUEST['curId']);
+        echo $gf->genAdminTag();
+        die();
+    }
 
-        $fields = $_Gconfig['tablerelAsTags'][$_REQUEST['tablerel']]['label'];
-        $_GET['order'] = $_REQUEST['order'] = $fields[0];
-        $_GET['to'] = $_REQUEST['to'] = 'asc';
-        $s = new genSearchV2($_REQUEST['table']);
-        $clause = '';
-        if ($_Gconfig['specialListingWhere'][$_REQUEST['tablerel']]) {
-            $clause .= $_Gconfig['specialListingWhere'][$_REQUEST['tablerel']]($_REQUEST['curId']);
-        }
-        $res = $s->doFullSearch($_REQUEST['term'], $clause);
-
-
-
-        $re = array();
-        $pk = getPrimaryKey($_REQUEST['table']);
-
-
-        $fieldsD = akev($_Gconfig['tablerelAsTags'][$_REQUEST['tablerel']], 'desc');
-        if (!is_array($fieldsD)) {
-            $fieldsD = array();
-        }
-        $tr = $_REQUEST['tablerel'];
-
-        foreach ($res as $row) {
-            $td = $t = array();
-            foreach ($fields as $v) {
-                $t[] = $row[$v];
+    function deleteFile()
+    {
+        global $gs_obj;
+        if ($gs_obj->can('edit', $_REQUEST['curTable'], array(), $_REQUEST['curId'], $_REQUEST['curChamp'])) {
+            $gf = new genFile($_REQUEST['curTable'], $_REQUEST['curChamp'], $_REQUEST['curId']);
+            $gf->deleteFile(true);
+            global $getRowFromId_cacheRow;
+            $getRowFromId_cacheRow = array();
+            $gf = new genFile($_REQUEST['curTable'], $_REQUEST['curChamp'], $_REQUEST['curId']);
+            if (!empty($_REQUEST['small'])) {
+                echo $gf->genSmallAdminTag();
+            } else {
+                echo $gf->genAdminTag();
             }
-
-            $label = $value = implode($t, " - ");
-
-            $re[] = array('id' => $row[$pk], 'label' => $label, 'value' => $value);
-        }
-
-        echo json_encode($re);
-        die();
-    }
-
-    function insertIdForNewForm() {
-
-        $gr = new genRecord($_REQUEST['table'], 'new');
-        $id = $gr->doRecord();
-
-        echo $id;
-        die();
-    }
-
-    function autocompletesearch() {
-
-        $x = array('query' => $_REQUEST['query'], 'suggestions' => array(), 'data' => array());
-
-        global $tabForms;
-        if (!$tabForms[$_REQUEST['table']]) {
             die();
         }
-
-        $sql = 'SELECT * FROM ' . $_REQUEST['table'] . '
-					WHERE ' . $_REQUEST['champ'] . ' 
-					LIKE ' . sql('%' . $_REQUEST['query'] . '%') . '';
-        $res = GetAll($sql);
-
-
-
-        $add = true;
-        if (strpos(getTitleFromtable($_REQUEST['table']), $_REQUEST['champ'])) {
-            $add = false;
-        }
-
-        $pk = getPrimaryKey($_REQUEST['table']);
-
-
-        /**
-         * Formatage pour JSON
-         */
-        foreach ($res as $row) {
-            if (true) {
-                $x['suggestions'][] = limitwords(strip_tags($row[$_REQUEST['champ']]));
-            } else
-            if ($add) {
-                $x['suggestions'][] = limitwords(strip_tags($row[$_REQUEST['champ']] . ' - ' . GetTitleFromRow($_REQUEST['table'], $row, ' - ')), 50);
-            } else {
-                $x['suggestions'][] = limitwords(strip_tags(GetTitleFromRow($_REQUEST['table'], $row, ' - ')), 50);
-            }
-            $x['data'][] = $row[$pk];
-        }
-
-        /**
-         * Retour
-         */
-        echo json_encode($x);
-        die();
     }
 
-    function ajaxAction() {
-
-        $action = $_REQUEST['action'];
-        $id = $_REQUEST['id'];
-        $table = $_REQUEST['table'];
-        $params = unserialize($_REQUEST['params']);
-
-
-
-        if ($GLOBALS['gs_obj']->can($action, $_REQUEST['table'], array(), $_REQUEST['id'])) {
-
-            if ($action == 'goup') {
-                $row = getRowFromId($_REQUEST['table'], $_REQUEST['id']);
-                $fkC = $row[$params['vfk2']] ? $params['vfk2'] : $params['vfk1'];
-                $o = new GenOrder($_REQUEST['table'], $_REQUEST['id'], $row[$fkC], $fkC);
-                $o->GetUp();
-            } else if ($action == 'godown') {
-
-                $row = getRowFromId($_REQUEST['table'], $_REQUEST['id']);
-                $fkC = $row[$params['vfk2']] ? $params['vfk2'] : $params['vfk1'];
-                echo 'Descend ' . $_REQUEST['table'] . ' - ' . $_REQUEST['id'] . ' - ' . $fkC;
-
-                $o = new GenOrder($_REQUEST['table'], $_REQUEST['id'], $row[$fkC], $fkC);
-
-                $o->GetDown();
-            }
-            if ($action == 'add') {
-
-                /* print_r($_REQUEST);
-                  print_r(unserialize($_REQUEST['params']));
-                 */
-
-
-                $xfk = $id ? $params['vfk2'] : $params['vfk1'];
-                $id = $id ? $id : $params['id'];
-
-
-                $sql = 'SELECT MAX(' . $params['order'] . ') AS MAXI FROM ' . $table . ' WHERE ' . $xfk . ' = ' . sql($id);
-                $row = GetSingle($sql);
-
-                $record[$xfk] = $id;
-                $record[$params['order']] = $row['MAXI'] + 1;
-
-                global $co;
-                DoSqL($co->getInsertSql($table, $record));
-
-                $ide = InsertId();
-                $GLOBALS['gb_obj']->includeFile('genform.fullarbo.php', 'admin/genform_modules/');
-
-                $row = getRowFromId($table, $ide);
-
-                global $_Gconfig;
-
-                $fa = new fullArbo($params['table'], $params['id'], $_Gconfig['fullArbo'][$params['table']][$params['field']], $params['field']);
-
-                $fa->html = '';
-                $fa->getLine($row, false);
-
-                echo $fa->html;
-            } else if ($action == 'del') {
-
-                $gr = new genRecord($table, $id);
-                $gr->DeleteRow($id);
-            } else if ($action == 'reorderRelinv') {
-                foreach ($params['order'] as $k => $v) {
-                    $sql = ('UPDATE ' . $table . ' SET ' . $params['relinv'] . ' = ' . sql($k + 1) . ' WHERE ' . getPrimaryKey($table) . ' = ' . sql($v));
-                    echo $sql;
-                    Dosql($sql);
-                }
-                die();
-            }
+    function reloadField()
+    {
+        $gf = new GenForm($_REQUEST['curTable'], 'post', $_REQUEST['curId']);
+        if (isBaseLgField($_REQUEST['curField'], $_REQUEST['curTable'])) {
+            $gf->genlg($_REQUEST['curField']);
         } else {
-            echo 'CANTDO';
+            $gf->gen($_REQUEST['curField']);
         }
     }
 
-    function ajaxForm() {
-
-        if (!empty($_REQUEST['upload'])) {
-            echo 'UPLOAD';
-            print_r($_REQUEST);
-            print_r($_FILES);
-        } else
-        if (ake($_REQUEST, 'save') && $_REQUEST['champ'] && $_REQUEST['id'] && $_REQUEST['table']) {
-
-            if ($GLOBALS['gs_obj']->can('edit', $_REQUEST['table'], array(), $_REQUEST['id'], $_REQUEST['champ'])) {
-
-                DoSql('UPDATE ' . $_REQUEST['table'] . '
-	    						SET ' . $_REQUEST['champ'] . ' = ' . sql($_REQUEST['save']) . ' 
-	    					WHERE ' . getPrimaryKey($_REQUEST['table']) . ' = ' . sql($_REQUEST['id']));
-
-                echo Affected_Rows();
-            }
-        }
-    }
-
-    function ajaxRelinv() {
-
-
-        if (!empty($_REQUEST['save']) && $_REQUEST['field'] && $_REQUEST['id'] && $_REQUEST['table']) {
-
-            if ($GLOBALS['gs_obj']->can('edit', $_REQUEST['table'], array(), $_REQUEST['id'], $_REQUEST['field'])) {
-
-                echo DoSql('UPDATE ' . $_REQUEST['table'] . ' SET ' . $_REQUEST['field'] . ' = ' . sql($_REQUEST['save']) . '
-	    					WHERE ' . getPrimaryKey($_REQUEST['table']) . ' = ' . $_REQUEST['id']);
-            }
-        } else if (!empty($_REQUEST['fake'])) {
-
-            if ($GLOBALS['gs_obj']->can('edit', $_REQUEST['table'], array(), $_REQUEST['id'], $_REQUEST['field'])) {
-
-                global $_Gconfig, $orderFields;
-
-                //$GLOBALS['gb_obj']->includeFile('genform.ajaxRelinv.php','admin/genform_modules');
-                include($GLOBALS['gb_obj']->getIncludePath('genform.ajaxrelinv.php', 'admin/genform_modules'));
-
-                $vals = $_Gconfig['ajaxRelinv'][$_REQUEST['table']][$_REQUEST['fake']];
-                /* print_r($_Gconfig['ajaxRelinv']);
-                  print_r($vals); */
-                //die();
-                $a = new ajaxRelinv($_REQUEST['table'], $_REQUEST['id'], $vals[0], $vals[1], $_REQUEST['fake']);
-
-                $id = insertEmptyRecord($vals[0], false, array($vals[1] => $_REQUEST['id']));
-                /* $sqlInsert = 'INSERT INTO ' . $vals[0] . ' (' . getPrimaryKey($vals[0]) . ' , ' . $vals[1] . ') VALUES ("",' . sql($_REQUEST['id']) . ')';
-                  //echo $sqlInsert;
-                  $res = DoSql($sqlInsert);
-                  $id = InsertId(); */
-
-
-                if (!$_REQUEST['id'] || $_REQUEST['id'] == 'new') {
-                    $_SESSION['sqlWaitingForInsert'][] = 'UPDATE ' . $vals[0] . ' SET ' . $vals[1] . ' = [INSERTID] WHERE ' . getPrimaryKey($vals[0]) . ' = ' . sql($id);
-                }
-                if ($orderFields[$vals[0]] && $orderFields[$vals[0]][1] == $vals[1]) {
-                    $clefEx = $orderFields[$vals[0]][1];
-                    $champOrdre = $orderFields[$vals[0]][0];
-                    $r = getSingle('SELECT MAX(' . $champOrdre . ') AS MAXX FROM ' . $vals[0] . ' WHERE ' . $clefEx . ' = ' . sql($_REQUEST['id']));
-                    $maxx = $r['MAXX'] + 1;
-                    //echo $maxx;
-                    //echo ' : '.
-                    DoSql('UPDATE ' . $vals[0] . ' SET ' . $champOrdre . ' = ' . $maxx . ' WHERE ' . getPrimaryKey($vals[0]) . ' = ' . sql($id));
-                }
-
-                $row = getRowFromId($vals[0], $id);
-
-                echo $a->getLine($row, $vals[2]);
-            }
-        } else if (!empty($_REQUEST['delete'])) {
-            if ($GLOBALS['gs_obj']->can('delete', $_REQUEST['table'], array(), $_REQUEST['delete'])) {
-                $gr = new genRecord($_REQUEST['table'], $_REQUEST['delete']);
-                echo $gr->DeleteRow($_REQUEST['delete']);
-                //echo DoSql('DELETE FROM '.$_REQUEST['table'].' WHERE '.getPrimaryKey($_REQUEST['table']). ' = '.sql($_REQUEST['delete']));
-            } else {
-                echo 'CANTDO';
-            }
-        }
-
-        die();
-    }
-
-    function gfa() {
-
-        $champ = $_REQUEST['field'];
-        echo '<input type="text" class="gfa_input" value="" />';
-    }
-
-    function editTrad() {
-
-        $_REQUEST['nom'] = str_replace('ET_', '', $_REQUEST['nom']);
-        $s = str_replace(str_replace(ADMIN_URL, "", ADMIN_PICTOS_FOLDER), '[ADMIN_PICTOS_FOLDER]', $_REQUEST['valeur']);
-        DoSql('REPLACE INTO s_admin_trad (admin_trad_id,admin_trad_' . LG_DEF . ') VALUES ("' . $_REQUEST['nom'] . '",' . sql($s) . ')');
-
-        print_r($_REQUEST);
-    }
-
-    function getRealLink() {
-        $id = $_GET['id'];
-
-        $site = new GenSite();
-        $site->initLight();
-
-        print path_concat(WEB_URL, $site->g_url->buildUrlFromId($id));
-    }
-
-    function searchTableRel() {
-
-        global $tablerel, $_Gconfig;
-
-        $tables = array_values($tablerel[$_REQUEST['champ']]);
-        $rev = array_flip($tablerel[$_REQUEST['champ']]);
-        $fk_table = $tables[0] == $_REQUEST['curTable'] ? $tables[1] : $tables[0];
-        $fk_pk = $rev[$fk_table];
-
-        if ($this->gd) {
-            $sql = 'SELECT ' . $fk_pk . '
-					FROM ' . mes($_REQUEST['champ']) . ' 
-					WHERE ' . mes($rev[$_REQUEST['curTable']]) . ' = "' . mes($_REQUEST['curId']) . '"
-					
-					';
-        }
-
-        if ($_Gconfig['specialListingWhere'][$_REQUEST['champ']]) {
-            $sql .= $_Gconfig['specialListingWhere'][$_REQUEST['champ']]($_REQUEST['curId']);
-        }
-
-        $res = GetAll($sql);
-
-        $tab = array(0);
-        foreach ($res as $row) {
-            $tab[] = $row[$fk_pk];
-        }
-
-        $pk2 = getPrimaryKey($fk_table);
-
-        $clause = "";
-        if (count($tab)) {
-            $clause = ' AND T.' . $pk2 . ' NOT IN ( ' . implode(',', $tab) . ' )';
-        }
-
-
-        $s = new genSearchV2($fk_table);
-        $res = $s->doFullSearch($_REQUEST['q'], $clause);
-
-        foreach ($res as $row) {
-            print('<option value="' . $row[$pk2] . '">' . getTitleFromRow($fk_table, $row) . '</option>');
-        }
-        die();
-    }
-
-    function searchRelation() {
-
-        $t = $_REQUEST['table'];
-        $fk = str_replace('genform_', '', $_REQUEST['fk']);
-        global $relations;
-
-        $table = $relations[$t][$fk];
-
-        $pk2 = getPrimaryKey($table);
-        $s = new genSearchV2($table);
-        $res = $s->doFullSearch($_REQUEST['q'], $clause, false);
-        foreach ($res as $row) {
-            print('<li><a class="sal" onclick="selectRelationValue(this)" rel="' . $row[$pk2] . '">' . getTitleFromRow($table, $row, ' > ', true) . '</a></li>');
-        }
-        die();
-    }
-
-    function getArboRubs() {
-
-        genAdmin::handleOpenRubs();
-
-        $this->id = akev($_REQUEST, 'curId');
-        if ($this->id) {
-            $this->row = getSingle('SELECT * FROM s_rubrique WHERE rubrique_id = ' . sql($this->id));
-            $this->real_rub_id = $this->row['fk_rubrique_version_id'];
-            $this->real_fk_rub = $this->row['fk_rubrique_id'];
-        }
-        $this->arboRubs = $this->sa->getRubs();
-        //$_REQUEST['curId'] = $_REQUEST['showRub'] ?  $_REQUEST['showRub'] :  $_REQUEST['hideRub'];
-
-        $this->sa->getArboActions();
-        p('<div id="arbo">');
-        $this->sa->recurserub('NULL', 0, "1");
-        p('</div>');
-    }
-
-    function recurserub($a, $b, $c) {
+    function recurserub($a, $b, $c)
+    {
 
         $this->sa->recurserub($a, $b, $c);
     }
 
-    function getLinks() {
-        $site = new GenSite();
-        $site->initLight();
-        $menus = $site->getMenus();
-
-        $this->html = '<h1>' . t('choisir_rubrique_ci_dessous') . '</h1><ul>';
-        foreach ($menus as $menu) {
-
-            $arbo = $site->g_url->recursRub($menu['rubrique_id']);
-            $this->html .= '<li>' . $menu['rubrique_titre_' . LG];
-            $this->recursLinks($arbo);
-
-            $this->html .= '</li>';
-        }
-        $this->html .= '</ul>';
-
-        print $this->html;
-    }
-
-    private
-            function recursLinks($array, $level = '1', $rootRub = '1') {
-        if (!is_array($array)) {
-            return;
-        }
-        foreach ($array as $page) {
-            $page['url'] = '';
-            $url = '@rubrique_id=' . $page['id'];
-            if ($level == 1) {
-                $this->html .= ( '<li class="top_div_' . $rootRub . '">');
-                $this->html .= ( '<a onclick="update_links(\'' . $_GET['champ'] . '\',' . $page['id'] . ')" > ' . $page['titre'] . '</a>');
-                if (count($page['sub']) && $level != 3) {
-                    $this->html .= ( '<ul class="ul_' . $rootRub . '">');
-                    $this->recursLinks($page['sub'], $level + 1, $rootRub);
-                    $this->html .= ( '</ul>');
-                }
-                $this->html .= ( '</li>');
-            } else {
-                $this->html .= ( '<li class="level' . $level . '_' . $rootRub . '">');
-
-                $this->html .= ( '<a onclick="update_links(\'' . $_GET['champ'] . '\',' . $page['id'] . ')"  >' . $page['titre'] . '</a>');
-                if (!empty($page['sub']) && $level != 3) {
-                    $this->html .= ( '<ul>');
-                    $this->recursLinks($page['sub'], $level + 1, $rootRub);
-                    $this->html .= ( '</ul>');
-                }
-                $this->html .= ( '</li>');
-            }
-            if ($level == 1)
-                $rootRub++;
-        }
-    }
-
 }
 
-class object {
-    
+class object
+{
+
 }
