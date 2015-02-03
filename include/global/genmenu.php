@@ -45,9 +45,7 @@ class genMenu
      */
     function genMenu($site, $nom_menu = '', $id_menu = 0, $row_menu = array())
     {
-        global $headRootId;
-        global $rootId;
-        global $footRootId;
+
         global $_Gconfig;
 
         $this->site = $site;
@@ -56,7 +54,7 @@ class genMenu
          * Concats menus
          */
         if (ake($_Gconfig['menus'], $nom_menu)) {
-            $this->conf = $_Gconfig['menus'][ $nom_menu ];
+            $this->conf = array_merge($_Gconfig['menus']['__default__'], $_Gconfig['menus'][$nom_menu]);
         } else {
             $this->conf = $_Gconfig['menus']['__default__'];
         }
@@ -75,7 +73,7 @@ class genMenu
 
         $this->row = $row_menu;
         $this->id_menu = $row_menu['rubrique_id'];
-        $this->nom_menu = $row_menu[ 'rubrique_url_' . LG_DEF ];
+        $this->nom_menu = $row_menu['rubrique_url_' . LG_DEF];
 
 
         /**
@@ -133,7 +131,7 @@ class genMenu
         $ulId = empty($rootId) ? '' : ' id="menu_' . $this->nom_menu . '"';
         $divid = empty($rootId) ? '' : ' id="div_menu_' . $this->nom_menu . '"';
         if ($divid) {
-            $html = '<div' . $divid . '><ul' . $ulId . '  class="level_' . $this->level . '">';
+            $html = '<div' . $divid . '><ul' . $ulId . '  class="level_' . $this->level . ' ' . $this->conf['ul_class'] . '" ' . $this->conf['ul_tag'] . '>';
         } else {
             $html = '<ul' . $ulId . ' class="level_' . $this->level . '">';
         }
@@ -169,7 +167,7 @@ class genMenu
                 }
             }
 
-            $style = ' class="';
+            $style = ' class="nav-item li_level_' . $this->level . ' ';
             $style .= akev($value, 'selected') ? 'selected ' : '';
             $style .= $nbM == $nbTot ? 'dernier ' : '';
             $style .= $nbM == 1 ? 'premier ' : '';
@@ -232,10 +230,10 @@ class genMenu
          */
 
         $t = &$this->$tab;
-        $t[ $url ]['titre'] = $titre;
-        $t[ $url ]['url'] = $url;
-        $t[ $url ]['sub'] = '';
-        $t[ $url ]['style'] = $style;
+        $t[$url]['titre'] = $titre;
+        $t[$url]['url'] = $url;
+        $t[$url]['sub'] = '';
+        $t[$url]['style'] = $style;
     }
 
     /**
@@ -248,12 +246,12 @@ class genMenu
     function addConf($conf, $nb = 0)
     {
 
-        $val = $this->conf[ $conf ];
+        $val = $this->conf[$conf];
         if ($nb) {
-            $val = $this->conf[ $conf ][ $nb - 1 ];
+            $val = $this->conf[$conf][$nb - 1];
         }
 
-        if ($this->conf[ $conf ]) {
+        if ($this->conf[$conf]) {
             return '&amp;' . $conf . '=' . $val;
         }
     }
@@ -279,8 +277,8 @@ class genMenu
         $srcNormal = 'nb=' . $nb;
 
 
-        if (is_array($this->conf['profiles']) && $this->conf['profiles'][ $nb - 1 ]) {
-            $srcNormal .= '&amp;profile=' . $this->conf['profiles'][ $nb - 1 ];
+        if (is_array($this->conf['profiles']) && $this->conf['profiles'][$nb - 1]) {
+            $srcNormal .= '&amp;profile=' . $this->conf['profiles'][$nb - 1];
         } else {
             $srcNormal .= $this->addConf('profile');
         }
@@ -290,14 +288,14 @@ class genMenu
         $srcNormal .= $this->addConf('imgW', $nb);
 
         if ($selected) {
-            $srcNormal .= '&textColor=' . $GLOBALS[ 'menu_' . $this->nom_menu . '_' . $nb ];
+            $srcNormal .= '&textColor=' . $GLOBALS['menu_' . $this->nom_menu . '_' . $nb];
         }
 
         if ($this->conf['rollover']) {
             $srcOver = IMG_GENERATOR . '?text=' . str_replace('-', '%2d', urlencode($val));
 
-            if (is_array($this->conf['rollovers']) && $this->conf['rollovers'][ $nb - 1 ]) {
-                $srcOver .= '&amp;profile=' . $this->conf['rollovers'][ $nb - 1 ];
+            if (is_array($this->conf['rollovers']) && $this->conf['rollovers'][$nb - 1]) {
+                $srcOver .= '&amp;profile=' . $this->conf['rollovers'][$nb - 1];
             } else {
                 $srcOver .= '&amp;profile=' . $this->conf['rollover'];
             }

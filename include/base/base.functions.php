@@ -83,7 +83,7 @@ function autoConfig($table)
 
     global $tabForms, $relations, $_Gconfig, $tablerel, $relinv, $tablerel_reverse;
 
-    if ($tabForms[ $table ]) {
+    if ($tabForms[$table]) {
         return;
     }
 
@@ -94,7 +94,7 @@ function autoConfig($table)
      * Le titre est le second champ de la table
      */
     $label = next($fields);
-    $tabForms[ $table ]['titre'] = array(fieldWithoutLg($label->name));
+    $tabForms[$table]['titre'] = array(fieldWithoutLg($label->name));
     return;
 
     /**
@@ -114,7 +114,7 @@ function autoConfig($table)
         if (substr($k, 0, 3) == 'fk_') {
             $distTable = $prefixe . '_' . substr($k, 3, -3);
             if (in_array($distTable, $tables)) {
-                $relations[ $table ][ $k ] = $distTable;
+                $relations[$table][$k] = $distTable;
                 autoConfig($distTable);
             }
         }
@@ -131,7 +131,7 @@ function autoConfig($table)
             /**
              * Table de relation
              */
-            if (count($tabs) == 2 && !$tablerel[ $v ]) {
+            if (count($tabs) == 2 && !$tablerel[$v]) {
 
                 foreach ($tabs as $k => $vv) {
                     if ($vv->name != $myfk) {
@@ -141,14 +141,14 @@ function autoConfig($table)
                 }
 
 
-                $tablerel[ $v ] = array($myfk => $table, $distField => $distTable);
+                $tablerel[$v] = array($myfk => $table, $distField => $distTable);
                 autoConfig($distTable);
 
                 /**
                  * Table Relinv
                  */
             } else {
-                $relinv[ $table ][ 'RELINV_' . $v ] = array($v, $myfk);
+                $relinv[$table]['RELINV_' . $v] = array($v, $myfk);
             }
         }
     }
@@ -293,7 +293,7 @@ function isImage($str)
 {
     global $_Gconfig;
     $s = explode(".", $str);
-    $ext = $s[ count($s) - 1 ];
+    $ext = $s[count($s) - 1];
     if (in_array(mb_strtolower($ext), $_Gconfig['imageExtensions']))
         return True;
     else
@@ -339,7 +339,7 @@ function systemToNiceName($str)
     return $str . ' [' . strtoupper($ext) . ']';
 }
 
-$GLOBALS['GlobalObjCache'][ UNIQUE_SITE ]['adm']['cacheIsAdmin'] = "notChecked";
+$GLOBALS['GlobalObjCache'][UNIQUE_SITE]['adm']['cacheIsAdmin'] = "notChecked";
 
 /**
  * Est-on connecté en tant qu'admin
@@ -359,8 +359,8 @@ function isLoggedAsAdmin()
 
 function getRealRubId($row)
 {
-    if ($row[ MULTIVERSION_FIELD ]) {
-        return $row[ MULTIVERSION_FIELD ];
+    if ($row[MULTIVERSION_FIELD]) {
+        return $row[MULTIVERSION_FIELD];
     } else {
         return $row['fk_rubrique_id'];
     }
@@ -368,8 +368,8 @@ function getRealRubId($row)
 
 function getOnlineRubId($row)
 {
-    if ($row[ MULTIVERSION_FIELD ]) {
-        return $row[ MULTIVERSION_FIELD ];
+    if ($row[MULTIVERSION_FIELD]) {
+        return $row[MULTIVERSION_FIELD];
     } else {
         return $row['rubrique_id'];
     }
@@ -448,7 +448,7 @@ function fieldval($str)
  */
 function doAdminStuffs()
 {
-    if (isLoggedAsAdmin() && $GLOBALS['GlobalObjCache'][ UNIQUE_SITE ]['adm']['frontModif']) {
+    if (isLoggedAsAdmin() && $GLOBALS['GlobalObjCache'][UNIQUE_SITE]['adm']['frontModif']) {
         return true;
     } else {
         return false;
@@ -791,7 +791,7 @@ function SplitGabaritParams($params)
     $para = array();
     foreach ($a as $p) {
         $pa = explode('=', $p);
-        $para[ $pa[0] ] = $pa[1];
+        $para[$pa[0]] = $pa[1];
     }
     return $para;
 }
@@ -851,7 +851,7 @@ function debugEnd()
         $h_sqls[] = array('sql' => $GLOBALS['curSQL'], 'time' => ($t), 'profile' => $GLOBALS['curProfile']);
         $t = str_replace('0,0', '', $t);
         $t = (int)substr($t, 0, 8);
-        $h_sqlsI[ $t ] = $GLOBALS['curSQL'];
+        $h_sqlsI[$t] = $GLOBALS['curSQL'];
     }
 }
 
@@ -870,7 +870,7 @@ function pretty_bytes($bytes, $precision = 1)
     $index = floor(@log($bytes + 1, 1024)); // + 1 to prevent -INF
     if ($index == 0)
         return (substr(($bytes / 1024), 0, 3)) . " " . $suffix[1];
-    return sprintf("%0.{$precision}f %s", $bytes / pow(1024, $index), $suffix[ $index ]);
+    return sprintf("%0.{$precision}f %s", $bytes / pow(1024, $index), $suffix[$index]);
 }
 
 /**
@@ -1083,8 +1083,8 @@ function akev($val1, $val2)
 //	$val1 = $val3;
 //    }
 
-    if (isset($val1[ $val2 ])) { //is_array($val1) && array_key_exists($val2, $val1)) {
-        return $val1[ $val2 ];
+    if (isset($val1[$val2])) { //is_array($val1) && array_key_exists($val2, $val1)) {
+        return $val1[$val2];
     }
     return false;
 }
@@ -1102,8 +1102,8 @@ function mkPasswd()
 
     for ($x = 0; $x < 6; $x++) {
         mt_srand((double)microtime() * 1000000);
-        $const[ $x ] = substr($consts, mt_rand(0, strlen($consts) - 1), 1);
-        $vow[ $x ] = substr($vowels, mt_rand(0, strlen($vowels) - 1), 1);
+        $const[$x] = substr($consts, mt_rand(0, strlen($consts) - 1), 1);
+        $vow[$x] = substr($vowels, mt_rand(0, strlen($vowels) - 1), 1);
     }
     return $const[0] . $vow[0] . $const[2] . $const[1] . $vow[1] . $const[3] . $vow[3] . $const[4];
 }
@@ -1174,11 +1174,11 @@ function htmlEncodeText($string)
     $textMatches = preg_split('/' . $pattern . '/', $string);
 
     foreach ($textMatches as $key => $value) {
-        $textMatches [ $key ] = htmlentities($value, ENT_QUOTES, 'cp1252');
+        $textMatches [$key] = htmlentities($value, ENT_QUOTES, 'cp1252');
     }
 
     for ($i = 0; $i < count($textMatches); $i++) {
-        $textMatches [ $i ] = $textMatches [ $i ] . $tagMatches [ $i ] [0];
+        $textMatches [$i] = $textMatches [$i] . $tagMatches [$i] [0];
     }
     $string = implode(" ", $textMatches);
     $string = str_replace("#_#", "&", $string);
@@ -1197,11 +1197,11 @@ function loadTrads($lge)
         $lg = LG;
     }
 
-    if (ake('lgLoaded', $GLOBALS) && $GLOBALS['lgLoaded'][ $lg ]) {
+    if (ake('lgLoaded', $GLOBALS) && $GLOBALS['lgLoaded'][$lg]) {
         return;
     }
 
-    $GLOBALS['lgLoaded'][ $lg ] = true;
+    $GLOBALS['lgLoaded'][$lg] = true;
 
     $sql = 'SELECT trad_id,trad_' . LG . '';
     if (LG != LG_DEF) {
@@ -1213,9 +1213,9 @@ function loadTrads($lge)
 
     foreach ($res as $row) {
 
-        $_trads[ $row['trad_id'] ][ $lg ] = $row[ 'trad_' . LG_DEF ];
-        if ($row[ 'trad_' . $lg ]) {
-            $_trads[ $row['trad_id'] ][ $lg ] = $row[ 'trad_' . $lg ];
+        $_trads[$row['trad_id']][$lg] = $row['trad_' . LG_DEF];
+        if ($row['trad_' . $lg]) {
+            $_trads[$row['trad_id']][$lg] = $row['trad_' . $lg];
         }
     }
 
@@ -1251,13 +1251,13 @@ if (!function_exists("t")) {
 
         if (ake($atrads, $t)) {
 
-            if (akev($atrads[ $t ], $lg)) {
+            if (akev($atrads[$t], $lg)) {
                 /* La traduction existe t'elle dans la langue courante ? */
-                $v = $atrads[ $t ][ $lg ];
+                $v = $atrads[$t][$lg];
                 $id = $t;
-            } else if (akev($atrads[ $t ], $otherLg)) {
+            } else if (akev($atrads[$t], $otherLg)) {
                 /* Sinon dans l'autre langue */
-                $v = $atrads[ $t ][ $otherLg ]; // '<span lang="'.$otherLg.'">'..'</span>'
+                $v = $atrads[$t][$otherLg]; // '<span lang="'.$otherLg.'">'..'</span>'
                 $id = $t;
             }
         }
@@ -1268,7 +1268,7 @@ if (!function_exists("t")) {
                 $v = ta($t);
                 $id = $t;
             } else {
-                $GLOBALS['missingTrads'][ $t ] = true;
+                $GLOBALS['missingTrads'][$t] = true;
                 $id = $v = $t;
             }
         }
@@ -1339,7 +1339,7 @@ if (!function_exists("getParam")) {
     {
 
         global $_params;
-        return ake($_params, $t) ? $_params[ $t ] : $t;
+        return ake($_params, $t) ? $_params[$t] : $t;
     }
 
 }
@@ -1397,13 +1397,13 @@ function arrayInWord($arr, $word)
 function isUploadField($field)
 {
 
-    if (isset($GLOBALS['cache']['isUploadField'][ $field ])) {
-        return $GLOBALS['cache']['isUploadField'][ $field ];
+    if (isset($GLOBALS['cache']['isUploadField'][$field])) {
+        return $GLOBALS['cache']['isUploadField'][$field];
     }
     global $uploadFields;
-    $GLOBALS['cache']['isUploadField'][ $field ] = in_array($field, $uploadFields) || in_array(getBaseLgField($field), $uploadFields);
+    $GLOBALS['cache']['isUploadField'][$field] = in_array($field, $uploadFields) || in_array(getBaseLgField($field), $uploadFields);
 
-    return $GLOBALS['cache']['isUploadField'][ $field ];
+    return $GLOBALS['cache']['isUploadField'][$field];
 }
 
 function isRteField($name)
@@ -1422,7 +1422,7 @@ function path_concat()
     $numargs = count($arg_list);
 
     for ($i = 0; $i < $numargs; $i++) {
-        $u2 = $arg_list[ $i ];
+        $u2 = $arg_list[$i];
         if (is_array($u2)) {
             break;
         }
@@ -1459,7 +1459,7 @@ function SplitParams($p, $first = ';', $second = "=")
     foreach ($params as $param) {
         $t = explode($second, $param);
         if ($t[0] !== "") {
-            $retPar[ $t[0] ] = urldecode(akev($t, 1));
+            $retPar[$t[0]] = urldecode(akev($t, 1));
         }
     }
 
@@ -1676,7 +1676,7 @@ function GetPlugins()
 {
 
 
-    if (!akev($GLOBALS['GlobalObjCache'][ UNIQUE_SITE ], 'activePlugins')) {
+    if (!akev($GLOBALS['GlobalObjCache'][UNIQUE_SITE], 'activePlugins')) {
         $sql = 'SELECT * FROM s_plugin AS P WHERE plugin_actif = 1 ORDER BY plugin_ordre ASC';
         $res = GetAll($sql);
         $ret = array();
@@ -1686,9 +1686,9 @@ function GetPlugins()
         foreach ($res as $v) {
             $ret[] = $v['plugin_nom'];
         }
-        $GLOBALS['GlobalObjCache'][ UNIQUE_SITE ]['activePlugins'] = $ret;
+        $GLOBALS['GlobalObjCache'][UNIQUE_SITE]['activePlugins'] = $ret;
     }
-    return $GLOBALS['GlobalObjCache'][ UNIQUE_SITE ]['activePlugins'];
+    return $GLOBALS['GlobalObjCache'][UNIQUE_SITE]['activePlugins'];
 }
 
 /**
@@ -1699,9 +1699,9 @@ function GetPlugins()
 function getGabaritsToIndex()
 {
 
-    if (empty($GLOBALS['GlobalObjCache'][ UNIQUE_SITE ]['gabaritsToIndex'])) {
+    if (empty($GLOBALS['GlobalObjCache'][UNIQUE_SITE]['gabaritsToIndex'])) {
 
-        $GLOBALS['GlobalObjCache'][ UNIQUE_SITE ]['gabaritsToIndex'] = array();
+        $GLOBALS['GlobalObjCache'][UNIQUE_SITE]['gabaritsToIndex'] = array();
 
         $sql = 'SELECT G.*, R.rubrique_id
 		FROM s_gabarit AS G, s_rubrique AS R
@@ -1712,11 +1712,11 @@ function getGabaritsToIndex()
         $res = GetAll($sql);
         foreach ($res as $row) {
 
-            $GLOBALS['GlobalObjCache'][ UNIQUE_SITE ]['gabaritsToIndex'][ $row['gabarit_index_table'] ] = $row;
+            $GLOBALS['GlobalObjCache'][UNIQUE_SITE]['gabaritsToIndex'][$row['gabarit_index_table']] = $row;
         }
     }
 
-    return $GLOBALS['GlobalObjCache'][ UNIQUE_SITE ]['gabaritsToIndex'];
+    return $GLOBALS['GlobalObjCache'][UNIQUE_SITE]['gabaritsToIndex'];
 }
 
 /**
@@ -1738,22 +1738,22 @@ function getUrlFromSearchOLD($obj, $row)
     } else {
         $gabs = getGabaritsToIndex();
         //debug($gabs);
-        if (!$gabs[ $obj['obj'] ]) {
+        if (!$gabs[$obj['obj']]) {
             debug('NO GABARIT DEFINED FOR OBJECT : ' . $obj['obj']);
             debug($obj);
             return '';
         }
 
-        $rubid = $gabs[ $obj['obj'] ]['rubrique_id'];
-        $params = $gabs[ $obj['obj'] ]['gabarit_index_url'];
+        $rubid = $gabs[$obj['obj']]['rubrique_id'];
+        $params = $gabs[$obj['obj']]['gabarit_index_url'];
         $params = splitParams($params);
         $mp = array();
         foreach ($params as $param => $value) {
-            $mp[ $param ] = $row[ $value ];
+            $mp[$param] = $row[$value];
         }
     }
 //	debug($gabs[$obj['obj']]['gabarit_classe']);
-    return getUrlFromId(getRubFromGabarit($gabs[ $obj['obj'] ]['gabarit_classe']), LG, $mp);
+    return getUrlFromId(getRubFromGabarit($gabs[$obj['obj']]['gabarit_classe']), LG, $mp);
     return $GLOBALS['site']->g_url->buildUrlFromId($rubid, LG, $mp);
 }
 
@@ -1779,14 +1779,14 @@ function getUrlFromSearch($obj, $row)
             return '';
         }
 
-        if (!$gabs[ $obj['obj'] ]) {
+        if (!$gabs[$obj['obj']]) {
             debug('NO GABARIT DEFINED FOR OBJECT : ' . $obj['obj']);
             debug($obj);
             return '';
         }
 
-        $rubid = $gabs[ $obj['obj'] ]['rubrique_id'];
-        $params = $gabs[ $obj['obj'] ]['gabarit_index_url'];
+        $rubid = $gabs[$obj['obj']]['rubrique_id'];
+        $params = $gabs[$obj['obj']]['gabarit_index_url'];
         if (strpos($params, 'php:') !== false) {
             $code = substr($params, 4);
             return eval($code);
@@ -1794,9 +1794,9 @@ function getUrlFromSearch($obj, $row)
         $params = splitParams($params);
         $mp = array();
         foreach ($params as $param => $value) {
-            $mp[ $param ] = $row[ $value ];
+            $mp[$param] = $row[$value];
         }
-        $rubid = getRubFromGabarit($gabs[ $obj['obj'] ]['gabarit_classe']);
+        $rubid = getRubFromGabarit($gabs[$obj['obj']]['gabarit_classe']);
     }
 //	debug($gabs[$obj['obj']]['gabarit_classe']);
     return getUrlFromId($rubid, LG, $mp);
@@ -1824,21 +1824,21 @@ function GetTitleFromRow($table, $row, $separator = " ", $html = false)
     }
     $fields = getTabField($table);
 
-    if (!is_array($tabForms[ $table ]['titre'])) {
-        $tabForms[ $table ]['titre'] = array($tabForms[ $table ]['titre']);
+    if (!is_array($tabForms[$table]['titre'])) {
+        $tabForms[$table]['titre'] = array($tabForms[$table]['titre']);
     }
-    reset($tabForms[ $table ]['titre']);
+    reset($tabForms[$table]['titre']);
     $tab = getTabField($table);
     $titre = array();
-    while (list($k, $v) = each($tabForms[ $table ]['titre'])) {
+    while (list($k, $v) = each($tabForms[$table]['titre'])) {
 
-        if (akev($relations, $table) && akev($relations[ $table ], $v)) {
-            $re = GetRowFromId($relations[ $table ][ $v ], $row[ $v ]);
-            $row[ $v ] = GetTitleFromRow($relations[ $table ][ $v ], $re);
-        } else if (isset($tab[ $v ]) && $tab[ $v ]->type == 'date') {
-            $row[ $v ] = nicetextdate($row[ $v ]);
-        } else if (isset($tab[ $v ]) && $tab[ $v ]->type == 'datetime') {
-            $row[ $v ] = nicetextdate($row[ $v ]) . ' ' . nicetime($row[ $v ]);
+        if (akev($relations, $table) && akev($relations[$table], $v)) {
+            $re = GetRowFromId($relations[$table][$v], $row[$v]);
+            $row[$v] = GetTitleFromRow($relations[$table][$v], $re);
+        } else if (isset($tab[$v]) && $tab[$v]->type == 'date') {
+            $row[$v] = nicetextdate($row[$v]);
+        } else if (isset($tab[$v]) && $tab[$v]->type == 'datetime') {
+            $row[$v] = nicetextdate($row[$v]) . ' ' . nicetime($row[$v]);
         }
 
         if ($html && arrayInWord($uploadFields, $v)) {
@@ -1849,7 +1849,7 @@ function GetTitleFromRow($table, $row, $separator = " ", $html = false)
                 $titre[] = $gf->getThumbImgtag(40, 40);
             }
         } else
-            if (!isset($fields[ $v ]) || !$fields[ $v ]) {
+            if (!isset($fields[$v]) || !$fields[$v]) {
                 $titre[] = getLgValue($v, $row);
             } else {
                 $titre[] = akev($row, $v);
@@ -1879,21 +1879,21 @@ function getDescFromRow($table, $row, $limit = 60, $separator = " ")
 
     global $tabForms;
 
-    if (empty($tabForms[ $table ]['desc'])) {
+    if (empty($tabForms[$table]['desc'])) {
 
         return '';
     }
 
     $titre = '';
-    if (!is_array($tabForms[ $table ]['desc'])) {
-        $tabForms[ $table ]['desc'] = array(is_array($tabForms[ $table ]['desc']));
+    if (!is_array($tabForms[$table]['desc'])) {
+        $tabForms[$table]['desc'] = array(is_array($tabForms[$table]['desc']));
     }
-    reset($tabForms[ $table ]['desc']);
-    while (list($k, $v) = each($tabForms[ $table ]['desc'])) {
+    reset($tabForms[$table]['desc']);
+    while (list($k, $v) = each($tabForms[$table]['desc'])) {
         if (isBaseLgField($v, $table)) {
             $titre .= limitWords(getLgValue($v, $row), $limit) . $separator;
         } else {
-            $titre .= limitWords($row[ $v ], $limit) . $separator;
+            $titre .= limitWords($row[$v], $limit) . $separator;
         }
     }
 
@@ -1909,8 +1909,8 @@ function getImgFromRow($table, $row, $w = 100, $h = 100)
         return $o->getImg($w, $h);
     }
 
-    if (!empty($tabForms[ $table ]['img'])) {
-        $gf = new genFile($table, $tabForms[ $table ]['img'], $row);
+    if (!empty($tabForms[$table]['img'])) {
+        $gf = new genFile($table, $tabForms[$table]['img'], $row);
         return $gf->getCropImgtag($w, $h);
     }
 }
@@ -1923,13 +1923,13 @@ function getImgFromRow($table, $row, $w = 100, $h = 100)
 function GetTablesToIndex()
 {
 
-    if (empty($GLOBALS['GlobalObjCache'][ UNIQUE_SITE ]['tablesToIndex'])) {
+    if (empty($GLOBALS['GlobalObjCache'][UNIQUE_SITE]['tablesToIndex'])) {
         $g = getGabaritsToIndex();
         $ar = array_keys($g);
         $ar[] = 's_rubrique';
-        $GLOBALS['GlobalObjCache'][ UNIQUE_SITE ]['tablesToIndex'] = $ar;
+        $GLOBALS['GlobalObjCache'][UNIQUE_SITE]['tablesToIndex'] = $ar;
     }
-    return $GLOBALS['GlobalObjCache'][ UNIQUE_SITE ]['tablesToIndex'];
+    return $GLOBALS['GlobalObjCache'][UNIQUE_SITE]['tablesToIndex'];
 }
 
 /**
@@ -1959,7 +1959,7 @@ function addSimpleQuotes($tab)
     $newTab = array();
 
     for ($i = 0; $i < count($tab); $i++) {
-        $newTab[ $i ] = "'" . $tab[ $i ] . "'";
+        $newTab[$i] = "'" . $tab[$i] . "'";
     }
 
     return $newTab;
@@ -1969,8 +1969,8 @@ if (empty($GLOBALS['GlobalObjCache'])) {
     $GLOBALS['GlobalObjCache'] = array();
 }
 
-if (!ake($GLOBALS['GlobalObjCache'][ UNIQUE_SITE ], 'cache_rubgab')) {
-    $GLOBALS['GlobalObjCache'][ UNIQUE_SITE ]['cache_rubgab'] = array();
+if (!ake($GLOBALS['GlobalObjCache'][UNIQUE_SITE], 'cache_rubgab')) {
+    $GLOBALS['GlobalObjCache'][UNIQUE_SITE]['cache_rubgab'] = array();
 }
 
 /**
@@ -1983,7 +1983,7 @@ if (!ake($GLOBALS['GlobalObjCache'][ UNIQUE_SITE ], 'cache_rubgab')) {
 function getRubFromGabarit($gab, $param = '', $all = false)
 {
 
-    if (empty($GLOBALS['GlobalObjCache'][ UNIQUE_SITE ]['cache_rubgab'][ $gab . $param . $all ])) {
+    if (empty($GLOBALS['GlobalObjCache'][UNIQUE_SITE]['cache_rubgab'][$gab . $param . $all])) {
 
         $sql = 'SELECT ' . ($all ? 'R.*' : 'R.rubrique_id') . '  , 
                     G.* FROM s_rubrique AS R, s_gabarit AS G
@@ -2008,20 +2008,20 @@ function getRubFromGabarit($gab, $param = '', $all = false)
         }
         if ($row) {
             if ($all) {
-                $GLOBALS['GlobalObjCache'][ UNIQUE_SITE ]['cache_rubgab'][ $gab . $param . $all ] = $row;
+                $GLOBALS['GlobalObjCache'][UNIQUE_SITE]['cache_rubgab'][$gab . $param . $all] = $row;
             } else {
-                $GLOBALS['GlobalObjCache'][ UNIQUE_SITE ]['cache_rubgab'][ $gab . $param . $all ] = $row['rubrique_id'];
+                $GLOBALS['GlobalObjCache'][UNIQUE_SITE]['cache_rubgab'][$gab . $param . $all] = $row['rubrique_id'];
             }
         } else {
             if (!empty($GLOBALS['site']->g_url->rootHomeId)) {
-                $GLOBALS['GlobalObjCache'][ UNIQUE_SITE ]['cache_rubgab'][ $gab . $param . $all ] = $GLOBALS['site']->g_url->rootHomeId;
+                $GLOBALS['GlobalObjCache'][UNIQUE_SITE]['cache_rubgab'][$gab . $param . $all] = $GLOBALS['site']->g_url->rootHomeId;
             } else {
-                $GLOBALS['GlobalObjCache'][ UNIQUE_SITE ]['cache_rubgab'][ $gab . $param . $all ] = '';
+                $GLOBALS['GlobalObjCache'][UNIQUE_SITE]['cache_rubgab'][$gab . $param . $all] = '';
             }
         }
     }
 
-    return $GLOBALS['GlobalObjCache'][ UNIQUE_SITE ]['cache_rubgab'][ $gab . $param . $all ];
+    return $GLOBALS['GlobalObjCache'][UNIQUE_SITE]['cache_rubgab'][$gab . $param . $all];
 }
 
 /**
@@ -2048,7 +2048,7 @@ function initPlugins()
 function geta($array, $clef)
 {
     if (array_key_exists($clef, $array)) {
-        return $array[ $clef ];
+        return $array[$clef];
     }
     return '';
 }
@@ -2069,16 +2069,16 @@ if (ini_get('magic_quotes_gpc')) {
 
     foreach ($_GET as $k => $v) {
         if (!is_array($v))
-            $_GET[ $k ] = stripslashes($v);
+            $_GET[$k] = stripslashes($v);
     }
 
     foreach ($_POST as $k => $v) {
         if (!is_array($v))
-            $_POST[ $k ] = stripslashes($v);
+            $_POST[$k] = stripslashes($v);
     }
     foreach ($_REQUEST as $k => $v) {
         if (!is_array($v))
-            $_REQUEST[ $k ] = stripslashes($v);
+            $_REQUEST[$k] = stripslashes($v);
     }
 }
 
@@ -2153,7 +2153,7 @@ function substrWithNoCutWord($chaine, $debut, $longueurMax)
         $tab = explode(' ', $chaine);
         $result = '';
         for ($i = 0; $i < count($tab) - 1; $i++) {
-            $result .= $tab[ $i ] . ' ';
+            $result .= $tab[$i] . ' ';
         }
     } else
         $result = $chaine;
@@ -2342,10 +2342,10 @@ function printDebugs()
             }
             $info = '';
             if (ake($sql['sql'], $donesSql)) {
-                $info = '[<strong style="background:yellow">DEJA FAITE LIGNE :' . $donesSql[ $sql['sql'] ] . '</strong>]';
+                $info = '[<strong style="background:yellow">DEJA FAITE LIGNE :' . $donesSql[$sql['sql']] . '</strong>]';
             }
             print('<div style="background:' . $bg . ';padding:5px;">' . $k . ' - ' . $info . ' ' . $sql['time'] . ' : ' . $sql['sql'] . '' . $sql['profile'] . '</div>');
-            $donesSql[ $sql['sql'] ] = $k;
+            $donesSql[$sql['sql']] = $k;
         }
         p('</div>');
     }
@@ -2376,15 +2376,15 @@ function GetTitleFromTable($table, $separator = " ")
     /**
      * Si on a plusieurs champs titre
      */
-    if (!is_array($tabForms[ $table ]['titre'])) {
-        $tabForms[ $table ]['titre'] = array($tabForms[ $table ]['titre']);
+    if (!is_array($tabForms[$table]['titre'])) {
+        $tabForms[$table]['titre'] = array($tabForms[$table]['titre']);
     }
 
     $titre = '';
     /**
      * On parcourt tous les champs
      */
-    foreach ($tabForms[ $table ]['titre'] as $k => $v) {
+    foreach ($tabForms[$table]['titre'] as $k => $v) {
 
         /**
          * On ne met le séparateur qu'à partir du second
@@ -2394,7 +2394,7 @@ function GetTitleFromTable($table, $separator = " ")
         /**
          * Si le champ existe c'est un champ normal
          */
-        if (isset($fields[ $v ])) {
+        if (isset($fields[$v])) {
             $titre .= $sep . '' . $v;
 
             /**
@@ -2533,7 +2533,7 @@ function getGabaritClass($gab, $param = '', $instanciate = true)
 
     $GLOBALS['gb_obj']->includeFile($className . '.php', $dossier);
 
-
+    $bddClasse = false;
     if (class_exists($className)) {
 
         if ($instanciate) {
@@ -2574,9 +2574,9 @@ function getObjUrl($lg = LG)
         }
     } else {
         global $tabForms;
-        if (!empty($tabForms[ $t ]['view'])) {
-            $id = getRubFromGabarit($tabForms[ $t ]['view']['gabarit'], $tabForms[ $t ]['view']['gabaritparam']);
-            return getUrlFromId($id, $lg, array($tabForms[ $t ]['view']['clef'] => $i));
+        if (!empty($tabForms[$t]['view'])) {
+            $id = getRubFromGabarit($tabForms[$t]['view']['gabarit'], $tabForms[$t]['view']['gabaritparam']);
+            return getUrlFromId($id, $lg, array($tabForms[$t]['view']['clef'] => $i));
         }
     }
 }
@@ -2690,7 +2690,7 @@ class pagination
             return;
         }
 
-        $page = isset($_REQUEST[ $this->requestParamName ]) ? $_REQUEST[ $this->requestParamName ] : 1;
+        $page = isset($_REQUEST[$this->requestParamName]) ? $_REQUEST[$this->requestParamName] : 1;
 
         /**
          * Template de pagination

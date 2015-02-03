@@ -35,7 +35,6 @@
  * */
 
 
-
 if (!$this->editMode) {
     /*
      *
@@ -62,7 +61,6 @@ if (!$this->editMode) {
     $this->addBuffer(' id="genform_' . $name . '" name="genform_' . $name . '">');
 
 
-
     $enums = getEnumValues($this->tab_field, $name);
 
 
@@ -70,26 +68,24 @@ if (!$this->editMode) {
         /*
          * On parcourt les resultats pour la liste de la table externe
          * */
-        if (tradExists('enum_' . $enum)) {
-            $thisValue = $this->trad('enum_' . $enum);
-        } else if (tradExists($name . '_' . $enum)) {
+        if (tradExists($name . '_' . $enum)) {
             $thisValue = $this->trad($name . '_' . $enum);
+        } elseif (tradExists('enum_' . $enum)) {
+            $thisValue = $this->trad('enum_' . $enum);
         } else {
             $thisValue = $enum;
         }
 
 
-
         if (strcmp($this->tab_default_field[$name], $enum) == 0)
-            $this->addBuffer('<option selected="selected" value="' . $enum . '">' . ( $thisValue ) . '</option>');
+            $this->addBuffer('<option selected="selected" value="' . $enum . '">' . ($thisValue) . '</option>');
 
         else
-            $this->addBuffer('<option  value="' . $enum . '"> ' . ( $thisValue ) . '</option>');
+            $this->addBuffer('<option  value="' . $enum . '"> ' . ($thisValue) . '</option>');
     }
 
     /* FIN DU SELECT */
     $this->addBuffer('</select>');
-
 
 
     /* On peut modifier cet element */
@@ -99,10 +95,17 @@ if (!$this->editMode) {
      * */
 
     if ($this->tab_default_field[$tab_name]) {
-        /* Uniquement si on a dï¿½ï¿½une valeur */
 
+        $enum = $this->tab_default_field[$tab_name];
+        if (tradExists($name . '_' . $enum)) {
+            $thisValue = $this->trad($name . '_' . $enum);
+        } else if (tradExists('enum_' . $enum)) {
+            $thisValue = $this->trad('enum_' . $enum);
+        } else {
+            $thisValue = $enum;
+        }
 
-        $this->addBuffer($this->trad('enum_' . $this->tab_default_field[$tab_name]));
+        $this->addBuffer($thisValue);
     }
 }
-?>
+
