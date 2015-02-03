@@ -26,7 +26,7 @@ if (count($_POST)) {
     reset($_POST);
     while (list($k, $v) = each($_POST)) {
         if (substr($k, -2) == "_x" || substr($k, -2) == "_y") {
-            $_POST[ substr($k, 0, -2) ] = $v;
+            $_POST[substr($k, 0, -2)] = $v;
         }
     }
     reset($_POST);
@@ -70,8 +70,8 @@ function getTableListing($table, $from = '')
     global $_Gconfig;
 
 
-    if (!empty($GLOBALS['tableListing'][ $from . $table ])) {
-        return $GLOBALS['tableListing'][ $from . $table ];
+    if (!empty($GLOBALS['tableListing'][$from . $table])) {
+        return $GLOBALS['tableListing'][$from . $table];
     }
 
     if ($from) {
@@ -82,8 +82,8 @@ function getTableListing($table, $from = '')
     }
 
     if ($liste) {
-        $GLOBALS['tableListing'][ $from . $table ] = $_Gconfig['specialListing'][ $from . '.' . $table ]();
-        return $GLOBALS['tableListing'][ $from . $table ];
+        $GLOBALS['tableListing'][$from . $table] = $_Gconfig['specialListing'][$from . '.' . $table]();
+        return $GLOBALS['tableListing'][$from . $table];
     } else {
 
         $sql = 'SELECT G.* FROM ' . $table . ' AS G WHERE 1 ';
@@ -99,9 +99,9 @@ function getTableListing($table, $from = '')
         $sql .= ' ORDER BY ' . $nomSql;
         $result = GetAll($sql);
 
-        $GLOBALS['tableListing'][ $table ] = $result;
+        $GLOBALS['tableListing'][$table] = $result;
 
-        return $GLOBALS['tableListing'][ $table ];
+        return $GLOBALS['tableListing'][$table];
     }
 }
 
@@ -115,17 +115,14 @@ function getTableListing($table, $from = '')
 function getNomForValue($titre, $row)
 {
 
-
     if (is_array($titre)) {
         reset($titre);
-
+        $nomSee = '';
         while (list(, $chp) = each($titre)) {
-
-            $nomSee .= " " . $row[ $chp ] . "";
+            $nomSee .= " " . $row[$chp] . "";
         }
-        // $nomSee = substr($nomSee,0,-2);
     } else {
-        $nomSee = $row[ $titre ];
+        $nomSee = $row[$titre];
     }
 
     return $nomSee;
@@ -181,14 +178,15 @@ function GetTitleFromTableOLD($table, $separator = " ")
     /**
      * Si on a plusieurs champs titre
      */
-    if (!is_array($tabForms[ $table ]['titre'])) {
-        $tabForms[ $table ]['titre'] = array($tabForms[ $table ]['titre']);
+    if (!is_array($tabForms[$table]['titre'])) {
+        $tabForms[$table]['titre'] = array($tabForms[$table]['titre']);
     }
 
+    $titre = '';
     /**
      * On parcourt tous les champs
      */
-    foreach ($tabForms[ $table ]['titre'] as $k => $v) {
+    foreach ($tabForms[$table]['titre'] as $k => $v) {
 
         /**
          * On ne met le séparateur qu'à partir du second
@@ -198,9 +196,8 @@ function GetTitleFromTableOLD($table, $separator = " ")
         /**
          * Si le champ existe c'est un champ normal
          */
-        if ($fields[ $v ]) {
+        if ($fields[$v]) {
             $titre .= $sep . '' . $v;
-
             /**
              * sinon c'est un champ de langue
              */
@@ -215,22 +212,6 @@ function GetTitleFromTableOLD($table, $separator = " ")
             }
         }
     }
-    //$titre = implode($separator,$tabForms[$table]['titre']);
-    /*
-      } else {
-      $titre = $row[$tabForms[$table]['titre']];
-      $v = $titre;
-      if($fields[$v]) {
-      $titre .= $separator.''.$v;
-      } else {
-      $titre .= $separator.''.$v.'_'.ADMIN_LG_DEF;
-      if(ADMIN_LG_DEF != LG) {
-      $titre .= $separator.''.$v.'_'.LG;
-      }
-      }
-
-      }
-     */
 
     return $titre;
 }
@@ -269,9 +250,9 @@ function GetOnlyEditableVersion($table, $aliase = '')
     } else if (in_array($table, $_Gconfig['multiVersionTable'])) {
 
         return ' AND ' . $aliase . MULTIVERSION_FIELD . ' = ' . $aliase . getPrimaryKey($table);
-    } else if (isset($_Gconfig['relOne'][ $table ])) {
+    } else if (isset($_Gconfig['relOne'][$table])) {
         $i = 0;
-        foreach ($_Gconfig['relOne'][ $table ] as $clef => $tabl) {
+        foreach ($_Gconfig['relOne'][$table] as $clef => $tabl) {
             $i++;
             return ' AND ' . $aliase . '' . $clef . ' = T' . $i . '.' . getPrimaryKey($tabl);
         }
@@ -319,7 +300,7 @@ function tradExists($str, $lg = false)
 {
     global $admin_trads;
     if ($lg) {
-        return (array_key_exists($str, $admin_trads) && $admin_trads[ $str ][ $lg ] != '');
+        return (array_key_exists($str, $admin_trads) && $admin_trads[$str][$lg] != '');
     } else {
         return array_key_exists($str, $admin_trads);
     }
@@ -355,18 +336,18 @@ if (!function_exists("ta")) {
 
         $trads = $admin_trads;
 
-        if (isset($trads[ $nom ][ LG ])) {
-            return $trads[ $nom ][ LG ];
-        } else if (isset($trads[ $nom ][ LG_DEF ])) {
-            return $trads[ $nom ][ LG_DEF ];
+        if (isset($trads[$nom][LG])) {
+            return $trads[$nom][LG];
+        } else if (isset($trads[$nom][LG_DEF])) {
+            return $trads[$nom][LG_DEF];
         } else if (!strstr($nom, ".")) {
 
             $t = explode("_", $nom);
             $text = "";
-            $GLOBALS['MISSINGS'][ $nom ] = true;
+            $GLOBALS['MISSINGS'][$nom] = true;
             if (count($t) > 1) {
                 for ($p = 1; $p < count($t); $p++) {
-                    $text .= ucfirst($t[ $p ]) . " ";
+                    $text .= ucfirst($t[$p]) . " ";
                 }
                 return $text;
             } else {
@@ -668,7 +649,7 @@ function getArboOrdered($start = 'NULL', $maxlevel = 99999, $curlevel = 0, $tab 
 
 function addRowToTab($row, $curlevel)
 {
-    return array('id' => $row['rubrique_id'], 'titre' => $row[ 'rubrique_titre_' . LG_DEF ], 'type' => $row['rubrique_type'], 'level' => $curlevel);
+    return array('id' => $row['rubrique_id'], 'titre' => $row['rubrique_titre_' . LG_DEF], 'type' => $row['rubrique_type'], 'level' => $curlevel);
 }
 
 function getListingRubrique()
@@ -677,7 +658,7 @@ function getListingRubrique()
     $tab = getArboOrdered();
 
     foreach ($tab as $k => $v) {
-        $tab[ $k ][ 'rubrique_titre_' . LG ] = str_repeat('&nbsp;&nbsp;&nbsp;', $v['level'] - 1) . ' ' . $v[ 'rubrique_titre_' . LG ];
+        $tab[$k]['rubrique_titre_' . LG] = str_repeat('&nbsp;&nbsp;&nbsp;', $v['level'] - 1) . ' ' . $v['rubrique_titre_' . LG];
     }
 
     return $tab;
@@ -842,7 +823,7 @@ class MySQLDump
             for ($x = 0; $x < mysql_num_rows($result); $x++) {
                 $table = mysql_tablename($result, $x);
                 if (!empty($table)) {
-                    $arr_tables[ $c ] = mysql_tablename($result, $x);
+                    $arr_tables[$c] = mysql_tablename($result, $x);
                     $c++;
                 }
             }
@@ -852,11 +833,13 @@ class MySQLDump
             $dump .= "-- \n";
             //   $dump .= '-- MySQL DATABASE DUMPER. Copyright Sergey Shilko &reg;\n\n 2007'."\n";
             $dump .= "-- \n\n";
-
+            $structure = '';
+            $AA = '';
+            $data = '';
             for ($y = 0; $y < count($arr_tables); $y++) {
 
                 // DB Table name
-                $table = $arr_tables[ $y ];
+                $table = $arr_tables[$y];
                 if ($nostruct == false) {
 
                     // Structure Header
@@ -877,7 +860,7 @@ class MySQLDump
                         }
                         $structure .= ($row->Null != "YES") ? " NOT NULL" : false;
                         if ($row->Null == "YES") {
-                            $NULLS[ $row->Field ] = $row->Field;
+                            $NULLS[$row->Field] = $row->Field;
                         } else {
 
                         }
@@ -895,7 +878,7 @@ class MySQLDump
                     while ($row = mysql_fetch_object($result)) {
 
                         if (($row->Key_name == 'PRIMARY') AND ($row->Index_type == 'BTREE')) {
-                            $index['PRIMARY'][ $row->Key_name ][] = $row->Column_name;
+                            $index['PRIMARY'][$row->Key_name][] = $row->Column_name;
                             /*
                               if($index['PRIMARY'][$row->Key_name])
                               $index['PRIMARY'][$row->Key_name] = array($index['PRIMARY'][$row->Key_name],$row->Column_name);
@@ -905,15 +888,15 @@ class MySQLDump
                         }
 
                         if (($row->Key_name != 'PRIMARY') AND ($row->Non_unique == '0') AND ($row->Index_type == 'BTREE')) {
-                            $index['UNIQUE'][ $row->Key_name ] = $row->Column_name;
+                            $index['UNIQUE'][$row->Key_name] = $row->Column_name;
                         }
 
                         if (($row->Key_name != 'PRIMARY') AND ($row->Non_unique == '1') AND ($row->Index_type == 'BTREE')) {
-                            $index['INDEX'][ $row->Key_name ] = $row->Column_name;
+                            $index['INDEX'][$row->Key_name] = $row->Column_name;
                         }
 
                         if (($row->Key_name != 'PRIMARY') AND ($row->Non_unique == '1') AND ($row->Index_type == 'FULLTEXT')) {
-                            $index['FULLTEXT'][ $row->Key_name ] = $row->Column_name;
+                            $index['FULLTEXT'][$row->Key_name] = $row->Column_name;
                         }
                     }
 
@@ -937,7 +920,7 @@ class MySQLDump
                                 $structure .= ($xy == "INDEX") ? "  KEY `{$column_key}` (`{$column_name}`)" : false;
                                 $structure .= ($xy == "FULLTEXT") ? "  FULLTEXT `{$column_key}` (`{$column_name}`)" : false;
 
-                                $structure .= ($c < (count($index[ $xy ]))) ? ",\n" : false;
+                                $structure .= ($c < (count($index[$xy]))) ? ",\n" : false;
                             }
                         }
                     }
@@ -980,7 +963,7 @@ class MySQLDump
                         for ($x = 0; $x < $num_fields; $x++) {
                             $field_name = mysql_field_name($result, $x);
 
-                            if ($NULLS[ $field_name ] && $row->$field_name == "") {
+                            if ($NULLS[$field_name] && $row->$field_name == "") {
                                 $data .= "NULL";
                             } else {
                                 $data .= "'" . str_replace('\"', '"', mysql_escape_string($row->$field_name)) . "'";
@@ -1054,7 +1037,7 @@ function setAllUrls()
 
     $langues_sources = array();
     foreach ($_Gconfig['LANGUAGES'] as $v) {
-        $langues_sources[ $v ] = $v;
+        $langues_sources[$v] = $v;
     }
     $f->add('select', $langues_sources, t('langue_source'), 'langue_source');
     //$f->add('select', $_Gconfig['LANGUAGES'], t('langue_source'), 'langue_source');
@@ -1071,8 +1054,8 @@ function getPicto($nom, $taille = "32x32")
         return;
     }
     $p = '';
-    if (!empty($tabForms[ $nom ]['picto'])) {
-        $p = $tabForms[ $nom ]['picto'];
+    if (!empty($tabForms[$nom]['picto'])) {
+        $p = $tabForms[$nom]['picto'];
     } else if (tradExists($nom)) {
         $p = t($nom);
     }
@@ -1114,11 +1097,13 @@ function cleanFiles()
 
     echo '<form id="todels" method="post" action="index.php" >
 			<input type="hidden" name="globalAction" value="cleanFiles" />';
+    $useless = 0;
+    $totf = 0;
     if ($tables = opendir('../' . $uploadRep)) {
 
         while (false !== ($table = readdir($tables))) {
 
-            if ($table != '.' && $table != '..' && is_dir('../' . $uploadRep . '/' . $table) && !$specialUpload[ $table ] && in_array($table, $tbs)) {
+            if ($table != '.' && $table != '..' && is_dir('../' . $uploadRep . '/' . $table) && !$specialUpload[$table] && in_array($table, $tbs)) {
 
                 $handle = opendir('../' . $uploadRep . '/' . $table);
                 while (false !== ($file = readdir($handle))) {
@@ -1178,7 +1163,7 @@ function autoGeocodeAllFields()
 
         foreach ($_REQUEST['table'] as $table) {
 
-            $code = $_Gconfig['mapsFields'][ $table ];
+            $code = $_Gconfig['mapsFields'][$table];
             foreach ($code as $chps) {
 
                 if (!$chps) {
@@ -1304,4 +1289,14 @@ function getAdminLink($menu)
 
         return 'index.php?userAction=' . $menu;
     }
+}
+
+
+function createAndInstallPlugin($nom)
+{
+    $p = array('plugin_nom' => $nom);
+    global $co;
+    $co->autoExecute('s_plugin', $p, 'INSERT');
+    $a = new genAction('installPlugin', 's_plugin', $nom);
+    $a->doit();
 }
