@@ -1,0 +1,64 @@
+# Changelog 1.1 #
+
+## Main updates ##
+
+  * Added date\_online date\_offline possibility for all objects
+  * News download plugin
+  * Import any data through "datas.xml" file during plugin install
+  * Improved simpleForm
+  * Action d'actions sur les relations inverses
+
+## Other changes ##
+  * Added css class of field type on enclosing div
+  * Added radio field support for addSpecificField
+  * Cleaned code
+  * Fixed quote bug
+  * Fixed $relinv deletion bug when canceling then deleting a "new" element.
+  * Single default language
+  * Fixed missing parenthesis ...
+  * Added ocms\_download plugin
+  * Added support for automatic import of datas.xml in plugins installation
+  * Fixed MassiveActionsCall
+  * Fixed massiveAction
+  * Cleaned HTML template of search Result
+  * Fixed multiAction
+  * Fixed recursRelinv when multiple sources
+  * Fixed XSS bug in login field
+  * Changed default submit not to be as Image
+  * Added Date field type
+  * Fixed printMedia on Images
+  * Cleaned nicedate\_interval function
+  * Added online / offline dates in sqlOnlyOnline
+  * Added Image Filters
+  * added tostring method to return getWebUrl
+  * Added "bloc" CSS class on all blocs
+  * Moved Plugin params at the top, so they are loaded even if no Gabarit is used
+  * Added check to prevent multiple declaration of same variable in a template
+  * added genRubrique::params with all the rubrique Params as Array
+  * Split Loading of front plugins and pluign instantiation in two different loops, so each plugin may refer to another
+  * Added direct access to $file1 Genfile object from template
+  * Added "level" of recursion
+  * Added default translations
+  * Backported modifications to support multiple fields in login forms
+  * Changed default not to submit as Image
+  * Added BigMenus possibility
+  * Updated TinyMce to build 3.2.7
+  * Changed style of rubrique\_gabarit\_param field to "disable" it
+  * Added relinvaction
+  * Fixed bug when moving done the last created rubrique
+  * Correction bug actions sur les rows
+  * Affichage des actions par row sur les relinv
+  * Fixed a bug with "folder" url generation when multiple sublevels
+  * Added type "captcha\_question" to genContact.php
+  * Fixed issues with page creation
+  * Moved plugins to plugins\_base to avoid modifications
+  * Added "remember me" option to login form
+  * Fixed bug in backupDb
+  * Added detection of writable folders during install
+  * Solved a bug in $relinv access for people with row restricted access
+  * Added support form "select multiple" in "rubrique params"
+  * Fixed a bug in VersionedTable during simpleSearch
+  * Removed a $relinv to FIX MAJOR BUG : Page validation removed sub-pages
+  * Removed useless commented code
+  * Changed the default Validate for the Rubrique. Now using objDuplication like other duplications
+  * Removed the non longer used tableRel "r\_admin\_rubrique"

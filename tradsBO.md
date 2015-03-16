@@ -1,0 +1,44 @@
+# Modifier les traductions du BO #
+
+Nous allons voir comment modifier les titres, les images et les textes d'aide des champs.
+
+## Directement dans un formulaire ##
+
+Rendez-vous sur un formulaire contenant les champs dont vous souhaitez modifier la traduction.
+Rajoutez dans l'url de la page le paramètre "editTrads=1" comme ci-dessous :
+
+![http://www.opixido.com/ocms/screen/textesParam/editTrads.png](http://www.opixido.com/ocms/screen/textesParam/editTrads.png)
+
+1 - Cliquez sur le symbole "+" bleu pour modifier le nom du champ
+2 - Cliquez sur l'icône pour modifier l'icône du champ
+3 - Cliquez sur le symbole "+" bleu près du point d'interrogation pour modifier le texte d'aide.
+
+![http://www.opixido.com/ocms/screen/textesParam/editTrads2.png](http://www.opixido.com/ocms/screen/textesParam/editTrads2.png)
+
+Vous obtiendrez :
+
+![http://www.opixido.com/ocms/screen/textesParam/editTrads3.png](http://www.opixido.com/ocms/screen/textesParam/editTrads3.png)
+
+Pour enregistrer ensuite les modifications, cliquez simplement sur le bouton "Enregistrer".
+
+Note : pour retirer cet éditeur, passez le paramètre à "editTrads=0"
+
+## Via les textes paramétrables ##
+
+Dans l'accueil du Back-office, sélectionnez le lien "Textes de l'admin" (paramètre "curTable=s\_admin\_trad").
+
+![http://www.opixido.com/ocms/screen/textesParam/s_admin_trad.png](http://www.opixido.com/ocms/screen/textesParam/s_admin_trad.png)
+
+Vous pouvez ajouter à cet endroit tous les champs et noms de tables à traduire.
+
+## Dans la config ##
+
+Vous pouvez finalement rajouter dans le fichier "config.php" de votre plugin les traductions du back-office comme ci-dessous :
+
+```
+
+$admin_trads['actualite_titre']['fr'] = 'Titre de l\'actualité';
+//Attention, 'actualite_titre_fr' ne fonctionne pas
+```
+
+Note : n'oubliez pas de déclarer la variable globale "$admin\_trads".

@@ -1,0 +1,23 @@
+# Le système de cache #
+
+## Une rapidité d'affichage accrue ##
+
+Un système de cache avancé améliore la rapidité de réponse du site. Tant qu'un contenu n'est pas modifié, il est stocké dans un fichier temporaire, évitant de régénérer le contenu à chaque visite d'un internaute. La vitesse de chargement des pages est donc optimale grâce à ce système.
+
+## Administration ##
+
+Il est possible de vider ce cache à partir du back-office.
+Pour cela, sur la page d'administration, cliquez sur le lien "Vider le cache" sur la colonne de droite.
+Sélectionnez ensuite le type de cache à vider.
+
+![http://www.opixido.com/ocms/screen/vider-cache.png](http://www.opixido.com/ocms/screen/vider-cache.png)
+
+  * CMS : fichiers qui génèrent le CMS
+  * Pages : contenu des pages
+  * Thumbs : les images recadrées
+  * CSS : les fichiers CSS de mise en page du site
+  * AdminCSS : les fichiers CSS de la partie admin
+
+## Développement ##
+
+Plus d'informations sur la classe _genCache_ sur [cette page](Classes.md).

@@ -1,0 +1,11 @@
+# Création de plugins #
+
+## Introduction ##
+
+Un système de « plugins » permet de compléter les fonctionnalités de base d’OCMS par des fonctionnalités plus spécifiques. Chaque plugin est développé sur mesure pour répondre exactement aux objectifs et aux fonctionnalités attendues du site.
+
+Cela concerne par exemple des données particulières stockées en base de données, des rubriques ayant des fonctionnalités précises (formulaire de contact, agenda, actualités,…). Il sera tout à fait possible selon l’évolution souhaitée de votre site internet d’ajouter de nouvelles fonctionnalités.
+
+Vous trouverez sur [cette page](http://code.google.com/p/opixido-ocms/wiki/pluginsDeBase) les Plugins de base proposés par OCMS
+
+## Création d'un Plugin complet ##

@@ -1,0 +1,9 @@
+# Les images #
+
+## Vos images valorisées ##
+
+Les images ajoutées au site via le back office peuvent être redimensionnées soit automatiquement (leur taille est spécifiée lors de la construction du site) ou bien manuellement grâce à un outil prévu à cet effet et intégré à l’interface d’administration. Pour optimiser le référencement, vous aurez la possibilité de renseigner le champ « alt ».
+
+## Fonctionnement de l'outil de recadrage, de découpage et de redimensionnement ##
+
+![http://www.opixido.com/ocms/screen/outil-image.png](http://www.opixido.com/ocms/screen/outil-image.png)

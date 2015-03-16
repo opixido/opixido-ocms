@@ -1,0 +1,31 @@
+# Gestion des langues #
+
+## Fonctionnement ##
+
+L'OCMS permet de gérer un site multilingue très simplement : la zone de saisie d’un contenu est dupliquée autant de fois qu'il y a de langues. Pour chaque élément de contenu (titre, paragraphe, image, ressources…) un onglet sous forme de drapeau permet de sélectionner la langue concernée.
+Si un contenu n’existe pas dans une langue, l'OCMS va chercher automatiquement la version dans la langue par défaut.
+
+![http://www.opixido.com/ocms/screen/gestion-langues.png](http://www.opixido.com/ocms/screen/gestion-langues.png)
+
+## Gestion multilingue / UTF-8 par défaut ##
+
+![http://www.opixido.com/ocms/screen/ocms_9.gif](http://www.opixido.com/ocms/screen/ocms_9.gif)
+
+![http://www.opixido.com/ocms/screen/ocms_10.gif](http://www.opixido.com/ocms/screen/ocms_10.gif)
+
+
+## Formulaire back-office ##
+
+Pour ajouter une zone de saisie d'un contenu, il suffit, dans votre fichier "_form.php_", de faire appel à la fonction "_genlg()_"
+```
+
+<?php
+// include/plugins/actualites/forms/actualite.form.php
+
+//actualite_img ne gère pas plusieurs langues
+$this->gen('actualite_img');
+
+//La table contient les attributs actualite_titre_fr et actualite_titre_en par exemple
+$this->genlg('actualite_titre');
+?>
+```

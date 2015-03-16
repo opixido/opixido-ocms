@@ -1,0 +1,22 @@
+# Le référencement #
+
+## Le fonctionnement ##
+
+A chaque rubrique peuvent être associés des mots-clés et une description du contenu, permettant aux moteurs de recherche d’indexer au mieux le site. En outre les urls sont construites dynamiquement à partir du titre des rubriques, de manière à ce qu'elles soient explicites, ce qui améliore également le référencement.
+
+![http://www.opixido.com/ocms/screen/referencement.png](http://www.opixido.com/ocms/screen/referencement.png)
+
+  * Le champs "_keywords_" permet renseigner les mots clés utilisés pour un bon référencement
+  * Le champ "_description_" permet de renseigner la description du contenu de la page pour un référencement optimum
+  * Le champ "_url_" permet de gérer la réécriture des URL à laquelle la page est accessible
+
+## Le rendu ##
+
+Comme vous pouvez le voir sur l'image ci-dessous, les mots clés et la description ont bien été intégrés dans l'entête de la page.
+
+![http://www.opixido.com/ocms/screen/referencement-code-source.png](http://www.opixido.com/ocms/screen/referencement-code-source.png)
+
+## Modification des entêtes (Header) dans le code ##
+
+Il est possible, lors de la création d'un Gabarit/plugin, de modifier les entêtes HTML du site (balises Meta, Titre de page, ...).
+Plus d'informations [sur cette page](Classes#Headers_de_page_(genHeaders)_(include/global/genHeaders.php).md)

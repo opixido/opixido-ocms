@@ -1,0 +1,65 @@
+# La configuration du Back-Office #
+
+Doc : _include/config/config.base.php_
+
+Exemple de configuration sur [cette page](GabaritBO.md).
+
+## Ajouter la configuration d'un gabarit ##
+
+Documentation sur [cette page](GabaritBO.md).
+
+## Configurer les menus ##
+
+  * Ouvrez ue fichier de configuration "_config.php_".
+
+  * Déclarez toutes ces variables globales qui nous seront utiles plus tard :
+```
+
+global $tabForms,$uploadFields,$_Gconfig,$relinv,$orderFields,$admin_trads, $gs_roles, $rteFields, $relations, $tablerel, $basePath, $admin_trads,$searchField;
+```
+
+  * Pour ajouter un lien/bouton vers la gestion dans le back-office :
+
+```
+
+//Ajoute un bloc dans le "bigMenu"
+$_Gconfig['bigMenus']['nomPlugin'][] = 'nomTable';
+```
+ou
+```
+
+//Ajoute un lien dans le menu admin
+$_Gconfig['adminMenus']['nouveauGabarit'] = 'nomtable';
+```
+
+  * Pour modifier le titre du bouton et ajouter un icône :
+```
+
+//traduction du texte
+$admin_trads["cp_txt_nomTable"]["fr"] = "Nom de mon gabarit";
+
+//Ajout de l'icône
+$tabForms["nomTable"]["picto"] = ADMIN_PICTOS_FOLDER."32x32/apps/internet-news-reader.png";
+```
+
+**Important: n'oubliez pas de rajouter le plugin dans le back-office et de l'installer!**
+
+## Créer ou modifier la configuration d'un menu plus rapidement ##
+
+Il existe un outil pour récupérer plus rapidement le code de configuration.
+Pour cela, rendez-vous dans la section "Créer un plugin".
+![http://www.opixido.com/ocms/screen/creer-plugin.png](http://www.opixido.com/ocms/screen/creer-plugin.png)
+  * Sélectionnez la table du plugin.
+  * Pour chaque champ :
+    * Cochez "label" s'il doit apparaître dans la liste
+    * Cochez "Wysiwyg" si le champ peut contenir du HTML
+    * Sélectionnez la table sur lequel pointe la clef étrangère, type "1,n" (le champ commmence par "_fk..._")
+    * Cochez "Obligatoire" s'il ne doit pas être nul
+    * Cochez "Url" ou "Mail" si le champ est respectivement un lien ou une adresse mail
+    * Indiquez le nom de l'onglet contenant les champs à générer
+    * Indiquez la traduction du champ
+  * Sélectionnez les tables de relation de type "n,n"
+  * Entrez un nom pour le plugon
+  * Sélectionnez une rubrique dans laquelle afficher le plugin
+  * Choisissez un icône pour votre plugin
+Cliquez ensuite sur "Créer" et copiez/collez le résultat dans votre fichier de config.

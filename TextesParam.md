@@ -1,0 +1,25 @@
+# Les textes paramétrables #
+
+## Introduction ##
+
+Les textes paramétrables sont des mots/textes que vous pouvez ajouter dans gabarits et vos templates, et qui seront modifiables via l'interface d'administration. De plus, le texte pourra différer en fonction de la langue du site.
+
+## Fonctionnement ##
+
+Pour ajouter un texte paramétrable dans du code, il suffit simplement d'appeler la fonction _t()_ en lui ajoutant en paramètre l'_id_ du texte (une chaîne de caractère).
+
+Pour définir ou modifier le texte, rendez-vous dans la partie administration, sélectionnez "Textes paramétrables".
+
+![http://www.opixido.com/ocms/screen/textesParam/lien.png](http://www.opixido.com/ocms/screen/textesParam/lien.png)
+
+## Exemple et démonstration ##
+
+Imaginons que dans votre template, vous souhaitiez mettre un lien vers les actus :
+
+![http://www.opixido.com/ocms/screen/textesParam/texte.png](http://www.opixido.com/ocms/screen/textesParam/texte.png)
+
+Ensuite, rendez-vous dans la partie admin, "Textes paramétrables", et cliquez sur "Ajouter un élément".
+
+Rentrez l'_id_ de votre texte paramétrable (_voir\_les\_actus_) et entrez la traduction du texte. Vous pouvez le traduire en autant de langues que disponibles :
+
+![http://www.opixido.com/ocms/screen/textesParam/id.png](http://www.opixido.com/ocms/screen/textesParam/id.png)
