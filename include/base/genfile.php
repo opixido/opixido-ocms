@@ -221,8 +221,9 @@ class genFile
                 $this->webPath = str_replace($_SERVER['DOCUMENT_ROOT'], '', $this->systemPath);
             } else if (strpos($this->valeur, '/') !== false) {
 
-                $this->systemPath = dirname(path_concat($_SERVER['DOCUMENT_ROOT'], $this->valeur)) . '/';
+                $this->systemPath = dirname(path_concat($_SERVER['DOCUMENT_ROOT'], BU, $this->valeur)) . '/';
                 $this->webPath = dirname($this->valeur) . '/';
+                $this->webPath = path_concat(BU, $this->addSlashPath($this->webPath));
                 $this->fileName = $this->realName;
             } else {
 
