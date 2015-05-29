@@ -29,4 +29,4 @@ if (!$this->editMode) {
             });
         });
     </script>
-<? } ?>
+<?php } 
