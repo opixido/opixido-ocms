@@ -1642,10 +1642,10 @@ class genActionShowMV extends baseAction
 
             if ($row[ getPrimaryKey($this->table) ] != $this->id) {
                 p('<tr class=""><td>');
-                p('<a href="?curTable=' . $this->table . '&amp;curId=' . $row[ getPrimaryKey($this->table) ] . '&amp;resume=1">' . GetTitleFromRow($this->table, $row));
+                p('<a href="?curTable=' . $this->table . '&amp;curId=' . $row[ getPrimaryKey($this->table) ] . '&amp;resume=1">' . htmlentities(GetTitleFromRow($this->table, $row), ENT_QUOTES, 'utf-8'));
             } else {
                 p('<tr class="info"><td>');
-                p(GetTitleFromRow($this->table, $row));
+                p(htmlentities(GetTitleFromRow($this->table, $row), ENT_QUOTES, 'utf-8'));
             }
 
 
