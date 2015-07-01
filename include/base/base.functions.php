@@ -1886,7 +1886,7 @@ function getDescFromRow($table, $row, $limit = 60, $separator = " ")
 
     $titre = '';
     if (!is_array($tabForms[$table]['desc'])) {
-        $tabForms[$table]['desc'] = array(is_array($tabForms[$table]['desc']));
+        $tabForms[$table]['desc'] = array($tabForms[$table]['desc']);
     }
     reset($tabForms[$table]['desc']);
     while (list($k, $v) = each($tabForms[$table]['desc'])) {
