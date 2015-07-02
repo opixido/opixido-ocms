@@ -81,7 +81,7 @@ if (!$this->editMode) {
     ?>
 
     <script type="text/javascript"
-            src="http://maps.googleapis.com/maps/api/js?sensor=false">
+            src="https://maps.googleapis.com/maps/api/js?sensor=false">
     </script>
 
     <script type="text/javascript">
@@ -165,5 +165,5 @@ if (!$this->editMode) {
 
     $ll = $this->tab_default_field[$chp_lat] . ',' . $this->tab_default_field[$chp_lon];
     $this->addBuffer('(' . $ll . ')');
-    $this->addBuffer('<a target="_blank" href="http://maps.google.com/?q=(' . $ll . ')"><img src="http://maps.googleapis.com/maps/api/staticmap?size=300x300&sensor=false&center=' . $ll . '&zoom=13&markers=' . $ll . '" alt="" /></a>');
+    $this->addBuffer('<a target="_blank" href="https://maps.google.com/?q=(' . $ll . ')"><img src="https://maps.googleapis.com/maps/api/staticmap?size=300x300&sensor=false&center=' . $ll . '&zoom=13&markers=' . $ll . '" alt="" /></a>');
 }
