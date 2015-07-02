@@ -87,44 +87,43 @@ if (!$this->editMode) {
     <script type="text/javascript">
 
 
-
-        $('#map_field_<?php echo $name ?> button.usecenter').click(function() {
+        $('#map_field_<?php echo $name ?> button.usecenter').click(function () {
             marker.setPosition(map.getCenter());
             $('#genform_<?php echo $chp_lat ?>').val(map.getCenter().lat());
             $('#genform_<?php echo $chp_lon ?>').val(map.getCenter().lng());
             return false;
         });
 
-        $('#map_field_<?php echo $name ?> button.geocode').click(function() {
+        $('#map_field_<?php echo $name ?> button.geocode').click(function () {
             var fields = <?php echo json_encode($chpsAuto2) ?>;
             var address = '';
             for (p in fields) {
                 t = fields[p];
-                if($("#genform_"+t).length) {
-                    address += $("#genform_"+t).val()+' ';
+                if ($("#genform_" + t).length) {
+                    address += $("#genform_" + t).val() + ' ';
                 } else {
-                    address += t+' ';
+                    address += t + ' ';
                 }
             }
             codeAddress(address);
             return false;
         });
 
-        var latlng = new google.maps.LatLng(<?= $this->tab_default_field[$chp_lat] ?>,<?= $this->tab_default_field[$chp_lon] ?>);
+        var latlng = new google.maps.LatLng(<?= $this->tab_default_field[$chp_lat] ?>, <?= $this->tab_default_field[$chp_lon] ?>);
         var myOptions = {
             zoom: 8,
-            center:latlng,
+            center: latlng,
             mapTypeId: google.maps.MapTypeId.ROADMAP
         };
 
-        var map = new google.maps.Map(document.getElementById("map_field_<?php echo $name ?>_map"),myOptions);
+        var map = new google.maps.Map(document.getElementById("map_field_<?php echo $name ?>_map"), myOptions);
         var marker = new google.maps.Marker({
             map: map,
             position: latlng,
-            draggable:true
+            draggable: true
         });
-                
-        google.maps.event.addListener(marker, 'position_changed', function() {
+
+        google.maps.event.addListener(marker, 'position_changed', function () {
             $('#genform_<?php echo $chp_lat ?>').val(marker.getPosition().lat());
             $('#genform_<?php echo $chp_lon ?>').val(marker.getPosition().lng());
         });
@@ -133,21 +132,22 @@ if (!$this->editMode) {
         var geocoder = new google.maps.Geocoder();
 
 
-            
         function codeAddress(address) {
-            geocoder.geocode( { 'address': address}, function(results, status) {
+            geocoder.geocode({'address': address}, function (results, status) {
                 if (status == google.maps.GeocoderStatus.OK) {
 
                     map.setCenter(results[0].geometry.location);
                     marker.setPosition(results[0].geometry.location);
                     /* marker = new google.maps.Marker({
-                        map: map,
-                        position: results[0].geometry.location
-                    });
-                        
+                     map: map,
+                     position: results[0].geometry.location
+                     });
 
-                    $('#genform_<?php echo $chp_lat ?>').val(results[0].geometry.location.lat());
-                    $('#genform_<?php echo $chp_lon ?>').val(results[0].geometry.location.lng());
+
+                     $('#genform_
+                    <?php echo $chp_lat ?>').val(results[0].geometry.location.lat());
+                     $('#genform_
+                    <?php echo $chp_lon ?>').val(results[0].geometry.location.lng());
                      */
                 } else {
                     alert("Geocode was not successful for the following reason: " + status);
@@ -159,7 +159,7 @@ if (!$this->editMode) {
 
 
 
-    <?php
+<?php
 } else {
 
 
