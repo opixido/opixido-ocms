@@ -147,7 +147,7 @@ class genRecord
                  * Si on est dans une relOne on ajoute l'enregistrement
                  * dans l'autre table
                  */
-                if (!empty($_REQUEST['relOne'])) {
+                if (!empty($_REQUEST['relOne']) && $_SESSION[gfuid()]['nbLevels'] == 0) {
                     insertEmptyRecord($_REQUEST['relOne'], $this->id);
                 }
 
