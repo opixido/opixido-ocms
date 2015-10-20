@@ -511,7 +511,7 @@ class genUrlV2
                     /**
                      * Recherche du dossier en cours
                      */
-                    $where = ' WHERE R1.rubrique_url_' . $this->lg . '= ' . sql($dossier) . ' ';
+                    $where = ' WHERE R1.rubrique_url_' . $this->lg . '= ' . sql(urldecode($dossier)) . ' ';
 
 
                     if ($k == 0) {
