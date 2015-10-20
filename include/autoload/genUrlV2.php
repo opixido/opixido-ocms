@@ -31,46 +31,60 @@ class genUrlV2
      * @var array
      */
     public $tabUrl;
-
-    /**
-     * Langue en cours
-     * @var string
-     */
-    private $lg;
-
     /**
      * Liste des sous rubriques virtuelles supplémentaires
      * @var array
      */
     public $roadSup;
-
-    /**
-     * Si les paramètres passés doivent être différents dans une autre langue
-     */
-    private $otherLgParamsUrl;
-
     /**
      * Liste des paramètres passés dans l'URL
      */
     public $paramsUrl = array();
-
     /**
      * Liste des paramètres passés dans l'URL
      */
     public $paramsOrdered = array();
-
     /**
      * Rubrique de niveau 0
      */
     public $topRubId;
-
     /**
      * Est-ce un minisite ?
      * @var bool
      */
     public $minisite;
     public $paramsAsIndex = array();
-
+    /**
+     * Identifiant de la rubrique en cours
+     */
+    public $rubId = 0;
+    /**
+     * Liste des dossiers parsés avec rubriques et paramètres
+     * @var boolean
+     */
+    public $parsedUrl = false;
+    public $rootHomeId = 0;
+    /**
+     * cache du chemin de fer construit
+     *
+     * @var array
+     */
+    public $builtRoad = array();
+    /**
+     * Tableau des menus de notre siteroot actuel
+     *
+     * @var array
+     */
+    public $menus = array();
+    /**
+     * Langue en cours
+     * @var string
+     */
+    private $lg;
+    /**
+     * Si les paramètres passés doivent être différents dans une autre langue
+     */
+    private $otherLgParamsUrl;
     /**
      *
      * @var array Rubriques parentes sélectionnées
@@ -78,38 +92,25 @@ class genUrlV2
     private $selectedArbo = array();
 
     /**
-     * Recursion deja effectuées
+     * Seconde langue de traduction
+     * @var string
      */
-    private $recursDones = array();
+    public $tradlg;
 
     /**
-     * Identifiant de la rubrique en cours
+     * Action en cours
+     * @var string
      */
-    public $rubId = 0;
+    public $action = '';
 
     /**
-     * Liste des dossiers parsés avec rubriques et paramètres
-     * @var type
+     * @var int
      */
-    public $parsedUrl = false;
-    public $rootHomeId = 0;
+    public $actionId;
 
     /**
-     * cache du chemin de fer construit
-     *
-     * @var array
-     */
-    public $builtRoad = array();
-
-    /**
-     * Tableau des menus de notre siteroot actuel
-     *
-     * @var array
-     */
-    public $menus = array();
-
-    /**
-     *  Constructeur de la classe genUrl
+     * Constructeur de la classe genUrl
+     * @param string $lg Langue courante si deja connue
      */
     function __construct($lg = '')
     {
@@ -124,10 +125,15 @@ class genUrlV2
         $GLOBALS['urlCached'] = array();
         $this->roadSup = array();
         if (!IN_ADMIN) {
+
             $this->parseUrl();
-            $this->rootRow = $this->getSiteRoot();
-            $this->rootHomeId = $this->rootRow['rubrique_id'];
-            $this->rubId = $this->getRubId();
+            if (!empty($_GET['_version'])) {
+                $this->getFromVersion();
+            } else {
+                $this->rootRow = $this->getSiteRoot();
+                $this->rootHomeId = $this->rootRow['rubrique_id'];
+                $this->rubId = $this->getRubId();
+            }
         } else {
             if (!$lg) {
                 $this->lg = $lg = LG_DEF;
@@ -136,173 +142,6 @@ class genUrlV2
                 }
             }
         }
-    }
-
-    function getTopRubId()
-    {
-        return $this->topRubId;
-    }
-
-    /**
-     * Langue courante
-     *
-     * @return string Langue actuelle
-     */
-    function getLg()
-    {
-        return $this->lg;
-    }
-
-    /**
-     * Methode pour definir quelle rubrique contient l'ensemble du site
-     * C'est la rubrique qui est définit comme
-     * rubrique_type = 'siteroot'
-     * et dont l'url correspond au $_SERVER['HTTP_HOST'] puis en concatenant  dirname($_SERVER["SCRIPT_NAME"]);
-     *
-     */
-    function getSiteRoot()
-    {
-
-        global $_Gconfig;
-        $host = $_SERVER["HTTP_HOST"];
-
-        /**
-         * sélection du siteroot à partir du
-         * nom de domaine/sous domaine
-         */
-        $sql = 'SELECT * FROM s_rubrique
-				 WHERE rubrique_type
-				 = "' . RTYPE_SITEROOT . '"
-				 ' . sqlRubriqueOnlyOnline() . '
-				 ' . lgFieldsLike("rubrique_url", '%;' . mes($host) . ';%', ' OR ') . '
-				  ';
-        $row = GetSingle($sql);
-
-        /**
-         * Si aucun résultat
-         */
-        if (!isset($row['rubrique_id'])) {
-            /**
-             * On sélectionne tous les siteroot
-             */
-            $sql = 'SELECT * FROM s_rubrique
-				 WHERE rubrique_type
-				 = "' . RTYPE_SITEROOT . '"
-				 ' . sqlRubriqueOnlyOnline() . '
-                     ORDER BY rubrique_id ASC
-				  ';
-            $res = DoSql($sql);
-
-            if ($res->NumRows() === 1) {
-                /**
-                 * Si un seul on prend quand meme !
-                 */
-                $row = $res;
-            } else {
-                /**
-                 * Sinon on die ...
-                 */
-                $this->root_id = 1;
-                $html = '<ul>';
-                foreach ($res as $row) {
-
-                    $url = explode(';', $row[ 'rubrique_url_' . $this->lg ]);
-
-                    if (!empty($url[1])) {
-                        $html .= '<li><a href="http://' . $url[1] . '">' . $row[ 'rubrique_titre_' . $this->lg ] . '</a></li>';
-                    }
-                }
-                $html .= '</ul>';
-                $this->die404($html . 'NO_SITEROOT_MATCHING_AND_MORE_THAN_ONE');
-            }
-        }
-
-        if (($row)) {
-            if (is_object($row)) {
-                $row = $res = $row->fetchRow();
-            } else {
-                $res = $row;
-            }
-            $GLOBALS['GlobalObjCache']['tabUrl'][ $res['rubrique_id'] ] = array(
-                'fkRub'    => $res['fk_rubrique_id'],
-                'gabarit'  => $res['fk_gabarit_id'],
-                /* 'isFolder'=>$res['rubrique_is_folder'], */
-                'param'    => $res['rubrique_gabarit_param'],
-                'option'   => $res['rubrique_option'],
-                'template' => $res['rubrique_template'],
-                'type'     => $res['rubrique_type'],
-                'webroot'  => ($res['rubrique_type'] == RTYPE_SITEROOT ? $this->getDefWebRoot($res[ 'rubrique_url_' . LG_DEF ]) : '')
-            );
-            reset($_Gconfig['LANGUAGES']);
-            foreach ($_Gconfig['LANGUAGES'] as $lg) {
-                $GLOBALS['GlobalObjCache']['tabUrl'][ $res['rubrique_id'] ][ 'link_' . $lg ] = $res[ 'rubrique_link_' . $lg ];
-                $GLOBALS['GlobalObjCache']['tabUrl'][ $res['rubrique_id'] ][ 'titre_' . $lg ] = $res[ 'rubrique_titre_' . $lg ];
-                $GLOBALS['GlobalObjCache']['tabUrl'][ $res['rubrique_id'] ][ 'url' . $lg ] = $res[ 'rubrique_url_' . $lg ];
-            }
-            /**
-             * Siteroot trouvé tout va bien
-             */
-            $this->homeId = $this->rootHomeId = $this->root_id = $row['rubrique_id'];
-            $this->curWebRoot = $this->getDefWebRoot($row[ 'rubrique_url_' . LG_DEF ]);
-            $this->TEMPLATE = $row['rubrique_template'];
-
-
-            /**
-             * Sélection des menus de notre siteroot
-             */
-            $sql = 'SELECT rubrique_url_' . LG . ',  rubrique_id FROM s_rubrique'
-                . ' WHERE '
-                . 'fk_rubrique_id = ' . $this->rootHomeId . ' '
-                . ' AND rubrique_type = ' . sql(RTYPE_MENUROOT) . ''
-                . '  ' . sqlMenuOnlyOnline();
-            global $co;
-            $this->menus = $co->getAssoc($sql);
-
-            return $row;
-        } else {
-
-            /**
-             * Le nom de domaine doit etre déclaré !
-             */
-            $this->die404('NO_SITEROOT_FOUND');
-        }
-    }
-
-    function getDefWebRoot($str)
-    {
-
-        $et = explode(';', $str);
-        foreach ($et as $v) {
-            if (strtolower($v) == strtolower($_SERVER['HTTP_HOST'])) {
-                return $v;
-            }
-        }
-        //return $_SERVER['HTTP_HOST'];
-        if (strlen($et[0])) {
-            return $et[0];
-        } else {
-            return $et[1];
-        }
-    }
-
-    /**
-     * Retourne le cache des URLs
-     *
-     * @return unknown
-     */
-    function getTabUrl()
-    {
-        return $GLOBALS['GlobalObjCache']['tabUrl'];
-    }
-
-    /**
-     * Retourne les chemins supplémentaires ajoutés au chemin de fer
-     *
-     * @return unknown
-     */
-    function getRoadSup()
-    {
-        return $this->roadSup;
     }
 
     /**
@@ -317,10 +156,7 @@ class genUrlV2
             return $this->parsedUrl;
         }
 
-
-        global $_Gconfig;
         $x_url = explode('?', $_SERVER['REQUEST_URI']);
-
 
         $x_url = str_replace('/index.html', '/', $x_url);
         $x_url = $x_url[0];
@@ -398,36 +234,217 @@ class genUrlV2
         $this->action = reset($this->action);
     }
 
-    /**
-     * Sépare les paramètres /bdd/ du reste de l'URL
-     *
-     * @param unknown_type $params
-     */
-    function splitParams($params)
+    function getBrowserLang()
     {
-        $p = array();
-        $this->paramsUrl = array();
-        $this->iniGet = $_GET;
-        $this->iniPost = $_POST;
-        foreach ($params as $k => $v) {
-            $vv = explode(getParam('param_val_sep'), $v);
-            if (empty($vv[1])) {
-                $vv[1] = '';
+        global $_Gconfig;
+        if (empty($_SERVER["HTTP_ACCEPT_LANGUAGE"])) {
+            return LG_DEF;
+        }
+        $langs = explode(",", $_SERVER["HTTP_ACCEPT_LANGUAGE"]);
+
+        foreach ($langs as $value) {
+            $choice = substr($value, 0, 2);
+            if (in_array($choice, $_Gconfig['LANGUAGES'])) {
+
+                return $choice;
             }
-            $this->paramsUrl[ $vv[0] ] = $_REQUEST[ $vv[0] ] = $_GET[ $vv[0] ] = urldecode($vv[1]);
-            $this->paramsOrdered[] = $v;
+        }
+        return LG_DEF;
+    }
+
+    public function soft404()
+    {
+        $GLOBALS['site']->isCurrent404 = true;
+        $GLOBALS['site']->g_rubrique->execute('ocms_is404');
+        header((isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0') . " 404 Not Found", true, 404);
+        $GLOBALS['_gensite']->isCurrent404 = true;
+
+        if (strpos($_SERVER['REQUEST_URI'], 'css') || strpos($_SERVER['REQUEST_URI'], 'js') || strpos($_SERVER['REQUEST_URI'], 'jpeg') || strpos($_SERVER['REQUEST_URI'], 'jpg') || strpos($_SERVER['REQUEST_URI'], 'gif') || strpos($_SERVER['REQUEST_URI'], 'png') || strpos($_SERVER['REQUEST_URI'], 'svg')) {
+            $this->die404();
+        }
+
+        $this->rubId = getRubFromGabarit('genSitemap');
+
+        if (!$this->rubId) {
+            $this->die404();
         }
     }
 
-    /**
-     * Retourne l'URL courante dans la langue $lg
-     *
-     * @param unknown_type $lg
-     * @return unknown
-     */
-    function getUrlInLg($lg)
+    function die404($msg = '')
     {
-        return $this->buildUrlFromId(0, $lg, $this->paramsUrl);
+        $GLOBALS['site']->isCurrent404 = true;
+        $GLOBALS['site']->g_rubrique->execute('ocms_is404');
+        header((isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0') . " 404 Not Found", true, 404);
+        echo '<html><head><link href="//cdnjs.cloudflare.com/ajax/libs/zurb-ink/1.0.5/ink.min.css" rel="stylesheet"> </head><body><article style="padding:15px"><h1>Error 404</h1><p>The page can not be found</p><p><a href="/">Go back</a></p><p>' . $msg . '</p></article></body></html>';
+        die();
+    }
+
+    /**
+     * Vide les cases vide d'un tableau
+     *
+     * @param array $tab
+     * @return array
+     */
+    function trimTab($tab)
+    {
+        $newTab = array();
+
+        $cpt = 2;
+        foreach ($tab as $value) {
+            if (!empty($value)) {
+                if ($cpt > 1) {
+                    $newTab[$cpt - 1] = ($value); //nicename ???? @todo
+                }
+                $cpt++;
+            }
+        }
+
+        return $newTab;
+    }
+
+    public function getFromVersion()
+    {
+        $this->rubId = (int)$_GET['_version'];
+        $rubId = $this->rubId;
+        $i = 0;
+        while ($rubId) {
+            $i++;
+            $r = GetSingle('SELECT ocms_version, fk_rubrique_id, rubrique_type FROM s_rubrique WHERE rubrique_id = ' . sql($rubId));
+
+            $this->selectedArbo[] = $r['ocms_version'];
+            if (!$r['fk_rubrique_id'] || $r['rubrique_type'] == RTYPE_SITEROOT) {
+                $rubId = false;
+                $this->root_id = $this->rootHomeId = $r['ocms_version'];
+                $this->rootRow = getRowFromId('s_rubrique', $r['ocms_version']);
+                $this->getSiteRoot($this->rootRow);
+            } else {
+                $rubId = $r['fk_rubrique_id'];
+            }
+            if ($i == 100) {
+                break;
+            }
+        }
+        return $this->rubId;
+    }
+
+    /**
+     * Methode pour definir quelle rubrique contient l'ensemble du site
+     * C'est la rubrique qui est définit comme
+     * rubrique_type = 'siteroot'
+     * et dont l'url correspond au $_SERVER['HTTP_HOST'] puis en concatenant  dirname($_SERVER["SCRIPT_NAME"]);
+     *
+     */
+    function getSiteRoot($row = null)
+    {
+
+        global $_Gconfig;
+        $host = $_SERVER["HTTP_HOST"];
+        if (!$row) {
+            /**
+             * sélection du siteroot à partir du
+             * nom de domaine/sous domaine
+             */
+            $sql = 'SELECT * FROM s_rubrique
+				 WHERE rubrique_type
+				 = "' . RTYPE_SITEROOT . '"
+				 ' . sqlRubriqueOnlyOnline() . '
+				 ' . lgFieldsLike("rubrique_url", '%;' . mes($host) . ';%', ' OR ') . '
+				  ';
+            $row = GetSingle($sql);
+        }
+
+        if (!isset($row['rubrique_id'])) {
+            $sql = 'SELECT * FROM s_rubrique
+				 WHERE rubrique_type
+				 = "' . RTYPE_SITEROOT . '"
+				 ' . sqlRubriqueOnlyOnline() . '
+                     ORDER BY rubrique_id ASC
+				  ';
+            $res = DoSql($sql);
+            if ($res->NumRows() === 1) {
+                $row = $res;
+            } else {
+                $this->root_id = 1;
+                $html = '<ul>';
+                foreach ($res as $row) {
+
+                    $url = explode(';', $row['rubrique_url_' . $this->lg]);
+
+                    if (!empty($url[1])) {
+                        $html .= '<li><a href="http://' . $url[1] . '">' . $row['rubrique_titre_' . $this->lg] . '</a></li>';
+                    }
+                }
+                $html .= '</ul>';
+                $this->die404($html . 'NO_SITEROOT_MATCHING_AND_MORE_THAN_ONE');
+            }
+        }
+
+        if (($row)) {
+            if (is_object($row)) {
+                $row = $res = $row->fetchRow();
+            } else {
+                $res = $row;
+            }
+            $GLOBALS['GlobalObjCache']['tabUrl'][$res['rubrique_id']] = array(
+                'fkRub' => $res['fk_rubrique_id'],
+                'gabarit' => $res['fk_gabarit_id'],
+                /* 'isFolder'=>$res['rubrique_is_folder'], */
+                'param' => $res['rubrique_gabarit_param'],
+                'option' => $res['rubrique_option'],
+                'template' => $res['rubrique_template'],
+                'type' => $res['rubrique_type'],
+                'webroot' => ($res['rubrique_type'] == RTYPE_SITEROOT ? $this->getDefWebRoot($res['rubrique_url_' . LG_DEF]) : '')
+            );
+            reset($_Gconfig['LANGUAGES']);
+            foreach ($_Gconfig['LANGUAGES'] as $lg) {
+                $GLOBALS['GlobalObjCache']['tabUrl'][$res['rubrique_id']]['link_' . $lg] = $res['rubrique_link_' . $lg];
+                $GLOBALS['GlobalObjCache']['tabUrl'][$res['rubrique_id']]['titre_' . $lg] = $res['rubrique_titre_' . $lg];
+                $GLOBALS['GlobalObjCache']['tabUrl'][$res['rubrique_id']]['url' . $lg] = $res['rubrique_url_' . $lg];
+            }
+            /**
+             * Siteroot trouvé tout va bien
+             */
+            $this->homeId = $this->rootHomeId = $this->root_id = $row['rubrique_id'];
+            $this->curWebRoot = $this->getDefWebRoot($row['rubrique_url_' . LG_DEF]);
+            $this->TEMPLATE = $row['rubrique_template'];
+
+
+            /**
+             * Sélection des menus de notre siteroot
+             */
+            $sql = 'SELECT rubrique_url_' . LG . ',  rubrique_id FROM s_rubrique'
+                . ' WHERE '
+                . 'fk_rubrique_id = ' . $this->rootHomeId . ' '
+                . ' AND rubrique_type = ' . sql(RTYPE_MENUROOT) . ''
+                . '  ' . sqlMenuOnlyOnline();
+            global $co;
+            $this->menus = $co->getAssoc($sql);
+
+            return $row;
+        } else {
+
+            /**
+             * Le nom de domaine doit etre déclaré !
+             */
+            $this->die404('NO_SITEROOT_FOUND');
+        }
+    }
+
+    function getDefWebRoot($str)
+    {
+
+        $et = explode(';', $str);
+        foreach ($et as $v) {
+            if (strtolower($v) == strtolower($_SERVER['HTTP_HOST'])) {
+                return $v;
+            }
+        }
+        //return $_SERVER['HTTP_HOST'];
+        if (strlen($et[0])) {
+            return $et[0];
+        } else {
+            return $et[1];
+        }
     }
 
     /**
@@ -448,6 +465,10 @@ class genUrlV2
 
         if ($this->rubId) {
             return $this->rubId;
+        }
+
+        if (!empty($_GET['_version'])) {
+            $this->getFromVersion();
         }
         /*
           if ($this->action === 'editer' && $this->actionId) {
@@ -484,7 +505,7 @@ class genUrlV2
                      * Sélection des rubriques
                      */
                     $select = 'SELECT
-                                    rubrique_id, 
+                                    rubrique_id,
                                     fk_rubrique_id,
                                     rubrique_type,
                                     fk_gabarit_id,
@@ -493,7 +514,7 @@ class genUrlV2
                                     rubrique_template,
                                     ' . MULTIVERSION_STATE . ',
                                     ' . MULTIVERSION_FIELD . ',
-                                    
+
                                     ';
                     reset($_Gconfig['LANGUAGES']);
 
@@ -512,7 +533,6 @@ class genUrlV2
                      * Recherche du dossier en cours
                      */
                     $where = ' WHERE R1.rubrique_url_' . $this->lg . '= ' . sql(urldecode($dossier)) . ' ';
-
 
                     if ($k == 0) {
                         /**
@@ -542,7 +562,7 @@ class genUrlV2
                      * Aucun résultat, on est dans les paramètres à partir d'ici ...
                      */
                     if (!$r) {
-                        if (!empty($parentRub) && $GLOBALS['GlobalObjCache']['tabUrl'][ $parentRub ]['gabarit']) {
+                        if (!empty($parentRub) && $GLOBALS['GlobalObjCache']['tabUrl'][$parentRub]['gabarit']) {
                             $this->paramsAsIndex = array_slice($this->parsedUrl, $k);
                             $this->splitParams($this->paramsAsIndex);
                         } else {
@@ -557,28 +577,28 @@ class genUrlV2
                     $this->selectedArbo[] = $r['rubrique_id'];
 
 
-                    $parentRub = choose($r[ MULTIVERSION_FIELD ], $r['rubrique_id']);
+                    $parentRub = choose($r[MULTIVERSION_FIELD], $r['rubrique_id']);
 
 
-                    $GLOBALS['GlobalObjCache']['tabUrl'][ $r['rubrique_id'] ] = array(
-                        'fkRub'    => $r['fk_rubrique_id'],
-                        'gabarit'  => $r['fk_gabarit_id'],
-                        'param'    => $r['rubrique_gabarit_param'],
+                    $GLOBALS['GlobalObjCache']['tabUrl'][$r['rubrique_id']] = array(
+                        'fkRub' => $r['fk_rubrique_id'],
+                        'gabarit' => $r['fk_gabarit_id'],
+                        'param' => $r['rubrique_gabarit_param'],
                         /* 'isFolder'=>$res['rubrique_is_folder'], */
-                        'option'   => $r['rubrique_option'],
+                        'option' => $r['rubrique_option'],
                         'template' => $r['rubrique_template'],
-                        'type'     => $r['rubrique_type']
+                        'type' => $r['rubrique_type']
                     );
 
                     if ($r['rubrique_type'] == RTYPE_SITEROOT) {
-                        $rub['webroot'] = $GLOBALS['GlobalObjCache']['tabUrl'][ $r['rubrique_id'] ]['webroot'] = $this->getDefWebRoot($r[ 'rubrique_url_' . LG_DEF ]);
+                        $rub['webroot'] = $GLOBALS['GlobalObjCache']['tabUrl'][$r['rubrique_id']]['webroot'] = $this->getDefWebRoot($r['rubrique_url_' . LG_DEF]);
                     }
 
                     reset($_Gconfig['LANGUAGES']);
                     foreach ($_Gconfig['LANGUAGES'] as $lg) {
-                        $GLOBALS['GlobalObjCache']['tabUrl'][ $r['rubrique_id'] ][ 'link_' . $lg ] = $r[ 'rubrique_link_' . $lg ];
-                        $GLOBALS['GlobalObjCache']['tabUrl'][ $r['rubrique_id'] ][ 'titre_' . $lg ] = $r[ 'rubrique_titre_' . $lg ];
-                        $GLOBALS['GlobalObjCache']['tabUrl'][ $r['rubrique_id'] ][ 'url' . $lg ] = $r[ 'rubrique_url_' . $lg ];
+                        $GLOBALS['GlobalObjCache']['tabUrl'][$r['rubrique_id']]['link_' . $lg] = $r['rubrique_link_' . $lg];
+                        $GLOBALS['GlobalObjCache']['tabUrl'][$r['rubrique_id']]['titre_' . $lg] = $r['rubrique_titre_' . $lg];
+                        $GLOBALS['GlobalObjCache']['tabUrl'][$r['rubrique_id']]['url' . $lg] = $r['rubrique_url_' . $lg];
                     }
                     $k++;
                 }
@@ -621,90 +641,71 @@ class genUrlV2
         return $this->rubId;
     }
 
-    public function soft404()
+    /**
+     * Sépare les paramètres /bdd/ du reste de l'URL
+     *
+     * @param unknown_type $params
+     */
+    function splitParams($params)
     {
-        $this->site->isCurrent404 = true;
-        header((isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0') . " 404 Not Found", true, 404);
-        $GLOBALS['_gensite']->isCurrent404 = true;
-
-        if (strpos($_SERVER['REQUEST_URI'], 'css') || strpos($_SERVER['REQUEST_URI'], 'js') || strpos($_SERVER['REQUEST_URI'], 'jpeg') || strpos($_SERVER['REQUEST_URI'], 'jpg') || strpos($_SERVER['REQUEST_URI'], 'gif') || strpos($_SERVER['REQUEST_URI'], 'png') || strpos($_SERVER['REQUEST_URI'], 'svg')) {
-            $this->die404();
-        }
-
-        $this->rubId = getRubFromGabarit('genSitemap');
-
-        if (!$this->rubId) {
-            $this->die404();
+        $p = array();
+        $this->paramsUrl = array();
+        $this->iniGet = $_GET;
+        $this->iniPost = $_POST;
+        foreach ($params as $k => $v) {
+            $vv = explode(getParam('param_val_sep'), $v);
+            if (empty($vv[1])) {
+                $vv[1] = '';
+            }
+            $this->paramsUrl[$vv[0]] = $_REQUEST[$vv[0]] = $_GET[$vv[0]] = urldecode($vv[1]);
+            $this->paramsOrdered[] = $v;
         }
     }
 
-    function die404($msg = '')
+    function getTopRubId()
     {
-        $this->site->isCurrent404 = true;
-        header((isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0') . " 404 Not Found", true, 404);
-        echo '<html><head><link href="//cdnjs.cloudflare.com/ajax/libs/zurb-ink/1.0.5/ink.min.css" rel="stylesheet"> </head><body><article style="padding:15px"><h1>Error 404</h1><p>The page can not be found</p><p><a href="/">Go back</a></p><p>' . $msg . '</p></article></body></html>';
-        die();
+        return $this->topRubId;
     }
 
     /**
-     * Retourne la seconde langue acceptable
-     * @deprecated
+     * Langue courante
+     *
+     * @return string Langue actuelle
+     */
+    function getLg()
+    {
+        return $this->lg;
+    }
+
+    /**
+     * Retourne le cache des URLs
      *
      * @return unknown
      */
-    function otherLg()
+    function getTabUrl()
     {
-        return getOtherLg();
+        return $GLOBALS['GlobalObjCache']['tabUrl'];
     }
 
     /**
-     * alias de
-     * @uses myLocale
+     * Retourne les chemins supplémentaires ajoutés au chemin de fer
+     *
+     * @return unknown
+     */
+    function getRoadSup()
+    {
+        return $this->roadSup;
+    }
+
+    /**
+     * Retourne l'URL courante dans la langue $lg
      *
      * @param unknown_type $lg
-     */
-    function setLocale($lg)
-    {
-        myLocale($lg);
-    }
-
-    /**
-     * Vide les cases vide d'un tableau
-     *
-     * @param unknown_type $tab
      * @return unknown
      */
-    function trimTab($tab)
+    function getUrlInLg($lg)
     {
-        $newTab = array();
-        global $_Gconfig;
-
-        $cpt = 2;
-        foreach ($tab as $value) {
-            if (!empty($value)) {
-                if ($cpt > 1) {
-                    $newTab[ $cpt - 1 ] = ($value); //nicename ???? @todo
-                }
-                $cpt++;
-            }
-        }
-
-        return $newTab;
-    }
-
-    /**
-     * Retourne l'URL courante dans l'autre langue
-     * @deprecated
-     *
-     * @return unknown
-     */
-    function getUrlForOtherLg()
-    {
-        //debug($GLOBALS['GlobalObjCache']['tabUrl']);
-        $p = is_array($this->otherLgParamsUrl) ? $this->otherLgParamsUrl : $this->paramsUrl;
-
-        //debug($this->otherLgParamsUrl);
-        return $this->buildUrlFromId(0, $this->otherLg(), $p);
+        return $this->buildUrlFromId(0, $lg, $this->paramsUrl);
     }
 
     /**
@@ -732,7 +733,7 @@ class genUrlV2
 
         if (ake($GLOBALS['urlCached'], $cachename) && !$action) {
 
-            return $GLOBALS['urlCached'][ $cachename ];
+            return $GLOBALS['urlCached'][$cachename];
         }
 
         if (!array_key_exists($rubId, $GLOBALS['GlobalObjCache']['tabUrl'])) {
@@ -740,10 +741,10 @@ class genUrlV2
         }
 
 
-        if (isset($GLOBALS['GlobalObjCache']['tabUrl'][ $rubId ]) && $GLOBALS['GlobalObjCache']['tabUrl'][ $rubId ]['type'] == 'link') {
-            $url = GetLgValue('link', $GLOBALS['GlobalObjCache']['tabUrl'][ $rubId ], false);
+        if (isset($GLOBALS['GlobalObjCache']['tabUrl'][$rubId]) && $GLOBALS['GlobalObjCache']['tabUrl'][$rubId]['type'] == 'link') {
+            $url = GetLgValue('link', $GLOBALS['GlobalObjCache']['tabUrl'][$rubId], false);
 
-            $GLOBALS['urlCached'][ $cachename ] = $url;
+            $GLOBALS['urlCached'][$cachename] = $url;
             return $url;
         } else {
             $url = $this->buildUrl($rubId, $lg);
@@ -774,20 +775,20 @@ class genUrlV2
             $rub = $rubId;
 
             while (
-                !empty($GLOBALS['GlobalObjCache']['tabUrl'][ $rub ]) &&
-                empty($GLOBALS['GlobalObjCache']['tabUrl'][ $rub ]['webroot']) && $rub > 0 && $rub != 'NULL') {
-                $rub = $GLOBALS['GlobalObjCache']['tabUrl'][ $rub ]['fkRub'];
+                !empty($GLOBALS['GlobalObjCache']['tabUrl'][$rub]) &&
+                empty($GLOBALS['GlobalObjCache']['tabUrl'][$rub]['webroot']) && $rub > 0 && $rub != 'NULL') {
+                $rub = $GLOBALS['GlobalObjCache']['tabUrl'][$rub]['fkRub'];
             }
 
             /**
              * On doit avoir un webroot de trouvé
              * Et il doit etre différent du HTTP_HOST actuel
              */
-            if (!empty($GLOBALS['GlobalObjCache']['tabUrl'][ $rub ]['webroot']) &&
+            if (!empty($GLOBALS['GlobalObjCache']['tabUrl'][$rub]['webroot']) &&
                 (IN_ADMIN || (
-                        $GLOBALS['GlobalObjCache']['tabUrl'][ $rub ]['webroot'] != $_SERVER['HTTP_HOST']))
+                        $GLOBALS['GlobalObjCache']['tabUrl'][$rub]['webroot'] != $_SERVER['HTTP_HOST']))
             ) {
-                $url = path_concat('//', $GLOBALS['GlobalObjCache']['tabUrl'][ $rub ]['webroot'], $url);
+                $url = path_concat('//', $GLOBALS['GlobalObjCache']['tabUrl'][$rub]['webroot'], $url);
             }
         }
 
@@ -802,77 +803,9 @@ class genUrlV2
          * }
          * }
          */
-        $GLOBALS['urlCached'][ $cachename ] = $url;
+        $GLOBALS['urlCached'][$cachename] = $url;
 
         return $url;
-    }
-
-    /**
-     * Retourne l'URL de la page courante avec des paramètres différents
-     *
-     * @param array $params
-     * @return string
-     */
-    function getUrlWithParams($params)
-    {
-        return $this->buildUrlFromId(0, '', $params);
-    }
-
-    function getUrlWithMoreParams($params)
-    {
-        return $this->buildUrlFromId(0, '', array_merge($this->paramsUrl, $params));
-    }
-
-    /**
-     * Retourne l'URL courante telle quelle
-     *
-     * @return string
-     */
-    function getCurUrl()
-    {
-        return $this->buildUrlFromId(0, '', $this->paramsUrl);
-    }
-
-    /**
-     * Ajoute des paramètres à l'URL courant
-     *
-     * @param unknown_type $params
-     * @return unknown
-     */
-    function addParams($params)
-    {
-        if (is_array($params) && count($params) > 0) {
-            // $url = '' . GetParam('fake_folder_param') . '';
-            $url = '';
-            foreach ($params as $k => $v) {
-                if (is_array($v)) {
-                    $k = $k . '__list';
-                    //$v = implode('_-_',$v);
-                    $v = serialize($v);
-                }
-                if ($k && $v) {
-                    $url = path_concat($url, $k . getParam('param_val_sep') . $v);
-                } else if ($k) {
-                    $url = path_concat($url, $k);
-                } else if ($v) {
-                    $url = path_concat($url, $v);
-                }
-            }
-            return $url;
-        }
-        return '';
-    }
-
-    /**
-     * Redefinit certains paramètre pour l'autre langue
-     * @deprecated
-     *
-     * @param unknown_type $params
-     */
-    function setOtherLgParams($params)
-    {
-
-        $this->otherLgParamsUrl = $params;
     }
 
     /**
@@ -889,14 +822,14 @@ class genUrlV2
             return;
 
         if (!is_array(akev($GLOBALS['GlobalObjCache']['tabUrl'], $rubId))) {
-            $sql = 'select R1.* ,
-				   R1.rubrique_id as rubId,
-				   R2.rubrique_id as p_rubId,
+            $sql = 'SELECT R1.* ,
+				   R1.rubrique_id AS rubId,
+				   R2.rubrique_id AS p_rubId,
 
-				   R2.fk_rubrique_id as p_fkRubId
-				   from s_rubrique as R1, s_rubrique as R2
-				   where R1.fk_rubrique_id = R2.rubrique_id				   
-				   and R1.rubrique_id = ' . sql($rubId);
+				   R2.fk_rubrique_id AS p_fkRubId
+				   FROM s_rubrique AS R1, s_rubrique AS R2
+				   WHERE R1.fk_rubrique_id = R2.rubrique_id
+				   AND R1.rubrique_id = ' . sql($rubId);
             if ($onlyOnline && empty($_GET['_version'])) {
                 $sql .= '' . sqlRubriqueOnlyOnline('R1', !$onlyOnline, true) . '';
             }
@@ -906,33 +839,33 @@ class genUrlV2
             if (!empty($res) && !is_array(akev($GLOBALS['GlobalObjCache']['tabUrl'], akev($res, 'rubId')))) {
 
                 if (isset($res['rubId'])) {
-                    $rub = $GLOBALS['GlobalObjCache']['tabUrl'][ $res['rubId'] ] = array(
-                        'fkRub'     => $res['p_rubId'],
-                        'gabarit'   => $res['fk_gabarit_id'],
-                        'param'     => $res['rubrique_gabarit_param'],
+                    $rub = $GLOBALS['GlobalObjCache']['tabUrl'][$res['rubId']] = array(
+                        'fkRub' => $res['p_rubId'],
+                        'gabarit' => $res['fk_gabarit_id'],
+                        'param' => $res['rubrique_gabarit_param'],
                         /* 'isFolder'=>$res['rubrique_is_folder'], */
-                        'option'    => $res['rubrique_option'],
-                        'template'  => $res['rubrique_template'],
-                        'type'      => $res['rubrique_type'],
+                        'option' => $res['rubrique_option'],
+                        'template' => $res['rubrique_template'],
+                        'type' => $res['rubrique_type'],
                         'p_fkRubId' => $res['p_fkRubId']
                     );
 
                     if ($res['rubrique_type'] == RTYPE_SITEROOT) {
-                        $rub['webroot'] = $GLOBALS['GlobalObjCache']['tabUrl'][ $res['rubId'] ]['webroot'] = $this->getDefWebRoot($res[ 'rubrique_url_' . LG_DEF ]);
+                        $rub['webroot'] = $GLOBALS['GlobalObjCache']['tabUrl'][$res['rubId']]['webroot'] = $this->getDefWebRoot($res['rubrique_url_' . LG_DEF]);
                     }
 
                     reset($_Gconfig['LANGUAGES']);
                     foreach ($_Gconfig['LANGUAGES'] as $lg) {
-                        $GLOBALS['GlobalObjCache']['tabUrl'][ $res['rubId'] ][ 'link_' . $lg ] = $res[ 'rubrique_link_' . $lg ];
-                        $GLOBALS['GlobalObjCache']['tabUrl'][ $res['rubId'] ][ 'titre_' . $lg ] = $res[ 'rubrique_titre_' . $lg ];
-                        $GLOBALS['GlobalObjCache']['tabUrl'][ $res['rubId'] ][ 'url' . $lg ] = $res[ 'rubrique_url_' . $lg ];
+                        $GLOBALS['GlobalObjCache']['tabUrl'][$res['rubId']]['link_' . $lg] = $res['rubrique_link_' . $lg];
+                        $GLOBALS['GlobalObjCache']['tabUrl'][$res['rubId']]['titre_' . $lg] = $res['rubrique_titre_' . $lg];
+                        $GLOBALS['GlobalObjCache']['tabUrl'][$res['rubId']]['url' . $lg] = $res['rubrique_url_' . $lg];
                     }
                 }
             } else if (!empty($res)) {
-                $rub = $GLOBALS['GlobalObjCache']['tabUrl'][ $res['rubId'] ];
+                $rub = $GLOBALS['GlobalObjCache']['tabUrl'][$res['rubId']];
             }
         } else {
-            $rub = $GLOBALS['GlobalObjCache']['tabUrl'][ $rubId ];
+            $rub = $GLOBALS['GlobalObjCache']['tabUrl'][$rubId];
         }
 
         if (isset($rub) && akev($rub, 'fkRub') != NULL) {
@@ -979,19 +912,19 @@ class genUrlV2
         $this->curLinkRoot = array();
         if ($rubId != $this->root_id) {
             while (array_key_exists($key, $GLOBALS['GlobalObjCache']['tabUrl'])) {
-                if ($GLOBALS['GlobalObjCache']['tabUrl'][ $key ]['type'] != 'menuroot') {
+                if ($GLOBALS['GlobalObjCache']['tabUrl'][$key]['type'] != 'menuroot') {
                     /**
                      * Distinction pour les "mini sites" en "siteroot" au milieu du site avec des regles d'URL à part
                      */
-                    if ($GLOBALS['GlobalObjCache']['tabUrl'][ $key ]['type'] != 'siteroot') {
-                        $url = path_concat($GLOBALS['GlobalObjCache']['tabUrl'][ $key ][ 'url' . $reallg ], $url);
+                    if ($GLOBALS['GlobalObjCache']['tabUrl'][$key]['type'] != 'siteroot') {
+                        $url = path_concat($GLOBALS['GlobalObjCache']['tabUrl'][$key]['url' . $reallg], $url);
                     } else {
-                        $this->curLinkRoot = $GLOBALS['GlobalObjCache']['tabUrl'][ $key ];
+                        $this->curLinkRoot = $GLOBALS['GlobalObjCache']['tabUrl'][$key];
 
                         break;
                     }
                 }
-                $key = $GLOBALS['GlobalObjCache']['tabUrl'][ $key ]['fkRub'];
+                $key = $GLOBALS['GlobalObjCache']['tabUrl'][$key]['fkRub'];
             }
         }
 
@@ -999,12 +932,12 @@ class genUrlV2
         /**
          * Si jamais on demande aux pages de pointer vers la premiere sous page
          */
-        if (isset($GLOBALS['GlobalObjCache']['tabUrl'][ $rubId ]) && $GLOBALS['GlobalObjCache']['tabUrl'][ $rubId ]['type'] == 'folder' && $rubId != $this->root_id && $GLOBALS['GlobalObjCache']['tabUrl'][ $rubId ]['type'] != RTYPE_SITEROOT) {
+        if (isset($GLOBALS['GlobalObjCache']['tabUrl'][$rubId]) && $GLOBALS['GlobalObjCache']['tabUrl'][$rubId]['type'] == 'folder' && $rubId != $this->root_id && $GLOBALS['GlobalObjCache']['tabUrl'][$rubId]['type'] != RTYPE_SITEROOT) {
 
             $subId = $rubId;
             //$subs = $this->recursRub($subId,1,1);
-            if (rubHasOption($GLOBALS['GlobalObjCache']['tabUrl'][ $rubId ]['option'], 'dynSubRubs')) {
-                $subs = getGabaritSubRubs(getRowFromId('s_rubrique', $rubId), $GLOBALS['GlobalObjCache']['tabUrl'][ $rubId ]['gabarit']);
+            if (rubHasOption($GLOBALS['GlobalObjCache']['tabUrl'][$rubId]['option'], 'dynSubRubs')) {
+                $subs = getGabaritSubRubs(getRowFromId('s_rubrique', $rubId), $GLOBALS['GlobalObjCache']['tabUrl'][$rubId]['gabarit']);
                 if ($subs) {
                     return array(path_concat('/' . $lg, $url), array($subs[0]['PARAM'] => $subs[0]['VALUE']));
                 } else {
@@ -1022,7 +955,7 @@ class genUrlV2
 
                 $subId = $subtab['id'];
                 if ($subtab['type'] != 'menuroot') {
-                    $url = path_concat($url, $subtab[ 'url' . $reallg ]);
+                    $url = path_concat($url, $subtab['url' . $reallg]);
                 }
                 if ($subtab['type'] == 'folder') {
                     $subs = $this->recursRub($subId, 1, 1);
@@ -1058,7 +991,7 @@ class genUrlV2
 
         $tabTemp = array();
         if (ake($GLOBALS, 'recursDone') && ake($GLOBALS['recursDone'], $rubId . '-' . $maxLevel)) {
-            return $GLOBALS['recursDone'][ $rubId . '-' . $maxLevel ];
+            return $GLOBALS['recursDone'][$rubId . '-' . $maxLevel];
         }
 
 
@@ -1067,8 +1000,8 @@ class genUrlV2
          */
         $sql = 'SELECT
 			   R2.*
-			   from  s_rubrique as R2
-			   where R2.fk_rubrique_id
+			   FROM  s_rubrique AS R2
+			   WHERE R2.fk_rubrique_id
 			   ' . sqlParam($rubId) . '
 			   ' . sqlRubriqueOnlyOnline('R2') . '
 			   ' . sqlRubriqueOnlyReal('R2') . '
@@ -1089,13 +1022,13 @@ class genUrlV2
                     foreach ($subs as $v) {
                         $k = getUrlFromId($rubId) . '_' . $v['VALUE'];
                         $u = getUrlFromId($rubId, LG, array($v['PARAM'] => $v['VALUE']));
-                        $tabTemp[ $k ] = array(
-                            'id'    => $rubId,
+                        $tabTemp[$k] = array(
+                            'id' => $rubId,
                             'fkRub' => $rubId,
-                            'url'   => $u,
+                            'url' => $u,
                             'urlfr' => $u,
                             'titre' => $v['NAME'],
-                            'type'  => 'fake'
+                            'type' => 'fake'
                         );
                         if (akev($_REQUEST, $v['PARAM']) == $v['VALUE']) {
                             //$tabTemp[$k]['selected'] = true;
@@ -1113,7 +1046,7 @@ class genUrlV2
         foreach ($res as $sRub) {
 
 
-            if ($sRub[ MULTIVERSION_STATE ] != 'en_ligne')
+            if ($sRub[MULTIVERSION_STATE] != 'en_ligne')
                 $sRub['rubrique_titre_fr'] .= ' ' . t('invisible_rub');
 
             /**
@@ -1139,12 +1072,12 @@ class genUrlV2
 
             if ($doIt) {
                 if (!ake($GLOBALS['GlobalObjCache']['tabUrl'], $sRub['rubrique_id'])) {
-                    $GLOBALS['GlobalObjCache']['tabUrl'][ $sRub['rubrique_id'] ] = array(
-                        'fkRub'   => $rubId,
+                    $GLOBALS['GlobalObjCache']['tabUrl'][$sRub['rubrique_id']] = array(
+                        'fkRub' => $rubId,
                         'gabarit' => $sRub['fk_gabarit_id'],
-                        'param'   => $sRub['rubrique_gabarit_param'],
-                        'option'  => $sRub['rubrique_option'],
-                        'type'    => $sRub['rubrique_type'],
+                        'param' => $sRub['rubrique_gabarit_param'],
+                        'option' => $sRub['rubrique_option'],
+                        'type' => $sRub['rubrique_type'],
                         /* 'isFolder' => $sRub['rubrique_is_folder'], */
                         //'selected' => $sel
                     );
@@ -1152,9 +1085,9 @@ class genUrlV2
                     reset($_Gconfig['LANGUAGES']);
 
                     foreach ($_Gconfig['LANGUAGES'] as $lg) {
-                        $GLOBALS['GlobalObjCache']['tabUrl'][ $sRub['rubrique_id'] ][ 'link_' . $lg ] = $sRub[ 'rubrique_link_' . $lg ];
-                        $GLOBALS['GlobalObjCache']['tabUrl'][ $sRub['rubrique_id'] ][ 'titre_' . $lg ] = $sRub[ 'rubrique_titre_' . $lg ];
-                        $GLOBALS['GlobalObjCache']['tabUrl'][ $sRub['rubrique_id'] ][ 'url' . $lg ] = $sRub[ 'rubrique_url_' . $lg ];
+                        $GLOBALS['GlobalObjCache']['tabUrl'][$sRub['rubrique_id']]['link_' . $lg] = $sRub['rubrique_link_' . $lg];
+                        $GLOBALS['GlobalObjCache']['tabUrl'][$sRub['rubrique_id']]['titre_' . $lg] = $sRub['rubrique_titre_' . $lg];
+                        $GLOBALS['GlobalObjCache']['tabUrl'][$sRub['rubrique_id']]['url' . $lg] = $sRub['rubrique_url_' . $lg];
                     }
                 }
                 /**
@@ -1165,15 +1098,15 @@ class genUrlV2
                 /**
                  * Second tableau de stockage à retourner
                  */
-                $tabTemp[ $mu ] = array('id'    => $sRub['rubrique_id'],
-                                        'url'   => $mu,
-                                        'titre' => GetLgValue('rubrique_titre', $sRub, false),
-                                        'type'  => $sRub['rubrique_type'],
+                $tabTemp[$mu] = array('id' => $sRub['rubrique_id'],
+                    'url' => $mu,
+                    'titre' => GetLgValue('rubrique_titre', $sRub, false),
+                    'type' => $sRub['rubrique_type'],
                     //'selected' => $sel
                 );
                 reset($_Gconfig['LANGUAGES']);
                 foreach ($_Gconfig['LANGUAGES'] as $lg) {
-                    $tabTemp[ $mu ][ 'url' . $lg ] = $sRub[ 'rubrique_url_' . $lg ];
+                    $tabTemp[$mu]['url' . $lg] = $sRub['rubrique_url_' . $lg];
                 }
 
 
@@ -1187,28 +1120,133 @@ class genUrlV2
                         if ($subs) {
                             foreach ($subs as $v) {
                                 $u = getUrlFromId($rid, LG, array($v['PARAM'] => $v['VALUE']));
-                                $tabTemp[ $mu ]['sub'][ getUrlFromId($rid) . '_' . $v['VALUE'] ] = array(
-                                    'id'    => $rid,
+                                $tabTemp[$mu]['sub'][getUrlFromId($rid) . '_' . $v['VALUE']] = array(
+                                    'id' => $rid,
                                     'fkRub' => $rid,
-                                    'url'   => $u,
+                                    'url' => $u,
                                     'urlfr' => $u,
                                     'titre' => $v['NAME'],
-                                    'type'  => 'fake'
+                                    'type' => 'fake'
                                 );
                             }
                         }
                     } else {
-                        $tabTemp[ $mu ]['sub'] = $this->recursRub($sRub['rubrique_id'], $curLevel + 1, $maxLevel);
+                        $tabTemp[$mu]['sub'] = $this->recursRub($sRub['rubrique_id'], $curLevel + 1, $maxLevel);
                     }
                 }
             }
         }
 
-        $GLOBALS['recursDone'][ $rubId ] = $tabTemp;
+        $GLOBALS['recursDone'][$rubId] = $tabTemp;
         return $tabTemp;
     }
 
+    /**
+     * Ajoute des paramètres à l'URL courant
+     *
+     * @param unknown_type $params
+     * @return unknown
+     */
+    function addParams($params)
+    {
+        if (is_array($params) && count($params) > 0) {
+            // $url = '' . GetParam('fake_folder_param') . '';
+            $url = '';
+            foreach ($params as $k => $v) {
+                if (is_array($v)) {
+                    $k = $k . '__list';
+                    //$v = implode('_-_',$v);
+                    $v = serialize($v);
+                }
+                if ($k && $v) {
+                    $url = path_concat($url, $k . getParam('param_val_sep') . $v);
+                } else if ($k) {
+                    $url = path_concat($url, $k);
+                } else if ($v) {
+                    $url = path_concat($url, $v);
+                }
+            }
+            return $url;
+        }
+        return '';
+    }
+
+    /**
+     * alias de
+     * @uses myLocale
+     *
+     * @param unknown_type $lg
+     */
+    function setLocale($lg)
+    {
+        myLocale($lg);
+    }
+
+    /**
+     * Retourne l'URL courante dans l'autre langue
+     * @deprecated
+     *
+     * @return unknown
+     */
+    function getUrlForOtherLg()
+    {
+        //debug($GLOBALS['GlobalObjCache']['tabUrl']);
+        $p = is_array($this->otherLgParamsUrl) ? $this->otherLgParamsUrl : $this->paramsUrl;
+
+        //debug($this->otherLgParamsUrl);
+        return $this->buildUrlFromId(0, $this->otherLg(), $p);
+    }
+
+    /**
+     * Retourne la seconde langue acceptable
+     * @deprecated
+     *
+     * @return unknown
+     */
+    function otherLg()
+    {
+        return getOtherLg();
+    }
+
+    /**
+     * Retourne l'URL de la page courante avec des paramètres différents
+     *
+     * @param array $params
+     * @return string
+     */
+    function getUrlWithParams($params)
+    {
+        return $this->buildUrlFromId(0, '', $params);
+    }
+
+    function getUrlWithMoreParams($params)
+    {
+        return $this->buildUrlFromId(0, '', array_merge($this->paramsUrl, $params));
+    }
+
+    /**
+     * Retourne l'URL courante telle quelle
+     *
+     * @return string
+     */
+    function getCurUrl()
+    {
+        return $this->buildUrlFromId(0, '', $this->paramsUrl);
+    }
+
     /* Methode permettant de construire le "chemin de fer" de la page en-cours */
+
+    /**
+     * Redefinit certains paramètre pour l'autre langue
+     * @deprecated
+     *
+     * @param unknown_type $params
+     */
+    function setOtherLgParams($params)
+    {
+
+        $this->otherLgParamsUrl = $params;
+    }
 
     function buildRoad($curId = 0, $includeMenuRoot = false)
     {
@@ -1217,15 +1255,15 @@ class genUrlV2
             $curId = $GLOBALS['site']->getCurId();
         }
 
-        if (!empty($this->builtRoad[ $curId ])) {
-            return $this->builtRoad[ $curId ];
+        if (!empty($this->builtRoad[$curId])) {
+            return $this->builtRoad[$curId];
         }
 
         //if (!array_key_exists($curId, $GLOBALS['GlobalObjCache']['tabUrl'])) {
         $this->reversRecursRub($curId);
         //}
 
-        $lg = $this->lg;
+
         $key = $curId;
         $road = array();
 
@@ -1235,23 +1273,21 @@ class genUrlV2
 
                 $i++;
 
-                if ($includeMenuRoot || $GLOBALS['GlobalObjCache']['tabUrl'][ $key ]['type'] != RTYPE_MENUROOT) {
-                    $road[] = array('id'    => $key,
-                                    'titre' => getLgValue('titre', $GLOBALS['GlobalObjCache']['tabUrl'][ $key ]),
-                                    'url'   => $this->buildUrlFromId($key));
+                if ($includeMenuRoot || $GLOBALS['GlobalObjCache']['tabUrl'][$key]['type'] != RTYPE_MENUROOT) {
+                    $road[] = array('id' => $key,
+                        'titre' => getLgValue('titre', $GLOBALS['GlobalObjCache']['tabUrl'][$key]),
+                        'url' => $this->buildUrlFromId($key));
                 }
-                $key = $GLOBALS['GlobalObjCache']['tabUrl'][ $key ]['fkRub'];
+                $key = $GLOBALS['GlobalObjCache']['tabUrl'][$key]['fkRub'];
             }
-            /* $road[] = array('titre' => t('cp_txt_home'),
-              'url' => $this->buildUrlFromId($this->rootHomeId)); //getParam('rub_home_id')
-             */
+
             $road = array_reverse($road);
 
             foreach ($this->roadSup as $r) {
                 $road[] = $r;
             }
         }
-        $this->builtRoad[ $curId ] = $road;
+        $this->builtRoad[$curId] = $road;
         return $road;
     }
 
@@ -1276,6 +1312,8 @@ class genUrlV2
         return false;
     }
 
+    /* Methode qui permet d'ajouter un element au tableau des rubriques hors bdd */
+
     /**
      * La rubrique $row a t'elle une rubrique AVANT ?
      *
@@ -1296,15 +1334,15 @@ class genUrlV2
         }
     }
 
-    /* Methode qui permet d'ajouter un element au tableau des rubriques hors bdd */
+    /* Methode qui retourne le niveau de profondeur */
 
     function addRoad($titre, $url, $id = false)
     {
         $this->roadSup[] = array('titre' => $titre, 'url' => $url, 'id' => $id);
-        $this->builtRoad[ $GLOBALS['site']->getCurId() ] = false;
+        $this->builtRoad[$GLOBALS['site']->getCurId()] = false;
     }
 
-    /* Methode qui retourne le niveau de profondeur */
+    /* Methode qui permet de recuperer la langue du navigateur client */
 
     function getDepth($rubid = 0)
     {
@@ -1312,26 +1350,6 @@ class genUrlV2
 
         if (!array_key_exists($rubid, $GLOBALS['GlobalObjCache']['tabUrl']))
             $this->reversRecursRub($rubid);
-    }
-
-    /* Methode qui permet de recuperer la langue du navigateur client */
-
-    function getBrowserLang()
-    {
-        global $_Gconfig;
-        if (empty($_SERVER["HTTP_ACCEPT_LANGUAGE"])) {
-            return LG_DEF;
-        }
-        $langs = explode(",", $_SERVER["HTTP_ACCEPT_LANGUAGE"]);
-
-        foreach ($langs as $value) {
-            $choice = substr($value, 0, 2);
-            if (in_array($choice, $_Gconfig['LANGUAGES'])) {
-
-                return $choice;
-            }
-        }
-        return LG_DEF;
     }
 
 }
