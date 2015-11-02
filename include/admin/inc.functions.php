@@ -1253,7 +1253,7 @@ function updateDatabase()
                 $filename = basename($file);
                 $parse = explode('_', $filename);
 
-                if (!in_array($parse[0], $updates)) {
+                if (!in_array($parse[0], $updates)  || $file == $_GET['redo'] ) {
                     echo '<div class="alert alert-info">A FAIRE : ' . $file . '<br/>';
                     if (strstr($file, '.sql') !== false) {
                         $res = importSqlFile($file);
@@ -1266,7 +1266,7 @@ function updateDatabase()
                     echo '</div>';
                     $updates[] = $parse[0];
                 } else {
-                    echo '<div class="alert alert-success">FAIT ' . $file . '<br/>';
+                    echo '<div class="alert alert-success">FAIT ' . $file . ' <a href="?globalAction=updateDatabase&redo=' . $file . '">🔄</a><br/>';
                     echo '</div>';
                 }
             }
