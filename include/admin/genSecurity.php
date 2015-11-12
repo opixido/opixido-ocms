@@ -401,8 +401,8 @@ if (!class_exists('genSecurity')) {
                     }
                 }
             }
-            if (count($this->myroles['s_rubrique']['rows'])) {
-                $ar = $this->myroles['s_rubrique']['rows'];
+            if (count($this->myroles['s_rubrique']['initrows'])) {
+                $ar = $this->myroles['s_rubrique']['initrows'];
                 foreach ($ar as $rid) {
                     $this->recurseRubrique($rid);
                 }
