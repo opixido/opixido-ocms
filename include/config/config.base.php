@@ -2,7 +2,7 @@
 
 global $isTopNavRub, $noCopyTable, $tab_noCopyField, $tabForms, $uploadRep, $relations, $relinv, $tablerel, $searchField, $specialUpload, $previewField, $orderFields, $adminMenus, $rteFields, $neededFields, $neededSymbol, $uploadFields, $mailFields, $validateFields, $adminInfos, $gs_roles, $gs_actions, $formsRep, $frontAdminTrads, $gr_on, $rootId, $homeId, $headRootId, $footRootId, $basePath, $baseWebPath, $lexiqueId, $languages, $google_key, $_Gconfig, $adminTypesToMail, $functionField, $multiVersionField, $_Gconfig;
 
-$_SESSION['cache'][ UNIQUE_SITE ] = array();
+$_SESSION['cache'][UNIQUE_SITE] = array();
 
 header('Content-Type: text/html; charset=utf-8');
 
@@ -71,10 +71,10 @@ $_Gconfig['cachePaths']['admincss'] = $_Gconfig['basePath'] . '/admin/c/';
  */
 $tabForms = array();
 $tabForms['s_rubrique']['pages'] = array(
-    'contenu'       => array('form.rubrique.contenu.php'),
+    'contenu' => array('form.rubrique.contenu.php'),
     'referencement' => array('form.rubrique.referencement.php'),
-    'proprietes'    => array('form.rubrique.proprietes.php'),
-    'new'           => array('form.rubrique.new.php')
+    'proprietes' => array('form.rubrique.proprietes.php'),
+    'new' => array('form.rubrique.new.php')
 );
 //,'form.rubrique3.php','form.rubrique5.php','form.rubrique6.php','form.rubrique7.php'
 $tabForms['s_rubrique']['titre'] = array('rubrique_titre');
@@ -89,7 +89,7 @@ $tabForms['s_admin']['pages'] = array('form.admin.php', 'admin_droits_specifique
 $tabForms['s_admin']['titre'] = array('admin_nom');
 
 
-$tabForms['s_paragraphe']['pages'] = array('paragraphe' => array('form.paragraphe.type.php'));
+$tabForms['s_paragraphe']['pages'] = array('paragraphe' => array('type' => 'form.paragraphe.type.php', 'champs' => 'form.paragraphe.champs.php'));
 $tabForms['s_paragraphe']['titre'] = array('paragraphe_titre', 'paragraphe_contenu', 'fk_para_type_id', 'paragraphe_img_1'); //,'paragraphe_ordre'
 
 

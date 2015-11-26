@@ -1,115 +1,117 @@
 <?php
 
+/**
+ * Liste déroulante de types de para
+ */
+$form->gen('fk_para_type_id');
 
-$form->gen('fk_para_type_id','','','onchange="updateParagraphes(this);" onblur="updateParagraphes(this);"');
-
-?>
-
-<script type="text/javascript">
-
-paraVals = new Array();
-<?php
-
-$sql ='SELECT * FROM s_para_type';
-$res = GetAll($sql);
-foreach($res as $row) {
-	p('paraVals['.$row['para_type_id'].'] = new Array('.$row['para_type_use_img'].','.$row['para_type_use_file'].','.$row['para_type_use_table'].','.$row['para_type_use_txt'].','.$row['para_type_use_link'].');');
-}
-?>
+/**
+ * On récupère les paramètres pour les différents types de paragraphes
+ */
+$sql = 'SELECT * FROM s_para_type';
+$res = DoSql($sql);
 
 
-selectedParaType = gid('genform_fk_para_type_id');
-function updateParagraphes() {
-	var para_id = selectedParaType.options[selectedParaType.selectedIndex].value;
-	var para_value = new Array('none','block');
-	//alert('Para type : '+para_id);
-	if(para_id) {
+$paraTypes = array();
+foreach ($res as $row) {
+    /**
+     * On a les champs supplémentaires
+     */
+    $fields = explode(',', $row['para_type_champs']);
 
-		var vals = paraVals[para_id];
+    /**
+     * Et tous les champs par défaut
+     */
 
-		<?php 
-		global $_Gconfig;
-		reset($_Gconfig['LANGUAGES']);
-		//foreach($_Gconfig['LANGUAGES'] as $lg) {
-			
-			p('
-			gid("genform_div_paragraphe_img_1").style.display = para_value[vals[0]];
-		    gid("genform_div_paragraphe_img_1_alt").style.display = para_value[vals[0]];
-			//gid("genform_div_paragraphe_img_2").style.display = para_value[vals[0]];
-		    //gid("genform_div_paragraphe_img_2_alt").style.display = para_value[vals[0]];	
-		    
-		    //gid("genform_div_paragraphe_img_2_legend").style.display = para_value[vals[0]];	
-		    gid("genform_div_paragraphe_img_1_legend").style.display = para_value[vals[0]];		    
-		    
-		    // gid("genform_div_paragraphe_img_2_copyright").style.display = para_value[vals[0]];	
-		    //gid("genform_div_paragraphe_img_1_copyright").style.display = para_value[vals[0]];	
-		    
-		    gid("genform_div_paragraphe_file_1_legend").style.display = para_value[vals[1]];
-		    gid("genform_div_paragraphe_file_1").style.display = para_value[vals[1]];
-		    gid("genform_div_paragraphe_contenu").style.display = para_value[vals[3]];		    
-		    gid("genform_div_paragraphe_link_1").style.display = para_value[vals[4]];	
-			
-		    	');
-			//gid("genform_paragraphe_contenu_upload_table").style.display = para_value[vals[2]];
-	//	}
-		
-	/*
-			gid('genform_div_paragraphe_img_1_fr').style.display = para_value[vals[0]];
-			gid('genform_div_paragraphe_img_1_alt_fr').style.display = para_value[vals[0]];
-			gid('genform_div_paragraphe_img_1_en').style.display = para_value[vals[0]];
-			gid('genform_div_paragraphe_img_1_alt_en').style.display = para_value[vals[0]];
-	
-			gid('genform_div_paragraphe_params_fr').style.display = para_value[vals[1]];
-			gid('genform_div_paragraphe_params_en').style.display = para_value[vals[1]];
-			gid('genform_div_paragraphe_file_1_fr').style.display = para_value[vals[1]];
-			gid('genform_div_paragraphe_file_1_en').style.display = para_value[vals[1]];
-	
-			gid('genform_div_paragraphe_contenu_fr').style.display = para_value[vals[3]];
-			gid('genform_div_paragraphe_contenu_en').style.display = para_value[vals[3]];
-	
-			gid('genform_paragraphe_contenu_fr_upload_table').style.display = para_value[vals[2]];
-			gid('genform_paragraphe_contenu_en_upload_table').style.display = para_value[vals[2]];
-		*/
+    if ($row['para_type_use_img']) {
+        /**
+         * Les images ont besoin de ces champs
+         */
+        $fields[] = 'paragraphe_img_1';
+        $fields[] = 'paragraphe_img_1_alt';
+        $fields[] = 'paragraphe_img_1_legend';
+    }
 
-		/*	
-			gid('genform_div_paragraphe_img_1_fr').style.display = para_value[vals[0]];
-			gid('genform_div_paragraphe_img_1_fr').style.display = para_value[vals[0]];
-		*/
-		
-		
-		?>
-		
+    if ($row['para_type_use_file']) {
+        /**
+         * Les fichiers du fichier et de sa légende
+         */
+        $fields[] = 'paragraphe_file_1';
+        $fields[] = 'paragraphe_file_1_legend';
+    }
 
-	}
+    if ($row['para_type_use_txt']) {
+        /**
+         * Le contenu se suffit à lui même
+         */
+        $fields[] = 'paragraphe_contenu';
+    }
+
+    if ($row['para_type_use_link']) {
+        /**
+         * Ainsi que le lien
+         */
+        $fields[] = 'paragraphe_link_1';
+    }
+
+    /**
+     * Et on met tout ça dans notre tableau global qu'on enverra bientôt à JS
+     */
+    $paraTypes[$row['para_type_id']] = $fields;
 }
 
-//window.attachEvent("onload", updateParagraphes);
-
-</script>
-<?php
-
-$form->genlg('paragraphe_titre');
-
-$form->genlg('paragraphe_contenu');
-
-
-$form->genlg('paragraphe_img_1');
-$form->genlg('paragraphe_img_1_alt');
-$form->genlg('paragraphe_img_1_legend');
-//$form->gen('paragraphe_img_1_copyright');
-/*
-$form->genlg('paragraphe_img_2');
-$form->genlg('paragraphe_img_2_alt');
-//$form->genlg('paragraphe_img_2_legend');
-$form->gen('paragraphe_img_2_copyright');
-*/
-$form->genlg('paragraphe_file_1');
-$form->genlg('paragraphe_file_1_legend');
-
-$form->genlg('paragraphe_link_1');
-
 ?>
 
-<script type="text/javascript">
-updateParagraphes();
+<script>
+
+    (function () {
+
+        'use strict';
+
+        /**
+         * Le tableau Json de tous les types de paragraphe et leurs paramètres
+         */
+        var paraTypes = <?=json_encode($paraTypes)?>;
+
+        /**
+         * Mise à jour de l'affichage des champs de paragraphe en fonction du type de para choisi
+         */
+        function updateParagraphes() {
+            /**
+             * Valeur du seleect de type de paragraphe
+             * @type {*|jQuery}
+             */
+            var currentVal = $('#genform_fk_para_type_id').val();
+
+            /**
+             * Liste des champs à afficher pour ce type de para
+             */
+            var currentFields = paraTypes[currentVal];
+
+            /**
+             * On masque tous les champs du formulaire
+             * Sauf le champ de selection des types de para
+             */
+            $('.genform_champ_out:not(#genform_div_fk_para_type_id)').hide();
+
+            /**
+             * Et on affiche tous les champs nécessaires à ce type de para
+             */
+            $(currentFields).each(function () {
+                $('#genform_div_' + this).css('display', 'block');
+            });
+        }
+
+        /**
+         * On met à jour les pargraphes des qu'on change de type de para
+         */
+        $('#genform_fk_para_type_id').on('change blur', updateParagraphes);
+
+        /**
+         * Ainsi qu'a l'affichage du formulaire
+         */
+        $(document).ready(updateParagraphes);
+    })();
+
+
 </script>
