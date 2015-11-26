@@ -136,27 +136,27 @@ class GenForm
         else
             $this->setTabDefaultField(' ' . $this->pk . ' = "' . $this->id . '"');
 
-        if (isset($_SESSION[ gfuid() ]['nbLevels']) && (isset($_SESSION[ gfuid() ]['levels'][ $_SESSION[ gfuid() ]['nbLevels'] ]) &&
-                $_SESSION[ gfuid() ]['levels'][ $_SESSION[ gfuid() ]['nbLevels'] ]['insertOtherField']) || isset($_SESSION[ gfuid() ]['genform__add_sub_table'])
+        if (isset($_SESSION[gfuid()]['nbLevels']) && (isset($_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]) &&
+                $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['insertOtherField']) || isset($_SESSION[gfuid()]['genform__add_sub_table'])
         ) {
 
             global $relinv;
             reset($relinv);
 
             $otherTable = '';
-            if (!empty($_SESSION[ gfuid() ]['levels'][ $_SESSION[ gfuid() ]['nbLevels'] ])) {
-                $otherTable = !empty($_SESSION[ gfuid() ]['genform__add_sub_table']) ? $_SESSION[ gfuid() ]['genform__add_sub_table'] : akev($_SESSION[ gfuid() ]['levels'][ $_SESSION[ gfuid() ]['nbLevels'] ], 'curTable');
-                $fk_id = !empty($_SESSION[ gfuid() ]['levels'][ $_SESSION[ gfuid() ]['nbLevels'] ]) && !empty($_SESSION[ gfuid() ]['levels'][ $_SESSION[ gfuid() ]['nbLevels'] ]['curId']) ? $fk_id = $_SESSION[ gfuid() ]['levels'][ $_SESSION[ gfuid() ]['nbLevels'] ]['curId'] : $_SESSION[ gfuid() ]['genform__add_sub_id'];
+            if (!empty($_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']])) {
+                $otherTable = !empty($_SESSION[gfuid()]['genform__add_sub_table']) ? $_SESSION[gfuid()]['genform__add_sub_table'] : akev($_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']], 'curTable');
+                $fk_id = !empty($_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]) && !empty($_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['curId']) ? $fk_id = $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['curId'] : $_SESSION[gfuid()]['genform__add_sub_id'];
             }
             //debug($otherTable);
-            if (!empty($relinv[ $otherTable ])) {
-                foreach ($relinv[ $otherTable ] as $v) {
+            if (!empty($relinv[$otherTable])) {
+                foreach ($relinv[$otherTable] as $v) {
                     if ($v[0] == $this->table)
                         $chp = $v[1];
                 }
             }
             if (!empty($chp))
-                $this->tab_default_field[ $chp ] = $fk_id;
+                $this->tab_default_field[$chp] = $fk_id;
         }
 
 
@@ -166,7 +166,7 @@ class GenForm
         $this->language = LG;
 
         global $tabForms;
-        $this->pages = $tabForms[ $this->table_name ]["pages"];
+        $this->pages = $tabForms[$this->table_name]["pages"];
 
 
         $this->getLgs();
@@ -178,15 +178,15 @@ class GenForm
     {
 
         global $_Gconfig, $tabForms;
-        if (empty($_Gconfig['relOne'][ $this->table ])) {
+        if (empty($_Gconfig['relOne'][$this->table])) {
             return;
         }
 
-        foreach ($_Gconfig['relOne'][ $this->table ] as $table => $clef) {
+        foreach ($_Gconfig['relOne'][$this->table] as $table => $clef) {
 
-            if (!empty($this->tab_default_field[ $clef ]) || $table == akev($_REQUEST, 'relOne')) {
-                if ($tabForms[ $table ]['pages']) {
-                    $this->pages = array_merge($tabForms[ $table ]['pages']);
+            if (!empty($this->tab_default_field[$clef]) || $table == akev($_REQUEST, 'relOne')) {
+                if ($tabForms[$table]['pages']) {
+                    $this->pages = array_merge($tabForms[$table]['pages']);
                     $this->tab_field = array_merge($this->tab_field, getTabField($table));
                 }
             }
@@ -213,8 +213,8 @@ class GenForm
 
         $lgs = $_Gconfig['LANGUAGES'];
 
-        if (!empty($_SESSION[ gfuid() ]['nbLevels'])) {
-            $inf = $_SESSION[ gfuid() ]['levels'][ $_SESSION[ gfuid() ]['nbLevels'] ];
+        if (!empty($_SESSION[gfuid()]['nbLevels'])) {
+            $inf = $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']];
             $sql = 'SELECT DISTINCT(fk_langue_id)
 						FROM s_traduction
 						WHERE fk_table LIKE "' . $inf['curTable'] . '"
@@ -226,8 +226,8 @@ class GenForm
                 reset($lgfields);
                 $lgs[] = $row['fk_langue_id'];
                 foreach ($lgfields as $fi) {
-                    $this->tab_field[ $fi . '_' . $row['fk_langue_id'] ] = $this->tab_field[ $fi . '_' . $lgs[0] ];
-                    $this->tab_default_field[ $fi . '_' . $row['fk_langue_id'] ] = "";
+                    $this->tab_field[$fi . '_' . $row['fk_langue_id']] = $this->tab_field[$fi . '_' . $lgs[0]];
+                    $this->tab_default_field[$fi . '_' . $row['fk_langue_id']] = "";
                 }
             }
         }
@@ -238,8 +238,8 @@ class GenForm
         foreach ($res as $row) {
             $name = $row['fk_champ'];
             $lgs[] = $row['fk_langue_id'];
-            $this->tab_field[ $name . '_' . $row['fk_langue_id'] ] = $this->tab_field[ $name . '_' . $lgs[0] ];
-            $this->tab_default_field[ $name . '_' . $row['fk_langue_id'] ] = $row['traduction_texte'];
+            $this->tab_field[$name . '_' . $row['fk_langue_id']] = $this->tab_field[$name . '_' . $lgs[0]];
+            $this->tab_default_field[$name . '_' . $row['fk_langue_id']] = $row['traduction_texte'];
         }
 
 
@@ -254,7 +254,7 @@ class GenForm
     function setTabFromRow()
     {
         $this->tab_default_field = $this->id;
-        $this->id = $this->tab_default_field[ $this->pk ];
+        $this->id = $this->tab_default_field[$this->pk];
     }
 
     // rempli le tableau "tab_default_field" avec un enregistrement de la table
@@ -267,12 +267,12 @@ class GenForm
             $this->tab_default_field = $row;
         } else {
             foreach ($this->tab_field as $k => $v) {
-                $this->tab_default_field[ $k ] = '';
+                $this->tab_default_field[$k] = '';
             }
         }
         while (list($k, $v) = each($_REQUEST)) {
             if (strstr($k, 'genform_default__')) {
-                $this->tab_default_field[ str_replace('genform_default__', '', $k) ] = $_REQUEST[ $k ];
+                $this->tab_default_field[str_replace('genform_default__', '', $k)] = $_REQUEST[$k];
             }
         }
     }
@@ -457,7 +457,6 @@ class GenForm
     function genlg($tab_name, $fk_table = "", $traduction = "", $attributs = "", $preValues = array())
     {
 
-
         global $_Gconfig;
         global $rteFields, $uploadRep, $neededFields, $neededSymbol, $fieldError, $uploadFields, $mailFields, $restrictedMode, $tabForms, $relations, $arbos, $tablerel, $relinv, $previewField, $orderFields, $specialUpload, $editMode, $functionField, $_Gconfig;
 
@@ -479,9 +478,9 @@ class GenForm
 
         if ($this->editMode && !$this->onlyData)
             $this->addBuffer('<div class="row-fluid"><div class="span3 label">'); //<label class="genform_txtres"><span >
-        else if (!$this->onlyData && !$fieldError[ $name ])
+        else if (!$this->onlyData && !$fieldError[$name])
             $this->addBuffer('<label class="genform_txt label">');
-        else if (!$this->onlyData && $fieldError[ $name ])
+        else if (!$this->onlyData && $fieldError[$name])
             $this->addBuffer('<label class="genform_txt_error label label-important">');
 
         $this->printLabel($tab_name, $fk_table = "", $traduction = "", $attributs = "", $preValues = array());
@@ -513,7 +512,7 @@ class GenForm
                   $toHide .= '$("#lgfield_' . $name . '_' . $lg . '").hide();';
                   } */
 
-                $_SESSION[ gfuid() ]['curFields'][] = $tab_name . '_' . $lg;
+                $_SESSION[gfuid()]['curFields'][] = $tab_name . '_' . $lg;
             }
 
             $lg = !empty($_SESSION['onlyLg']) && $_SESSION['onlyLg'] != 'ALL' ? $_SESSION['onlyLg'] : LG_DEF;
@@ -658,9 +657,9 @@ class GenForm
 
         if ($this->editMode && !$this->onlyData)
             $this->addBuffer('<div class="row-fluid"><div class="span3 label">'); //<label class="genform_txtres"><span >
-        else if (!$this->onlyData && empty($fieldError[ $name ]))
+        else if (!$this->onlyData && empty($fieldError[$name]))
             $this->addBuffer('<label class="genform_txt label">');
-        else if (!$this->onlyData && !empty($fieldError[ $name ]))
+        else if (!$this->onlyData && !empty($fieldError[$name]))
             $this->addBuffer('<label class="genform_txt_error label label-important">');
 
         $this->printLabel($tab_name, $fk_table, $traduction, $attributs, $preValues);
@@ -726,22 +725,21 @@ class GenForm
         global $gb_obj;
 
         $found = false;
-
         /**
          * Si c'est un champ de langue mis en version de base
          */
-        if (!isset($this->tab_field[ $tab_name ]) && isset($this->tab_field[ $tab_name . '_' . ADMIN_LG_DEF ])) {
+        if (!isset($this->tab_field[$tab_name]) && isset($this->tab_field[$tab_name . '_' . ADMIN_LG_DEF])) {
 
             /**
              * L'a t'on dans la langue courante ?
              */
-            if ($this->tab_default_field[ $tab_name . '_' . LG ]) {
+            if ($this->tab_default_field[$tab_name . '_' . LG]) {
                 $tab_name = $tab_name . '_' . LG;
                 $found = true;
                 /**
                  * Dans la langue par défaut ?
                  */
-            } else if ($this->tab_default_field[ $tab_name . '_' . ADMIN_LG_DEF ]) {
+            } else if ($this->tab_default_field[$tab_name . '_' . ADMIN_LG_DEF]) {
                 $tab_name = $tab_name . '_' . ADMIN_LG_DEF;
                 $found = true;
 
@@ -754,7 +752,7 @@ class GenForm
                 $lgs = $this->lgs;
 
                 foreach ($lgs as $k => $v) {
-                    if ($this->tab_default_field[ $tab_name . '_' . $v ]) {
+                    if ($this->tab_default_field[$tab_name . '_' . $v]) {
                         $tab_name = $tab_name . '_' . $v;
                         $found = true;
                     }
@@ -775,23 +773,22 @@ class GenForm
 
         $this->fieldsDone++;
 
-
         /* Function Specific for this field */
         if (array_key_exists($name, $functionField)) {
-            if (array_key_exists('before', $functionField[ $name ])) {
-                $this->tab_default_field[ $name ] = call_user_func($functionField[ $name ]['before'], $this->tab_default_field[ $name ]);
+            if (array_key_exists('before', $functionField[$name])) {
+                $this->tab_default_field[$name] = call_user_func($functionField[$name]['before'], $this->tab_default_field[$name]);
             }
         }
 
 
         $lastBuffer = $this->getBuffer();
 
-        if (isset($_Gconfig['fullArbo'][ $this->table_name ]) && ake($_Gconfig['fullArbo'][ $this->table_name ], $name)) {
+        if (isset($_Gconfig['fullArbo'][$this->table_name]) && ake($_Gconfig['fullArbo'][$this->table_name], $name)) {
 
 
             include_once($gb_obj->getIncludePath('genform.fullarbo.php', 'admin/genform_modules'));
 
-            $vals = $_Gconfig['fullArbo'][ $this->table_name ][ $name ];
+            $vals = $_Gconfig['fullArbo'][$this->table_name][$name];
             $a = new fullArbo($this->table_name, $this->id, $vals, $name);
             if ($this->editMode) {
                 $this->addBuffer($a->getValue());
@@ -800,12 +797,12 @@ class GenForm
             }
         } else
 
-            if (isset($_Gconfig['ajaxRelinv'][ $this->table_name ]) && ake($_Gconfig['ajaxRelinv'][ $this->table_name ], $name)) {
+            if (isset($_Gconfig['ajaxRelinv'][$this->table_name]) && ake($_Gconfig['ajaxRelinv'][$this->table_name], $name)) {
 
 
                 include_once($gb_obj->getIncludePath('genform.ajaxrelinv.php', 'admin/genform_modules'));
 
-                $vals = $_Gconfig['ajaxRelinv'][ $this->table_name ][ $name ];
+                $vals = $_Gconfig['ajaxRelinv'][$this->table_name][$name];
                 $a = new ajaxRelinv($this->table_name, $this->id, $vals[0], $vals[1], $name);
                 if ($this->editMode) {
                     $this->addBuffer($a->getValue());
@@ -814,7 +811,7 @@ class GenForm
                 }
             } else
 
-                if (isset($tablerel[ $tab_name ])) {
+                if (isset($tablerel[$tab_name])) {
                     /**
                      * CHAMPS MULTIPLES
                      */
@@ -825,18 +822,18 @@ class GenForm
                     $f->attributs = $attributs;
 
                     $this->addBuffer($f->gen());
-                } else if (@array_key_exists($name, $relinv[ $this->table_name ])) {
+                } else if (@array_key_exists($name, $relinv[$this->table_name])) {
                     /**
                      * CLEF ETRANGERE
                      */
                     include($gb_obj->getIncludePath('genform.relinv.php', 'admin/genform_modules'));
-                } else if (@array_key_exists($name, $relations[ $this->table_name ]) || @array_key_exists(getBaseLgField($name), $relations[ $this->table_name ])) {
+                } else if (@array_key_exists($name, $relations[$this->table_name]) || @array_key_exists(getBaseLgField($name), $relations[$this->table_name])) {
 
                     /**
                      *    Relation simple
                      * * */
                     include($gb_obj->getIncludePath('genform.relation.php', 'admin/genform_modules'));
-                } else if (!empty($_Gconfig['mapsFields'][ $this->table ][ $name ])) {
+                } else if (!empty($_Gconfig['mapsFields'][$this->table][$name])) {
                     /**
                      * Champ latitude/longitude avec carto
                      */
@@ -846,53 +843,53 @@ class GenForm
                      * UPLOAD DE FICHIERS
                      */
                     include($gb_obj->getIncludePath('genform.upload.php', 'admin/genform_modules'));
-                } else if (in_array($this->tab_field[ $name ]->type, array('int', 'smallint', 'tinyint', 'bigint', 'float'))) {
+                } else if (in_array($this->tab_field[$name]->type, array('int', 'smallint', 'tinyint', 'bigint', 'float', 'decimal', 'numeric'))) {
 
                     /**
                      * INTEGER
                      */
                     include($gb_obj->getIncludePath('genform.integer.php', 'admin/genform_modules'));
-                } else if ($this->tab_field[ $name ]->type == 'year') {
+                } else if ($this->tab_field[$name]->type == 'year') {
                     /**
                      * YEAR
                      */
                     include($gb_obj->getIncludePath('genform.year.php', 'admin/genform_modules'));
-                } else if (in_array($this->tab_field[ $name ]->type, array('string', 'varchar', 'char'))) {
+                } else if (in_array($this->tab_field[$name]->type, array('string', 'varchar', 'char'))) { //MODIFIER CAR FLOAT DANS INTEGER S4AFFICHE EN BOOLEEN
                     /**
                      * VARCHAR
                      */
                     include($gb_obj->getIncludePath('genform.varchar.php', 'admin/genform_modules'));
-                } else if (in_array($this->tab_field[ $name ]->type, array('text', 'blob', 'longtext', 'tinytext', 'mediumtext'))) {
+                } else if (in_array($this->tab_field[$name]->type, array('text', 'blob', 'longtext', 'tinytext', 'mediumtext'))) {
 
                     /**
                      * TEXTAREA
                      */
                     include($gb_obj->getIncludePath('genform.text.php', 'admin/genform_modules'));
-                } else if ($this->tab_field[ $name ]->type == 'date') {
+                } else if ($this->tab_field[$name]->type == 'date') {
 
                     /**
                      * DATE
                      */
                     include($gb_obj->getIncludePath('genform.date.php', 'admin/genform_modules'));
-                } else if ($this->tab_field[ $name ]->type == 'datetime' || $this->tab_field[ $name ]->type == 'timestamp') {
+                } else if ($this->tab_field[$name]->type == 'datetime' || $this->tab_field[$name]->type == 'timestamp') {
 
                     /**
                      * DATE
                      */
                     include($gb_obj->getIncludePath('genform.datetime.php', 'admin/genform_modules'));
-                } else if ($this->tab_field[ $name ]->type == 'time') {
+                } else if ($this->tab_field[$name]->type == 'time') {
 
                     /**
                      * DECIMAL
                      */
                     include($gb_obj->getIncludePath('genform.time.php', 'admin/genform_modules'));
-                } else if ($this->tab_field[ $name ]->type == 'enum') {
+                } else if ($this->tab_field[$name]->type == 'enum') {
 
                     /**
                      * DECIMAL
                      */
                     include($gb_obj->getIncludePath('genform.enum.php', 'admin/genform_modules'));
-                } else if (substr($this->tab_field[ $name ]->type, 0, 4) == 'set(') {
+                } else if (substr($this->tab_field[$name]->type, 0, 4) == 'set(') {
 
                     /**
                      * DECIMAL
@@ -906,7 +903,7 @@ class GenForm
 
 
         if (!$this->editMode) {
-            $_SESSION[ gfuid() ]['curFields'][] = $name;
+            $_SESSION[gfuid()]['curFields'][] = $name;
         }
         if (trim($this->getBuffer()) == trim($lastBuffer))
             $this->addBuffer('<span class="light">' . t('empty_field') . '</span>');
@@ -1021,7 +1018,7 @@ class GenForm
         else
             $length = mt_rand($minlength, $maxlength);
         for ($i = 0; $i < $length; $i++)
-            $key .= $charset[ (mt_rand(0, (strlen($charset) - 1))) ];
+            $key .= $charset[(mt_rand(0, (strlen($charset) - 1)))];
         return $key;
     }
 
@@ -1137,7 +1134,7 @@ class GenForm
             }
             p('
 		<script type="text/javascript">
-			genform_totalPages = ' . count($tabForms[ $_REQUEST['curTable'] ]['pages']) . ';
+			genform_totalPages = ' . count($tabForms[$_REQUEST['curTable']]['pages']) . ';
                         window.filesUploading = 0;
                         function beforeUnloadUploading() {
                             return ' . alt(t('fichiers_en_cours_dupload')) . ';
@@ -1210,7 +1207,7 @@ class GenForm
     {
         /* Genere un champ cach�a la mode genform */
         //debug($this);
-        $_SESSION[ gfuid() ]['curFields'][] = $klef;
+        $_SESSION[gfuid()]['curFields'][] = $klef;
 
         p("<input type='hidden' name='genform_" . $klef . "' value='" . akev($this->tab_default_field, $klef) . "' />");
     }
