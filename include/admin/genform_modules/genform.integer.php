@@ -22,14 +22,12 @@
 # @package ocms
 #
 
-
 /*
- * Le champ est de type INTEGER
+ * Le champ est de type NUMERIC
  * */
-if ($this->tab_field[$name]->max_length < 2) {
-
-    /*
-     * Si sa longueur est infï¿½ieur ï¿½2 alors c'set un boolï¿½n OUI / NON
+if ($this->tab_field[$name]->max_length == 1) {
+    /**
+     * Taille 1 => Donc boolean Oui / non
      */
     $sel0 = '';
     $sel1 = '';
@@ -37,47 +35,73 @@ if ($this->tab_field[$name]->max_length < 2) {
     $this->addBuffer('<div class="radio">');
     if ($this->tab_default_field[$name] == "-1") {
         $sel0 = 'checked="checked"';
-
         $valeur = $this->trad('non_renseigne');
     } else if ($this->tab_default_field[$name] > 0) {
         $sel1 = 'checked="checked"';
-
         $valeur = $this->trad('t_oui');
     } else {
         $sel2 = 'checked="checked"';
         $valeur = $this->trad('t_non');
     }
-    if (!$this->editMode) {
-        /* $this->addBuffer( '<select ' . $jsColor . ' name="genform_' . $name . '"  '.$attributs.' >' );
-          $this->addBuffer( '<option value="-1" ' . $sel0 . ' > '.$valeur.' </option>' );
-          $this->addBuffer( '<option value="1" ' . $sel1 . ' >' . $this->trad( 't_oui' ) . '</option>' );
-          $this->addBuffer( '<option value="0" ' . $sel2 . ' >' . $this->trad( 't_non' ) . '</option>' );
-          $this->addBuffer( '</select>' );
-         */
-        global $_Gconfig;
-        $doReload = in_array($this->table . "." . $name, $_Gconfig['reloadOnChange']) || in_array($name, $_Gconfig['reloadOnChange']);
 
+    if (!$this->editMode) {
+
+        /**
+         * Mode edition donc champ input
+         */
+
+        global $_Gconfig;
+
+        /**
+         * Attributs par défaut
+         */
+        $attributs = ' type="radio" name="genform_' . $name . '" ';
+
+        /**
+         * Avec un reload sur le change ?
+         */
+        $doReload = in_array($this->table . "." . $name, $_Gconfig['reloadOnChange']) || in_array($name, $_Gconfig['reloadOnChange']);
         if ($doReload) {
-            //debug($name);
             $attributs .= ' onchange="saveAndReloadForm();" ';
         }
 
-        $this->addBuffer('<input ' . $attributs . ' type="radio" ' . $sel1 . ' name="genform_' . $name . '" value="1" id="genform_' . $name . '_1" />
-                        <label for="genform_' . $name . '_1">' . t('oui') . '</label>');
+        $this->addBuffer('<input ' . $attributs . '  ' . $sel1 . ' " value="1" id="genform_' . $name . '_1" />
+                          <label for="genform_' . $name . '_1">' . t('oui') . '</label>');
         $this->addBuffer('
-                        <label for="genform_' . $name . '_0">' . t('non') . '</label><input ' . $attributs . '  type="radio"  ' . $sel2 . ' name="genform_' . $name . '" value="0" id="genform_' . $name . '_0" />');
+                        <label for="genform_' . $name . '_0">' . t('non') . '</label>
+                        <input ' . $attributs . '  ' . $sel2 . ' value="0" id="genform_' . $name . '_0" />');
 
         $this->addBuffer('</div>');
+
     } else {
 
+        /**
+         * Valeur seullement
+         */
         $this->addBuffer(ta('genform_boolean_' . $this->tab_default_field[$name]));
-		$this->addBuffer('</div>');
-		
+        $this->addBuffer('</div>');
+
     }
 } else {
-    if (!$this->editMode)
-        $this->addBuffer('<input ' . $jsColor . ' type="text" name="genform_' . $name . '"  id="genform_' . $name . '" size="8" maxlength="' . $this->tab_field[$name]->max_length . '" value="' . $this->tab_default_field[$name] . '" />');
-    else
+    /**
+     * Champ numeric simple
+     */
+    if (!$this->editMode) {
+        $scale = $this->tab_field[$name]->scale;
+        if (!$scale) {
+            $scale = 4;
+        }
+        $step = '0.' . str_repeat('0', $scale) . '1';
+        $this->addBuffer('<input
+            ' . $jsColor . '
+            type="text"
+            name="genform_' . $name . '"
+            id="genform_' . $name . '"
+            size="8"
+            value="' . $this->tab_default_field[$name] . '"
+             />');
+    } else {
         $this->addBuffer($this->tab_default_field[$name]);
+    }
 }
 
