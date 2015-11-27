@@ -92,7 +92,7 @@ foreach ($res as $row) {
              * On masque tous les champs du formulaire
              * Sauf le champ de selection des types de para
              */
-            $('.genform_champ_out:not(#genform_div_fk_para_type_id)').hide();
+            $('.genform_champ_out:not(#genform_div_fk_para_type_id,#genform_div_paragraphe_titre)').hide();
 
             /**
              * Et on affiche tous les champs nécessaires à ce type de para
