@@ -309,6 +309,9 @@ function rm($fileglob)
 {
     if (is_string($fileglob)) {
         if (is_file($fileglob)) {
+            if (substr($fileglob, 0, 1) == '.') {
+                return false;
+            }
             return unlink($fileglob);
         } else if (is_dir($fileglob)) {
             $ok = rm("$fileglob/*");
