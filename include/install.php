@@ -62,9 +62,10 @@ class genInstall
             foreach ($quers as $sql) {
                 if (!DoSql($sql)) {
                     $res = false;
-                    echo("<p>Query: " . trim(nl2br(htmlentities($sql))) . "</p>\n");
-                    echo("<p>MySQL: " . $co->errorMsg() . "</p>\n");
-                    debug($sql);
+                    echo("<h2>Query: " . trim(nl2br(htmlentities($sql))) . "</h2>\n");
+                    echo("<h2>MySQL Error</h2>");
+                    var_dump($co->errorMsg());
+                    var_dump($sql);
                 }
             }
 
@@ -244,7 +245,7 @@ class genInstall
         $_POST['UNIQUE_SITE'] = uniqid();
         $vars = array('bdd_bdd', 'bdd_user', 'bdd_pwd', 'bdd_type', 'bdd_host', 'CRYPTO_KEY', 'ADMIN_URL', 'WEB_URL', 'session_cookie_server', 'current_ip', 'UNIQUE_SITE');
         foreach ($vars as $var) {
-            $contenu = str_replace('**' . $var . '**', $_POST[ $var ], $contenu);
+            $contenu = str_replace('**' . $var . '**', $_POST[$var], $contenu);
         }
 
 
@@ -293,13 +294,14 @@ class genInstall
             $quers = importSqlFile(path_concat($GLOBALS['gb_obj']->include_path, 'config', 'INSTALL.SQL'));
             $res = true;
             //var_dump($quers);
+            $co->_bindInputArray = true;
             foreach ($quers as $sql) {
                 if (!DoSql($sql)) {
                     $res = false;
-
-                    echo("<p>Query: " . trim(nl2br(htmlentities($sql))) . "</p>\n");
-                    echo("<p>MySQL: " . $co->errorMsg() . "</p>\n");
-                    echo($sql);
+                    echo("<h2>Query: " . trim(nl2br(htmlentities($sql))) . "</h2>\n");
+                    echo("<h2>MySQL Error</h2>");
+                    var_dump($co->errorMsg());
+                    var_dump($sql);
                 }
             }
 

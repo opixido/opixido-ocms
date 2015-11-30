@@ -68,7 +68,7 @@ function insertEmptyRecord($table, $id = false, $champs = array())
     $auto = false;
     $tableInfo = MetaColumns($table);
 
-    if ($tableInfo[ strtoupper(getPrimaryKey($table)) ]->auto_increment > 0) {
+    if ($tableInfo[strtoupper(getPrimaryKey($table))]->auto_increment > 0) {
         $auto = true;
     }
 
@@ -97,9 +97,9 @@ function insertEmptyRecord($table, $id = false, $champs = array())
         }
     } /**
      * else if a specific function is defined for this table
-     */ else if ($_Gconfig['insertRules'][ $table ]) {
+     */ else if ($_Gconfig['insertRules'][$table]) {
 
-        return $_Gconfig['insertRules'][ $table ]();
+        return $_Gconfig['insertRules'][$table]();
 
         /**
          * Otherwise : select max()+1 on primary key
@@ -154,9 +154,9 @@ function sqlLgTitle($table, $sep = ' - ')
 
     $sql .= 'CONCAT(""';
 
-    $nb = count($tabForms[ $table ]['titre']);
+    $nb = count($tabForms[$table]['titre']);
 
-    foreach ($tabForms[ $table ]['titre'] as $k => $v) {
+    foreach ($tabForms[$table]['titre'] as $k => $v) {
 
         $sql .= ',';
 
@@ -188,13 +188,13 @@ function getRowFromId($table, $id, $onlyOnline = false)
     }
     global $getRowFromId_cacheRow, $_Gconfig;
 
-    if (IN_ADMIN || !array_key_exists($table . "_-_" . $id, $getRowFromId_cacheRow) || !$getRowFromId_cacheRow[ $table . "_-_" . $id ]) {
+    if (IN_ADMIN || !array_key_exists($table . "_-_" . $id, $getRowFromId_cacheRow) || !$getRowFromId_cacheRow[$table . "_-_" . $id]) {
         $select = 'SELECT NULL ';
         $from = ' FROM ' . $table . ' AS T ';
         $where = ' WHERE T.' . GetPrimaryKey($table) . ' = ' . sql($id);
-        if (isset($_Gconfig['relOne'][ $table ])) {
+        if (isset($_Gconfig['relOne'][$table])) {
             $i = 0;
-            foreach ($_Gconfig['relOne'][ $table ] as $fk_table => $clef) {
+            foreach ($_Gconfig['relOne'][$table] as $fk_table => $clef) {
                 $i++;
                 $select .= ' , ' . $fk_table . '.*';
                 $from .= ' LEFT JOIN ' . $fk_table . '  ON ' . $fk_table . '.' . $clef . ' = T.' . getPrimaryKey($table);
@@ -212,12 +212,12 @@ function getRowFromId($table, $id, $onlyOnline = false)
         if (IN_ADMIN) {
             return $row;
         } else {
-            $getRowFromId_cacheRow[ $table . "_-_" . $id ] = $row;
+            $getRowFromId_cacheRow[$table . "_-_" . $id] = $row;
         }
     }
 
 
-    return $getRowFromId_cacheRow[ $table . "_-_" . $id ];
+    return $getRowFromId_cacheRow[$table . "_-_" . $id];
 }
 
 function getSelectTables($table, $alias = 'T')
@@ -226,9 +226,9 @@ function getSelectTables($table, $alias = 'T')
     $sql = ' ' . $table . ' AS ' . $alias;
 
     global $_Gconfig;
-    if (isset($_Gconfig['relOne'][ $table ])) {
+    if (isset($_Gconfig['relOne'][$table])) {
         $i = 0;
-        foreach ($_Gconfig['relOne'][ $table ] as $table => $clef) {
+        foreach ($_Gconfig['relOne'][$table] as $table => $clef) {
             $i++;
             $sql .= ' , ' . $table;
         }
@@ -258,7 +258,7 @@ function sqlOnlyOnline($table, $alias = '')
         //$sql .= $alias;
     }
 
-    if (ake($_Gconfig['field_date_online'], $t) && ake($_Gconfig['field_date_online'], $t) && $t[ $_Gconfig['field_date_online'] ] && $t[ $_Gconfig['field_date_online'] ]) {
+    if (ake($_Gconfig['field_date_online'], $t) && ake($_Gconfig['field_date_online'], $t) && $t[$_Gconfig['field_date_online']] && $t[$_Gconfig['field_date_online']]) {
         $sql .= ' AND ( ' . $_Gconfig['field_date_online'] . ' <= NOW() OR ' . $_Gconfig['field_date_online'] . ' = "0000-00-00" )
 		AND (' . $_Gconfig['field_date_offline'] . ' >= NOW() OR ' . $_Gconfig['field_date_offline'] . ' = "0000-00-00"  ) ';
     }
@@ -446,7 +446,7 @@ function mes($str)
  * @param string $msg Message en cas d'erreur
  * @return ADORecordSet $res
  */
-function dosql($sql, $msg = '', $params = array())
+function dosql($sql, $msg = '', $params = false)
 {
     global $co;
     if (!$co) {
@@ -495,13 +495,13 @@ function TrySql($sql)
 function getTables()
 {
     global $co;
-    if (empty($GLOBALS['GlobalObjCache'][ UNIQUE_SITE ])) {
-        $GLOBALS['GlobalObjCache'][ UNIQUE_SITE ] = array();
+    if (empty($GLOBALS['GlobalObjCache'][UNIQUE_SITE])) {
+        $GLOBALS['GlobalObjCache'][UNIQUE_SITE] = array();
     }
-    if (!ake($GLOBALS['GlobalObjCache'][ UNIQUE_SITE ], 'tables') && $co) {
-        $GLOBALS['GlobalObjCache'][ UNIQUE_SITE ]['tables'] = $co->MetaTables('TABLES');
+    if (!ake($GLOBALS['GlobalObjCache'][UNIQUE_SITE], 'tables') && $co) {
+        $GLOBALS['GlobalObjCache'][UNIQUE_SITE]['tables'] = $co->MetaTables('TABLES');
     }
-    return $GLOBALS['GlobalObjCache'][ UNIQUE_SITE ]['tables'];
+    return $GLOBALS['GlobalObjCache'][UNIQUE_SITE]['tables'];
 }
 
 /**
@@ -511,7 +511,7 @@ function getTables()
 function clearCache()
 {
     $GLOBALS['GlobalObjCache'] = array();
-    $GLOBALS['GlobalObjCache'][ UNIQUE_SITE ] = array();
+    $GLOBALS['GlobalObjCache'][UNIQUE_SITE] = array();
 }
 
 /**
@@ -525,7 +525,7 @@ function InsertId()
     return $co->Insert_ID();
 }
 
-$GLOBALS['GlobalObjCache'][ UNIQUE_SITE ]['tabfield'] = choose(akev($GLOBALS['GlobalObjCache'], 'tabfield'), array(''));
+$GLOBALS['GlobalObjCache'][UNIQUE_SITE]['tabfield'] = choose(akev($GLOBALS['GlobalObjCache'], 'tabfield'), array(''));
 
 /**
  * Retourne la liste des champs de la table
@@ -543,7 +543,7 @@ function getTabField($table)
     }
 
     //return $co->MetaColumns($table,false);
-    if (empty($GLOBALS['GlobalObjCache'][ UNIQUE_SITE ][ 'tabField_' . $table ])) {
+    if (empty($GLOBALS['GlobalObjCache'][UNIQUE_SITE]['tabField_' . $table])) {
 
         $t = MetaColumns($table);
         if (!is_array($t)) {
@@ -552,14 +552,14 @@ function getTabField($table)
         }
         while (list($k, $v) = each($t)) {
             $v->table = $table;
-            $t2[ strtolower($k) ] = $v;
+            $t2[strtolower($k)] = $v;
         }
 
-        $GLOBALS['GlobalObjCache'][ UNIQUE_SITE ][ 'tabField_' . $table ] = $t2;
+        $GLOBALS['GlobalObjCache'][UNIQUE_SITE]['tabField_' . $table] = $t2;
         return $t2;
     }
 
-    return $GLOBALS['GlobalObjCache'][ UNIQUE_SITE ][ 'tabField_' . $table ];
+    return $GLOBALS['GlobalObjCache'][UNIQUE_SITE]['tabField_' . $table];
 }
 
 /**
@@ -589,11 +589,11 @@ function sql($param, $type = 'string')
     return '"' . $param . '"';
 }
 
-if (empty($GLOBALS['GlobalObjCache'][ UNIQUE_SITE ])) {
-    $GLOBALS['GlobalObjCache'][ UNIQUE_SITE ] = array();
+if (empty($GLOBALS['GlobalObjCache'][UNIQUE_SITE])) {
+    $GLOBALS['GlobalObjCache'][UNIQUE_SITE] = array();
 }
 
-$GLOBALS['GlobalObjCache'][ UNIQUE_SITE ]['pks'] = choose(akev($GLOBALS['GlobalObjCache'][ UNIQUE_SITE ], 'pks'), array(''));
+$GLOBALS['GlobalObjCache'][UNIQUE_SITE]['pks'] = choose(akev($GLOBALS['GlobalObjCache'][UNIQUE_SITE], 'pks'), array(''));
 
 if (!function_exists('getPrimaryKey')) {
 
@@ -602,16 +602,16 @@ if (!function_exists('getPrimaryKey')) {
 
 
         if (strlen($table)) {
-            if (empty($GLOBALS['GlobalObjCache'][ UNIQUE_SITE ]['pks'][ $table ])) {
+            if (empty($GLOBALS['GlobalObjCache'][UNIQUE_SITE]['pks'][$table])) {
                 global $co;
                 $t = $co->MetaPrimaryKeys($table);
                 if (count($t) == 1)
-                    $GLOBALS['GlobalObjCache'][ UNIQUE_SITE ]['pks'][ $table ] = $t[0];
+                    $GLOBALS['GlobalObjCache'][UNIQUE_SITE]['pks'][$table] = $t[0];
                 else
-                    $GLOBALS['GlobalObjCache'][ UNIQUE_SITE ]['pks'][ $table ] = false;
+                    $GLOBALS['GlobalObjCache'][UNIQUE_SITE]['pks'][$table] = false;
             }
         }
-        return $GLOBALS['GlobalObjCache'][ UNIQUE_SITE ]['pks'][ $table ];
+        return $GLOBALS['GlobalObjCache'][UNIQUE_SITE]['pks'][$table];
     }
 
 }
@@ -638,8 +638,8 @@ function createGabarit($nom, $id, $plugin)
 
     if (!$r) {
         $r = array(
-            'gabarit_id'     => '',
-            'gabarit_titre'  => $nom,
+            'gabarit_id' => '',
+            'gabarit_titre' => $nom,
             'gabarit_classe' => $id,
             'gabarit_plugin' => $plugin
         );
