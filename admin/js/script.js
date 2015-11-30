@@ -53,7 +53,7 @@ function popup(href, larg, haut) {
 
     }
     window.open(href, 'test', 'width=' + larg + ',height=' + haut
-    + ',scrollbars=yes,resizable=yes');
+        + ',scrollbars=yes,resizable=yes');
 
 }
 
@@ -96,7 +96,7 @@ function genformPreviewFk(curtable, nom, champs, iframenom) {
         && valeur != "") {
 
         ifra.src = "index.php?popup=1&preview=1&curTable=" + curtable
-        + "&curId=" + valeur + "&champs=" + champs;
+            + "&curId=" + valeur + "&champs=" + champs;
         ifra.style.display = "block";
 
         if (btn.value != "X")
@@ -312,13 +312,13 @@ function insertLorem(obj) {
 function insertDate(obj) {
     var myDate = new Date();
     obj.value += myDate.getDate() + "/" + myDate.getMonth() + "/"
-    + myDate.getFullYear();
+        + myDate.getFullYear();
 }
 
 function insertTime(obj) {
     var myDate = new Date();
     obj.value += myDate.getHours() + "/" + myDate.getMinutes() + "/"
-    + myDate.getSeconds();
+        + myDate.getSeconds();
 }
 
 function insertUnixTime(obj) {
@@ -495,17 +495,17 @@ function selectToSearch(obj) {
     var o = $("#" + obj);
     o.hide();
     o.after('<input autocomplete="off" type="hidden" name="' + obj + '" id="' + obj + '"  value="'
-    + $(o).val() + '" />');
+        + $(o).val() + '" />');
 
     o.after('<ul class="dropdown-menu" style="position:static;float:none" id="' + obj + '_liste"></ul>');
     $('#' + obj + '_liste').hide();
     o
         .after('<input autocomplete="off" class="relationSelect" type="text" onclick="prepareSelect(this)" onkeyup="searchSelect(this)" rel="'
-        + obj
-        + '"  id="'
-        + obj
-        + '_helper" value="'
-        + o.find('option:selected').text() + '"/>');
+            + obj
+            + '"  id="'
+            + obj
+            + '_helper" value="'
+            + o.find('option:selected').text() + '"/>');
     o.remove();
 
 }
@@ -579,8 +579,8 @@ function toggleRteInline(tarea) {
     }
 
     obj.after('<div class="rtePreview well" id="preview_' + tarea
-    + '" title="Cliquez-ici pour modifier ce texte" >' + vval
-    + '</div>');
+        + '" title="Cliquez-ici pour modifier ce texte" >' + vval
+        + '</div>');
     $('#preview_' + tarea + '').click(function () {
         obj.show();
 
@@ -772,7 +772,7 @@ function checkFields() {
 $.extend($.expr[':'], {
     'containsi': function (elem, i, match, array) {
         return (elem.textContent || elem.innerText || '').toLowerCase()
-            .indexOf((match[3] || "").toLowerCase()) >= 0;
+                .indexOf((match[3] || "").toLowerCase()) >= 0;
     }
 });
 
@@ -787,3 +787,4 @@ function searchInSelect(obj) {
     }
 
 }
+
