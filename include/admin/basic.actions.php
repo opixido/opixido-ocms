@@ -122,7 +122,7 @@ function doTranslations($lg, $action = 'add')
                 $chpnu = fieldWithoutLg($chp->name);
                 $newName = $chpnu . '_' . $lg;
 
-                if ($chps[ $newName ]) {
+                if ($chps[$newName]) {
                     if ($action == 'del') {
 
                         print('<br/>DROPPING : ' . $table . '.' . $newName);
@@ -309,7 +309,8 @@ function rm($fileglob)
 {
     if (is_string($fileglob)) {
         if (is_file($fileglob)) {
-            if (substr($fileglob, 0, 1) == '.') {
+            $name = basename($fileglob);
+            if (substr($name, 0, 1) == '.') {
                 return false;
             }
             return unlink($fileglob);
