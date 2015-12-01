@@ -33,7 +33,6 @@ function insertIdForNewForm(callBack) {
 }
 
 
-
 /**a
  * CallBack de insertIdForNewForm
  **/
@@ -52,8 +51,8 @@ function fillCurrentFormNewId(resp) {
 function genformReloadField(field) {
     var div = $("#genform_div_" + field);
     div.css('opacity', 0.5);
-    doSaveAllAndStay(function() {
-        $.get('?xhr=genformReloadField&curField=' + field + '&curTable=' + $('#curTable').val() + '&curId=' + $('#curId').val(), function(data) {
+    doSaveAllAndStay(function () {
+        $.get('?xhr=genformReloadField&curField=' + field + '&curTable=' + $('#curTable').val() + '&curId=' + $('#curId').val(), function (data) {
             div.replaceWith(data);
             if (window.currentLg) {
                 showLgField(field, window.currentLg);
@@ -99,24 +98,34 @@ function arSaveValue(obj, table, champ, id, curtable) {
 
 function doSaveAllAndStay(func) {
 
-    $("#genform_stay").val("ajaxsave");
-    $.post("index.php", $("#genform_formulaire").serialize(), function(data) {
-        $("#curId").val($.trim(data));
-        if (func) {
-            func();
-        }
-    });
-    $("#genform_stay").val("");
+    if ($("#genform_formulaire")[0]) {
+        var saveImg = $('#genform_ok img');
+        var curSrc = saveImg.attr('src');
 
+        saveImg.attr('src', 'img/loading.gif');
+        saveImg.css({'background': 'white', 'border-radius': '20px', 'padding': '3px'});
+
+        $("#genform_stay").val("ajaxsave");
+
+        $.post("index.php", $("#genform_formulaire").serialize(), function (data) {
+            $("#curId").val($.trim(data));
+            saveImg.attr('src', curSrc);
+
+            saveImg.css({'background': 'none', 'border-radius': '0', 'padding': 0});
+            $('body').removeClass('loading');
+            if (func) {
+                func();
+            }
+        });
+        $("#genform_stay").val("");
+    }
     return;
-
-
 }
 
 function arAddValue(obj, table, fake, id) {
     var tableId = $(obj).closest('table').attr('id');
     if (isCurrentFormNew()) {
-        doSaveAllAndStay(function() {
+        doSaveAllAndStay(function () {
             url = "index.php?xhr=ajaxRelinv&table=" + table + "&fake=" + fake + "&id=" + $('#curId').val();
             XHR(url, "", "", "addRowToTable(\'" + tableId + "\', http.responseText)");
         });
@@ -133,14 +142,12 @@ function addRowToTable(table, contenu) {
     checkScripts($("#" + table + " tbody tr:last")[0]);
 }
 
-function is_ignorable(nod)
-{
+function is_ignorable(nod) {
     return (nod.nodeType == 8) || // A comment node
-            ((nod.nodeType == 3) && is_all_ws(nod)); // a text node, all ws
+        ((nod.nodeType == 3) && is_all_ws(nod)); // a text node, all ws
 }
 
-function node_before(sib)
-{
+function node_before(sib) {
     while ((sib = sib.previousSibling)) {
         if (!is_ignorable(sib))
             return sib;
@@ -148,14 +155,12 @@ function node_before(sib)
     return null;
 }
 
-function is_all_ws(nod)
-{
+function is_all_ws(nod) {
     // Use ECMA-262 Edition 3 String and RegExp features
     return !(/[^\t\n\r ]/.test(nod.data));
 }
 
-function node_after(sib)
-{
+function node_after(sib) {
     while ((sib = sib.nextSibling)) {
         if (!is_ignorable(sib))
             return sib;
@@ -167,7 +172,7 @@ function arDelete(obj, faketable, id) {
     url = "index.php?xhr=ajaxRelinv&table=" + faketable + "&delete=" + id + "&";
     //obj.parentNode.parentNode.parentNode.parentNode.removeChild(obj.parentNode.parentNode.parentNode);
     XHR(url);
-    $(obj).closest('tr').hide('normal', function() {
+    $(obj).closest('tr').hide('normal', function () {
         $(this).remove()
     });
 }
@@ -192,7 +197,6 @@ function arGoDown(obj) {
     }
 
 }
-
 
 
 // SUPPRESSION D'UN NOEUD
@@ -223,7 +227,6 @@ function FAadd(obj, nom, id) {
 }
 
 
-
 function FAgoUp(obj, nom, id) {
     var tbod = obj.parentNode;
     var tabl = tbod.parentNode;
@@ -239,7 +242,6 @@ function FAgoUp(obj, nom, id) {
     return false;
 
 }
-
 
 
 function FAgoDown(obj, nom, id) {
@@ -277,8 +279,6 @@ function checkUpDown(obj) {
     }
 //alert(objs);
 }
-
-
 
 
 function FAdel(obj, nom, id) {
@@ -319,7 +319,7 @@ function serialize(mixed_value) {
     // *     returns 1: 'a:3:{i:0;s:5:"Kevin";i:1;s:3:"van";i:2;s:9:"Zonneveld";}'
     // *     example 2: serialize({firstName: 'Kevin', midName: 'van', surName: 'Zonneveld'});
     // *     returns 2: 'a:3:{s:9:"firstName";s:5:"Kevin";s:7:"midName";s:3:"van";s:7:"surName";s:9:"Zonneveld";}'
-    var _getType = function(inp) {
+    var _getType = function (inp) {
         var type = typeof inp, match;
         var key;
         if (type == 'object' && !inp) {
@@ -385,7 +385,7 @@ function serialize(mixed_value) {
 
                 okey = (key.match(/^[0-9]+$/) ? parseInt(key, 10) : key);
                 vals += serialize(okey) +
-                        serialize(mixed_value[key]);
+                    serialize(mixed_value[key]);
                 count++;
             }
             val += ":" + count + ":{" + vals + "}";
@@ -400,8 +400,6 @@ function serialize(mixed_value) {
     }
     return val;
 }
-
-
 
 
 function set_it() {
@@ -425,7 +423,6 @@ function loadjscssfile(filename, filetype) {
         //alert(fileref);
     }
 }
-
 
 
 /**
@@ -467,7 +464,6 @@ function addChild(param) {
     }
 
 
-
     // construction du name de l'input pour le récuprérer facilement ensuite
     var inputName = 'n[0][fils]';
 
@@ -495,7 +491,6 @@ function addChild(param) {
     }
 
     /**********************************************************************/
-
 
 
     for (k = 0; k < lgs.length; k++) {
@@ -590,8 +585,8 @@ function refreshUploaders() {
  * @type Boolean|@exp;window@call;open
  */
 window.previewWindow = false;
-$(document).ready(function() {
-    $('.previsu a').click(function(e) {
+$(document).ready(function () {
+    $('.previsu a').click(function (e) {
         e.preventDefault();
         /**
          * Pour virer le cache
@@ -600,7 +595,7 @@ $(document).ready(function() {
         /**
          * On met à jour après enregistrement via ajax de la page
          */
-        doSaveAllAndStay(function() {
+        doSaveAllAndStay(function () {
             window.previewWindow.location = href + Math.random();
         });
 
