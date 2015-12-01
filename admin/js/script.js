@@ -788,3 +788,16 @@ function searchInSelect(obj) {
 
 }
 
+/**
+ * Sauvegarde  du formulaire via un CTRL + S
+ */
+$(window).bind('keydown', function (event) {
+    if ((event.ctrlKey || event.metaKey) && !event.shiftKey && !event.altKey) {
+        switch (String.fromCharCode(event.which).toLowerCase()) {
+            case 's':
+                event.preventDefault();
+                doSaveAllAndStay();
+                break;
+        }
+    }
+});
