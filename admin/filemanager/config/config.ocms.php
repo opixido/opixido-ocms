@@ -31,7 +31,7 @@ $config['thumbs_base_path'] = '../c/';
 /**
  * Lague fr_FR ...
  */
-$config['default_language'] = LG . '_' . strtoupper(LG);
+$config['default_language'] = empty($_SESSION['lg']) ? 'fr_FR' : $_SESSION['lg'] . '_' . strtoupper($_SESSION['lg']);
 
 /**
  * Dossier partagé général
