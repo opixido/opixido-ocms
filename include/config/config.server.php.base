@@ -82,6 +82,14 @@ if (IN_ADMIN) {
     define('BU', str_replace('/index.php', '', $_SERVER["SCRIPT_NAME"]));
 }
 
+/**
+ * Test pour les serveurs en VirtualDocRoot dans Apache qui retourne une mauvaise valeur dans
+ * DOCUMENT_ROOT
+ * On essaie alors de la calculer
+ */
+if ($_SERVER['SCRIPT_FILENAME'] != ($_SERVER['DOCUMENT_ROOT'] . $_SERVER['SCRIPT_NAME'])) {
+    $_SERVER['DOCUMENT_ROOT'] = str_replace($_SERVER['SCRIPT_NAME'], '', $_SERVER['SCRIPT_FILENAME']);
+}
 
 /**
  * Adresse de l'administration
