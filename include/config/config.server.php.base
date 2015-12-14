@@ -75,6 +75,9 @@ define('SEP', DIRECTORY_SEPARATOR);
  * mais on pourrait l'écrire en dur par serveur ...
  * Au choix
  */
+if(!defined('IN_ADMIN')) {
+    define('IN_ADMIN',true);
+}
 if (IN_ADMIN) {
     //define('BU',str_replace(array('/admin/index.php','/index.php','/admin/ImageManager/editorFrame.php'),array('','',''),$_SERVER["SCRIPT_NAME"]));
     define('BU', substr($_SERVER['SCRIPT_NAME'], 0, strpos($_SERVER['SCRIPT_NAME'], '/admin/')));
