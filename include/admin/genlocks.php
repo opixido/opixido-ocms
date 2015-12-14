@@ -22,16 +22,19 @@
 # @package ocms
 #
 
-class genLocks {
+class genLocks
+{
 
-    public function genLocks() {
+    public function __construct()
+    {
 
 
         global $gs_obj;
         $this->gs = &$gs_obj;
     }
 
-    public function setLock($table, $id, $row = array()) {
+    public function setLock($table, $id, $row = array())
+    {
 
 
         /* debug('Set lock : '.$table.' : '.$id);
@@ -46,7 +49,6 @@ class genLocks {
         $this->row = $row;
 
 
-
         $sql = 'INSERT INTO s_lock
 			 (fk_admin_id,lock_table,lock_id,lock_time)
 			 VALUES
@@ -56,7 +58,8 @@ class genLocks {
         return TrySql($sql);
     }
 
-    public function unsetLock($table, $id, $row = array()) {
+    public function unsetLock($table, $id, $row = array())
+    {
         //return true;
         if ($id == 'new')
             return true;
@@ -76,7 +79,8 @@ class genLocks {
         return DoSql($sql, 'Suppression du Lock');
     }
 
-    public function unsetAllLocks() {
+    public function unsetAllLocks()
+    {
         //return true;
         /* debug('Unset All locks : ');
           return; */
@@ -86,7 +90,8 @@ class genLocks {
         return DoSql($sql, 'Suppression des locks');
     }
 
-    public function getLock($table, $id, $row = array()) {
+    public function getLock($table, $id, $row = array())
+    {
         //return false;
         $this->table = $table;
         $this->id = $id;
@@ -95,7 +100,7 @@ class genLocks {
         $sql = 'SELECT * FROM s_lock
 			WHERE lock_table = "' . mes($this->table) . '"
 			AND lock_id = "' . mes($this->id) . '"
-			AND lock_time >  ' . (time() - (int) GetParam('lock_timeout')) . '
+			AND lock_time >  ' . (time() - (int)GetParam('lock_timeout')) . '
 			AND fk_admin_id <> ' . sql($this->gs->adminid) . '';
 
 

@@ -25,14 +25,16 @@
 
 /* :::: FONCTIONS :::: */
 
-function openFile($name, $method) {
+function openFile($name, $method)
+{
     $hdl = fopen($name, $method);
     return $hdl;
 }
 
 /* :::::::::::::::::::::::::::::: */
 
-class Csv {
+class Csv
+{
     /* PROPRIETES DE LA CLASSE CSV */
 
     var $csvFile;
@@ -54,7 +56,8 @@ class Csv {
 
     /* CONSTRUCTEUR DE LA CLASSE CSV */
 
-    function Csv($csvFile, $csvSummary = '', $csvCaption = '', $csvDelimiter = '', $hasTopHeader = '', $hasLeftHeader = '') {
+    public function __construct($csvFile, $csvSummary = '', $csvCaption = '', $csvDelimiter = '', $hasTopHeader = '', $hasLeftHeader = '')
+    {
         $this->csvFile = $csvFile;
         $this->csvSummary = $csvSummary;
         $this->csvCaption = $csvCaption;
@@ -65,7 +68,8 @@ class Csv {
 
     /* METHODE APPELANTE */
 
-    function gen() {
+    function gen()
+    {
         $handle = $this->openCsvFile();
         $CsvTab = $this->buildHTMLTab($handle, 8);
         //p( $this->showCsvContent($handle) );
@@ -73,7 +77,8 @@ class Csv {
         return $CsvTab;
     }
 
-    function trimMillier($value) {
+    function trimMillier($value)
+    {
         if (is_numeric($value)) {
             $value = str_replace('.', ',', $value);
             $value = explode(',', $value);
@@ -101,14 +106,15 @@ class Csv {
                 $temp .= '.' . $value[1];
 
             return $temp;
-        }else {
+        } else {
             return $value;
         }
     }
 
     /* METHODE QUI CONSTRUIT UN TABLEAU HTML A PARTIR D'UN HANDLE SUR UN FICHIER CSV */
 
-    function buildHTMLTab($hdl, $limit_col) {
+    function buildHTMLTab($hdl, $limit_col)
+    {
         //NOTE pour moi-même : j'ai changer id en class ... 
         $HTMLtab = '<table class="HTMLtab" summary="' . $this->csvSummary . '" border="1"><caption>' . $this->csvCaption . '</caption>';
 
@@ -142,7 +148,8 @@ class Csv {
 
     /* METHODE QUI PERMET DE METTRE LES TH */
 
-    function getTopHeader($hdl, $limit_col) {
+    function getTopHeader($hdl, $limit_col)
+    {
         $i = 0;
         $HTML = '';
         while ($i < $this->hasTopHeader) {
@@ -164,7 +171,8 @@ class Csv {
 
     /* METHODE QUI RENVOIE UN HANDLE SUR UN FICHIER CSV */
 
-    function openCsvFile() {
+    function openCsvFile()
+    {
         $ficName = $this->csvFile;
         if (is_file($ficName)) {
             $hdl = openFile($ficName, "r");
@@ -174,7 +182,8 @@ class Csv {
 
     /* METHODE QUI AFFICHE LE CONTENU D'UN FICHIER CSV AVEC LE HANDLE PASSE EN PARAM */
 
-    function showCsvContent($hdl) {
+    function showCsvContent($hdl)
+    {
         $content = '';
         while ($csvContent = fgetcsv($hdl, null, $this->csvDelimiter)) {
             foreach ($csvContent as $key => $val) {

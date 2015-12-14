@@ -22,7 +22,8 @@
 # @package ocms
 #
 
-class progressBar {
+class progressBar
+{
 
     var $nbTotal = 0;
     var $nbCurrent = 0;
@@ -36,26 +37,31 @@ class progressBar {
     var $finishText = 'OK';
     var $extraFlush = false;
 
-    function progressBar() {
+    public function __construct()
+    {
 
         ob_start();
     }
 
-    function updateNb() {
-        
+    function updateNb()
+    {
+
     }
 
-    function updatePercent() {
-        
+    function updatePercent()
+    {
+
     }
 
-    function increment() {
+    function increment()
+    {
         set_time_limit(30);
         $this->nbCurrent++;
         $this->update();
     }
 
-    function update() {
+    function update()
+    {
 
         print('<script type="text/javascript">' . "\n");
 
@@ -114,7 +120,8 @@ class progressBar {
      * Prints the whole HTML CODE needed
      *
      */
-    function genHtml() {
+    function genHtml()
+    {
 
         print('
 			<style type="text/css">		

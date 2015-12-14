@@ -43,7 +43,7 @@ if (!class_exists('genSecurity')) {
         var $myroles = false;
         var $tables = array();
 
-        function genSecurity()
+        public function __construct()
         {
 
             global $alreadySecurising;
@@ -117,9 +117,9 @@ if (!class_exists('genSecurity')) {
               On stock toutes les rubriques auquelles on a acc�
              */
 
-            $this->allowedRubs[ $rubrique_id ] = true;
+            $this->allowedRubs[$rubrique_id] = true;
             if ($fk_rub) {
-                $this->allowedRubs[ $fk_rub ] = true;
+                $this->allowedRubs[$fk_rub] = true;
             }
             $sql = 'SELECT rubrique_id FROM s_rubrique WHERE  fk_rubrique_id = ' . $rubrique_id . ' ';
             $res = GetAll($sql);
@@ -146,12 +146,12 @@ if (!class_exists('genSecurity')) {
             /*             * *
               Methode à appeller apres un ajout dans une table, afin de mettre a jour le cache
              */
-            if (!empty($this->myroles[ $table ]) && $this->myroles[ $table ]['type'] !== 'all') {
-                $this->myroles[ $table ]['rows'][] = $id;
-                $this->myroles[ $table ]['initrows'][] = $id;
-                $_SESSION['myRoles'][ $table ]['rows'][] = $id;
-                $_SESSION['myRoles'][ $table ]['initrows'][] = $id;
-                $this->cacheRow[ $table . "_-_" . $id ] = false;
+            if (!empty($this->myroles[$table]) && $this->myroles[$table]['type'] !== 'all') {
+                $this->myroles[$table]['rows'][] = $id;
+                $this->myroles[$table]['initrows'][] = $id;
+                $_SESSION['myRoles'][$table]['rows'][] = $id;
+                $_SESSION['myRoles'][$table]['initrows'][] = $id;
+                $this->cacheRow[$table . "_-_" . $id] = false;
             }
         }
 
@@ -271,7 +271,7 @@ if (!class_exists('genSecurity')) {
                 $actions = array();
                 foreach ($acs as $v) {
                     if ($v)
-                        $actions[ $v ] = true;
+                        $actions[$v] = true;
                 }
                 /*
                   $actions[] = 'edit';
@@ -282,23 +282,23 @@ if (!class_exists('genSecurity')) {
                  * On definit les droits par défaut
                  */
                 $tro = array(
-                    'view'      => $row['role_table_view'],
-                    'add'       => $row['role_table_add'],
-                    'edit'      => $row['role_table_edit'],
-                    'del'       => $row['role_table_delete'],
-                    'champs'    => $champs,
+                    'view' => $row['role_table_view'],
+                    'add' => $row['role_table_add'],
+                    'edit' => $row['role_table_edit'],
+                    'del' => $row['role_table_delete'],
+                    'champs' => $champs,
                     'condition' => array('arbo' => 1, 'proprio' => 1),
-                    'actions'   => $actions,
-                    'type'      => $row['role_table_type'],
-                    'rows'      => array(),
-                    'initrows'  => array()
+                    'actions' => $actions,
+                    'type' => $row['role_table_type'],
+                    'rows' => array(),
+                    'initrows' => array()
                 );
 
-                if (is_array($this->myroles[ $row['role_table_table'] ])) {
-                    $this->myroles[ $row['role_table_table'] ]['rows'] = array_merge($this->myroles[ $row['role_table_table'] ]['rows'], $tro['rows']);
-                    $this->myroles[ $row['role_table_table'] ]['initrows'] = array_merge($this->myroles[ $row['role_table_table'] ]['initrows'], $tro['initrows']);
+                if (is_array($this->myroles[$row['role_table_table']])) {
+                    $this->myroles[$row['role_table_table']]['rows'] = array_merge($this->myroles[$row['role_table_table']]['rows'], $tro['rows']);
+                    $this->myroles[$row['role_table_table']]['initrows'] = array_merge($this->myroles[$row['role_table_table']]['initrows'], $tro['initrows']);
                 } else {
-                    $this->myroles[ $row['role_table_table'] ] = $tro;
+                    $this->myroles[$row['role_table_table']] = $tro;
                 }
 
 
@@ -317,8 +317,8 @@ if (!class_exists('genSecurity')) {
                      * On autorise toutes ces rows là
                      */
                     foreach ($rRes as $rRow) {
-                        $this->myroles[ $row['role_table_table'] ]['rows'][] = $rRow['fk_row_id'];
-                        $this->myroles[ $row['role_table_table'] ]['initrows'][] = $rRow['fk_row_id'];
+                        $this->myroles[$row['role_table_table']]['rows'][] = $rRow['fk_row_id'];
+                        $this->myroles[$row['role_table_table']]['initrows'][] = $rRow['fk_row_id'];
                         /*
                           $tmp = array();
                           if ($row['role_table_table'] == 's_rubrique') {
@@ -351,11 +351,11 @@ if (!class_exists('genSecurity')) {
                     /**
                      * On ajoute les identifiants listés
                      */
-                    if (is_array($this->myroles[ $row['role_table_table'] ]['rows'])) {
-                        $this->myroles[ $row['role_table_table'] ]['initrows'] = array_merge(explode(',', $row['role_table_specific']), $this->myroles[ $row['role_table_table'] ]['initrows']);
-                        $this->myroles[ $row['role_table_table'] ]['rows'] = array_merge(explode(',', $row['role_table_specific']), $this->myroles[ $row['role_table_table'] ]['rows']);
+                    if (is_array($this->myroles[$row['role_table_table']]['rows'])) {
+                        $this->myroles[$row['role_table_table']]['initrows'] = array_merge(explode(',', $row['role_table_specific']), $this->myroles[$row['role_table_table']]['initrows']);
+                        $this->myroles[$row['role_table_table']]['rows'] = array_merge(explode(',', $row['role_table_specific']), $this->myroles[$row['role_table_table']]['rows']);
                     } else {
-                        $this->myroles[ $row['role_table_table'] ]['initrows'] = $this->myroles[ $row['role_table_table'] ]['rows'] = explode(',', $row['role_table_specific']);
+                        $this->myroles[$row['role_table_table']]['initrows'] = $this->myroles[$row['role_table_table']]['rows'] = explode(',', $row['role_table_specific']);
                     }
 
                     /**
@@ -384,7 +384,7 @@ if (!class_exists('genSecurity')) {
                         $pk = getPrimaryKey($row['role_table_table']);
 
                         $chp = false;
-                        if (!empty($table[ $_Gconfig['field_creator'] ])) {
+                        if (!empty($table[$_Gconfig['field_creator']])) {
                             $chp = $_Gconfig['field_creator'];
                         } else if (!empty($table['fk_admin_id'])) {
                             $chp = 'fk_admin_id';
@@ -395,7 +395,7 @@ if (!class_exists('genSecurity')) {
                             $res = GetAll($sql);
 
                             foreach ($res as $Aow) {
-                                $this->myroles[ $row['role_table_table'] ]['rows'][] = $Aow[ $pk ];
+                                $this->myroles[$row['role_table_table']]['rows'][] = $Aow[$pk];
                             }
                         }
                     }
@@ -438,16 +438,16 @@ if (!class_exists('genSecurity')) {
                     }
                 }
                 if ($found && $otherTable && $otherTable != $table) {
-                    if (empty($this->myroles[ $otherTable ]) && !@in_array($table . '.' . $otherTable, $_Gconfig['gsNoFollowRel'])) {
-                        $this->myroles[ $otherTable ] = array(
-                            'view'      => true,
-                            'add'       => true,
-                            'edit'      => true,
-                            'del'       => false,
-                            'champs'    => 'all',
-                            'type'      => 'all',
+                    if (empty($this->myroles[$otherTable]) && !@in_array($table . '.' . $otherTable, $_Gconfig['gsNoFollowRel'])) {
+                        $this->myroles[$otherTable] = array(
+                            'view' => true,
+                            'add' => true,
+                            'edit' => true,
+                            'del' => false,
+                            'champs' => 'all',
+                            'type' => 'all',
                             'condition' => 'none',
-                            'actions'   => array()
+                            'actions' => array()
                         );
                     }
                 }
@@ -476,7 +476,7 @@ if (!class_exists('genSecurity')) {
             }
 
 
-            foreach ($relinv[ $table ] as $fkChamp => $tableau) {
+            foreach ($relinv[$table] as $fkChamp => $tableau) {
 
                 /**
                  * if relinv is not linking to self table
@@ -486,32 +486,32 @@ if (!class_exists('genSecurity')) {
                     /**
                      * Can do anything
                      */
-                    if (empty($this->myroles[ $tableau[0] ])) {
+                    if (empty($this->myroles[$tableau[0]])) {
 
-                        $this->myroles[ $tableau[0] ] = array(
-                            'view'      => true,
-                            'add'       => true,
-                            'edit'      => true,
-                            'del'       => true,
-                            'champs'    => 'all',
-                            'type'      => 'all',
+                        $this->myroles[$tableau[0]] = array(
+                            'view' => true,
+                            'add' => true,
+                            'edit' => true,
+                            'del' => true,
+                            'champs' => 'all',
+                            'type' => 'all',
                             'condition' => array('arbo', 'proprio'),
-                            'actions'   => array(),
-                            'rows'      => array()
+                            'actions' => array(),
+                            'rows' => array()
                         );
-                        if (!empty($this->myroles[ $table ]['rows'])) {
-                            $this->myroles[ $tableau[0] ]['conditionSqlWhere'] = ' AND ' . $tableau[1] . ' IN (' . implode(',', $this->myroles[ $table ]['rows']) . ') ';
+                        if (!empty($this->myroles[$table]['rows'])) {
+                            $this->myroles[$tableau[0]]['conditionSqlWhere'] = ' AND ' . $tableau[1] . ' IN (' . implode(',', $this->myroles[$table]['rows']) . ') ';
                         }
                     }
 
                     /**
                      * If parent tables has limited access
                      */
-                    if (!empty($this->myroles[ $table ]['rows'])) {
+                    if (!empty($this->myroles[$table]['rows'])) {
                         /**
                          * Foreign key
                          */
-                        $a = ($relinv[ $table ][ $fkChamp ]);
+                        $a = ($relinv[$table][$fkChamp]);
 
                         /**
                          * Selecting allowed parents to get allowed children
@@ -519,7 +519,7 @@ if (!class_exists('genSecurity')) {
                         $sql = 'SELECT REL.' . getPrimaryKey($a[0]) . ' , REL.' . getPrimaryKey($a[0]) . '
 								FROM ' . $a[0] . ' AS REL, ' . $table . ' AS T 
 								WHERE REL.' . $a[1] . ' = T.' . getPrimaryKey($table) . '
-								AND T.' . getPrimaryKey($table) . ' IN (' . implode(",", $this->myroles[ $table ]['rows']) . ') ';
+								AND T.' . getPrimaryKey($table) . ' IN (' . implode(",", $this->myroles[$table]['rows']) . ') ';
 
                         $res = $co->GetAssoc($sql);
 
@@ -527,23 +527,23 @@ if (!class_exists('genSecurity')) {
                         /**
                          * Avoid array_merge warning on non-array argument
                          */
-                        if (!($this->myroles[ $tableau[0] ]['rows'])) {
-                            $this->myroles[ $tableau[0] ]['rows'] = array(0);
+                        if (!($this->myroles[$tableau[0]]['rows'])) {
+                            $this->myroles[$tableau[0]]['rows'] = array(0);
                         }
 
                         /**
                          * Adding allowed rows of relinv
                          */
-                        $this->myroles[ $tableau[0] ]['rows'] = array_merge(array_keys($res), $this->myroles[ $tableau[0] ]['rows']);
+                        $this->myroles[$tableau[0]]['rows'] = array_merge(array_keys($res), $this->myroles[$tableau[0]]['rows']);
 
                         $this->recurvRelInv($tableau[0]);
                     } /**
                      * If access to all parents, then access all children ...
-                     */ else if ($this->myroles[ $table ]['type'] == 'all') {
-                        $this->myroles[ $tableau[0] ]['type'] = 'all';
+                     */ else if ($this->myroles[$table]['type'] == 'all') {
+                        $this->myroles[$tableau[0]]['type'] = 'all';
                     }
                 } else {
-                    $this->myroles[ $tableau[0] ] = $this->myroles[ $table ];
+                    $this->myroles[$tableau[0]] = $this->myroles[$table];
                 }
             }
 
@@ -671,27 +671,27 @@ if (!class_exists('genSecurity')) {
                     array_shift($oldActions);
                     $actions = (array('showMV'));
 
-                    if ($tab_default_field[ MULTIVERSION_STATE ] === MV_STATE_ARCHIVE) {
+                    if ($tab_default_field[MULTIVERSION_STATE] === MV_STATE_ARCHIVE) {
                         $actions[] = 'unarchiveMv';
                         //$actions[] = 'del';
 
                         $actions[] = 'duplicateMV';
                         $actions[] = 'publishMV';
                     } else
-                        if ($tab_default_field[ MULTIVERSION_STATE ] === MV_STATE_DRAFT) {
+                        if ($tab_default_field[MULTIVERSION_STATE] === MV_STATE_DRAFT) {
                             $actions[] = 'edit';
                             //$actions[] = 'del';
 
                             $actions[] = 'duplicateMV';
                             $actions[] = 'publishMV';
-                        } else if ($tab_default_field[ MULTIVERSION_STATE ] === MV_STATE_ONLINE) {
+                        } else if ($tab_default_field[MULTIVERSION_STATE] === MV_STATE_ONLINE) {
                             $actions[] = 'editOtherMV';
                             $actions[] = 'unpublishMV';
                             //$actions[] = 'del';
                             //$actions[] = 'deleteMV';
                             $actions[] = 'duplicateMV';
                             $delete = true;
-                        } else if ($tab_default_field[ MULTIVERSION_STATE ] === MV_STATE_OFFLINE) {
+                        } else if ($tab_default_field[MULTIVERSION_STATE] === MV_STATE_OFFLINE) {
                             $actions[] = 'edit';
 
                             $actions[] = 'publishMV';
@@ -778,7 +778,7 @@ if (!class_exists('genSecurity')) {
                 $return = $this->canGlobalAction($action);
             }
 
-            $GLOBALS['cans'][ $tmpcans ] = $return;
+            $GLOBALS['cans'][$tmpcans] = $return;
 
 
             return $return;
@@ -803,17 +803,17 @@ if (!class_exists('genSecurity')) {
              */
             if (@array_key_exists($table, $this->myroles)) {
                 if ($action == "add") {
-                    if ($this->myroles[ $table ]['add']) {
-                        if ($this->myroles[ $table ]['condition'] == 'none')
+                    if ($this->myroles[$table]['add']) {
+                        if ($this->myroles[$table]['condition'] == 'none')
                             return true;
                         /* else if(@in_array('arbo',$this->myroles[$table]['condition']))
                           return $this->checkRelInvField($table,$champ,$valeur);
                          */
                     }
                 }
-                if (!empty($this->myroles[ $table ][ $action ])) {
+                if (!empty($this->myroles[$table][$action])) {
                     return true;
-                } else if (!empty($this->myroles[ $table ]['actions'][ $action ])) {
+                } else if (!empty($this->myroles[$table]['actions'][$action])) {
                     return true;
                 }
             }
@@ -833,7 +833,7 @@ if (!class_exists('genSecurity')) {
                 $row = $this->idToRow($table, $id);
             }
             if (!$id) {
-                $id = $row[ getPrimaryKey($table) ];
+                $id = $row[getPrimaryKey($table)];
             }
 
             if (isMultiVersion($table)) {
@@ -842,20 +842,20 @@ if (!class_exists('genSecurity')) {
             }
 
 
-            if (!empty($this->myroles[ $table ]) && (ake("all", $this->myroles[ $table ]) || $this->myroles[ $table ]['type'] == 'all')) {
+            if (!empty($this->myroles[$table]) && (ake("all", $this->myroles[$table]) || $this->myroles[$table]['type'] == 'all')) {
                 return true;
-            } else if (!empty($this->myroles[ $table ]) && (!empty($this->myroles[ $table ][ $action ]) || !empty($this->myroles[ $table ]['actions'][ $action ]))) {
+            } else if (!empty($this->myroles[$table]) && (!empty($this->myroles[$table][$action]) || !empty($this->myroles[$table]['actions'][$action]))) {
 
                 if ($id == "new") {
                     return true;
                 }
 
-                if (array_key_exists("condition", $this->myroles[ $table ])) {
+                if (array_key_exists("condition", $this->myroles[$table])) {
 
-                    if ($this->myroles[ $table ]['condition'] == 'none') {
+                    if ($this->myroles[$table]['condition'] == 'none') {
                         return true;
                     } else {
-                        return $this->checkCondition($this->myroles[ $table ]['condition'], $table, $row);
+                        return $this->checkCondition($this->myroles[$table]['condition'], $table, $row);
                     }
                 } else {
                     return true;
@@ -873,7 +873,7 @@ if (!class_exists('genSecurity')) {
         {
 
 
-            $myChamps = $this->myroles[ $table ]['champs'];
+            $myChamps = $this->myroles[$table]['champs'];
 
             if ($this->canRow($action, $table, $row, $id)) {
 
@@ -908,7 +908,7 @@ if (!class_exists('genSecurity')) {
                     foreach ($mChamp as $mChamp => $mArray) {
                         if ($mArray[0] == $table) {
                             $champ = $mArray[1];
-                            $valeur = $_POST[ 'genform_' . $champ ];
+                            $valeur = $_POST['genform_' . $champ];
                         }
                     }
                 }
@@ -952,12 +952,12 @@ if (!class_exists('genSecurity')) {
 
              */
             global $_Gconfig;
-            if (@in_array($row[ getPrimaryKey($table) ], $this->myroles[ $table ]['rows'])) {
+            if (@in_array($row[getPrimaryKey($table)], $this->myroles[$table]['rows'])) {
                 return true;
             }
 
             if (in_array('proprio', $condition) || ake('proprio', $condition)) {
-                if ($row[ $_Gconfig['field_creator'] ] == $this->adminid || isNull($row[ getPrimaryKey($table) ])) {
+                if ($row[$_Gconfig['field_creator']] == $this->adminid || isNull($row[getPrimaryKey($table)])) {
                     return true;
                 }
             }
@@ -983,7 +983,7 @@ if (!class_exists('genSecurity')) {
 
         function isAllowedRubs($id)
         {
-            if ($this->allowedRubs[ $id ]) {
+            if ($this->allowedRubs[$id]) {
                 return true;
             }
             return false;
@@ -1012,13 +1012,13 @@ if (!class_exists('genSecurity')) {
                       }
 
                      */
-                    if ($mArray[0] == $table && $row[ $mArray[1] ]) {
+                    if ($mArray[0] == $table && $row[$mArray[1]]) {
 
                         $pk = getPrimaryKey($mTable);
 
-                        $mRow = GetRowFromId($mTable, $row[ $mArray[1] ]);
+                        $mRow = GetRowFromId($mTable, $row[$mArray[1]]);
 
-                        if (!empty($this->myroles[ $mTable ]) && (@in_array($mRow[ $pk ], $this->myroles[ $mTable ]['rows']) || $this->myroles[ $mTable ]['type'] == 'all')) {
+                        if (!empty($this->myroles[$mTable]) && (@in_array($mRow[$pk], $this->myroles[$mTable]['rows']) || $this->myroles[$mTable]['type'] == 'all')) {
 
                             return true;
                         }
@@ -1086,16 +1086,16 @@ if (!class_exists('genSecurity')) {
             if ($this->superAdmin)
                 return '';
 
-            if (!empty($this->myroles[ $table ]['view'])) {
+            if (!empty($this->myroles[$table]['view'])) {
 
                 /**
                  * Ajout de Olivier le 24/11/2010 && count($this->myroles[$table]['rows'])
                  */
-                if ($this->myroles[ $table ]['type'] == 'all') {
+                if ($this->myroles[$table]['type'] == 'all') {
                     return ' ';
-                } else if (is_array($this->myroles[ $table ]['rows']) && count($this->myroles[ $table ]['rows'])) {
+                } else if (is_array($this->myroles[$table]['rows']) && count($this->myroles[$table]['rows'])) {
 
-                    $v = implode($this->myroles[ $table ]['rows'], '","');
+                    $v = implode($this->myroles[$table]['rows'], '","');
 
                     if ($v) {
                         $a = ' AND ' . $a . getPrimaryKey($table) . ' IN ("' . $v . '") ';

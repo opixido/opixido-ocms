@@ -43,7 +43,7 @@ class genMenu
      * @param array $row_menu s_rubrique row of the menu
      * @return genMenu
      */
-    function genMenu($site, $nom_menu = '', $id_menu = 0, $row_menu = array())
+    public function __construct($site, $nom_menu = '', $id_menu = 0, $row_menu = array())
     {
 
         global $_Gconfig;

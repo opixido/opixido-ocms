@@ -22,20 +22,24 @@
 # @package ocms
 #
 
-class genMessages {
+class genMessages
+{
 
-    function genMessages() {
+    public function __construct()
+    {
 
         global $specialUpload, $uploadRep;
 
         $this->messages = array();
     }
 
-    function add($txt, $level = 'error') {
+    public function add($txt, $level = 'error')
+    {
         $this->messages[$level][] = $txt;
     }
 
-    function addInstant($txt, $level = 'error') {
+    public function addInstant($txt, $level = 'error')
+    {
         $this->genCss();
         p('
 			<div id="genMessages">
@@ -44,7 +48,8 @@ class genMessages {
         p('</div>');
     }
 
-    function gen() {
+    public function gen()
+    {
         if (count($this->messages)) {
 
             $this->genCss();
@@ -65,7 +70,8 @@ class genMessages {
         }
     }
 
-    function genMessage($msg, $level) {
+    public function genMessage($msg, $level)
+    {
         $level = $level == 'info' ? 'secondary' : 'danger';
         p('<div class="box-shadow alert ' . $level . '" ><a  onclick="$(this).parent().remove();" href="#">X</a>');
 
@@ -80,7 +86,8 @@ class genMessages {
         p('</div>');
     }
 
-    function genCss() {
+    public function genCss()
+    {
         if (!$GLOBALS['genMessageCss']) {
 
             $GLOBALS['genMessageCss'] = true;

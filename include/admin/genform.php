@@ -62,7 +62,7 @@ class GenForm
     // '_method' contient l'initilisation de 'form_method'
     // 'where_query' contient la clause where pour l'initilisation de 'tab_default_field'
     // 'language' contient la langue du formulaire
-    function GenForm($_name, $_method, $_id, $_row = array())
+    public function __construct($_name, $_method, $_id, $_row = array())
     {
 
         if (isset($_REQUEST['onlyLg'])) {

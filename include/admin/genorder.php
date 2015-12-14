@@ -26,7 +26,8 @@
  * GenOrder
  */
 
-class GenOrder {
+class GenOrder
+{
 
     public $order_field;
     public $table;
@@ -34,7 +35,8 @@ class GenOrder {
     public $fk_id;
     public $fk_champ;
 
-    function GenOrder($table, $id = 0, $fk_id = 0, $fk_champ = '') {
+    public function __construct($table, $id = 0, $fk_id = 0, $fk_champ = '')
+    {
 
 
         global $_Gconfig;
@@ -66,7 +68,7 @@ class GenOrder {
         }
         $this->pk = GetPrimaryKey($this->table);
 
-        if (($this->id > 0 ) && strlen($this->fk_champ)) {
+        if (($this->id > 0) && strlen($this->fk_champ)) {
             $sql = 'SELECT ' . $this->fk_champ . ',' . $this->order_field . ' FROM ' . $this->table . ' WHERE ' . $this->pk . ' = "' . $this->id . '"';
             $row = GetSingle($sql);
 
@@ -75,7 +77,8 @@ class GenOrder {
         }
     }
 
-    function GetUp() {
+    function GetUp()
+    {
         global $_Gconfig;
 
         if (!$this->DoIt) {
@@ -114,7 +117,8 @@ class GenOrder {
         }
     }
 
-    function GetDown() {
+    function GetDown()
+    {
 
         global $_Gconfig;
         if (!$this->DoIt)
@@ -165,20 +169,22 @@ class GenOrder {
      * @param type $order
      * @return type
      */
-    public function reOrderAfterDelete($order) {
+    public function reOrderAfterDelete($order)
+    {
 
         if (!$this->DoIt) {
             return;
         }
         if ($this->fk_id && strlen($this->fk_champ)) {
             $sql = 'UPDATE ' . $this->table . ' SET ' . $this->order_field . ' = ' . $this->order_field . ' - 1 WHERE '
-                    . ' ' . $this->order_field . ' > ' . $order;
+                . ' ' . $this->order_field . ' > ' . $order;
             $sql .= ' AND ' . $this->fk_champ . ' = "' . $this->fk_id . '"';
             DoSql($sql);
         }
     }
 
-    function reOrder() {
+    function reOrder()
+    {
 
         /*
          * Reorder the whole table
@@ -212,7 +218,8 @@ class GenOrder {
         }
     }
 
-    private function specialClause() {
+    private function specialClause()
+    {
 
         if ($this->table == 's_rubrique') {
             return ' ' . sqlRubriqueOnlyReal() . ' ';
@@ -221,7 +228,8 @@ class GenOrder {
         }
     }
 
-    function ReorderRes($res = false) {
+    function ReorderRes($res = false)
+    {
         if (!$this->DoIt || !$this->fk_id)
             return;
 
@@ -231,7 +239,7 @@ class GenOrder {
 
         if (!$res) {
             $res = GetAll('SELECT ' . $this->order_field . ', ' . $this->pk . ' FROM ' . $this->table . ' '
-                    . ' WHERE ' . $this->fk_champ . ' = ' . sql($this->fk_id) . ' ORDER BY ' . $this->order_field);
+                . ' WHERE ' . $this->fk_champ . ' = ' . sql($this->fk_id) . ' ORDER BY ' . $this->order_field);
         }
 
         $normalOrder = 0;
@@ -247,7 +255,7 @@ class GenOrder {
             /**
              * On fait tout en une seule requete
              * BEAUCOUP plus rapide quand on en a beaucoup de résultats
-             * à trier 
+             * à trier
              */
             $ids = implode(',', array_keys($ord));
             $sql = "UPDATE " . $this->table . " SET " . $this->order_field . " = CASE  " . $this->pk;
@@ -259,7 +267,8 @@ class GenOrder {
         }
     }
 
-    function orderAfterInsertLastAtTop() {
+    function orderAfterInsertLastAtTop()
+    {
 
 
         if (!$this->DoIt)
@@ -284,7 +293,8 @@ class GenOrder {
         $this->reorderRes();
     }
 
-    function OrderAfterInsertLastAtBottom() {
+    function OrderAfterInsertLastAtBottom()
+    {
 
 
         if (!$this->DoIt)

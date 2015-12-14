@@ -39,19 +39,22 @@
 #
 # ***** END LICENSE BLOCK *****
 
-class crypto {
+class crypto
+{
 
     var $cipher;
     var $mode;
     var $key;
 
-    function crypto($cipher, $mode, $key) {
+    function __construct($cipher, $mode, $key)
+    {
         $this->_setCipher($cipher);
         $this->_setMode($mode);
         $this->_setKey($key);
     }
 
-    function createIV() {
+    function createIV()
+    {
         if (($td = $this->_openModule()) !== false) {
             if (($iv = @mcrypt_create_iv(mcrypt_enc_get_iv_size($td), MCRYPT_RAND)) === false) {
                 trigger_error('Impossible de créer le vecteur d\initialisation', E_USER_ERROR);
@@ -64,7 +67,8 @@ class crypto {
         }
     }
 
-    function encrypt($str) {
+    function encrypt($str)
+    {
         if (($iv = $this->createIV()) === false) {
             return false;
         }
@@ -88,7 +92,8 @@ class crypto {
         }
     }
 
-    function decrypt($str) {
+    function decrypt($str)
+    {
         if (($td = $this->_openModule()) !== false) {
             $ivsize = mcrypt_enc_get_iv_size($td);
 
@@ -119,7 +124,8 @@ class crypto {
         }
     }
 
-    function getModes() {
+    function getModes()
+    {
         $res = '';
         foreach (mcrypt_list_modes() as $v) {
             $res .= $v . "\n";
@@ -127,7 +133,8 @@ class crypto {
         return $res;
     }
 
-    function getCiphers() {
+    function getCiphers()
+    {
         $res = '';
         foreach (mcrypt_list_algorithms() as $v) {
             $res .= $v . "\n";
@@ -139,7 +146,8 @@ class crypto {
       Méthodes privées
       -------------------------------------------------------- */
 
-    function _setCipher($cipher) {
+    function _setCipher($cipher)
+    {
         if (in_array($cipher, mcrypt_list_algorithms())) {
             $this->cipher = $cipher;
         } else {
@@ -148,7 +156,8 @@ class crypto {
         }
     }
 
-    function _setMode($mode) {
+    function _setMode($mode)
+    {
 
         if (in_array($mode, mcrypt_list_modes())) {
             $this->mode = $mode;
@@ -158,7 +167,8 @@ class crypto {
         }
     }
 
-    function _setKey($key) {
+    function _setKey($key)
+    {
         $keysize = mcrypt_get_key_size($this->cipher, $this->mode);
 
         if ((strlen($key) < 32) && ($keysize >= 32)) {
@@ -170,7 +180,8 @@ class crypto {
         }
     }
 
-    function _openModule() {
+    function _openModule()
+    {
         if (($td = mcrypt_module_open($this->cipher, '', $this->mode, '')) !== false) {
             return $td;
         } else {
@@ -179,7 +190,8 @@ class crypto {
         }
     }
 
-    function _closeModule($td) {
+    function _closeModule($td)
+    {
         @mcrypt_module_close($td);
     }
 

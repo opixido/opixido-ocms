@@ -22,16 +22,19 @@
 # @package ocms
 #
 
-class genRte {
+class genRte
+{
 
     var $toolbar;
 
-    function genRte($toolbar = 'Default', $tabContent = '') {
+    public function __construct($toolbar = 'Default', $tabContent = '')
+    {
         $this->toolbar = $toolbar;
         $this->tabContent = $tabContent;
     }
 
-    function gen() {
+    function gen()
+    {
 
         if (isset($_REQUEST['validRte']) || isset($_REQUEST['validRteClose']) || isset($_REQUEST['validRte_x']) || isset($_REQUEST['validRteClose_x'])) {
             $this->validRte();
@@ -41,16 +44,16 @@ class genRte {
             print('<script type="text/javascript">
 			
 			window.opener.document.getElementById("prevrte_' . $_REQUEST['champ'] . '").innerHTML = "' .
-                    limitWords(trim(str_replace(array('"', "\n", "\r"), array('\"', " ", " "), (strip_tags($_REQUEST['content'])))), 50) . '";
+                limitWords(trim(str_replace(array('"', "\n", "\r"), array('\"', " ", " "), (strip_tags($_REQUEST['content'])))), 50) . '";
 			top.close();
 			
 			</script>');
-        }
-        else
+        } else
             $this->createRte($content);
     }
 
-    function createRte() {
+    function createRte()
+    {
         print '
 		    <form action="?popup=true&doRte=true" method="post" name="fromRte" id="formRte">
 
@@ -395,7 +398,6 @@ valid_elements : ""
 	';
 
 
-
         /*
           theme_advanced_styles : "Institut=rte_rub_1;Recherche en cours=rte_rub_2;Ressources et documentation=rte_rub_3;Population en chiffres=rte_rub_4;Tout savoir sur la population=rte_rub_5",
 
@@ -692,7 +694,8 @@ valid_elements : ""
 		';
     }
 
-    function instanceRte() {
+    function instanceRte()
+    {
         /*
           $oFCKeditor = new FCKeditor('rteText') ;
           $oFCKeditor->BasePath = '';
@@ -711,7 +714,8 @@ valid_elements : ""
 		style="position:absolute;top:0;bottom:120px;right:20px;left:0px;" > ' . $text . ' </textarea >');
     }
 
-    function getTextToEdit() {
+    function getTextToEdit()
+    {
         if ($_REQUEST['id'] != 'new') {
             /* $sql = 'select ' .$_REQUEST['champ'] .' as text from ' .$_REQUEST['table'] .' where ' .$_REQUEST['pk'] .'=' .$_REQUEST['id'];
               $res =  GetSingle($sql);
@@ -723,7 +727,8 @@ valid_elements : ""
         }
     }
 
-    function validRte() {
+    function validRte()
+    {
         $config = array(
             'indent' => true,
             'output-xhtml' => 'no',
@@ -756,7 +761,7 @@ valid_elements : ""
             if (!$_REQUEST['table']) {
 
                 echo ' ERROR : NO TABLE SPECIFIED : ' .
-                print_r($_REQUEST);
+                    print_r($_REQUEST);
                 print_r($_SERVER);
             }
             if (!updateLgField($_REQUEST['table'], $_REQUEST['id'], $_REQUEST['champ'], $_REQUEST['content'])) {

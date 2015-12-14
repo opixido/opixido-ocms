@@ -22,7 +22,8 @@
 # @package ocms
 #
 
-class genCache {
+class genCache
+{
 
     private $cache_id;
     private $cache_time;
@@ -31,14 +32,15 @@ class genCache {
     private $strCache = '';
     private $cacheChecked = false;
 
-    function genCache($cache_id, $cache_time, $cache_path = '') {
+    public function __construct($cache_id, $cache_time, $cache_path = '')
+    {
 
         global $gb_obj;
 
         /**
          * How many times has genCache been instantiated ?
          */
-        $GLOBALS['nbCacheTotal'] ++;
+        $GLOBALS['nbCacheTotal']++;
 
         /**
          * Cache unique filename
@@ -75,7 +77,8 @@ class genCache {
      *
      * @return bool
      */
-    function cacheExists() {
+    public function cacheExists()
+    {
 
         /**
          * No cache ... no cache
@@ -116,7 +119,8 @@ class genCache {
      * @param string $str
      * @return bool
      */
-    function saveCachePlain($str) {
+    public function saveCachePlain($str)
+    {
 
         $this->cacheChecked = true;
         $this->strCache = $str;
@@ -138,7 +142,8 @@ class genCache {
      *
      * @return string
      */
-    function getCachePlain() {
+    public function getCachePlain()
+    {
         /**
          * Cache used
          * If this method is not called, then cache is useless
@@ -149,7 +154,7 @@ class genCache {
          * Cached version ?
          */
         if (!$this->strCache) {
-            $GLOBALS['nbCacheUsed'] ++;
+            $GLOBALS['nbCacheUsed']++;
             return file_get_contents($this->cache_path);
         }
         return $this->strCache;
@@ -161,7 +166,8 @@ class genCache {
      * @param string $str
      * @return bool
      */
-    function saveCache($str) {
+    public function saveCache($str)
+    {
         return $this->saveCachePlain($str);
     }
 
@@ -170,7 +176,8 @@ class genCache {
      *
      * @return string
      */
-    function getCache() {
+    public function getCache()
+    {
         return $this->getCachePlain();
     }
 
@@ -180,7 +187,8 @@ class genCache {
      * @param string $str
      * @return bool
      */
-    function saveCacheGz($str) {
+    public function saveCacheGz($str)
+    {
 
         $this->cacheChecked = true;
         $this->strCache = $str;
@@ -197,12 +205,13 @@ class genCache {
      *
      * @return string
      */
-    function getCacheGz() {
+    public function getCacheGz()
+    {
 
         $GLOBALS['cacheUsed'][] = $this->cache_id;
 
         if (!$this->strCache) {
-            $GLOBALS['nbCacheUsed'] ++;
+            $GLOBALS['nbCacheUsed']++;
             $gza = gzfile($this->cache_path);
             return implode($gza);
         } else {

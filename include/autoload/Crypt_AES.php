@@ -96,7 +96,7 @@ define('CRYPT_AES_MODE_INTERNAL', 1);
  * Toggles the mcrypt implementation
  */
 define('CRYPT_AES_MODE_MCRYPT', 2);
-define('CRYPT_AES_MODE',1);
+define('CRYPT_AES_MODE', 1);
 /**#@-*/
 
 /**
@@ -107,7 +107,8 @@ define('CRYPT_AES_MODE',1);
  * @access  public
  * @package Crypt_AES
  */
-class Crypt_AES extends Crypt_Rijndael {
+class Crypt_AES extends Crypt_Rijndael
+{
     /**
      * MCrypt parameters
      *
@@ -127,9 +128,9 @@ class Crypt_AES extends Crypt_Rijndael {
      * @return Crypt_AES
      * @access public
      */
-    function Crypt_AES($mode = CRYPT_AES_MODE_CBC)
+    function __construct($mode = CRYPT_AES_MODE_CBC)
     {
-        if ( !defined('CRYPT_AES_MODE') ) {
+        if (!defined('CRYPT_AES_MODE')) {
             switch (true) {
                 case extension_loaded('mcrypt'):
                     // i'd check to see if aes was supported, by doing in_array('des', mcrypt_list_algorithms('')),
@@ -142,7 +143,7 @@ class Crypt_AES extends Crypt_Rijndael {
             }
         }
 
-        switch ( CRYPT_AES_MODE ) {
+        switch (CRYPT_AES_MODE) {
             case CRYPT_AES_MODE_MCRYPT:
                 switch ($mode) {
                     case CRYPT_AES_MODE_ECB:
@@ -202,7 +203,7 @@ class Crypt_AES extends Crypt_Rijndael {
      */
     function encrypt($plaintext)
     {
-        if ( CRYPT_AES_MODE == CRYPT_AES_MODE_MCRYPT ) {
+        if (CRYPT_AES_MODE == CRYPT_AES_MODE_MCRYPT) {
             $this->_mcryptSetup();
             $plaintext = $this->_pad($plaintext);
 
@@ -241,7 +242,7 @@ class Crypt_AES extends Crypt_Rijndael {
         // "The data is padded with "\0" to make sure the length of the data is n * blocksize."
         $ciphertext = str_pad($ciphertext, (strlen($ciphertext) + 15) & 0xFFFFFFF0, chr(0));
 
-        if ( CRYPT_AES_MODE == CRYPT_AES_MODE_MCRYPT ) {
+        if (CRYPT_AES_MODE == CRYPT_AES_MODE_MCRYPT) {
             $this->_mcryptSetup();
 
             $td = mcrypt_module_open(MCRYPT_RIJNDAEL_128, $this->mcrypt[0], $this->mode, $this->mcrypt[1]);
