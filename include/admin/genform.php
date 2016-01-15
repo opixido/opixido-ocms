@@ -645,15 +645,12 @@ class GenForm
             return false;
         }
 
-
         $jsColor = '';
-
-
         $this->bufferPrint = "";
-        // $new_key = substr($name, 3, strlen($name));
 
-        $this->addBuffer('<div class="well genform_champ_out" id="genform_div_' . $tab_name . '">');
-
+        if(!$this->onlyData) {
+            $this->addBuffer('<div class="well genform_champ_out" id="genform_div_' . $tab_name . '">');
+        }
 
         if ($this->editMode && !$this->onlyData)
             $this->addBuffer('<div class="row-fluid"><div class="span3 label">'); //<label class="genform_txtres"><span >
