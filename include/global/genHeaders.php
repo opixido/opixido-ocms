@@ -220,7 +220,7 @@ class genHeaders {
                 /**
                  * Si déjà compressé on ne touche pas
                  */
-                if (substr($jj, 0, 10) == '/*packed*/' || !$_Gconfig['compressJsFiles']) {
+                if (substr($jj, 0, 10) == '/*packed*/' || strstr($v, '.min.') !== false || !$_Gconfig['compressJsFiles']) {
                     $js .= $jj . "\n";
                 } else {
                     /**
