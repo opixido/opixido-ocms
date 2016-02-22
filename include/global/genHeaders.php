@@ -271,7 +271,7 @@ class genHeaders {
              */
             foreach ($fichiers as $v) {
                 if ($csT = file_get_contents($_SERVER['DOCUMENT_ROOT'] . BU . SEP . $v)) {
-                    $css .= $this->fixCssPath($csT, $_SERVER['DOCUMENT_ROOT'] . BU . SEP . $v) . "\n";
+                    $css .= $this->fixCssPath($csT, path_concat($_SERVER['DOCUMENT_ROOT'], BU, SEP, $v)) . "\n";
                 } else {
                     devbug('Cant load CSS : ' . $_SERVER['DOCUMENT_ROOT'] . BU . SEP . $v);
                 }
