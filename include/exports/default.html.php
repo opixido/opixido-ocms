@@ -25,7 +25,7 @@
 <body class="">
 
     <header>
-        <a href="<?= BU ?>/<?= LG ?>"><img src="<?= BU ?>/img/logo.png" alt="Opixido"</a>
+        <a href="<?= BU ?>/<?= LG ?>"><img src="<?= BU ?>/img/logo.png" alt="Opixido"/></a>
         <?php
         echo $this->plugins['o_blocs']->header->gen();
         ?>
