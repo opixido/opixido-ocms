@@ -187,8 +187,52 @@ class genSite
         // Gestion de la rubrique
         $this->g_rubrique = new genRubrique($this);
         $this->rubrique = new rubrique($this->g_rubrique->rubrique);
-        $this->plugins = &$this->g_rubrique->plugins;
-        $GLOBALS['plugins'] = &$this->g_rubrique->plugins;
+       
+        $this->loadPlugins();
+        $GLOBALS['plugins'] = $this->rubrique = $this->plugins;
+        
+        $this->Execute('init');
+                
+    }
+    
+    
+    /**
+     * Chargement des plugins
+     */
+    function loadPlugins()
+    {
+
+        $p = GetPlugins();
+
+        $t = getmicrotime();
+
+        $GLOBALS['times']['Plugins'] = 0;
+
+
+        foreach ($p as $v) {
+            $GLOBALS['gb_obj']->includeFile('front.php', PLUGINS_FOLDER . '' . $v . '/');
+        }
+
+        foreach ($p as $v) {
+            $adminClassName = $v . 'Front';
+            if (class_exists($adminClassName)) {
+                $this->plugins[ $v ] = new $adminClassName($this);
+            }
+        }
+        $GLOBALS['times']['LoadingPlugins'] = getmicrotime() - $t;
+        $GLOBALS['times']['Plugins'] += $GLOBALS['times']['LoadingPlugins'];
+        reset($p);
+    }
+
+    /**
+     * Verifie qu'un plugin est actif ou non
+     *
+     *
+     * @return : true si le plugin est actif, false sinon
+     */
+    public function isActivePlugin($plugin)
+    {
+        return isset($this->plugins[ $plugin ]);
     }
 
     /**
@@ -221,7 +265,11 @@ class genSite
      */
     function afterInit()
     {
+        
+
         $this->g_rubrique->afterInit();
+        $this->Execute('afterInit');
+        $this->Execute('postInit');
     }
 
     function gen()
@@ -370,6 +418,32 @@ class genSite
             //$agressiveCacheContent = $contenu;
         }
         die();
+    }
+
+
+    public function Execute($what)
+    {
+
+        $p = GetPlugins();
+
+        $html = '';
+
+        $t = getmicrotime();
+
+        foreach ($p as $v) {
+            if (ake($this->plugins, $v) && method_exists($this->plugins[ $v ], $what)) {
+                $html .= $this->plugins[ $v ]->{$what}();
+            }
+        }
+
+        if ($this->g_rubrique && method_exists($this->g_rubrique->bddClasse, $what)) {
+            $html .= $this->g_rubrique->bddClasse->{$what}();
+        }
+
+        $GLOBALS['times'][ 'Execute' . $what ] = getmicrotime() - $t;
+        $GLOBALS['times']['Plugins'] += $GLOBALS['times'][ 'Execute' . $what ];
+
+        return $html;
     }
 
 }

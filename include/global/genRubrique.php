@@ -28,7 +28,7 @@ class genRubrique
     /**
      * gensite
      *
-     * @var gensite
+     * @var genSite
      */
     private $site;
 
@@ -167,44 +167,6 @@ class genRubrique
         $this->getParagraphes();
     }
 
-    /**
-     * Chargement des plugins
-     */
-    function loadPlugins()
-    {
-
-        $p = GetPlugins();
-
-        $t = getmicrotime();
-
-        $GLOBALS['times']['Plugins'] = 0;
-
-
-        foreach ($p as $v) {
-            $GLOBALS['gb_obj']->includeFile('front.php', PLUGINS_FOLDER . '' . $v . '/');
-        }
-
-        foreach ($p as $v) {
-            $adminClassName = $v . 'Front';
-            if (class_exists($adminClassName)) {
-                $this->plugins[ $v ] = new $adminClassName($this->site);
-            }
-        }
-        $GLOBALS['times']['LoadingPlugins'] = getmicrotime() - $t;
-        $GLOBALS['times']['Plugins'] += $GLOBALS['times']['LoadingPlugins'];
-        reset($p);
-    }
-
-    /**
-     * Verifie qu'un plugin est actif ou non
-     *
-     *
-     * @return : true si le plugin est actif, false sinon
-     */
-    public function isActivePlugin($plugin)
-    {
-        return isset($this->plugins[ $plugin ]);
-    }
 
     /**
      * On est sur la vrai rubrique ou bien celle modifiable ?
@@ -226,9 +188,6 @@ class genRubrique
     {
         global $co, $gb_obj;
 
-
-        $this->loadPlugins();
-
         $GLOBALS['times']['BDD'] = 0;
         if ($this->hasBddInfo) {
             $startTimeBdd = getmicrotime();
@@ -239,35 +198,11 @@ class genRubrique
             $GLOBALS['times']['Plugins'] += $GLOBALS['times']['BDD'];
         }
 
-
-        $this->Execute('init');
-        $this->Execute('afterInit');
-        $this->Execute('postInit');
     }
 
     function Execute($what)
     {
-
-        $p = GetPlugins();
-
-        $html = '';
-
-        $t = getmicrotime();
-
-        foreach ($p as $v) {
-            if (ake($this->plugins, $v) && method_exists($this->plugins[ $v ], $what)) {
-                $html .= $this->plugins[ $v ]->{$what}();
-            }
-        }
-
-        if (method_exists($this->bddClasse, $what)) {
-            $html .= $this->bddClasse->{$what}();
-        }
-
-        $GLOBALS['times'][ 'Execute' . $what ] = getmicrotime() - $t;
-        $GLOBALS['times']['Plugins'] += $GLOBALS['times'][ 'Execute' . $what ];
-
-        return $html;
+        return $this->site->Execute($what);
     }
 
     /**
@@ -276,7 +211,6 @@ class genRubrique
      */
     function genTop()
     {
-
         return $this->Execute('genTop');
     }
 

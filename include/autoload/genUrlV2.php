@@ -255,9 +255,9 @@ class genUrlV2
     public function soft404()
     {
         $GLOBALS['site']->isCurrent404 = true;
-        $GLOBALS['site']->g_rubrique->execute('ocms_is404');
+        $GLOBALS['site']->execute('ocms_is404');
         header((isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0') . " 404 Not Found", true, 404);
-        $GLOBALS['_gensite']->isCurrent404 = true;
+
 
         if (strpos($_SERVER['REQUEST_URI'], 'css') || strpos($_SERVER['REQUEST_URI'], 'js') || strpos($_SERVER['REQUEST_URI'], 'jpeg') || strpos($_SERVER['REQUEST_URI'], 'jpg') || strpos($_SERVER['REQUEST_URI'], 'gif') || strpos($_SERVER['REQUEST_URI'], 'png') || strpos($_SERVER['REQUEST_URI'], 'svg')) {
             $this->die404();
@@ -273,7 +273,7 @@ class genUrlV2
     function die404($msg = '')
     {
         $GLOBALS['site']->isCurrent404 = true;
-        $GLOBALS['site']->g_rubrique->execute('ocms_is404');
+        $GLOBALS['site']->execute('ocms_die404');
         header((isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0') . " 404 Not Found", true, 404);
         echo '<html><head><link href="//cdnjs.cloudflare.com/ajax/libs/zurb-ink/1.0.5/ink.min.css" rel="stylesheet"> </head><body><article style="padding:15px"><h1>Error 404</h1><p>The page can not be found</p><p><a href="/">Go back</a></p><p>' . $msg . '</p></article></body></html>';
         die();
