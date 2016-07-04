@@ -2628,7 +2628,18 @@ function getThumbCacheFile($src, $u = false)
     }
 
     if (!file_exists($u)) {
-        return BU . '/img/logo_video.png';
+        if(!empty($_Gconfig['remoteFiles'])) {
+            $src_clean = str_replace($_Gconfig['CDN'], '', $src);
+            $src_clean = urldecode(str_replace('&amp;', '&', $src_clean));
+            $u = parse_url($src_clean);
+            parse_str($u['query'], $u);
+            $remote = parse_url($_Gconfig['remoteFiles']);
+
+            $u['src'] =  path_concat($remote['path'],$u['src']);
+            return path_concat($_Gconfig['remoteFiles'],THUMBPATH,'?'.http_build_query($u));
+        } else {
+            return BU . '/img/404.png';
+        }        
     }
     $cacheFile = md5($src_clean);
 
