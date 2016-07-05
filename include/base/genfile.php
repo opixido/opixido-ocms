@@ -446,9 +446,13 @@ class genFile
         if ($this->classe) {
             return $this->classe->getWebUrl();
         }
+        $webRoot = '';
+        if(!empty($_Gconfig['remoteFiles']) && !$this->fileExists()) {
+            $webRoot = $_Gconfig['remoteFiles'];
+        }
 
         if ($this->imageExists)
-            return $this->webPath . $this->fileName;
+            return $webRoot. $this->webPath . $this->fileName;
         else
             return '';
     }
