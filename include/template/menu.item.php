@@ -1,8 +1,8 @@
 
 <li @@id@@ @@style@@ >
-	<? if($this->get('lien')) { ?>
+	<?php if($this->get('lien')) { ?>
 	<a @@classa@@ href="@@lien@@">
-	<? } ?>
+	<?php } ?>
 	
 	<span class="in">
 	
@@ -10,9 +10,9 @@
 	
 	</span>
 	
-	<? if($this->get('lien')) { ?>
+	<?php if($this->get('lien')) { ?>
 	</a>
-	<? } ?>
+	<?php } ?>
 	<span class="out"></span>
 	
 	<?=$this->sub ?>
