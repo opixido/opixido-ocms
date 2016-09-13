@@ -374,3 +374,13 @@ class rubrique extends row {
      * Return all images
      */
 }
+
+class paragraphe extends row {
+
+    public $table = 's_paragraphe';
+
+    public function __construct($row) {
+        parent::__construct($this->table, $row);
+    }
+    
+}
