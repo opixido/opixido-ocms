@@ -102,7 +102,7 @@ class ajaxRelinv
         if (ake($this->fk_table, $orderFields)) {
             $colspan = '2';
         }
-        $html .= '<thead><tr><th colspan="' . $colspan . '"><a class="btn" href="" onclick="arAddValue(this,\'' . $this->cur_table . '\',\'' . $this->fake_name . '\',' . $this->cur_id . ');$(this).closest(\'table\').tableDnDUpdate();return false;">
+        $html .= '<thead><tr><th colspan="' . $colspan . '"><a class="btn" href="" onclick="arAddValue(this,\'' . $this->cur_table . '\',\'' . $this->fake_name . '\',\'' . $this->cur_id . '\');$(this).closest(\'table\').tableDnDUpdate();return false;">
 		<img src="' . ADMIN_PICTOS_FOLDER . ADMIN_PICTOS_FORM_SIZE . '/actions/list-add.png" alt="" />' . t('nouveau') . '</a></th>';
 
         foreach ($fields as $v) {
