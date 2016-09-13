@@ -52,6 +52,8 @@ class genParagraphes
 
             $html = '';
 
+            $obj = new paragraphe($para);
+            
             /**
              *  Creation du template
              * */
@@ -124,22 +126,13 @@ class genParagraphes
             $tpl->setVar('file1_name', $fichier->getRealName());
             $tpl->setVar('file1_legend', choose(getLgValue('paragraphe_file_1_legend', $para), $fichier->getRealName()));
             $tpl->setVar('link1', getLgValue('paragraphe_link_1', $para));
-
-            if (strlen(trim(GetLgValue('paragraphe_contenu_csv', $para)))) {
-                $params = $_GET;
-
-                $params['para'] = $para['paragraphe_id'];
-                $params['export'] = 'tableau.csv';
-                $tpl->setVar('dwl_csv', '<a class="exporter_tableau btn" href="' . $GLOBALS['site']->g_url->getUrlWithParams($params) . '" ><span class="icon-lien-rond"></span> ' . t('exporter_tableau') . '</a>');
-            }
-
-            if (akev($_REQUEST, 'pdf')) {
-                $tpl->setVar('img', $img->getWebUrl());
-            }
+          
 
             $html .= '<a class="cacher" name="para_' . nicename(GetLgValue('paragraphe_titre', $para)) . '"></a>';
 
             $tpl->row = $para;
+            $tpl->obj = $obj;
+
 
             $html .= '<div id="para_nb_' . $curpara . '" class="paragraphe_simple">';
 
