@@ -5,7 +5,8 @@
 function isCurrentFormNew() {
     if ($('#curId').val() == 'new') {
         return true;
-    } else {
+    }
+    else {
         return false;
     }
 }
@@ -51,12 +52,13 @@ function fillCurrentFormNewId(resp) {
 function genformReloadField(field) {
     var div = $("#genform_div_" + field);
     div.css('opacity', 0.5);
-    doSaveAllAndStay(function () {
-        $.get('?xhr=genformReloadField&curField=' + field + '&curTable=' + $('#curTable').val() + '&curId=' + $('#curId').val(), function (data) {
+    doSaveAllAndStay(function() {
+        $.get('?xhr=genformReloadField&curField=' + field + '&curTable=' + $('#curTable').val() + '&curId=' + $('#curId').val(), function(data) {
             div.replaceWith(data);
             if (window.currentLg) {
                 showLgField(field, window.currentLg);
-            } else {
+            }
+            else {
                 $("#genform_div_" + field).find('.lgbtn').eq(0).click();
             }
         });
@@ -103,15 +105,23 @@ function doSaveAllAndStay(func) {
         var curSrc = saveImg.attr('src');
 
         saveImg.attr('src', 'img/loading.gif');
-        saveImg.css({'background': 'white', 'border-radius': '20px', 'padding': '3px'});
+        saveImg.css({
+            'background': 'white',
+            'border-radius': '20px',
+            'padding': '3px'
+        });
 
         $("#genform_stay").val("ajaxsave");
 
-        $.post("index.php", $("#genform_formulaire").serialize(), function (data) {
+        $.post("index.php", $("#genform_formulaire").serialize(), function(data) {
             $("#curId").val($.trim(data));
             saveImg.attr('src', curSrc);
 
-            saveImg.css({'background': 'none', 'border-radius': '0', 'padding': 0});
+            saveImg.css({
+                'background': 'none',
+                'border-radius': '0',
+                'padding': 0
+            });
             $('body').removeClass('loading');
             if (func) {
                 func();
@@ -125,12 +135,15 @@ function doSaveAllAndStay(func) {
 function arAddValue(obj, table, fake, id) {
     var tableId = $(obj).closest('table').attr('id');
     if (isCurrentFormNew()) {
-        doSaveAllAndStay(function () {
+        doSaveAllAndStay(function() {
             url = "index.php?xhr=ajaxRelinv&table=" + table + "&fake=" + fake + "&id=" + $('#curId').val();
             XHR(url, "", "", "addRowToTable(\'" + tableId + "\', http.responseText)");
         });
     }
     else {
+        if (id == 'new' || id == 0) {
+            id = $('#curId').val();
+        }
         url = "index.php?xhr=ajaxRelinv&table=" + table + "&fake=" + fake + "&id=" + id;
         XHR(url, "", "", "addRowToTable(\'" + tableId + "\', http.responseText)");
     }
@@ -172,7 +185,7 @@ function arDelete(obj, faketable, id) {
     url = "index.php?xhr=ajaxRelinv&table=" + faketable + "&delete=" + id + "&";
     //obj.parentNode.parentNode.parentNode.parentNode.removeChild(obj.parentNode.parentNode.parentNode);
     XHR(url);
-    $(obj).closest('tr').hide('normal', function () {
+    $(obj).closest('tr').hide('normal', function() {
         $(this).remove()
     });
 }
@@ -263,7 +276,8 @@ function checkUpDown(obj) {
     for (p in objs) {
         if (node_before(objs[p].parentNode)) {
             objs[p].style.opacity = "1";
-        } else {
+        }
+        else {
 
             objs[p].style.opacity = "0.5";
         }
@@ -273,11 +287,12 @@ function checkUpDown(obj) {
     for (p in objs) {
         if (node_after(objs[p].parentNode)) {
             objs[p].style.opacity = "1";
-        } else {
+        }
+        else {
             objs[p].style.opacity = "0.5";
         }
     }
-//alert(objs);
+    //alert(objs);
 }
 
 
@@ -286,7 +301,7 @@ function FAdel(obj, nom, id) {
     ajaxAction('del', window.arboFull[nom]['vtable'], id);
     obj.parentNode.parentNode.removeChild(obj.parentNode);
     return false;
-//XHR(url);
+    //XHR(url);
 }
 
 
@@ -319,8 +334,9 @@ function serialize(mixed_value) {
     // *     returns 1: 'a:3:{i:0;s:5:"Kevin";i:1;s:3:"van";i:2;s:9:"Zonneveld";}'
     // *     example 2: serialize({firstName: 'Kevin', midName: 'van', surName: 'Zonneveld'});
     // *     returns 2: 'a:3:{s:9:"firstName";s:5:"Kevin";s:7:"midName";s:3:"van";s:7:"surName";s:9:"Zonneveld";}'
-    var _getType = function (inp) {
-        var type = typeof inp, match;
+    var _getType = function(inp) {
+        var type = typeof inp,
+            match;
         var key;
         if (type == 'object' && !inp) {
             return 'null';
@@ -545,16 +561,19 @@ function delChild(child) {
 }
 
 window.uploaders = new Array();
+
 function refreshUploaders() {
     for (p in window.uploaders) {
         if (window.uploaders[p]) {
             if (document.getElementById(window.uploaders[p].settings.container)) {
                 try {
                     window.uploaders[p].refresh();
-                } catch (e) {
+                }
+                catch (e) {
                     delete(window.uploaders[p]);
                 }
-            } else {
+            }
+            else {
 
                 delete(window.uploaders[p]);
             }
@@ -569,10 +588,12 @@ function refreshUploaders() {
             if (document.getElementById(window.uploaders[p].settings.container)) {
                 try {
                     window.uploaders[p].refresh();
-                } catch (e) {
+                }
+                catch (e) {
                     delete(window.uploaders[p]);
                 }
-            } else {
+            }
+            else {
 
                 delete(window.uploaders[p]);
             }
@@ -585,8 +606,8 @@ function refreshUploaders() {
  * @type Boolean|@exp;window@call;open
  */
 window.previewWindow = false;
-$(document).ready(function () {
-    $('.previsu a').click(function (e) {
+$(document).ready(function() {
+    $('.previsu a').click(function(e) {
         e.preventDefault();
         /**
          * Pour virer le cache
@@ -595,7 +616,7 @@ $(document).ready(function () {
         /**
          * On met à jour après enregistrement via ajax de la page
          */
-        doSaveAllAndStay(function () {
+        doSaveAllAndStay(function() {
             window.previewWindow.location = href + Math.random();
         });
 
@@ -607,7 +628,8 @@ $(document).ready(function () {
          */
         if (window.previewWindow && window.previewWindow.window) {
             window.previewWindow.location = href;
-        } else {
+        }
+        else {
             window.previewWindow = window.open(href, 'preview', 'width=1024,height=600,scrollbars=yes');
         }
 
