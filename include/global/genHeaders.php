@@ -116,10 +116,8 @@ class genHeaders {
                         $x .= "\n" . '<link rel="stylesheet" media="' . $media . '" href="' . path_concat(BU, '/', $fichier) . '"  />' . "\n";
                     }
                 }
-            }
-
-            return $x;
-        }
+            }           
+        } else
 
         /**
          * Compression et Cache des CSS
