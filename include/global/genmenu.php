@@ -131,7 +131,7 @@ class genMenu
         $ulId = empty($rootId) ? '' : ' id="menu_' . $this->nom_menu . '"';
         $divid = empty($rootId) ? '' : ' id="div_menu_' . $this->nom_menu . '"';
         if ($divid) {
-            $html = '<div' . $divid . '><ul' . $ulId . '  class="level_' . $this->level . ' ' . $this->conf['ul_class'] . '" ' . $this->conf['ul_tag'] . '>';
+            $html = '<div' . $divid . '><ul' . $ulId . '  class="level_' . $this->level . ' ' . akev($this->conf,'ul_class') . '" ' . akev($this->conf,'ul_tag') . '>';
         } else {
             $html = '<ul' . $ulId . ' class="level_' . $this->level . '">';
         }
