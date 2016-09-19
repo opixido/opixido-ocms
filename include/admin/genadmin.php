@@ -51,6 +51,7 @@ class genAdmin
     public $sa;
     public $g_url;
     public $insideRealRubId;
+    public $reverserubs = array();
 
     public function __construct($table = "", $id = 0)
     {
@@ -134,7 +135,7 @@ class genAdmin
         $this->doRecord();
 
         $this->FormToInclude = $this->whichForm();
-        if ($_POST && $_REQUEST['curTable'] && $_REQUEST['curId']) {
+        if ($_POST && !empty($_REQUEST['curTable']) && !empty($_REQUEST['curId'])) {
             $this->genRecord->checkDoOn('recorded');
         }
 
@@ -162,7 +163,7 @@ class genAdmin
                     break;
                 } else {
                     $_SESSION['visibleRubs'][$id] = true;
-                    $id = $this->reverserubs[$id];
+                    $id =akev($this->reverserubs,$id);
                 }
             }
         }
@@ -224,7 +225,7 @@ class genAdmin
         }
 
         $real = false;
-        if (is_array($_SESSION[gfuid()]['levels']) && count($_SESSION[gfuid()]['levels'])) {
+        if (!empty($_SESSION[gfuid()]['levels']) && is_array($_SESSION[gfuid()]['levels']) && count($_SESSION[gfuid()]['levels'])) {
             $real = false;
             foreach ($_SESSION[gfuid()]['levels'] as $lev) {
 
@@ -821,7 +822,7 @@ class genAdmin
 
         //debug($_SESSION[gfuid()]);
 
-        if ($_SESSION[gfuid()]['nbLevels'] > 0) {
+        if (!empty($_SESSION[gfuid()]['nbLevels']) && $_SESSION[gfuid()]['nbLevels'] > 0) {
             $table = !empty($_SESSION[gfuid()]['levels'][1]['curTable']) ? $_SESSION[gfuid()]['levels'][1]['curTable'] : $_REQUEST['curTable'];
             $root_id = !empty($_SESSION[gfuid()]['levels'][1]['curId']) ? $_SESSION[gfuid()]['levels'][1]['curId'] : $_REQUEST['curId'];
         } else if (isset($_REQUEST['curTable'])) {
@@ -1269,7 +1270,7 @@ class smallAdmin
                 /**
                  * Classe transparente si rubrique masquée
                  */
-                $classColor = $aff['r2_etat'] == 'en_ligne' ? '' : ' pasenligne';
+                $classColor = $aff['ocms_etat'] == 'en_ligne' ? '' : ' pasenligne';
 
 
                 /**
@@ -1277,7 +1278,9 @@ class smallAdmin
                  * plus ou moins
                  */
                 $paramShow = isset($_SESSION['visibleRubs'][$real_rub]) ? 'hideRub=' . $real_rub : 'showRub=' . $real_rub;
-                $paramShow .= '&curId=' . $_REQUEST['curId'];
+                if(!empty($_REQUEST['curId'])) {
+                    $paramShow .= '&curId=' . $_REQUEST['curId'];
+                }
                 $plusmoins = isset($_SESSION['visibleRubs'][$real_rub]) ? '<img src="./img/moins.gif" alt="" />' : '<img src="./img/plus.gif" alt="" />';
 
                 /**
@@ -1347,7 +1350,7 @@ class smallAdmin
                  * Sinon ... non
                  */
                 if ($this->realRubId == $aff[MULTIVERSION_FIELD] ||
-                    ($aff['fk_rubrique_version_id'] == $_SESSION['XHRlastCurId'] && !isset($_REQUEST['curId']))
+                    ($aff[MULTIVERSION_FIELD] == $_SESSION['XHRlastCurId'] && !isset($_REQUEST['curId']))
                 ) {
 
 
