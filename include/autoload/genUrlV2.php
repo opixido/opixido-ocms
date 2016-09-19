@@ -107,6 +107,11 @@ class genUrlV2
      * @var int
      */
     public $actionId;
+    
+    /**
+     * @var int racine du site
+     * */
+    public $root_id;
 
     /**
      * Constructeur de la classe genUrl
