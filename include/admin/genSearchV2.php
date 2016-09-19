@@ -12,6 +12,7 @@ class genSearchV2
     public $relOneFk;
     public $searchField;
     public $tabField;
+    public $fullRealFields;
 
     public function __construct($table)
     {
