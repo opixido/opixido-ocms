@@ -28,7 +28,7 @@ class genSearchV2
         $this->full_custom_fields_request = array();
         // -- constantes de validation de gestion des exports sous csv
 
-        $this->searchField = $searchField[$this->table];
+        $this->searchField = akev($searchField,$this->table);
 
         if (!empty($_REQUEST['relOne'])) {
             $this->relOne = $_REQUEST['relOne'];
@@ -219,11 +219,11 @@ class genSearchV2
 
 
         // validation bouton recherche rapide
-        if ($_REQUEST['exportResults'] == 'true') {
+        if (akev($_REQUEST,'exportResults') == 'true') {
             $this->isExportResults = true;
             $this->exportRes($res, 'basicExport');
         } // validation bouton recherche avancée
-        else if ($_REQUEST['exportAdvancedResults'] == 'true') {
+        else if (akev($_REQUEST,'exportAdvancedResults') == 'true') {
             $this->isExportAdvancedResults = true;
             $this->exportRes($res, 'advancedExport');
         } // sinon on affiche simplement le resultat
@@ -1112,7 +1112,7 @@ class genSearchV2
 
             $k = $v;
 
-            if ($_POST['doFullSearch'] || $isCustomPageFullSearch) {
+            if (!empty($_POST['doFullSearch']) || $isCustomPageFullSearch) {
                 // enlever "cf_" pour le reconnaitre dans la requete comme champs
                 $v = akev($full_fields_request, $v);
             } else {
