@@ -50,6 +50,7 @@ class genAdmin
     var $row = array();
     public $sa;
     public $g_url;
+    public $insideRealRubId;
 
     public function __construct($table = "", $id = 0)
     {
@@ -222,7 +223,7 @@ class genAdmin
             return $this->real_rub_id;
         }
 
-
+        $real = false;
         if (is_array($_SESSION[gfuid()]['levels']) && count($_SESSION[gfuid()]['levels'])) {
             $real = false;
             foreach ($_SESSION[gfuid()]['levels'] as $lev) {
@@ -239,7 +240,7 @@ class genAdmin
             if (!$real) {
                 $real = $_REQUEST['curId'];
             }
-        } else if ($_REQUEST['curId']) {
+        } else if (!empty($_REQUEST['curId'])) {
             $real = $_REQUEST['curId'];
         }
 
@@ -326,7 +327,7 @@ class genAdmin
             p('<div id="tools" >');
 
             if ($this->gs->can('add', $this->table)) {
-                p('<a class="btn btn-primary btn-large" href="?curTable=' . $this->table . '&amp;curId=new&relOne=' . $_REQUEST['relOne'] . '"><img src="' . ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/actions/document-new.png" alt=""  /> ' . t('ajouter_elem') . '</a></div>');
+                p('<a class="btn btn-primary btn-large" href="?curTable=' . $this->table . '&amp;curId=new&relOne=' . akev($_REQUEST,'relOne') . '"><img src="' . ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/actions/document-new.png" alt=""  /> ' . t('ajouter_elem') . '</a></div>');
             }
 
             if (ake($_Gconfig['tableActions'], $this->table)) {
@@ -825,7 +826,7 @@ class genAdmin
             $root_id = !empty($_SESSION[gfuid()]['levels'][1]['curId']) ? $_SESSION[gfuid()]['levels'][1]['curId'] : $_REQUEST['curId'];
         } else if (isset($_REQUEST['curTable'])) {
             $table = $_REQUEST['curTable'];
-            $root_id = $_REQUEST['curId'];
+            $root_id = akev($_REQUEST,'curId');
         } else
             $table = false;
 
@@ -840,7 +841,7 @@ class genAdmin
         }
 
 
-        if (!$_REQUEST['curId']) {
+        if (!empty($_REQUEST['curId'])) {
             p('<h1 style="display:inline;font-size:130%;font-weight:normal;padding:0;margin:0;">' . ta($_REQUEST['curTable']) . '</h1>');
         }
         if ($root_id && $root_id != 'new') {
