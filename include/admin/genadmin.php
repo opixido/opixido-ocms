@@ -795,7 +795,7 @@ class genAdmin
          * Nouveau et rechercher
          */
         if ($this->id) {
-            if (($this->table == 's_rubrique' || akev($_SESSION[gfuid()]['levels'][1], 'curTable') == 's_rubrique') && empty($_REQUEST['relOne'])) {
+            if (($this->table == 's_rubrique' || (!empty($_SESSION[gfuid()]['levels'][1]) &&  akev($_SESSION[gfuid()]['levels'][1], 'curTable') == 's_rubrique')) && empty($_REQUEST['relOne'])) {
 
             } else {
 
