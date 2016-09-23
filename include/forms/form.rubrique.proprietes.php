@@ -1,21 +1,15 @@
 <?php
-/*
-  $form->gen("rubrique_bg_img");
-  $form->gen("rubrique_bg_color");
-  $form->gen("rubrique_bg_motif_img");
- */
 
 
 if ($_REQUEST['curId'] != "new") {
 
     if (rubriqueIsAPage($form) || true) {
 
-        //$form->gen('fk_paragraphe_id');
 
         global $restrictedMode;
         $restrictedMode = true;
         if ($form->tab_default_field['rubrique_type'] != RTYPE_MENUROOT) {
-            $form->gen("fk_gabarit_id"); //,"",""," onchange='checkRubriqueType()' ");
+            $form->gen("fk_gabarit_id"); 
         }
         $restrictedMode = false;
 
@@ -53,7 +47,7 @@ if ($_REQUEST['curId'] != "new") {
             $GLOBALS['gb_obj']->includeFile($gabNom . '.php', $gabFold);
 
             /**
-             * Si il a une methode pour connaitre ses paramÃ¨tres
+             * Si il a une methode pour connaitre ses paramètres
              */
             if (method_exists($gabNom, 'ocms_getParams')) {
                 $r = call_user_func(array($gabNom, 'ocms_getParams'), $this->tab_default_field);
@@ -154,19 +148,9 @@ if ($_REQUEST['curId'] != "new") {
 
 
 
-            //debug(evaluate($str));
-            //debug($r);
-            //
-		// print_r(genContact::$ocms_params);
 
             $form->gen("rubrique_gabarit_param");
 
-
-            $grow = getGabaritByClass('genDossierThematique');
-
-            if ($form->tab_default_field['fk_gabarit_id'] == $grow['gabarit_id']) {
-                $form->genlg('rubrique_home');
-            }
 
             $form->gen("rubrique_option");
         }
@@ -180,5 +164,4 @@ if ($_REQUEST['curId'] != "new") {
     $form->gen("rubrique_type");
     if ($form->tab_default_field['rubrique_type'] == 'link')
         $form->genlg("rubrique_link");
-//$form->gen("FAUXPARA");
 }
