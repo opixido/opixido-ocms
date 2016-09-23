@@ -284,7 +284,7 @@ class genActionMoveRubrique
         $this->table = $table;
         $this->id = $id;
 
-        if (!count($row) || !$row['fk_rubrique_version_id'])
+        if (!count($row) || !$row['ocms_version'])
             $this->row = getRowFromId($this->table, $this->id);
         else
             $this->row = $row;
@@ -386,7 +386,7 @@ class genActionMoveRubrique
 
 
             foreach ($res as $row) {
-                if ($row['rubrique_id'] && $row['rubrique_id'] != $this->row['fk_rubrique_version_id']) {
+                if ($row['rubrique_id'] && $row['rubrique_id'] != $this->row['ocms_version']) {
                     if ($row['rubrique_type'] == 'siteroot') {
                         echo '<hr style="border-top:1px solid #555"/>';
                     }
@@ -1022,7 +1022,7 @@ class genActionValidate
     {
 
         global $_Gconfig;
-        $this->noCopyField = array_merge($_Gconfig['noCopyField'], array('rubrique_id', 'fk_rubrique_id', 'fk_rubrique_version_id', 'rubrique_etat', 'rubrique_ordre'));
+        $this->noCopyField = array_merge($_Gconfig['noCopyField'], array('rubrique_id', 'fk_rubrique_id', 'ocms_version', 'rubrique_etat', 'rubrique_ordre'));
         $this->relTableToCopy = array('s_paragraphe');
         $this->action = $action;
         $this->table = $table;
@@ -1035,8 +1035,8 @@ class genActionValidate
               $this->row = $gf->tab_default_field; */
         }
 
-        if (!$this->row['fk_rubrique_version_id']) {
-            $sql = 'SELECT * FROM s_rubrique WHERE fk_rubrique_version_id = "' . $this->id . '"';
+        if (!$this->row['ocms_version']) {
+            $sql = 'SELECT * FROM s_rubrique WHERE ocms_version = "' . $this->id . '"';
             $this->row = GetSingle($sql);
             $this->id = $this->row['rubrique_id'];
         }
@@ -1044,7 +1044,7 @@ class genActionValidate
 
     public function checkCondition()
     {
-        if (($this->row['rubrique_etat'] == 'redaction' || $this->row['rubrique_etat'] == 'attente') && $this->row['fk_rubrique_version_id'] != 'NULL') {
+        if (($this->row['rubrique_etat'] == 'redaction' || $this->row['rubrique_etat'] == 'attente') && $this->row['ocms_version'] != 'NULL') {
             return true;
         } else {
             return false;
@@ -1065,7 +1065,7 @@ class genActionValidate
 
         $dupli->noCopyField = array_merge($dupli->noCopyField, $this->noCopyField);
 
-        $dupli->duplicateTo($this->row['fk_rubrique_version_id']);
+        $dupli->duplicateTo($this->row['ocms_version']);
 
 
         /* BORDEL DE DUPLICATION */
@@ -1073,7 +1073,7 @@ class genActionValidate
 
         $sql .= ' rubrique_etat = "en_ligne" , rubrique_date_publi = NOW() ';
 
-        $sql .= ' WHERE rubrique_id = "' . mes($this->row['fk_rubrique_version_id'], 'int') . '" ';
+        $sql .= ' WHERE rubrique_id = "' . mes($this->row['ocms_version'], 'int') . '" ';
         DoSql($sql);
 
 
@@ -1161,7 +1161,7 @@ class genActionAsk_for_validation
           $genMessages->add(($this->row));
           $genMessages->add(getOnlineRubid($this->row));
          */
-        $sql .= ' WHERE fk_rubrique_version_id = "' . mes(getOnlineRubid($this->row), 'int') . '" ';
+        $sql .= ' WHERE ocms_version = "' . mes(getOnlineRubid($this->row), 'int') . '" ';
         DoSql($sql);
 
 
@@ -1279,7 +1279,7 @@ class genActionUnvalidate
 
         $sql .= ' rubrique_etat = "redaction" ';
 
-        $sql .= ' WHERE rubrique_id = "' . mes(GetOnlineRubId($this->row), 'int') . '" OR fk_rubrique_version_id = "' . mes(GetOnlineRubId($this->row), 'int') . '"';
+        $sql .= ' WHERE rubrique_id = "' . mes(GetOnlineRubId($this->row), 'int') . '" OR ocms_version = "' . mes(GetOnlineRubId($this->row), 'int') . '"';
 
         DoSql($sql);
 
@@ -1354,7 +1354,7 @@ class genActionRefuse
 
         $sql .= ' rubrique_etat = "redaction" ';
 
-        $sql .= ' WHERE fk_rubrique_version_id = "' . mes(GetOnlineRubId($this->row), 'int') . '"';
+        $sql .= ' WHERE ocms_version = "' . mes(GetOnlineRubId($this->row), 'int') . '"';
 
         DoSql($sql);
 
