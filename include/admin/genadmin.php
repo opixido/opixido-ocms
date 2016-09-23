@@ -247,8 +247,10 @@ class genAdmin
 
         if ($real) {
             $real = GetSingle('SELECT ' . MULTIVERSION_FIELD . ' FROM s_rubrique WHERE rubrique_id = ' . sql($real));
-            $this->real_rub_id = $real[MULTIVERSION_FIELD];
-            return $this->real_rub_id;
+            if($real) {
+                $this->real_rub_id = $real[MULTIVERSION_FIELD];
+                return $this->real_rub_id;
+            }
         }
         return false;
     }
