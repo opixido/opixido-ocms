@@ -1,4 +1,4 @@
-<?
+<?php 
 /**
  * The PHP Image Editor user interface.
  * @author $Author: Wei Zhuo $
@@ -99,7 +99,7 @@ $editor = new ImageEditor($manager);
 	<div id="tools_save" style="display:none;">
 		<input type="hidden" name="fieldToUpdate" id="fieldToUpdate" value="<?php echo $_REQUEST['update']?>" />
 		<div id="tool_inputs">
-			<label for="save_filename">Filename:</label><input type="text" id="save_filename" value="<? echo $editor->getDefaultSaveFile();?>"/>
+			<label for="save_filename">Filename:</label><input type="text" id="save_filename" value="<?php echo $editor->getDefaultSaveFile();?>"/>
 			<select name="format" id="save_format" style="margin-left: 10px; vertical-align: middle;" onchange="updateFormat(this)">
             <option value="" selected>Image Format</option>
             <option value="">---------------------</option>
@@ -107,9 +107,9 @@ $editor = new ImageEditor($manager);
             <option value="jpeg,60">JPEG Medium</option>
             <option value="jpeg,35">JPEG Low</option>
             <option value="png">PNG</option>
-			<? if($editor->isGDGIFAble() != -1) { ?>
+			<?php if($editor->isGDGIFAble() != -1) { ?>
             <option value="gif">GIF</option>
-			<? } ?>
+			<?php } ?>
          </select>
 			<label>Quality:</label>
 			<table style="display: inline; vertical-align: middle;" cellpadding="0" cellspacing="0">
@@ -138,7 +138,7 @@ $editor = new ImageEditor($manager);
 <a href="javascript:editor.doSubmit('save');" id="icon_save" title="Save"><img src="img/save.gif" height="20" width="20" alt="Save" /><span>Save</span></a>
 </div>
 <div id="contents">
-<iframe width="90%" height="90%" src="editorFrame.php?<?=time()?>&img=<? if(isset($_GET['img'])) echo rawurlencode($_GET['img']); ?>" name="editor" id="editor"  scrolling="auto" title="Image Editor" frameborder="0"></iframe>
+<iframe width="90%" height="90%" src="editorFrame.php?<?=time()?>&img=<?php if(isset($_GET['img'])) echo rawurlencode($_GET['img']); ?>" name="editor" id="editor"  scrolling="auto" title="Image Editor" frameborder="0"></iframe>
 </div>
 <div id="bottom"></div>
 </body>
