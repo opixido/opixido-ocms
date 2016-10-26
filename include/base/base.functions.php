@@ -542,6 +542,9 @@ function nicedateyear2char($d)
 function niceDateTime($d, $show_year = true, $showSec = false)
 {
     $t = explode(" ", $d);
+    if(empty($t[1])) {
+        return '';
+    }
     $mydate = $t[0];
     $mytime = $t[1];
 
