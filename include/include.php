@@ -148,9 +148,13 @@ class genBase
         $list = array('config.server.php', 'config.locale.php', 'connect.php', 'config.base.php', 'config.app.php');
 
         foreach ($list as $file) {
-            $res = include_once($curfolder . '/' . $file);
-            if (!$res) {
+            if(!file_exists($curfolder . '/' . $file)) {
                 echo('File : ' . $file . ' not included yet : Install Mode');
+            } else {
+                $res = include_once($curfolder . '/' . $file);
+                if (!$res) {
+                    echo('File : ' . $file . ' not included yet : Install Mode');
+                }
             }
         }
 
