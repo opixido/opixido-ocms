@@ -47,7 +47,7 @@ if ($_REQUEST['curId'] != "new") {
             $GLOBALS['gb_obj']->includeFile($gabNom . '.php', $gabFold);
 
             /**
-             * Si il a une methode pour connaitre ses paramètres
+             * Si il a une methode pour connaitre ses paramÃ¨tres
              */
             if (method_exists($gabNom, 'ocms_getParams')) {
                 $r = call_user_func(array($gabNom, 'ocms_getParams'), $this->tab_default_field);

@@ -16,7 +16,7 @@ if (!empty($_GET['nocache'])) {
 } else if (IN_ADMIN) {
     define('CACHE_IS_ON', true);
 } else {
-    define('CACHE_IS_ON', false);
+    define('CACHE_IS_ON', true);
 }
 
 /**

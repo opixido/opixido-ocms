@@ -89,3 +89,5 @@ function listContacts() {
 
     return $res;
 }
+
+$_Gconfig['ocms_contact']['subClass'] = array();

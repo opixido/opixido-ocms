@@ -794,7 +794,7 @@ class simpleForm
         if (!$id || !strlen($id)) {
             $id = $this->getNextId();
         }
-        if (!is_array($value) && !empty($_REQUEST[ $name ]) && $name && $this->isSubmited()) {
+        if (!is_array($value) && !empty($_REQUEST[ $name ]) && $name && $this->isSubmited() && $type != 'radio') {
             $value = $_REQUEST[ $name ];
         }
         if ($type == 'captcha') {

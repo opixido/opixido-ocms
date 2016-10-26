@@ -6,7 +6,7 @@ global $_Gconfig;
 if ($form->tab_default_field['fk_gabarit_id'] > 0) {
     $r = new row('s_gabarit', $form->tab_default_field['fk_gabarit_id']);
 
-    if ($r->gabarit_classe == 'genContact' || in_array($r->gabarit_classe, $_Gconfig['ocms_contact']['subClass'])) {
+    if ($r->id && $r->gabarit_classe == 'genContact' || in_array($r->gabarit_classe, $_Gconfig['ocms_contact']['subClass'])) {
         $isContact = true;
     }
 }

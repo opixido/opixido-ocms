@@ -250,6 +250,7 @@ if ($_REQUEST['curId'] == "new") {
         <?php
         } else {
             $form->gen('rubrique_titre_' . $lg, '', '', '');
+            $parents_url = '';
             ?>
             <script>
                 $('[id=genform_rubrique_titre_<?=$lg?>]').on('keyup change', function () {

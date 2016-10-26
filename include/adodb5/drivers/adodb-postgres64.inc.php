@@ -1,6 +1,6 @@
 <?php
 /*
- @version   v5.20.0  28-Nov-2015
+ @version   v5.21.0-dev  ??-???-2016
  @copyright (c) 2000-2013 John Lim (jlim#natsoft.com). All rights reserved.
  @copyright (c) 2014      Damien Regad, Mark Newnham and the ADOdb community
   Released under both BSD license and Lesser GPL library license.
@@ -123,11 +123,6 @@ class ADODB_postgres64 extends ADOConnection{
 	// I'm not familiar enough with both ADODB as well as Postgres
 	// to know what the concequences are. The other values are correct (wheren't in 0.94)
 	// -- Freek Dijkstra
-
-	function __construct()
-	{
-		// changes the metaColumnsSQL, adds columns: attnum[6]
-	}
 
 	function ServerInfo()
 	{
@@ -1068,6 +1063,7 @@ class ADORecordSet_postgres64 extends ADORecordSet{
 				case 'NAME':
 				case 'BPCHAR':
 				case '_VARCHAR':
+				case 'CIDR':
 				case 'INET':
 				case 'MACADDR':
 					if ($len <= $this->blobSize) return 'C';
@@ -1111,7 +1107,7 @@ class ADORecordSet_postgres64 extends ADORecordSet{
 					return 'R';
 
 				default:
-					return 'N';
+					return ADODB_DEFAULT_METATYPE;
 			}
 	}
 

@@ -222,6 +222,7 @@ class ocmsGen extends baseGen {
     
 }
 
+
 class rubrique extends row {
 
     public $table = 's_rubrique';
@@ -374,6 +375,8 @@ class rubrique extends row {
      * Return all images
      */
 }
+
+
 
 class paragraphe extends row {
 

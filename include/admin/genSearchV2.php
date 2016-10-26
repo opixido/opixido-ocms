@@ -34,7 +34,7 @@ class genSearchV2
         if (!empty($_REQUEST['relOne'])) {
             $this->relOne = $_REQUEST['relOne'];
             $this->relOneFk = $_Gconfig['relOne'][$this->table][$this->relOne];
-            if ($searchField[$this->relOne]) {
+            if (!empty($searchField[$this->relOne])) {
                 $this->searchField = $searchField[$this->relOne];
             }
             $this->tabField = array_merge($this->tabField, getTabField($this->relOne));
@@ -68,6 +68,8 @@ class genSearchV2
          */
         $sql = ' ' . getPrimaryKey($this->table) . ',
 					' . GetTitleFromTable($this->table, " , ");
+					
+					
 
         if ($this->relOne) {
             $sql .= ' , ' . getPrimaryKey($this->relOne);
@@ -95,7 +97,11 @@ class genSearchV2
 
         $rCount = DoSql($sqlCount);
 
-
+        if(!$rCount) {
+            global $co;
+            var_dump($sqlCount);
+            var_dump($co->ErrorMsg());
+        }
         $rCount = $rCount->FetchRow();
         $this->count = $rCount['NB'];
 

@@ -346,5 +346,6 @@ function rm($fileglob)
 
 function saveTemoinChange()
 {
+    updateParam('date_update_anything', time());
     @file_put_contents(INCLUDE_PATH . '/temoinchange', date('c'));
 }

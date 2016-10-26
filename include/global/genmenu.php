@@ -108,7 +108,6 @@ class genMenu
 
         if (!count($this->tabPrincipal))
             $this->tabPrincipal = $this->site->g_url->recursRub($this->id_menu, 1, $this->conf['max_levels']);
-
         return $this->tabPrincipal;
     }
 
@@ -126,7 +125,6 @@ class genMenu
         if (!$this->visible) {
             return;
         }
-
 
         $ulId = empty($rootId) ? '' : ' id="menu_' . $this->nom_menu . '"';
         $divid = empty($rootId) ? '' : ' id="div_menu_' . $this->nom_menu . '"';

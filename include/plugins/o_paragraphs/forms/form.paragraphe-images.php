@@ -1,0 +1,4 @@
+<?php
+
+
+$form->gen('IMAGES');

@@ -1036,7 +1036,7 @@ class genUrlV2
                             'type' => 'fake'
                         );
                         if (akev($_REQUEST, $v['PARAM']) == $v['VALUE']) {
-                            //$tabTemp[$k]['selected'] = true;
+                            $tabTemp[$k]['selected'] = true;
                         }
                     }
                 }
@@ -1084,7 +1084,7 @@ class genUrlV2
                         'option' => $sRub['rubrique_option'],
                         'type' => $sRub['rubrique_type'],
                         /* 'isFolder' => $sRub['rubrique_is_folder'], */
-                        //'selected' => $sel
+                        'selected' => $sel
                     );
 
                     reset($_Gconfig['LANGUAGES']);
@@ -1107,7 +1107,7 @@ class genUrlV2
                     'url' => $mu,
                     'titre' => GetLgValue('rubrique_titre', $sRub, false),
                     'type' => $sRub['rubrique_type'],
-                    //'selected' => $sel
+                    'selected' => $sel
                 );
                 reset($_Gconfig['LANGUAGES']);
                 foreach ($_Gconfig['LANGUAGES'] as $lg) {

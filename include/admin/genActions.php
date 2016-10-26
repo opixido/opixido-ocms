@@ -162,6 +162,7 @@ class genActionEdit
     public $table;
     public $id;
     public $row;
+    public $canReturnToList = false;
 
     public function __construct($action, $table, $id, $row = array())
     {

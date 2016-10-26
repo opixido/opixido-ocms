@@ -1098,49 +1098,9 @@ class genFile
             else
                 $h .= (' <img src="' . $chemin . '" alt="' . t($name) . '" width="' . $this->thumbWidth . '" />');
         } // <param name="FlashVars" value="clip=' . $this->getWebUrl() . '&amp;margin=2&amp;bgcolor1=000000&amp;bgcolor2=000000&amp;showstop=1&amp;loadingcolor=555555&amp;showvolume=1&amp;showtime=1&amp;showfullscreen=1&amp;playercolor=ffffff&amp;buttoncolor=000000&amp;showiconplay=1&amp;iconplaybgcolor=ffffff&amp;videobgcolor=ffffff&amp;loadonstop=0" />
-        else if ($this->getExtension() == 'flv' || $this->getExtension() == 'mp4' || $this->getExtension() == 'm4v' || strstr($this->getWebUrl(), 'rtmp')) {
-            global $_Gconfig;
-            if (strstr($this->getWebUrl(), 'rtmp')) {
-                $file = str_replace($_Gconfig['rtmpServeur'], '', $this->getWebUrl());
-                $stream = $_Gconfig['rtmpServeur'];
-            } else {
-                $file = $this->getWebUrl();
-                $stream = '';
-            }
-
-
-            $id = uniqid();
-            $h .= ('
-<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="470" height="290" id="single1" name="single1">
-<param name="movie" value="player.swf">
-<param name="allowfullscreen" value="true">
-<param name="allowscriptaccess" value="always">
-<param name="wmode" value="transparent">
-<param name="flashvars" value="file=' . $rtmp . '&streamer=' . $_Gconfig['rtmpServeur'] . '">
-<embed
-  id="single2"
-  name="single2"
-  src="player.swf"
-  width="470"
-  height="290"
-  bgcolor="#000000"
-  allowscriptaccess="always"
-  allowfullscreen="true"
-  flashvars="file=' . $file . '&streamer=' . $stream . '"
-/>
-</object>
-</a>
-
-');
-            /*
-             *
-              <object type="application/x-shockwave-flash" data="flowplayer.swf" width="300" height="200">
-              <param name="movie" value="flowplayer.swf" />
-              <param name="allowFullScreen" value="true" />
-
-              <param name="FlashVars" value="config={plugins:{influxis:{url:\'' . BU . '/admin/flowplayer.rtmp-3.2.8.swf\',netConnectionUrl:\'' . $_Gconfig['rtmpServeur'] . '\'}},clip:{url:\'' . $rtmp . '\',provider:\'influxis\'}}" />
-              </object>
-             */
+        else if ($this->isVideo()) {
+            $h .= ('' . t('voir'));
+            $h .= '</a><br/><video controls src="'.$this->getWebUrl().'" width="50%" preload="none" ></video>';
         } else {
             /* Sinon juste lien */
             $h .= ('' . t('voir'));
@@ -1167,6 +1127,11 @@ class genFile
         $h .= ('</div>');
 
         return $h;
+    }
+    
+    public function isVideo() {
+        $res = $this->getExtension() == 'webm' || $this->getExtension() == 'mp4' || $this->getExtension() == 'm4v' || $this->getExtension() == 'ogv';
+        return $res;
     }
 
     public function genSmallAdminTag()
@@ -1200,10 +1165,13 @@ class genFile
         if ($this->isImage()) {
             if ($this->useThumbs)
                 //$h .= ( ' <br/><img src="thumb/?w='.$this->thumbWidth.'&amp;h='.$this->thumbHeight.'&amp;src='.$systemCh.'" alt="'.t($name).'" id="imgprev_'.$name.'" /><br/>');
-                $h .= (' <img src="' . $this->getThumbUrl($this->thumbWidth, $this->thumbHeight) . '" alt="" id="imgprev_' . $name . '"  /><br/>');
+                $h .= (' <img src="' . $this->getThumbUrl(round($this->thumbWidth/2), round($this->thumbHeight/2)) . '" alt="" id="imgprev_' . $name . '"  /><br/>');
             else
                 $h .= (' <img src="' . $chemin . '" alt="' . t($name) . '" width="' . $this->thumbWidth . '" />');
-        } else {
+        } else if ($this->isVideo()) {
+            $h .= ('' . t('voir'));
+            $h .= '</a><video controls src="'.$this->getWebUrl().'" width="'.round($this->thumbWidth/2).'" height="'.round($this->thumbHeight/2).'"  preload="none" ></video>';
+        }  else {
             /* Sinon juste lien */
             $h .= ('' . t('voir'));
         }

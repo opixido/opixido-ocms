@@ -2754,27 +2754,39 @@ class pagination
         }
 
 
+        $lastDotted = false;
         /**
          * On parcourt les pages
          */
         for ($p = 1; $p <= $this->nbPages; $p++) {
 
             if ($this->nbPages > 10) {
-                if (($p == 1 || $p == $this->nbPages || $p == $page || ($p % 10 == 0) || abs($page - $p) < 3)) {
-                    // on affiche ce numéro
+                
+                if ( // si c'est la première ou la dernière page
+                    ($p == 1 || $p == $this->nbPages 
+                    // si c'est la page en cours
+                    || $p == $page 
+                    // Si c'est une "dizaine" pour faire des paliers
+                    || ($p % 10 == 0) 
+                    // si c'est une page autour de la page en cours 
+                    || abs($page - $p) < 2)) 
+                    {
+                   // Alors on affiche
                 } else {
+                    // Si on a déjà affiché les trois petits points
                     if ($lastDotted) {
                         continue;
                     } else {
                         $num = $tpl->addBlock('NUM');
-                        $num->disabled = 'active';
+                        $num->class = '';
+                        $num->url =  $this->getUrlWithParams(array_merge($this->params, array('page' => ($p))));
                         $num->num = '...';
                         $lastDotted = true;
                         continue;
                     }
                 }
             }
-
+            $lastDotted = false;
             $num = $tpl->addBlock('NUM');
             $num->set('num', $p);
             $num->set('url', $this->getUrlWithParams(array_merge($this->params, array('page' => ($p)))));
@@ -2797,7 +2809,7 @@ class pagination
 
     function getUrlWithParams($p)
     {
-        if ($GLOBALS['site']->g_url && $this->useGenUrl) {
+        if (!empty($GLOBALS['site']) && $GLOBALS['site']->g_url && $this->useGenUrl) {
             return getUrlWithParams($p);
         } else {
             return '?' . http_build_str($p);

@@ -637,7 +637,7 @@ if (!class_exists('genSecurity')) {
             }
             $delete = true;
 
-            if ($id) {
+            if ($id && $id != 'new') {
                 $tab_field = getTabField($table);
                 if (!count($tab_default_field)) {
                     $tab_default_field = getRowFromId($table, $id);

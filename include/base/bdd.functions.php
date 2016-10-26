@@ -237,7 +237,7 @@ function getSelectTables($table, $alias = 'T')
     return $sql;
 }
 
-function sqlOnlyOnline($table, $alias = '')
+function sqlOnlyOnline($table, $alias = '',$forceTestsInAdmin=false)
 {
 
     global $_Gconfig;
@@ -246,7 +246,7 @@ function sqlOnlyOnline($table, $alias = '')
         return sqlRubriqueOnlyOnline($alias);
     }
 
-    if (IN_ADMIN) {
+    if (!$forceTestsInAdmin && IN_ADMIN) {
         return '';
     }
     $sql = '';
@@ -262,7 +262,7 @@ function sqlOnlyOnline($table, $alias = '')
         $sql .= ' AND ( ' . $_Gconfig['field_date_online'] . ' <= NOW() OR ' . $_Gconfig['field_date_online'] . ' = "0000-00-00" )
 		AND (' . $_Gconfig['field_date_offline'] . ' >= NOW() OR ' . $_Gconfig['field_date_offline'] . ' = "0000-00-00"  ) ';
     }
-    if (!@in_array($table, $_Gconfig['hideableTable']) && !@in_array($table, $_Gconfig['versionedTable'])) {
+    if (!in_array($table, $_Gconfig['hideableTable']) && !in_array($table, $_Gconfig['versionedTable'])) {
 
         return $sql;
     }

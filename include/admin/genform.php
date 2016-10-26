@@ -46,6 +46,7 @@ class GenForm
     var $smallThumbWidth = 200;
     var $smallThumbHeight = 200;
     public $restricted = false;
+    public $fieldsDone = 0;
 
     /**
      * genSecurity
@@ -166,7 +167,7 @@ class GenForm
         $this->language = LG;
 
         global $tabForms;
-        $this->pages = $tabForms[$this->table_name]["pages"];
+        $this->pages =akev($tabForms[$this->table_name],"pages");
 
 
         $this->getLgs();
@@ -1083,7 +1084,6 @@ class GenForm
     {
         global $tabForms, $_Gconfig;
 
-
         if (!empty($this->pages)) {
 
             $i = 0;
@@ -1097,7 +1097,7 @@ class GenForm
                   $cl = '';
                   } */
 
-                p('<li class="' . $cl . '" id="genform_btn_page_' . $i . '" >');
+                p('<li id="genform_btn_page_' . $i . '" >');
 
                 $imgu = '';
                 if (tradExists('imgonglet_' . $_REQUEST['curTable'] . '_p_' . $k)) {

@@ -232,7 +232,7 @@ class genAdmin
                 if (akev($lev, 'curTable') == 's_rubrique') {
                     @reset($_SESSION[gfuid()]['levels']);
 
-                    if ($this->rubver[$lev['curId']])
+                    if (!empty($this->rubver[$lev['curId']]))
                         $real = $this->rubver[$lev['curId']];
                     else
                         $real = $lev['curId'];
@@ -339,7 +339,7 @@ class genAdmin
                  */
                 foreach ($_Gconfig['tableActions'][$this->table] as $action) {
                     if ($this->gs->can($action, $this->table) && $action != akev($_REQUEST, 'tableAction')) {
-                        p('<a class="btn" href="?curTable=' . $this->table . '&tableAction=' . $action . '"> <img src="' . ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/actions/' . $action . '.png" alt=""  /> ' . t($action) . '</a>');
+                        p('<a class="btn" href="?curTable=' . $this->table . '&tableAction=' . $action . '"> <img src="' . ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/' . t('src_'.$action) . '.png" alt=""  /> ' . t($action) . '</a>');
                     }
                 }
             }
@@ -855,10 +855,12 @@ class genAdmin
             if (akev($_SESSION[gfuid()], 'nbLevels') > 0) {
 
                 for ($p = 1; $p <= $_SESSION[gfuid()]['nbLevels'] + 1; $p++) {
-                    $v = $_SESSION[gfuid()]['levels'][$p];
-                    if (isset($v['curTable'])) {
-                        $src = getPicto($v['curTable'], ADMIN_PICTOS_FORM_SIZE);
-                        p('<a class="btn btn-mini" href="?gfuid=' . gfuid() . '&backToLevel=' . $p . '"><img class="inputimage" src="' . $src . '" alt="" />' . limitWords(strip_tags($this->GetRecordTitle($v["curTable"], $v["curId"], " ", $v["curTableKey"])), 15) . " [" . $v["curId"] . "] </a> ");
+                    if(!empty($_SESSION[gfuid()]['levels'][$p])) {
+                        $v = $_SESSION[gfuid()]['levels'][$p];
+                        if (isset($v['curTable'])) {
+                            $src = getPicto($v['curTable'], ADMIN_PICTOS_FORM_SIZE);
+                            p('<a class="btn btn-mini" href="?gfuid=' . gfuid() . '&backToLevel=' . $p . '"><img class="inputimage" src="' . $src . '" alt="" />' . limitWords(strip_tags($this->GetRecordTitle($v["curTable"], $v["curId"], " ", $v["curTableKey"])), 15) . " [" . $v["curId"] . "] </a> ");
+                        }
                     }
                 }
                 $src = getPicto($this->table, ADMIN_PICTOS_FORM_SIZE);
@@ -1111,7 +1113,9 @@ class smallAdmin
         if (!$this->realRubId && !empty($_REQUEST['curId'])) {
             if (isMultiVersion($_REQUEST['curTable'])) {
                 $curRub = getRowFromId($_REQUEST['curTable'], $_REQUEST['curId']);
-                $this->realRubId = $curRub[MULTIVERSION_FIELD];
+                if($curRub) {
+                    $this->realRubId = $curRub[MULTIVERSION_FIELD];
+                }
             } else {
                 $this->realRubId = $_REQUEST['curId'];
             }

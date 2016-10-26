@@ -129,9 +129,9 @@ class row
 
             if ($classe) {
                 $this->$field = new $classe($this->row[ $field ]);
+            } else {
+                $this->$field = new row($fk_table, $this->row[ $field ]);
             }
-
-            $this->$field = new row($fk_table, $this->row[ $field ]);
         } else if (!empty($tablerel[ $field ])) {
 
             /**
@@ -198,7 +198,7 @@ class row
 
             if ($type == 'date' || $type == 'datetime') {
 
-                $this->$field = new Date($this->row[ $field ]);
+                $this->$field = new DateTime($this->row[ $field ]);
             }
 
             if (substr($type, 0, 4) == 'set(') {

@@ -1,6 +1,6 @@
 <?php
 /*
-@version   v5.20.0  28-Nov-2015
+@version   v5.21.0-dev  ??-???-2016
 @copyright (c) 2000-2013 John Lim. All rights reserved.
 @copyright (c) 2014      Damien Regad, Mark Newnham and the ADOdb community
   Released under both BSD license and Lesser GPL library license.
@@ -33,7 +33,6 @@ class ADODB_oci8po extends ADODB_oci8 {
 	function __construct()
 	{
 		$this->_hasOCIFetchStatement = ADODB_PHPVER >= 0x4200;
-		# oci8po does not support adodb extension: adodb_movenext()
 	}
 
 	function Param($name,$type='C')
@@ -96,11 +95,6 @@ class ADORecordset_oci8po extends ADORecordset_oci8 {
 
 	var $databaseType = 'oci8po';
 
-	function __construct($queryID,$mode=false)
-	{
-		parent::__construct($queryID,$mode);
-	}
-
 	function Fields($colname)
 	{
 		if ($this->fetchMode & OCI_ASSOC) return $this->fields[$colname];
@@ -138,8 +132,10 @@ class ADORecordset_oci8po extends ADORecordset_oci8 {
 	// 10% speedup to move MoveNext to child class
 	function MoveNext()
 	{
-		if(@OCIfetchinto($this->_queryID,$this->fields,$this->fetchMode)) {
+		$ret = @oci_fetch_array($this->_queryID,$this->fetchMode);
+		if($ret !== false) {
 		global $ADODB_ANSI_PADDING_OFF;
+			$this->fields = $ret;
 			$this->_currentRow++;
 			$this->_updatefields();
 
@@ -169,10 +165,12 @@ class ADORecordset_oci8po extends ADORecordset_oci8 {
 				$arr = array();
 				return $arr;
 			}
-		if (!@OCIfetchinto($this->_queryID,$this->fields,$this->fetchMode)) {
+		$ret = @oci_fetch_array($this->_queryID,$this->fetchMode);
+		if ($ret === false) {
 			$arr = array();
 			return $arr;
 		}
+		$this->fields = $ret;
 		$this->_updatefields();
 		$results = array();
 		$cnt = 0;
@@ -188,8 +186,9 @@ class ADORecordset_oci8po extends ADORecordset_oci8 {
 	{
 		global $ADODB_ANSI_PADDING_OFF;
 
-		$ret = @OCIfetchinto($this->_queryID,$this->fields,$this->fetchMode);
+		$ret = @oci_fetch_array($this->_queryID,$this->fetchMode);
 		if ($ret) {
+			$this->fields = $ret;
 			$this->_updatefields();
 
 			if (!empty($ADODB_ANSI_PADDING_OFF)) {
@@ -198,7 +197,7 @@ class ADORecordset_oci8po extends ADORecordset_oci8 {
 				}
 			}
 		}
-		return $ret;
+		return $ret !== false;
 	}
 
 }

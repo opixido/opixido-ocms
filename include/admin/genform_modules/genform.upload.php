@@ -135,6 +135,11 @@ if ($this->tab_default_field[ $name ]) {
                 $this->addBuffer('<img src="' . $chemin . '" width="' . $this->thumbWidth . '" />');
             }
             $this->addBuffer('</a> ');
+        } else if($gf->isVideo() ){ 
+            
+            $this->addBuffer(' <a href="' . $chemin . '" target="_blank">' . $this->trad('voir') . '</a> ');
+            $this->addBuffer(' <video preload="none" width="'.$this->smallThumbWidth.'" controls src="' . $chemin . '"></video> ');
+            
         } else {
 
             /*

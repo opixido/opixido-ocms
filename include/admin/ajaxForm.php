@@ -28,6 +28,8 @@ class ajaxForm
     public $table;
     public $id;
     public $row;
+    
+    public $strBuffer='';
 
     function __construct($table, $id = "new")
     {
@@ -59,7 +61,8 @@ class ajaxForm
 
         if (isBaseLgField($champ, $this->table)) {
 
-            $htmlLgs = '';
+            $htmlRet = $html = $htmlLgs = '';
+            
             $nbLgs = count($_Gconfig['LANGUAGES']);
             foreach ($_Gconfig['LANGUAGES'] as $v) {
                 $htmlLgs .= '<option value="' . $v . '" style="background:url(img/flags/' . $v . '.gif) 2px 2px no-repeat;padding-left:20px">' . $v . '</option>';
