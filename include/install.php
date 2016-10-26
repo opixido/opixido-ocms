@@ -352,7 +352,7 @@ class genInstall
         $this->f1->add('select', array('1' => 'Oui', '0' => 'Non'), 'Cr&eacute;er la base ?', 'bdd_creer', '', false, array(0));
         $this->f1->add('select', array('1' => 'Oui', '0' => 'Non'), 'Importer le dump SQL ?', 'bdd_import', '', false, array(1));
 
-        $this->f1->add('select', array('mysql' => 'mysql', 'mysqli' => 'mysqli'), 'Type de connexion', 'bdd_type', '', false, array('mysql'));
+        $this->f1->add('select', array('mysqli' => 'mysqli'), 'Type de connexion', 'bdd_type', '', false, array('mysql'));
 
         $this->f1->add('text', 'fr', 'Langue par d&eacute;faut', 'LG_DEF');
 
