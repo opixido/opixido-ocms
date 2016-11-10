@@ -109,7 +109,7 @@ if (!$this->editMode) {
             return false;
         });
 
-        var latlng = new google.maps.LatLng(<?= $this->tab_default_field[$chp_lat] ?>, <?= $this->tab_default_field[$chp_lon] ?>);
+        var latlng = new google.maps.LatLng(<?= choose($this->tab_default_field[$chp_lat],"48.8536") ?>, <?= choose($this->tab_default_field[$chp_lon],"2.3934") ?>);
         var myOptions = {
             zoom: 8,
             center: latlng,
