@@ -1270,3 +1270,6 @@ CREATE TABLE IF NOT EXISTS `s_traduction` (
 )
   ENGINE =InnoDB
   DEFAULT CHARSET =utf8;
+  
+  
+ALTER TABLE  `s_para_type` ADD  `fk_gabarit_id` INT NOT NULL ;

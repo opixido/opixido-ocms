@@ -1,0 +1,1 @@
+ALTER TABLE  `s_para_type` ADD  `fk_gabarit_id` INT NOT NULL ;
