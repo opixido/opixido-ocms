@@ -841,7 +841,7 @@ class GenForm
                      * UPLOAD DE FICHIERS
                      */
                     include($gb_obj->getIncludePath('genform.upload.php', 'admin/genform_modules'));
-                } else if (in_array($this->tab_field[$name]->type, array('int', 'smallint', 'tinyint', 'bigint', 'float', 'decimal', 'numeric'))) {
+                } else if (in_array($this->tab_field[$name]->type, array('int', 'smallint', 'tinyint', 'bigint', 'float', 'decimal', 'numeric', 'double'))) {
 
                     /**
                      * INTEGER
