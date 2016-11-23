@@ -261,6 +261,19 @@ function du($dir)
     return $MB;
 }
 
+
+function emptyCacheCli()
+{
+    global $_Gconfig;
+  
+    echo "\n".'# Caches'."\n";
+    foreach ($_Gconfig['cachePaths'] as $k => $v) {
+        echo " * ".($k)."\n";
+        emptyDir($v, true);
+    }
+
+}
+
 function emptyCache()
 {
     global $_Gconfig;

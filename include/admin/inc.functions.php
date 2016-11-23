@@ -1236,11 +1236,15 @@ function autoGeocodeAllFields()
     }
 }
 
-function updateDatabase()
+function updateDatabase($cli=false)
 {
 
     $plugins = GetPlugins();
     global $co;
+    if($cli) {
+        echo "\n"."# Updates"."\n";
+    }
+    $nbTot = $nbDone = 0;
     foreach ($plugins as $plugin) {
         $upPl = path_concat(INCLUDE_PATH, 'plugins', $plugin, '_updates');
         if (file_exists($upPl)) {
@@ -1248,13 +1252,21 @@ function updateDatabase()
             $updates = explode(',', $row['plugin_updates']);
             $res = glob(path_concat($upPl, '*.{php,sql}'), GLOB_BRACE);
 
-            echo '<h2>' . $plugin . '</h2>';
+            if(!$cli) {
+                echo '<h2>' . $plugin . '</h2>';
+            }
             foreach ($res as $file) {
                 $filename = basename($file);
                 $parse = explode('_', $filename);
+                $nbTot++;
 
-                if (!in_array($parse[0], $updates)  || $file == $_GET['redo'] ) {
-                    echo '<div class="alert alert-info">A FAIRE : ' . $file . '<br/>';
+                if (!in_array($parse[0], $updates)  || $file == akev($_GET,'redo') ) {
+                    $nbDone++;
+                    if(!$cli) {
+                        echo '<div class="alert alert-info">A FAIRE : ' . $file . '<br/>';
+                    } else {
+                        echo "\n".' * '.$plugin.' : '.$file.''."\n";
+                    }
                     if (strstr($file, '.sql') !== false) {
                         $res = importSqlFile($file);
                         foreach ($res as $sql) {
@@ -1263,15 +1275,23 @@ function updateDatabase()
                     } else {
                         include($file);
                     }
-                    echo '</div>';
+                    if(!$cli) {
+                        echo '</div>';
+                    }
                     $updates[] = $parse[0];
                 } else {
-                    echo '<div class="alert alert-success">FAIT ' . $file . ' <a href="?globalAction=updateDatabase&redo=' . $file . '">🔄</a><br/>';
-                    echo '</div>';
+                    
+                    if(!$cli) {
+                        echo '<div class="alert alert-success">FAIT ' . $file . ' <a href="?globalAction=updateDatabase&redo=' . $file . '">🔄</a><br/>';
+                        echo '</div>';
+                    }
                 }
             }
             $co->autoExecute('s_plugin', array('plugin_updates' => implode(',', $updates)), 'UPDATE', 'plugin_nom=' . sql($plugin));
         }
+    }
+    if($cli) {
+        echo "\n"." * *  ".$nbDone." updates to be done / ".$nbTot;
     }
 }
 
