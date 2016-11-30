@@ -76,5 +76,3 @@ foreach ($plugs as $v) {
 ob_end_clean();
 
 
-importCanalu();
-

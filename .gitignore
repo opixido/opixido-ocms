@@ -12,7 +12,6 @@ rtefiles
 
 # Developer files #
 ######################
-plugins_base
 .project
 nbproject
 .svn

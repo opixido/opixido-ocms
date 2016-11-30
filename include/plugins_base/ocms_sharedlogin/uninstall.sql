@@ -1,0 +1,1 @@
+ALTER TABLE `s_rubrique` DROP `rubrique_password`;

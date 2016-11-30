@@ -1,0 +1,1 @@
+ALTER TABLE  `s_rubrique` ADD  `rubrique_password` VARCHAR( 255 ) NOT NULL ;
