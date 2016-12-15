@@ -16,6 +16,6 @@ $_Gconfig['globalActions'][]= 'viderRecherche';
 //$gr_on['saved']['ANY_TABLE'][] = 'indexForSearch';
 $gr_on['save']['ANY_TABLE'][] = 'indexForSearch';
 
-$gr_on['validate']['s_rubrique'][] = 'indexForSearch';
+$gr_on['publishMV']['s_rubrique'][] = 'indexForSearch';
 
 
