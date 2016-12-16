@@ -567,3 +567,5 @@ $_Gconfig['tinyMce'] = array();
 $_Gconfig['futurOfflineFields'] = array();
 
 $_Gconfig['futurOnlineFields'] = array();
+
+$_Gconfig['doDie404'] = true;
