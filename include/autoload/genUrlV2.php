@@ -271,7 +271,10 @@ class genUrlV2
         $this->rubId = getRubFromGabarit('genSitemap');
 
         if (!$this->rubId) {
-            $this->die404();
+            global $_Gconfig;
+            if(!empty($_Gconfig['doDie404'])) {
+                $this->die404();
+            }
         }
     }
 
