@@ -69,3 +69,6 @@ FileETag MTime Size
             Header append Vary User-Agent env=!dont-vary
         </IfModule>
 </IfModule>
+
+
+require all granted

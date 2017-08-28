@@ -75,7 +75,7 @@ $genMessages = new genMessages();
 /**
  * L'objet genSite permet de gérer l'ensemble de la génération du site
  */
-$site = new GenSite();
+$site = new genSite();
 
 /**
  * Initialisation
