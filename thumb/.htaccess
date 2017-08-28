@@ -6,3 +6,7 @@ Header set Cache-Control "max-age=290304000, public"
 ExpiresActive On
 ExpiresDefault "now plus 2 weeks”
 </IfModule>
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php [L,QSA]
