@@ -49,7 +49,7 @@ $_Gconfig['titre'] = '';
 /**
  * Liste des langues par defaut du site
  */
-$_Gconfig['LANGUAGES'] = array('fr','en','es');
+$_Gconfig['LANGUAGES'] = array('fr');
 $_Gconfig['ADMIN_LANGUAGES'] = array('fr');
 
 $_Gconfig['onlyOneLgForever'] = false;

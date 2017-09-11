@@ -515,7 +515,7 @@ function importSqlFile($FILENAME)
 
                 if (preg_match('/' . preg_quote($delimiter) . '$/', trim($dumpline)) && !$inparents) {
 
-                    $QUERIESTODO[] = str_replace('[LG()]', (defined('LG_TEMP') ? LG_TEMP : LG_DEF), $query);
+                    $QUERIESTODO[] = str_replace('[LG]', (defined('LG_TEMP') ? LG_TEMP : LG_DEF), $query);
 
                     /*
                       if (!DoSql(trim($query)))
