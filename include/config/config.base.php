@@ -545,10 +545,11 @@ $_Gconfig['nonMassAction'] = array('edit', 'view');
 $_Gconfig['relationToAjaxMinimum'] = 100;
 
 define('ADMIN_PICTOS_FOLDER', ADMIN_URL . 'pictos_stock/tango/');
+define('ADMIN_PICTOS_FOLDER2', ADMIN_URL . 'pictos_stock/icons8/');
 
 define('ADMIN_PICTOS_ARBO_SIZE', '16x16');
-define('ADMIN_PICTOS_FORM_SIZE', '22x22');
-define('ADMIN_PICTOS_FRONT_SIZE', '22x22');
+define('ADMIN_PICTOS_FORM_SIZE', '24x24');
+define('ADMIN_PICTOS_FRONT_SIZE', '24x24');
 define('ADMIN_PICTOS_BIG_SIZE', '32x32');
 
 define('FRONT_PICTOS_FOLDER', '/img/pictos');

@@ -24,7 +24,7 @@
 
 global $admin_trads, $_Gconfig;
 
-$v = LG;
+$v = LG();
 
 $sql = 'SELECT trad_id,trad_' . $v . ' FROM s_trad';
 $res = GetAll($sql);
@@ -40,10 +40,11 @@ $res = GetAll($sql);
 
 if ($res) {
     foreach ($res as $row) {
-        $row['admin_trad_' . $v] = str_replace(array('[ADMIN_PICTOS_FOLDER]',
+        $row['admin_trad_' . $v] = str_replace(array('[ADMIN_PICTOS_FOLDER]','[ADMIN_PICTOS_FOLDER2]',
             '[ADMIN_PICTOS_ARBO_SIZE]',
             '[ADMIN_PICTOS_FORM_SIZE]')
                 , array(ADMIN_PICTOS_FOLDER,
+            ADMIN_PICTOS_FOLDER2,
             ADMIN_PICTOS_ARBO_SIZE,
             ADMIN_PICTOS_FORM_SIZE), $row['admin_trad_' . $v]);
         $admin_trads[$row['admin_trad_id']][$v] = $row['admin_trad_' . $v];

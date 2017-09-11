@@ -906,6 +906,7 @@ class genRecord
                                                      */
                                                     if ((substr($name, -14) == "_importmanager") && $value != "0" && $value != "NULL" && $value) {
                                                         $name = substr($name, 0, -14);
+                                                        $value = urldecode($value);
                                                         debug($name);
                                                         debug($value);
                                                     } else if (substr($name, -14) == "_importmanager") {

@@ -506,7 +506,7 @@ class dbTable extends dbObject {
 	*/
 	function addTableOpt( $opt ) {
 		if(isset($this->currentPlatform)) {
-			$this->opts[$this->parent->db->dataProvider] = $opt;
+			$this->opts[$this->parent->db->databaseType] = $opt;
 		}
 		return $this->opts;
 	}

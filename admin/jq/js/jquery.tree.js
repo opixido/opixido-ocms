@@ -29,10 +29,10 @@
             var $root = this;
 
             // Add button
-            $(this).before('<div class="tree_buttons"><button class="expand abutton">Déplier</button><button class="collapse abutton">Replier</button><button class="default abutton">Montrer les éléments sélectionnés</button></div>');
+            //$(this).before('<div class="tree_buttons"><button class="expand abutton">Déplier</button><button class="collapse abutton">Replier</button><button class="default abutton">Montrer les éléments sélectionnés</button></div>');
 
             // Hide all except top level
-            $("ul", $(this)).addClass('hide');
+            //$("ul", $(this).find('li')).addClass('hide');
             // Check parents if necessary
             if (defaults.checkParents) {
                 $("input:checked").parents("li").find("input[type='checkbox']:first").attr('checked', true);
@@ -79,11 +79,12 @@
 
                     // Uncheck children if necessary
                     if (defaults.uncheckChildren) {
-                        $(this).parent("li").find("input[type='checkbox']").attr('checked', false);
+                        
+                        $(this).closest("li").find("input[type='checkbox']").attr('checked', false);
                         // Hide all children
-                        $("ul", $(this).parent("li")).addClass('hide');
+                        $("ul", $(this).closest("li")).addClass('hide');
                         // Update the tree
-                        $("span.expanded", $(this).parent("li")).removeClass("expanded").addClass("collapsed").html(defaults.htmlOpen);
+                        $("span.expanded", $(this).closest("li")).removeClass("expanded").addClass("collapsed").html(defaults.htmlOpen);
                     }
                 }
 

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="<?= LG ?>" class="no-js" prefix="og: http://ogp.me/ns#">
+<html lang="<?= LG() ?>" class="no-js" prefix="og: http://ogp.me/ns#">
 <head>
     <meta charset="utf-8"/>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
@@ -25,7 +25,7 @@
 <body class="">
 
     <header>
-        <a href="<?= BU ?>/<?= LG ?>"><img src="<?= BU ?>/img/logo.png" alt="Opixido"/></a>
+        <a href="<?= BU ?>/<?= LG() ?>"><img src="<?= BU ?>/img/logo.png" alt="Opixido"/></a>
         <?php
         echo $this->plugins['o_blocs']->header->gen();
         ?>

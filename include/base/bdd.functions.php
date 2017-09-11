@@ -136,7 +136,7 @@ function sqlLgValue($champ, $alias = '')
     if ($alias) {
         $alias = $alias . '.';
     }
-    return ' IF(LENGTH(TRIM(' . $alias . $champ . '_' . LG . '))>=1,' . $alias . $champ . '_' . LG . ',' . $alias . $champ . '_' . LG_DEF . ')  ';
+    return ' IF(LENGTH(TRIM(' . $alias . $champ . '_' . LG() . '))>=1,' . $alias . $champ . '_' . LG() . ',' . $alias . $champ . '_' . LG_DEF . ')  ';
 }
 
 /**
@@ -161,7 +161,7 @@ function sqlLgTitle($table, $sep = ' - ')
         $sql .= ',';
 
         if (isBaseLgField($v, $table)) {
-            //$sql .= ' IF(LENGTH(TRIM('.$champ.'_'.LG.'))>=1,'.$champ.'_'.LG.','.$champ.'_'.LG_DEF.') ';
+            //$sql .= ' IF(LENGTH(TRIM('.$champ.'_'.LG().'))>=1,'.$champ.'_'.LG().','.$champ.'_'.LG_DEF.') ';
             $sql .= sqlLgValue($v);
         }
 

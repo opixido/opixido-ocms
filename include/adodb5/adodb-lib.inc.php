@@ -6,7 +6,7 @@ global $ADODB_INCLUDED_LIB;
 $ADODB_INCLUDED_LIB = 1;
 
 /*
-  @version   v5.21.0-dev  ??-???-2016
+  @version   v5.20.9  21-Dec-2016
   @copyright (c) 2000-2013 John Lim (jlim#natsoft.com). All rights reserved.
   @copyright (c) 2014      Damien Regad, Mark Newnham and the ADOdb community
   Released under both BSD license and Lesser GPL library license.
@@ -465,11 +465,18 @@ function _adodb_getcount(&$zthis, $sql,$inputarr=false,$secs2cache=0)
 		if (!$rstest) $rstest = $zthis->Execute($sql,$inputarr);
 	}
 	if ($rstest) {
-		$qryRecs = $rstest->RecordCount();
+	  		$qryRecs = $rstest->RecordCount();
 		if ($qryRecs == -1) {
-			// some databases will return -1 on MoveLast() - change to MoveNext()
-			while(!$rstest->EOF) {
-				$rstest->MoveNext();
+		global $ADODB_EXTENSION;
+		// some databases will return -1 on MoveLast() - change to MoveNext()
+			if ($ADODB_EXTENSION) {
+				while(!$rstest->EOF) {
+					adodb_movenext($rstest);
+				}
+			} else {
+				while(!$rstest->EOF) {
+					$rstest->MoveNext();
+				}
 			}
 			$qryRecs = $rstest->_currentRow;
 		}
@@ -875,22 +882,22 @@ static $cacheCols;
                {
                     switch ($force) {
 
-                        case ADODB_FORCE_IGNORE: // we must always set null if missing
+                        case 0: // we must always set null if missing
 							$bad = true;
 							break;
 
-                        case ADODB_FORCE_NULL:
+                        case 1:
                             $values  .= "null, ";
                         break;
 
-                        case ADODB_FORCE_EMPTY:
+                        case 2:
                             //Set empty
                             $arrFields[$upperfname] = "";
                             $values .= _adodb_column_sql($zthis, 'I', $type, $upperfname, $fnameq,$arrFields, $magicq);
                         break;
 
 						default:
-                        case ADODB_FORCE_VALUE:
+                        case 3:
                             //Set the value that was given in array, so you can give both null and empty values
 							if (is_null($arrFields[$upperfname]) || $arrFields[$upperfname] === $zthis->null2null) {
 								$values  .= "null, ";
@@ -898,21 +905,6 @@ static $cacheCols;
                         		$values .= _adodb_column_sql($zthis, 'I', $type, $upperfname, $fnameq, $arrFields, $magicq);
              				}
               			break;
-
-						case ADODB_FORCE_NULL_AND_ZERO:
-							switch ($type)
-							{
-								case 'N':
-								case 'I':
-								case 'L':
-									$values .= '0, ';
-									break;
-								default:
-									$values .= "null, ";
-									break;
-							}
-						break;
-
              		} // switch
 
             /*********************************************************/

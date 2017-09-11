@@ -602,3 +602,15 @@ function sqlOnlyReal($table, $alias = '')
         return ' AND ' . $alias . MULTIVERSION_FIELD . ' = ' . $alias . getPrimaryKey($table);
     }
 }
+
+
+function sqlOnlyRealAndOnline($table, $alias = '')
+{
+    global $_Gconfig;
+    if ($alias != '') {
+        $alias = $alias . '.';
+    }
+    if (in_array($table, $_Gconfig['multiVersionTable'])) {
+        return sqlOnlyReal($table, $alias = '').' AND '.$alias.MULTIVERSION_STATE.' = '.sql(MV_STATE_ONLINE).' ';
+    }
+}

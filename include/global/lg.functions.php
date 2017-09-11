@@ -22,6 +22,14 @@
 # @package ocms
 #
 
+
+function LG() {
+    if(empty($GLOBALS['ocmsLG'])) {
+       $GLOBALS['ocmsLG'] = LG; 
+    }
+    return $GLOBALS['ocmsLG'];
+}
+
 /**
  * Insere des traductions pour tous les champs traductibles d'un enregistrement
  *
@@ -170,14 +178,18 @@ function isDefaultLgField($champ)
 
 function isLgField($champ)
 {
+    if (isset($GLOBALS['cache']['isLgField'][ $champ ])) {
+        return $GLOBALS['cache']['isLgField'][ $champ ];
+    }
     global $_Gconfig;
     $lastpos = strrpos($champ, '_');
     $lpos = substr($champ, $lastpos + 1);
     if (in_array($lpos, $_Gconfig['LANGUAGES'])) {
-        return $lpos;
+        $GLOBALS['cache']['isLgField'][ $champ ] =  $lpos;
     } else {
-        return false;
+        $GLOBALS['cache']['isLgField'][ $champ ] = false;
     }
+    return $GLOBALS['cache']['isLgField'][ $champ ];
 }
 
 /**
@@ -270,12 +282,12 @@ function getOtherLg()
     global $_Gconfig;
     if (!defined('LG'))
         return $_Gconfig['LANGUAGES'][0];
-    if (LG != LG_DEF)
+    if (LG() != LG_DEF)
         return LG_DEF;
     else if (count($_Gconfig['LANGUAGES']) > 1)
         return $_Gconfig['LANGUAGES'][1];
     else
-        return LG;
+        return LG();
 }
 
 $GLOBALS['otherLg'] = getOtherLg();
@@ -315,7 +327,7 @@ function getLgValue($k, $tab, $addspan = '')
 
     global $_Gconfig;
 
-    $curLg = LG;
+    $curLg = LG();
 
     if (!empty($GLOBALS['forceLG'])) {
         $curLg = $GLOBALS['forceLG'];
@@ -472,9 +484,9 @@ function getGabaritByClass($classe)
 function checkLgUrl($k, $v)
 {
 
-    $k = $k . '_' . LG;
+    $k = $k . '_' . LG();
 
-    if (isUrlField($k) || $k == 'link_' . LG) {
+    if (isUrlField($k) || $k == 'link_' . LG()) {
         return getLgUrl($v);
     } else {
 
@@ -756,7 +768,7 @@ function ocms_strftime($format, $timestamp = 0)
         $timestamp = time();
 
 
-    $tab = $_locale[ LG ] ? $_locale[ LG ] : $_locale[ LG_DEF ];
+    $tab = $_locale[ LG() ] ? $_locale[ LG() ] : $_locale[ LG_DEF ];
 
     $moisnum = ((int)date('n', $timestamp)) - 1;
     $weekday = ((int)date('w', $timestamp));

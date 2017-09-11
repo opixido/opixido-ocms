@@ -336,8 +336,8 @@ if (!function_exists("ta")) {
 
         $trads = $admin_trads;
 
-        if (isset($trads[$nom][LG])) {
-            return $trads[$nom][LG];
+        if (isset($trads[$nom][LG()])) {
+            return $trads[$nom][LG()];
         } else if (isset($trads[$nom][LG_DEF])) {
             return $trads[$nom][LG_DEF];
         } else if (!strstr($nom, ".")) {
@@ -515,7 +515,7 @@ function importSqlFile($FILENAME)
 
                 if (preg_match('/' . preg_quote($delimiter) . '$/', trim($dumpline)) && !$inparents) {
 
-                    $QUERIESTODO[] = str_replace('[LG]', (defined('LG_TEMP') ? LG_TEMP : LG_DEF), $query);
+                    $QUERIESTODO[] = str_replace('[LG()]', (defined('LG_TEMP') ? LG_TEMP : LG_DEF), $query);
 
                     /*
                       if (!DoSql(trim($query)))
@@ -658,7 +658,7 @@ function getListingRubrique()
     $tab = getArboOrdered();
 
     foreach ($tab as $k => $v) {
-        $tab[$k]['rubrique_titre_' . LG] = str_repeat('&nbsp;&nbsp;&nbsp;', $v['level'] - 1) . ' ' . $v['rubrique_titre_' . LG];
+        $tab[$k]['rubrique_titre_' . LG()] = str_repeat('&nbsp;&nbsp;&nbsp;', $v['level'] - 1) . ' ' . $v['rubrique_titre_' . LG()];
     }
 
     return $tab;
@@ -1055,18 +1055,25 @@ function getPicto($nom, $taille = "32x32")
     }
     $p = '';
     if (!empty($tabForms[$nom]['picto'])) {
-        $p = $tabForms[$nom]['picto'];
+        $p =  $tabForms[$nom]['picto'];
+    } else if (tradExists('cp_picto_'.$nom)) {
+        $p = t('cp_picto_'.$nom);
     } else if (tradExists($nom)) {
         $p = t($nom);
     }
-    /*
-      $pos = strpos($p, 'http');
-      if ($pos !== false) {
-      return $p;
-      } */
+    
+    $folder = ADMIN_PICTOS_FOLDER;
     $pos = strpos($p, ADMIN_PICTOS_FOLDER);
     if ($pos !== false) {
         $p = substr($p, $pos + strlen(ADMIN_PICTOS_FOLDER) + 5);
+    } else if( $pos = strpos($p, ADMIN_PICTOS_FOLDER2) !== false) {
+         $t = explode('/',substr($p, $pos + strlen(ADMIN_PICTOS_FOLDER2)-1))[0];
+         
+         $p = substr($p, $pos + strlen(ADMIN_PICTOS_FOLDER2) + 2);
+         $folder = ADMIN_PICTOS_FOLDER2;
+         $taille = explode('x',$taille);
+         $taille = $taille[0];
+         $p = str_replace('-'.$t.'.png','-'.$taille.'.png',$p);
     } else {
         $p = $nom;
     }
@@ -1075,7 +1082,7 @@ function getPicto($nom, $taille = "32x32")
         $p = 'mimetypes/text-x-generic-template.png';
     }
 
-    $a = path_concat(ADMIN_PICTOS_FOLDER, $taille, $p);
+    $a = path_concat($folder, $taille, $p);
 
     return $a;
 }
@@ -1086,7 +1093,7 @@ function cleanFiles()
     global $uploadRep, $specialUpload;
 
 
-    if ($_POST['todelfi']) {
+    if (isset($_POST['todelfi'])) {
         foreach ($_POST['todelfi'] as $v) {
             unlink($v);
         }
@@ -1099,11 +1106,12 @@ function cleanFiles()
 			<input type="hidden" name="globalAction" value="cleanFiles" />';
     $useless = 0;
     $totf = 0;
+    $delGet = akev($_REQUEST,'del');
     if ($tables = opendir('../' . $uploadRep)) {
 
         while (false !== ($table = readdir($tables))) {
 
-            if ($table != '.' && $table != '..' && is_dir('../' . $uploadRep . '/' . $table) && !$specialUpload[$table] && in_array($table, $tbs)) {
+            if ($table != '.' && $table != '..' && is_dir('../' . $uploadRep . '/' . $table) && empty($specialUpload[$table]) && in_array($table, $tbs)) {
 
                 $handle = opendir('../' . $uploadRep . '/' . $table);
                 while (false !== ($file = readdir($handle))) {
@@ -1129,7 +1137,7 @@ function cleanFiles()
                                             $f = filesize($fi);
 
                                             $m = md5($fi);
-                                            if ($m == $_REQUEST['del']) {
+                                            if ($m == $delGet) {
                                                 unlink($fi);
                                             } else {
                                                 $totf += $f;

@@ -293,8 +293,8 @@ class genUrlV3 {
                 define("LG", $_Gconfig['LANGUAGES'][0]);
                 define('TRADLG', false);
             }
-            $this->lg = LG;
-            mylocale(LG);
+            $this->lg = LG();
+            mylocale(LG());
         } else {
             $templg = array_shift($dossiers);
 
@@ -690,7 +690,7 @@ class genUrlV3 {
         return getOtherLg();
         global $_Gconfig;
 
-        if (LG != LG_DEF)
+        if (LG() != LG_DEF)
             return LG_DEF;
         else
             return $_Gconfig['LANGUAGES'][1];
@@ -801,7 +801,7 @@ class genUrlV3 {
          * Si on est dans un mini site en sous domaine
          */
         if ($this->curLinkRoot && false) {
-            //$url = path_concat('http://',$this->curLinkRoot['url'.LG].$_Gconfig['minisite_sous_domaine'],$url);
+            //$url = path_concat('http://',$this->curLinkRoot['url'.LG()].$_Gconfig['minisite_sous_domaine'],$url);
 
             $url = path_concat('http://', $GLOBALS['tabUrl'][$rubId]['webroot'], $url);
         } else {
@@ -985,8 +985,8 @@ class genUrlV3 {
          * donc : /fr-it/
          */
         if (!in_array($lg, $_Gconfig['LANGUAGES'])) {
-            $lg = LG . '-' . $lg;
-            $reallg = LG;
+            $lg = LG() . '-' . $lg;
+            $reallg = LG();
         }
 
         $url = '';
@@ -1107,7 +1107,7 @@ class genUrlV3 {
                 if ($subs) {
                     foreach ($subs as $v) {
                         $k = getUrlFromId($rubId) . '_' . $v['VALUE'];
-                        $u = getUrlFromId($rubId, LG, array($v['PARAM'] => $v['VALUE']));
+                        $u = getUrlFromId($rubId, LG(), array($v['PARAM'] => $v['VALUE']));
                         $tabTemp[$k] = array(
                             'id' => $rubId,
                             'fkRub' => $rubId,
@@ -1207,7 +1207,7 @@ class genUrlV3 {
                         $subs = getGabaritSubRubs($sRub, $sRub['fk_gabarit_id']);
                         if ($subs) {
                             foreach ($subs as $v) {
-                                $u = getUrlFromId($rid, LG, array($v['PARAM'] => $v['VALUE']));
+                                $u = getUrlFromId($rid, LG(), array($v['PARAM'] => $v['VALUE']));
                                 $tabTemp[$mu]['sub'][getUrlFromId($rid) . '_' . $v['VALUE']] = array(
                                     'id' => $rid,
                                     'fkRub' => $rid,

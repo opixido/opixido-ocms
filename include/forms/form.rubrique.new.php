@@ -82,7 +82,7 @@ if ($_REQUEST['curId'] == "new") {
                     . '         <div class="genform_label"><label for="genform__add_sub_id">' . ta('ajouter_' . $_REQUEST['relOne']) . '</label></div>';
                 echo '<select class="select" id="genform__add_sub_id" name="genform__add_sub_id">';
                 foreach ($gabarit as $row) {
-                    echo '<option value="' . $row['rubrique_id'] . '">' . $row[ 'rubrique_titre_' . LG ] . '</option>';
+                    echo '<option value="' . $row['rubrique_id'] . '">' . $row[ 'rubrique_titre_' . LG() ] . '</option>';
                 }
                 echo '</select> ';
                 echo '<button class="btn primary"><i class="icon-ok" ></i> ' . t('continuer') . '</button></div>'

@@ -1,6 +1,6 @@
 <?php
 /**
-	@version   v5.21.0-dev  ??-???-2016
+	@version   v5.20.9  21-Dec-2016
 	@copyright (c) 2000-2013 John Lim (jlim#natsoft.com). All rights reserved.
 	@copyright (c) 2014      Damien Regad, Mark Newnham and the ADOdb community
 
@@ -87,6 +87,10 @@ class ADODB_pdo extends ADOConnection {
 	var $stmt = false;
 	var $_driver;
 
+	function __construct()
+	{
+	}
+
 	function _UpdatePDO()
 	{
 		$d = $this->_driver;
@@ -98,7 +102,6 @@ class ADODB_pdo extends ADOConnection {
 		$this->random = $d->random;
 		$this->concat_operator = $d->concat_operator;
 		$this->nameQuote = $d->nameQuote;
-		$this->arrayClass = $d->arrayClass;
 
 		$this->hasGenID = $d->hasGenID;
 		$this->_genIDSQL = $d->_genIDSQL;
@@ -172,16 +175,6 @@ class ADODB_pdo extends ADOConnection {
 			//$this->_connectionID->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_SILENT );
 			$this->_connectionID->setAttribute(PDO::ATTR_CASE,$m);
 
-			// Now merge in any provided attributes for PDO
-			foreach ($this->connectionParameters as $options) {
-				foreach($options as $k=>$v) {
-					if ($this->debug) {
-						ADOconnection::outp('Setting attribute: ' . $k . ' to ' . $v);
-					}
-					$this->_connectionID->setAttribute($k,$v);
-				}
-			}
-			
 			$class = 'ADODB_pdo_'.$this->dsnType;
 			//$this->_connectionID->setAttribute(PDO::ATTR_AUTOCOMMIT,true);
 			switch($this->dsnType) {
@@ -476,9 +469,7 @@ class ADODB_pdo extends ADOConnection {
 		#adodb_backtrace();
 		#var_dump($this->_bindInputArray);
 		if ($stmt) {
-			if (isset($this->_driver)) {
-				$this->_driver->debug = $this->debug;
-			}
+			$this->_driver->debug = $this->debug;
 			if ($inputarr) {
 				$ok = $stmt->execute($inputarr);
 			}
@@ -810,5 +801,3 @@ class ADORecordSet_pdo extends ADORecordSet {
 	}
 
 }
-
-class ADORecordSet_array_pdo extends ADORecordSet_array {}

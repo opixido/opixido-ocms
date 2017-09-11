@@ -63,7 +63,7 @@
                     <a  href="<?= $url ?>"   >
                         <?php
 
-                        $src = getPicto($menu, '16x16');
+                        $src = getPicto($menu, '24x24');
                         ?>
                         <img src="<?= $src ?>" alt=""  />
                         <?= t('cp_txt_' . $menu); ?></a>

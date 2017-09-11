@@ -330,7 +330,7 @@ class genAdmin
             p('<div id="tools" >');
 
             if ($this->gs->can('add', $this->table)) {
-                p('<a class="btn btn-primary btn-large" href="?curTable=' . $this->table . '&amp;curId=new&relOne=' . akev($_REQUEST,'relOne') . '"><img src="' . ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/actions/document-new.png" alt=""  /> ' . t('ajouter_elem') . '</a></div>');
+                p('<a class="btn btn-primary btn-large" href="?curTable=' . $this->table . '&amp;curId=new&relOne=' . akev($_REQUEST,'relOne') . '"><img src="' . ADMIN_PICTOS_FOLDER2 . '24/Very_Basic/plus-24.png" alt=""  /> ' . t('ajouter_elem') . '</a></div>');
             }
 
             if (ake($_Gconfig['tableActions'], $this->table)) {
@@ -811,9 +811,9 @@ class genAdmin
                            <div class="input-append">
                             <a class="btn  btn-mini" title=' . alt(t('add_another') . ' ' . t($_REQUEST['curTable'])) . '
                                     href="?curTable=' . $this->table . '&curId=new&relOne=' . akev($_REQUEST, 'relOne') . '">
-                                    <img src="' . ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_FORM_SIZE . '/actions/document-new.png"
+                                    <img src="' . ADMIN_PICTOS_FOLDER2 . '24/Very_Basic/plus-24.png"
                                             alt=' . alt(t('add_another')) . '  /></a>
-                            <input type="text" class="span2" name="searchTxt" placeholder=' . alt(t('search')) . ' title=' . alt(t('search') . ' ' . t($_REQUEST['curTable'])) . ' /><button class="btn"><img src="' . ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/actions/system-search.png" alt=' . alt(t('search')) . ' /></button>
+                            <input type="text" class="span2" name="searchTxt" placeholder=' . alt(t('search')) . ' title=' . alt(t('search') . ' ' . t($_REQUEST['curTable'])) . ' /><button class="btn"><img src="' . ADMIN_PICTOS_FOLDER2 . '16/Very_Basic/search-16.png" alt=' . alt(t('search')) . ' /></button>
                         </div>
                         </div>
                         </div>
@@ -1402,7 +1402,7 @@ class smallAdmin
                     if ($fakeRubs && $subRubs) {
                         p('<ul class="fakeSubs">');
                         foreach ($subRubs as $v) {
-                            p('<li ><a onclick="return doblank(this)" href="' . getUrlFromId($real_rub, LG, array($v['PARAM'] => $v['VALUE'])) . '"  >' . $v['NAME'] . '</a></li>');
+                            p('<li ><a onclick="return doblank(this)" href="' . getUrlFromId($real_rub, LG(), array($v['PARAM'] => $v['VALUE'])) . '"  >' . $v['NAME'] . '</a></li>');
                         }
                         p('</ul>');
                     } else {

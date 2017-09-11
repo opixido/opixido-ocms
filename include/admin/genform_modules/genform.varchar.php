@@ -32,6 +32,7 @@ if (!$this->editMode) {
 
 
         $this->genHelpImage('help_texte', $name);
+        $style = '';
 
         $fl = $this->tab_field[$name]->max_length;
 
@@ -53,6 +54,7 @@ if (!$this->editMode) {
          * Champ de saisie Couleur
          */
         $this->addBuffer(' &nbsp;<input
+                                    type="color"
 									size="6" 
 									onchange="gid(\'colorField_' . $name . '\').style.backgroundColor=\'#\'+this.value;" 
 									id="genform_' . $name . '" ' . $jsColor . ' ' . $attributs . '  
@@ -60,14 +62,6 @@ if (!$this->editMode) {
 									class="genform_varchar" 
 									value=' . alt($this->tab_default_field[$name]) . ' />');
 
-        /**
-         * Lien pour ouverture Popup
-         */
-        $this->addBuffer(' <a class="btn_spectre"
-								href="#" 
-								onclick="popup(\'./colorPicker/colorSelector.html?id=' . $name . '\',360,240);return false;" >
-    					 	<img src="./colorPicker/spectre.jpg" alt="" style="vertical-align:middle"  />
-    					 </a>');
     } else
     /**
      * Varchar de type URL

@@ -122,7 +122,7 @@ function doTranslations($lg, $action = 'add')
                 $chpnu = fieldWithoutLg($chp->name);
                 $newName = $chpnu . '_' . $lg;
 
-                if ($chps[$newName]) {
+                if (!empty($chps[$newName])) {
                     if ($action == 'del') {
 
                         print('<br/>DROPPING : ' . $table . '.' . $newName);

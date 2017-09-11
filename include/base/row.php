@@ -98,8 +98,8 @@ class row
         if (isUploadField($field)) {
 
             if (isBaseLgField($field, $this->table, $this->tabField)) {
-                $f = $field . '_' . LG;
-                if (empty($this->row[ $field . '_' . LG ])) {
+                $f = $field . '_' . LG();
+                if (empty($this->row[ $field . '_' . LG() ])) {
                     $olg = getOtherLg();
                     if (!empty($this->row[ $field . '_' . $olg ])) {
                         $f = $field . '_' . $olg;
@@ -109,9 +109,9 @@ class row
                 $f = $field;
             }
             $table = $this->tabField[ $f ]->table;
-            $this->$field = new genFile($table, $f, $this->row);
+            $this->$field = new genFile($table, $f, $this->id, $this->row);
         } /**
-         * LG Field
+         * LG() Field
          */ else if (isBaseLgField($field, $this->table, $this->tabField)) {
             $this->$field = getLgValue($field, $this->row);
         } /**
@@ -156,6 +156,8 @@ class row
 						FROM ' . $fk_table . ' AS T, ' . $field . ' AS R
 						WHERE T.' . getPrimaryKey($fk_table) . ' = R.' . $pk2 . '
 						AND R.' . $pk1 . ' = ' . sql($this->id) . '';
+						
+				$sql .= sqlOnlyRealAndOnline($fk_table,'T');
 
                 if (!empty($orderFields[ $field ])) {
                     $sql .= ' ORDER BY R.' . $orderFields[ $field ][0];
@@ -220,4 +222,18 @@ class row
         return $this->get($name);
     }
 
+
+    /**
+     *
+     * @global type $_Gconfig
+     * @return ADOdb_RECORDSET
+     */
+    public function getDrafts() {
+        global $_Gconfig;
+        $sql = 'SELECT * FROM '.$this->table.' WHERE '
+                . '     ' . MULTIVERSION_FIELD . ' = ' . sql($this->row[MULTIVERSION_FIELD]) . ' AND '
+                . ' ' . MULTIVERSION_STATE . ' = ' . sql(MV_STATE_DRAFT) . ' ORDER BY ' . $_Gconfig['field_date_maj'] . ' DESC';
+
+        return doSql($sql);
+    }
 }

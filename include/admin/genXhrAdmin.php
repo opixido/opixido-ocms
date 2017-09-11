@@ -258,7 +258,7 @@ class genXhrAdmin
         foreach ($menus as $menu) {
 
             $arbo = $site->g_url->recursRub($menu['rubrique_id']);
-            $this->html .= '<li>' . $menu[ 'rubrique_titre_' . LG ];
+            $this->html .= '<li>' . $menu[ 'rubrique_titre_' . LG() ];
             $this->recursLinks($arbo);
 
             $this->html .= '</li>';
@@ -317,6 +317,7 @@ class genXhrAdmin
 
         $_REQUEST['nom'] = str_replace('ET_', '', $_REQUEST['nom']);
         $s = str_replace(str_replace(ADMIN_URL, "", ADMIN_PICTOS_FOLDER), '[ADMIN_PICTOS_FOLDER]', $_REQUEST['valeur']);
+        $s = str_replace(str_replace(ADMIN_URL, "", ADMIN_PICTOS_FOLDER2), '[ADMIN_PICTOS_FOLDER2]', $s);
         DoSql('REPLACE INTO s_admin_trad (admin_trad_id,admin_trad_' . LG_DEF . ') VALUES ("' . $_REQUEST['nom'] . '",' . sql($s) . ')');
 
         print_r($_REQUEST);
@@ -709,140 +710,7 @@ class genXhrAdmin
         }
     }
 
-    function uploadRP()
-    {
-
-
-        header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
-        header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-        header("Cache-Control: no-store, no-cache, must-revalidate");
-        header("Cache-Control: post-check=0, pre-check=0", false);
-        header("Pragma: no-cache");
-
-        @set_time_limit(5 * 60);
-
-        /**
-         * Différents Chunks du fichier
-         */
-        $chunk = isset($_REQUEST["chunk"]) ? $_REQUEST["chunk"] : 0;
-        $chunks = isset($_REQUEST["chunks"]) ? $_REQUEST["chunks"] : 0;
-
-        /**
-         * Nom réel à l'upload
-         */
-        $fileName = isset($_REQUEST["name"]) ? $_REQUEST["name"] : '';
-
-        if (isset($_SERVER["HTTP_CONTENT_TYPE"]))
-            $contentType = $_SERVER["HTTP_CONTENT_TYPE"];
-
-        if (isset($_SERVER["CONTENT_TYPE"]))
-            $contentType = $_SERVER["CONTENT_TYPE"];
-
-        $tempName = md5($_SESSION['gs_admin_id'] . '_' . $_REQUEST['curTable'] . '_' . $_REQUEST['curId'] . '_' . $_REQUEST['champ']);
-
-
-        global $gb_obj;
-        $targetDir = path_concat($gb_obj->include_path, GetParam('cache_path'));
-        $tempFullPath = path_concat($targetDir, $tempName);
-
-
-        // Handle non multipart uploads older WebKit versions didn't support multipart in HTML5
-        if (strpos($contentType, "multipart") !== false) {
-            if (isset($_FILES['file']['tmp_name']) && is_uploaded_file($_FILES['file']['tmp_name'])) {
-                // Open temp file
-
-                $out = fopen($tempFullPath, $chunk == 0 ? "wb" : "ab");
-                if ($out) {
-                    // Read binary input stream and append it to temp file
-                    $in = fopen($_FILES['file']['tmp_name'], "rb");
-
-                    if ($in) {
-                        while ($buff = fread($in, 4096))
-                            fwrite($out, $buff);
-                    } else
-                        die('{"jsonrpc" : "2.0", "error" : {"code": 101, "message": "Failed to open input stream."}, "id" : "id"}');
-                    fclose($in);
-                    fclose($out);
-                    @unlink($_FILES['file']['tmp_name']);
-                } else
-                    die('{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Failed to open output stream."}, "id" : "id"}');
-            } else
-                die('{"jsonrpc" : "2.0", "error" : {"code": 103, "message": "Failed to move uploaded file."}, "id" : "id"}');
-        } else {
-            // Open temp file
-            $out = fopen($tempFullPath, $chunk == 0 ? "wb" : "ab");
-            if ($out) {
-                // Read binary input stream and append it to temp file
-                $in = fopen("php://input", "rb");
-
-                if ($in) {
-                    while ($buff = fread($in, 4096))
-                        fwrite($out, $buff);
-                } else
-                    die('{"jsonrpc" : "2.0", "error" : {"code": 101, "message": "Failed to open input stream."}, "id" : "id"}');
-
-                fclose($in);
-                fclose($out);
-            } else
-                die('{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Failed to open output stream."}, "id" : "id"}');
-        }
-
-
-        if ($chunks - 1 == $chunk || $chunks == 0) {
-
-
-            $x = simplexml_load_file($tempFullPath);
-
-            echo '<table class="genform_table">';
-            foreach ($x->image as $image) {
-
-
-                if (empty($image['name'])) {
-                    continue;
-                }
-                echo '<tr><td>' . $image['name'] . '</td>';
-                /**
-                 * On cherche le timecode correspondant
-                 */
-                $tc = $x->xpath('//crossfade[@target=' . $image['handle'] . ']');
-                if (empty($tc[0]['start'])) {
-                    echo '<td>Timecode (crossfade) correspondant manquant</td></tr>';
-                    continue;
-                }
-                $tc = $tc[0]['start'];
-
-                /**
-                 * On supprime les milisecondes
-                 */
-                $tc = explode('.', $tc);
-                $tc = $tc[0];
-
-                /**
-                 * On récupère le tout en tableau
-                 */
-                $tcs = explode(':', $tc);
-                $secs = $tcs[1] * 3600 + $tcs[2] * 60 + $tcs[3];
-
-                //print_r($tc);
-                $n = explode('/', $image['name']);
-                $n = $n[ count($n) - 1 ];
-                $sql = 'SELECT * FROM c_diaporama WHERE fk_programme_id = ' . sql($_REQUEST['curId']) . ' AND diaporama_img LIKE "%' . $n . '"';
-                $r = getSingle($sql);
-                if (!$r) {
-                    echo '<td>Aucun fichier image dans le diaporama ne correspond</td></tr>';
-                    continue;
-                }
-                DoSql('UPDATE c_diaporama SET diaporama_repere_temporel = ' . sql($secs) . ' WHERE diaporama_id = ' . sql($r['diaporama_id']));
-                echo '<td>' . $tc . '</td><td>' . $secs . 'sec</td><td><b>OK</b></td></tr>';
-            }
-            echo '</table>';
-
-            unlink($tempFullPath);
-            die();
-        }
-        // Return JSON-RPC response
-        die('{"jsonrpc" : "2.0", "result" : null, "id" : "id"}');
-    }
+   
 
     function reloadChamp()
     {

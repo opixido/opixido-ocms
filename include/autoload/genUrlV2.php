@@ -144,6 +144,7 @@ class genUrlV2
                 $this->lg = $lg = LG_DEF;
                 if (!defined('LG')) {
                     define('LG', $lg);
+                    $GLOBALS['ocmsLG'] = LG;
                 }
             }
         }
@@ -179,10 +180,11 @@ class genUrlV2
 
             if (!defined('LG')) {
                 define("LG", $_Gconfig['LANGUAGES'][0]);
+                $GLOBALS['ocmsLG'] = LG;
                 define('TRADLG', false);
             }
-            $this->lg = LG;
-            mylocale(LG);
+            $this->lg = LG();
+            mylocale(LG());
         } else {
             $templg = array_shift($dossiers);
 
@@ -210,6 +212,7 @@ class genUrlV2
                 if (!defined('LG')) {
                     define("LG", $this->lg);
                     define('TRADLG', false);
+                    $GLOBALS['ocmsLG'] = LG;
                 }
                 mylocale($this->lg);
             } else {
@@ -217,6 +220,7 @@ class genUrlV2
                 if (!defined('LG')) {
                     define("LG", $this->lg);
                     define('TRADLG', false);
+                    $GLOBALS['ocmsLG'] = LG;
                 }
                 mylocale($this->lg);
             }
@@ -420,7 +424,7 @@ class genUrlV2
             /**
              * Sélection des menus de notre siteroot
              */
-            $sql = 'SELECT rubrique_url_' . LG . ',  rubrique_id FROM s_rubrique'
+            $sql = 'SELECT rubrique_url_' . LG() . ',  rubrique_id FROM s_rubrique'
                 . ' WHERE '
                 . 'fk_rubrique_id = ' . $this->rootHomeId . ' '
                 . ' AND rubrique_type = ' . sql(RTYPE_MENUROOT) . ''
@@ -772,7 +776,7 @@ class genUrlV2
          * Si on est dans un mini site en sous domaine
          */
         if ($this->curLinkRoot && false) {
-            //$url = path_concat('http://',$this->curLinkRoot['url'.LG].$_Gconfig['minisite_sous_domaine'],$url);
+            //$url = path_concat('http://',$this->curLinkRoot['url'.LG()].$_Gconfig['minisite_sous_domaine'],$url);
             if (!empty($this->curLinkRoot['webroot'])) {
                 $url = path_concat('//', $this->curLinkRoot['webroot'], $url);
             } else {
@@ -903,8 +907,8 @@ class genUrlV2
          * donc : /fr-it/
          */
         if (!in_array($lg, $_Gconfig['LANGUAGES'])) {
-            $lg = LG . '-' . $lg;
-            $reallg = LG;
+            $lg = LG() . '-' . $lg;
+            $reallg = LG();
         }
 
         $url = '';
@@ -1029,7 +1033,7 @@ class genUrlV2
                 if ($subs) {
                     foreach ($subs as $v) {
                         $k = getUrlFromId($rubId) . '_' . $v['VALUE'];
-                        $u = getUrlFromId($rubId, LG, array($v['PARAM'] => $v['VALUE']));
+                        $u = getUrlFromId($rubId, LG(), array($v['PARAM'] => $v['VALUE']));
                         $tabTemp[$k] = array(
                             'id' => $rubId,
                             'fkRub' => $rubId,
@@ -1127,7 +1131,7 @@ class genUrlV2
                         $subs = getGabaritSubRubs($sRub, $sRub['fk_gabarit_id']);
                         if ($subs) {
                             foreach ($subs as $v) {
-                                $u = getUrlFromId($rid, LG, array($v['PARAM'] => $v['VALUE']));
+                                $u = getUrlFromId($rid, LG(), array($v['PARAM'] => $v['VALUE']));
                                 $tabTemp[$mu]['sub'][getUrlFromId($rid) . '_' . $v['VALUE']] = array(
                                     'id' => $rid,
                                     'fkRub' => $rid,

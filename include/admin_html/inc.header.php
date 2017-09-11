@@ -3,6 +3,8 @@
     <head>
         <title>Administration :: <?php echo ta('base_title') ?> :: </title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        
+
 
         <?php
         $css = array(
@@ -91,33 +93,19 @@
                             <?php if ($GLOBALS['gs_obj']->isLogged()) { ?>
 
 
-                            <div class="btn-group pull-right">
-                                <a class="btn dropdown-toggle" href="#" data-toggle="dropdown">
-                                    <i class="icon-user"></i>
-                                    <?= $GLOBALS['gs_obj']->adminnom ?>
-                                    <span class="caret"></span>
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <span class="badge" style="margin:10px;display: block"><?= ta('derniere_connexion') ?><br/><?= niceDateTime(($_SESSION['last_cx'])) ?></span>
-                                    </li>
-                                    <li class="divider"></li>
-                                    <li style="text-align:right">
-                                        <a href="index.php?logout=1"><i class="icon-eject"></i> <?= t('logout') ?></a>
-                                    </li>
-                                </ul>
-                            </div>
+                            
 
 
-                            <div class="nav-collapse pull-right">
-                                <ul class="nav" >
+                            <div class="btn-toolbar pull-right">
+                                
                                     <?php
                                     $tables = getTables();
                                     $nb = 1;
                                     $menus = array_merge($_Gconfig['bigMenus'], $_Gconfig['adminMenus']);
                                     foreach ($menus as $k => $menus) {
                                         $men = current($menus);
-                                        $t = '<li class="dropdown"><a href="#" id="menu_' . $k . '" class="dropdown-toggle" data-toggle="dropdown"><img src="' . getPicto($men, '16x16') . '" alt=""/> ' . ta($k) . '</a><ul class="dropdown-menu" id="content_' . $k . '" class="" >';
+                                        $t = '<div class="btn-group"><a href="#" id="menu_' . $k . '"  class="btn dropdown-toggle" href="#" data-toggle="dropdown"><span><img src="' . getPicto($men, '16x16') . '" alt=' . alt(ta($k)) . '/></span></a>';
+                                        $t .= '<ul class="dropdown-menu" id="content_' . $k . '" class="" >';
                                         $h = '';
                                         foreach ($menus as $menu) {
                                             if ($GLOBALS['gs_obj']->can('edit', $menu)) {
@@ -129,10 +117,28 @@
                                         if ($h) {
                                             $nb++;
                                             echo $t . $h . '</ul>';
+                                            echo '</div>';
                                         }
+                                        
                                     }
                                     ?>
-                                </ul>
+                                
+                                <div class="btn-group last">
+                                    <a class="btn dropdown-toggle" href="#" data-toggle="dropdown">
+                                        <i class="icon-user"></i>
+                                        <?= $GLOBALS['gs_obj']->adminnom ?>
+                                        <span class="caret"></span>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <span class="badge" style="margin:10px;display: block"><?= ta('derniere_connexion') ?><br/><?= niceDateTime(($_SESSION['last_cx'])) ?></span>
+                                        </li>
+                                        <li class="divider"></li>
+                                        <li style="text-align:right">
+                                            <a href="index.php?logout=1"><i class="icon-eject"></i> <?= t('logout') ?></a>
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
 
 

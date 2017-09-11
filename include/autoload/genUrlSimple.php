@@ -255,6 +255,8 @@ class genUrlSimple {
             }
 
             define("LG", $this->lg);
+            $GLOBALS['ocmsLG'] = LG;
+
             mylocale($this->lg);
 
             $this->getTabUrl();
@@ -604,8 +606,8 @@ class genUrlSimple {
          * donc : /fr-it/
          */
         if (!in_array($lg, $_Gconfig['LANGUAGES'])) {
-            $lg = LG . '-' . $lg;
-            $reallg = LG;
+            $lg = LG() . '-' . $lg;
+            $reallg = LG();
         }
 
         $url = '';

@@ -164,7 +164,7 @@ class GenForm
         // * initialisation de 'form_method' *
         $this->form_method = 'post';
         // * initialisation de 'language' *
-        $this->language = LG;
+        $this->language = LG();
 
         global $tabForms;
         $this->pages =akev($tabForms[$this->table_name],"pages");
@@ -731,8 +731,8 @@ class GenForm
             /**
              * L'a t'on dans la langue courante ?
              */
-            if ($this->tab_default_field[$tab_name . '_' . LG]) {
-                $tab_name = $tab_name . '_' . LG;
+            if ($this->tab_default_field[$tab_name . '_' . LG()]) {
+                $tab_name = $tab_name . '_' . LG();
                 $found = true;
                 /**
                  * Dans la langue par défaut ?
@@ -783,7 +783,7 @@ class GenForm
 
         if (isset($_Gconfig['fullArbo'][$this->table_name]) && ake($_Gconfig['fullArbo'][$this->table_name], $name)) {
 
-
+            
             include_once($gb_obj->getIncludePath('genform.fullarbo.php', 'admin/genform_modules'));
 
             $vals = $_Gconfig['fullArbo'][$this->table_name][$name];
@@ -1244,7 +1244,7 @@ class GenForm
 
             if ($this->gs->can('edit', $this->table, $this->tab_default_field)) {
                 p(' <button class="btn btn-primary" id="genform_ok" name="genform_ok"  >');
-                p('<img src="' . ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_FORM_SIZE . '/actions/document-save.png"  alt="" />');
+                p('<img src="' . getPicto('src_save',24).'"  alt="" />');
                 p('<span>' . t('save') . '</span></button><br/>');
             }
 

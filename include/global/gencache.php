@@ -45,7 +45,7 @@ class genCache
         /**
          * Cache unique filename
          */
-        $this->cache_id = LG . str_replace('/', '.', BU) . $_SERVER['SERVER_NAME'] . '_' . $cache_id;
+        $this->cache_id = LG() . str_replace('/', '.', BU) . $_SERVER['SERVER_NAME'] . '_' . $cache_id;
 
         /**
          * Name of cache declared

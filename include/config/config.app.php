@@ -16,7 +16,7 @@ if (!empty($_GET['nocache'])) {
 } else if (IN_ADMIN) {
     define('CACHE_IS_ON', true);
 } else {
-    define('CACHE_IS_ON', true);
+    define('CACHE_IS_ON', false);
 }
 
 /**
@@ -49,10 +49,10 @@ $_Gconfig['titre'] = '';
 /**
  * Liste des langues par defaut du site
  */
-$_Gconfig['LANGUAGES'] = array('fr');
+$_Gconfig['LANGUAGES'] = array('fr','en','es');
 $_Gconfig['ADMIN_LANGUAGES'] = array('fr');
 
-$_Gconfig['onlyOneLgForever'] = true;
+$_Gconfig['onlyOneLgForever'] = false;
 
 define('ADMIN_LG_DEF', 'fr');
 
@@ -349,12 +349,12 @@ $_Gconfig['gsNoFollowRel'] = array();
 $_Gconfig['mapsFields'] = array();
 
 
-$tabForms["s_rubrique"]["picto"] = ADMIN_PICTOS_FOLDER . ADMIN_PICTOS_BIG_SIZE . "/apps/system-file-manager.png";
-$tabForms["s_admin"]["picto"] = ADMIN_PICTOS_FOLDER . ADMIN_PICTOS_BIG_SIZE . "/apps/preferences-desktop-theme.png";
-$tabForms["s_trad"]["picto"] = ADMIN_PICTOS_FOLDER . ADMIN_PICTOS_BIG_SIZE . "/mimetypes/font-x-generic.png";
-$tabForms["s_plugin"]["picto"] = ADMIN_PICTOS_FOLDER . ADMIN_PICTOS_BIG_SIZE . "/mimetypes/package-x-generic.png";
-$tabForms["s_param"]["picto"] = ADMIN_PICTOS_FOLDER . ADMIN_PICTOS_BIG_SIZE . "/categories/preferences-system.png";
-$tabForms["s_admin_trad"]["picto"] = ADMIN_PICTOS_FOLDER . ADMIN_PICTOS_BIG_SIZE . "/apps/preferences-desktop-font.png";
+$tabForms["s_rubrique"]["picto"] = ADMIN_PICTOS_FOLDER2 ."48/Editing/text_box-48.png";
+$tabForms["s_admin"]["picto"] = ADMIN_PICTOS_FOLDER2 . "48/Users/user_menu_female-48.png";
+$tabForms["s_trad"]["picto"] = ADMIN_PICTOS_FOLDER2 . "48/Editing/text_box-48.png";
+$tabForms["s_plugin"]["picto"] = ADMIN_PICTOS_FOLDER2 . "24/Programming/plugin-24.png";
+$tabForms["s_param"]["picto"] = ADMIN_PICTOS_FOLDER2 . "48/Very_Basic/settings-48.png";
+$tabForms["s_admin_trad"]["picto"] = ADMIN_PICTOS_FOLDER2 . "48/Programming/edit_property-48.png";
 
 
 foreach ($_Gconfig['LANGUAGES'] as $lg) {

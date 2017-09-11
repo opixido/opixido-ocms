@@ -492,7 +492,7 @@ function nicedate($d, $show_year = true, $separator = '/')
          */
     }
     $t = explode("-", $d);
-    if (LG == 'uk' || LG == 'us' || LG == 'en') {
+    if (LG() == 'uk' || LG() == 'us' || LG() == 'en') {
         if ($show_year)
             return $t[1] . $separator . $t[2] . $separator . $t[0];
         else
@@ -526,7 +526,7 @@ function nicedateyear2char($d)
      */
     $t = explode("-", $d[0]);
 
-    if (LG == 'uk' || LG == 'us' || LG == 'en')
+    if (LG() == 'uk' || LG() == 'us' || LG() == 'en')
         return $t[1] . '.' . $t[2] . '.' . substr($t[0], 2, 2);
     else
         return $t[2] . '.' . $t[1] . '.' . substr($t[0], 2, 2);
@@ -827,13 +827,13 @@ function debugEvent($str)
         global $h_sqls;
         $ar = debug_backtrace();
         if ((!empty($ar[5]['file'])))
-            $profileSTR .= '<hr/>' . (basename($ar[5]['file']) . ' : ' . $ar[5]['function'] . '');
+            $profileSTR .= '<hr/>' . (basename($ar[5]['file']) . ' : ' . $ar[5]['function'] . ' : ' . $ar[5]['line']);
         if ((!empty($ar[4]['file'])))
-            $profileSTR .= '<br/>' . (basename($ar[4]['file']) . ' : ' . $ar[4]['function'] . '');
+            $profileSTR .= '<br/>' . (basename($ar[4]['file']) . ' : ' . $ar[4]['function'] . ' : ' . $ar[4]['line']);
         if ((!empty($ar[3]['file'])))
-            $profileSTR .= '<br/>' . (basename($ar[3]['file']) . ' : ' . $ar[3]['function'] . '');
+            $profileSTR .= '<br/>' . (basename($ar[3]['file']) . ' : ' . $ar[3]['function'] . ' : ' . $ar[3]['line']);
         if ((!empty($ar[2]['file'])))
-            $profileSTR .= '<br/>' . (basename($ar[2]['file']) . ' : ' . $ar[2]['function'] . '');
+            $profileSTR .= '<br/>' . (basename($ar[2]['file']) . ' : ' . $ar[2]['function'] . ' : ' . $ar[2]['line']);
 
         $GLOBALS['curProfile'] = $profileSTR;
         //$h_sqls[] = $profileSTR;
@@ -1197,7 +1197,7 @@ function loadTrads($lge)
 
     $lg = $lge;
     if (!$lg) {
-        $lg = LG;
+        $lg = LG();
     }
 
     if (ake('lgLoaded', $GLOBALS) && $GLOBALS['lgLoaded'][$lg]) {
@@ -1206,8 +1206,8 @@ function loadTrads($lge)
 
     $GLOBALS['lgLoaded'][$lg] = true;
 
-    $sql = 'SELECT trad_id,trad_' . LG . '';
-    if (LG != LG_DEF) {
+    $sql = 'SELECT trad_id,trad_' . LG() . '';
+    if (LG() != LG_DEF) {
         $sql .= ' ,trad_' . LG_DEF . '';
     }
     $sql .= ' FROM s_trad ';
@@ -1240,11 +1240,11 @@ if (!function_exists("t")) {
         global $frontAdminTrads, $trads, $_trads, $admin_trads, $otherLg, $atrads;
 
         $otherLg = LG_DEF;
-        $lg = LG;
+        $lg = LG();
 
         if (akev($GLOBALS, 'forceLG')) {
             $lg = $GLOBALS['forceLG'];
-            $otherLg = LG;
+            $otherLg = LG();
             loadTrads($lg);
             $atrads = $_trads;
             //debug($atrads);
@@ -1315,7 +1315,7 @@ function tf($t, $rep = array())
 
 function roundMille($nb, $prec)
 {
-    if (LG == 'fr') {
+    if (LG() == 'fr') {
         return number_format($nb, $prec, ',', ' ');
     } else {
         return number_format($nb, $prec, '.', ',');
@@ -1756,8 +1756,8 @@ function getUrlFromSearchOLD($obj, $row)
         }
     }
 //	debug($gabs[$obj['obj']]['gabarit_classe']);
-    return getUrlFromId(getRubFromGabarit($gabs[$obj['obj']]['gabarit_classe']), LG, $mp);
-    return $GLOBALS['site']->g_url->buildUrlFromId($rubid, LG, $mp);
+    return getUrlFromId(getRubFromGabarit($gabs[$obj['obj']]['gabarit_classe']), LG(), $mp);
+    return $GLOBALS['site']->g_url->buildUrlFromId($rubid, LG(), $mp);
 }
 
 function getUrlFromSearch($obj, $row)
@@ -1802,8 +1802,8 @@ function getUrlFromSearch($obj, $row)
         $rubid = getRubFromGabarit($gabs[$obj['obj']]['gabarit_classe']);
     }
 //	debug($gabs[$obj['obj']]['gabarit_classe']);
-    return getUrlFromId($rubid, LG, $mp);
-    return $GLOBALS['site']->g_url->buildUrlFromId($rubid, LG, $mp);
+    return getUrlFromId($rubid, LG(), $mp);
+    return $GLOBALS['site']->g_url->buildUrlFromId($rubid, LG(), $mp);
 }
 
 /**
@@ -2110,7 +2110,7 @@ function getUrlWithParams($params = array())
 {
 
     if (!is_object($GLOBALS['site'])) {
-        $u = new genUrlV2(LG);
+        $u = new genUrlV2(LG());
         return $u->getUrlWithParams($params);
     }
 
@@ -2560,8 +2560,12 @@ function getGabaritClass($gab, $param = '', $instanciate = true)
     return $bddClasse;
 }
 
-function getObjUrl($lg = LG)
+function getObjUrl($lg = null)
 {
+    
+    if($lg === null) {
+        $lg = LG();
+    }
 
     $t = akev($_GET, 'curTable');
     $i = akev($_GET, 'curId');
@@ -2630,6 +2634,7 @@ function getThumbCacheFile($src, $u = false)
         }
     }
 
+
     if (!file_exists($u)) {
         if(!empty($_Gconfig['remoteFiles'])) {
             $src_clean = str_replace($_Gconfig['CDN'], '', $src);
@@ -2644,20 +2649,30 @@ function getThumbCacheFile($src, $u = false)
             return BU . '/img/404.png';
         }        
     }
-    $cacheFile = md5($src_clean);
 
-    $cachePath = path_concat($_SERVER['DOCUMENT_ROOT'], THUMBPATH, 'cache', $cacheFile, filesize($u), basename($u));
-    return $src;
-    /**
-     * Si le fichier de cache existe
-     */
-    if (file_exists($cachePath)) {
-        if ($u && file_exists($u) && filemtime($cachePath) >= filemtime($u)) {
-            return path_concat(THUMBPATH, 'cache', $cacheFile, filesize($u), basename($u));
+
+    $src_clean = str_replace($_Gconfig['CDN'], '', $src);
+    $src_clean = urldecode(str_replace('&amp;', '&', $src_clean));
+    $u = parse_url($src_clean);
+    parse_str($u['query'], $u);
+    $src = $u['src'];
+    unset($u['src']);
+    ksort($u);
+    $newUrl = THUMBPATH;
+    
+    foreach($u as $k=>$v) {
+        if(is_array($v)) {
+            foreach($v as $vv) {
+                $newUrl = path_concat($newUrl,$k.'__'.$vv);
+            }
+        } else {
+            $newUrl = path_concat($newUrl,$k.'__'.$v);
         }
     }
+    
+    $newUrl = path_concat($newUrl,'src',$src);
+    return $newUrl;
 
-    return $src; // . '&hash=' . $hash;
 }
 
 class pagination

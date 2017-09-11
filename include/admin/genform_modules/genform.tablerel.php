@@ -120,6 +120,29 @@ class genform_tablerel extends genform_base {
 							  ORDER BY ' . $this->nomSql;
         }
     }
+    
+    
+    
+    public function genSimpleArbo() {
+
+        $this->sel = $this->getSelectedItems();
+        $this->sel = explode(',', str_replace(" ", "", $this->sel));
+
+        global $_Gconfig;
+
+        list($otherTable, $otherTableFk) = $_Gconfig['tablerelAsSimpleArbo'][$this->table][$this->champ];
+
+        $this->addBuffer('<ul class="tablerelfullarbo" id="' . $this->champ . '">');
+        $this->getSubsWhere(array($otherTable,'',$otherTableFk), ' '.$otherTableFk.' = 0' );
+       
+
+        $this->addBuffer('</ul>');
+        $this->addBuffer('<input type="hidden" name="genform_rel__' . $this->champ . '__' . $this->pk2 . '_temoin" value="1" />');
+        $this->addBuffer('<script>$(document).ready(function(){
+            $("#' . $this->champ . ' input").attr("name","genform_rel__' . $this->champ . '__' . $this->pk2 . '[]");
+            $("#' . $this->champ . '").collapsibleCheckboxTree({checkParents : true,uncheckChildren: true});
+            });</script>');
+    }
 
     function genFullarbo() {
 
@@ -136,13 +159,15 @@ class genform_tablerel extends genform_base {
         } else {
             $sql = 'SELECT * FROM ' . $parentTable . ' WHERE 1  ORDER BY ' . $nomSql;
         }
+
         $res = DoSql($sql);
+
 
         $this->addBuffer('<ul class="tablerelfullarbo" id="' . $this->champ . '">');
 
         foreach ($res as $row) {
             $this->addBuffer('<li> ' . GetTitleFromRow($parentTable, $row) . ''); //id="fullarbo_'.$this->champ.'_'.$row[getPrimaryKey($parentTable)].'"
-            $this->getSubsWhere($_Gconfig['fullArbo'][$parentTable][$parentField], $_Gconfig['fullArbo'][$parentTable][$parentField][1] . ' = ' . $row[getPrimaryKey($parentTable)] . ' AND ' . $_Gconfig['fullArbo'][$parentTable][$parentField][2] . ' IS NULL ');
+            $this->getSubsWhere($_Gconfig['fullArbo'][$parentTable][$parentField], $_Gconfig['fullArbo'][$parentTable][$parentField][1] . ' = ' . $row[getPrimaryKey($parentTable)] . '  ');
             $this->addBuffer('</li>');
             $this->addBuffer("\n");
         }
@@ -256,6 +281,9 @@ class genform_tablerel extends genform_base {
         } else
         if (isset($_Gconfig['tablerelAsFullarbo'][$this->champ])) {
             return $this->genFullarbo();
+        }
+        if (isset($_Gconfig['tablerelAsSimpleArbo'][$this->table][$this->champ])) {
+            return $this->genSimpleArbo();
         }
 
 

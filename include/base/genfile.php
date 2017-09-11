@@ -126,9 +126,9 @@ class genFile
                 $this->valeur = $val;
             } else {
 
-                if (isset($this->valeur[ $this->champ . '_' . LG ])) {
+                if (isset($this->valeur[ $this->champ . '_' . LG() ])) {
 
-                    $this->champ = $this->champ . '_' . LG;
+                    $this->champ = $this->champ . '_' . LG();
 
                     $this->valeur = $valeur[ $this->champ ];
                     $this->valeurFound = true;
@@ -348,6 +348,15 @@ class genFile
 //
 //	return $src;
     }
+    
+    public function getFileMtime() {
+        $path = $this->getSystemPath();
+        if($path && file_exists($path)) {
+            return filemtime($path);
+        } 
+        return 0;
+    }
+    
 
     /**
      * Retourne l'URI vers la fonction Thumb
@@ -855,14 +864,6 @@ class genFile
         //$im_in = ImageJPEG($im_out, $save_to, $quality);
         //return;
 
-        if ($ext == 'png') {
-            $save_to = str_replace('.png', '.jpg', $save_to);
-            $ext = 'jpg';
-            $this->realName = str_replace('.png', '.jpg', $this->realName);
-            //if($updateDB) {
-            DoSql('UPDATE ' . $this->table . ' SET ' . $this->champ . ' = ' . sql($this->getRealName()) . ' WHERE ' . getPrimaryKey($this->table) . ' = ' . sql($this->id));
-            //}
-        }
         if (in_array($ext, array('jpeg', 'jpg', 'png')))
             $im_in = ImageJPEG($im_out, $save_to, $quality);
         else if ($ext == 'gif')

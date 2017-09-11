@@ -64,6 +64,8 @@ class genSite
     public $isCurrent404 = false;
     private $tabUrlSize = 0;
     private $cacheTab = 0;
+    
+    public $plugins = array();
 
     /**
      * Génération du site
@@ -94,12 +96,13 @@ class genSite
         global $_Gconfig;
 
         if (!defined('LG')) {
-            define("LG", LG_DEF);
+            define('LG', LG_DEF);
+            $GLOBALS['ocmsLG'] = LG;
             myLocale(LG_DEF);
             define("LGDEF", false);
         }
         //$GLOBALS['gb_obj']->includeFile($_Gconfig['URL_MANAGER'].'.php','global/ondemand');
-        $this->g_url = new $_Gconfig['URL_MANAGER'](LG);
+        $this->g_url = new $_Gconfig['URL_MANAGER'](LG());
     }
 
     public function reinitAs404()
@@ -139,7 +142,7 @@ class genSite
         }
 
         if (!defined('LG')) {
-            define("LG", $lg);
+            define('LG', $lg);
         }
 
         loadTrads($this->lg);
@@ -332,7 +335,7 @@ class genSite
     }
 
     /**
-     *    Retourne la langue courrante (ou constante LG)
+     *    Retourne la langue courrante (ou constante LG())
      */
     function getLg()
     {
@@ -395,7 +398,7 @@ class genSite
         header('Content-type: ' . $ct . '; charset=' . $charset);
         header('Cache-Control:');
         header('Pragma:');
-        header('Content-Length: ' . mb_strlen($contenu));
+        header('Content-Length: ' . strlen($contenu));
 
         if ($download)
             header('Content-Disposition: attachment; filename="' . $nom . '"');

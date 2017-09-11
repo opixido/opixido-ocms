@@ -338,7 +338,7 @@ class genActionMoveRubrique
                 <input type="hidden" name="curTable" value="' . $this->table . '" />
                 ');
 
-        p('<h1>' . t('deplacer') . ' ' . $this->row[ 'rubrique_titre_' . LG ] . t('deplacer_sous') . '</h1>');
+        p('<h1>' . t('deplacer') . ' ' . $this->row[ 'rubrique_titre_' . LG() ] . t('deplacer_sous') . '</h1>');
         p('<fieldset class="well" >');
 
 
@@ -547,7 +547,7 @@ class genActionShowObject
 
         if (!empty($tablerel_reverse[ $this->table ])) {
             foreach ($tablerel_reverse[ $this->table ] as $k => $v) {
-                $res = $r->$v['tablerel'];
+                $res = $r->{$v['tablerel']};
                 if (isNull($res) && isNeeded($this->table, $v['tablerel'])) {
                     $errors[] = $v['tablerel'];
                 }
@@ -1650,7 +1650,7 @@ class genActionShowMV extends baseAction
             }
 
 
-            if ($row[ MULTIVERSION_FIELDNAME ]) {
+            if (!empty($row[ MULTIVERSION_FIELDNAME ])) {
                 p('<br/><span class="badge">' . $row[ MULTIVERSION_FIELDNAME ] . '</span>');
             } else {
                 p('<br/><span class="badge" title=' . alt(niceDateTime($row[ $_Gconfig['field_date_maj'] ])) . '>' . niceTextDate($row[ $_Gconfig['field_date_maj'] ]) . '</span>');
@@ -1747,7 +1747,7 @@ class genActionPublishMV extends baseAction
     function doIt()
     {
         global $_Gconfig;
-        if ($this->row[ MULTIVERSION_STATE ] !== MV_STATE_OFFLINE) {
+        if ($this->row[ MULTIVERSION_FIELD ] != $this->id) {
             /**
              * Si on publie un brouillon ou une archive
              */
@@ -1789,7 +1789,7 @@ class genActionEditOtherMV extends baseAction
     public function __construct($action, $table, $id, $row = array())
     {
         parent::__construct($action, $table, $id, $row);
-        $this->rubrique = new rubrique($this->row);
+        $this->rowObj = new row($this->table,$this->id);
     }
 
     public function checkCondition()
@@ -1800,7 +1800,7 @@ class genActionEditOtherMV extends baseAction
     public function getForm()
     {
 
-        $drafts = $this->rubrique->getDrafts();
+        $drafts = $this->rowObj->getDrafts();
 
         /**
          * Si on a déjà un brouillon on peut le modifier direction
@@ -1811,14 +1811,14 @@ class genActionEditOtherMV extends baseAction
              */
             $draft = $drafts->FetchRow();
             echo '<div class="well">';
-            echo '<a href="?curTable=s_rubrique&curId=' . $draft['rubrique_id'] . '" class="btn btn-primary">' . ta('mv_edit_draft') . '</a>';
+            echo '<a href="?curTable='.$this->table.'&curId=' . $draft[getPrimaryKey($this->table)] . '" class="btn btn-primary">' . ta('mv_edit_draft') . '</a>';
             echo '</div>';
         } else {
             /**
              * Sinon on propose l'ajout d'un brouillon
              */
             echo '<div class="well">';
-            echo '<a href="?curTable=s_rubrique&genform_action[duplicateMV]=1&curId=' . $this->id . '" class="btn btn-primary">' . ta('mv_duplicate_and_edit_draft') . '</a>';
+            echo '<a href="?curTable='.$this->table.'&genform_action[duplicateMV]=1&curId=' . $this->id . '" class="btn btn-primary">' . ta('mv_duplicate_and_edit_draft') . '</a>';
             echo '</div>';
         }
     }
@@ -1826,7 +1826,7 @@ class genActionEditOtherMV extends baseAction
     function getSmallForm()
     {
 
-        $drafts = $this->rubrique->getDrafts();
+        $drafts = $this->rowObj->getDrafts();
 
         /**
          * Si on a déjà un brouillon on peut le modifier direction
@@ -1837,12 +1837,12 @@ class genActionEditOtherMV extends baseAction
              */
             $draft = $drafts->FetchRow();
 
-            return '<a href="?curTable=s_rubrique&curId=' . $draft['rubrique_id'] . '"><img src="' . t('src_edit') . '" alt=' . alt(t('edit')) . ' title=' . alt(t('edit')) . '></a>';
+            return '<a href="?curTable='.$_REQUEST['curTable'].'&curId=' . $draft[getPrimaryKey($this->table)] . '"><img src="' . t('src_edit') . '" alt=' . alt(t('edit')) . ' title=' . alt(t('edit')) . '></a>';
         } else {
             /**
              * Sinon on propose l'ajout d'un brouillon
              */
-            return '<a class="" href="?curTable=s_rubrique&genform_action[duplicateMV]=1&curId=' . $this->id . '" ><img src="' . t('src_edit') . '" alt=' . alt(t('edit')) . ' title=' . alt(t('edit')) . '></a>';
+            return '<a class="" href="?curTable='.$_REQUEST['curTable'].'&genform_action[duplicateMV]=1&curId=' . $this->id . '" ><img src="' . t('src_edit') . '" alt=' . alt(t('edit')) . ' title=' . alt(t('edit')) . '></a>';
         }
     }
 
