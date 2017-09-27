@@ -542,7 +542,7 @@ function nicedateyear2char($d)
 function niceDateTime($d, $show_year = true, $showSec = false)
 {
     $t = explode(" ", $d);
-    if(empty($t[1])) {
+    if (empty($t[1])) {
         return '';
     }
     $mydate = $t[0];
@@ -2562,8 +2562,8 @@ function getGabaritClass($gab, $param = '', $instanciate = true)
 
 function getObjUrl($lg = null)
 {
-    
-    if($lg === null) {
+
+    if ($lg === null) {
         $lg = LG();
     }
 
@@ -2636,18 +2636,18 @@ function getThumbCacheFile($src, $u = false)
 
 
     if (!file_exists($u)) {
-        if(!empty($_Gconfig['remoteFiles'])) {
+        if (!empty($_Gconfig['remoteFiles'])) {
             $src_clean = str_replace($_Gconfig['CDN'], '', $src);
             $src_clean = urldecode(str_replace('&amp;', '&', $src_clean));
             $u = parse_url($src_clean);
             parse_str($u['query'], $u);
             $remote = parse_url($_Gconfig['remoteFiles']);
 
-            $u['src'] =  path_concat($remote['path'],$u['src']);
-            return path_concat($_Gconfig['remoteFiles'],THUMBPATH,'?'.http_build_query($u));
+            $u['src'] = path_concat($remote['path'], $u['src']);
+            return path_concat($_Gconfig['remoteFiles'], THUMBPATH, '?' . http_build_query($u));
         } else {
             return BU . '/img/404.png';
-        }        
+        }
     }
 
 
@@ -2659,18 +2659,18 @@ function getThumbCacheFile($src, $u = false)
     unset($u['src']);
     ksort($u);
     $newUrl = THUMBPATH;
-    
-    foreach($u as $k=>$v) {
-        if(is_array($v)) {
-            foreach($v as $vv) {
-                $newUrl = path_concat($newUrl,$k.'__'.$vv);
+
+    foreach ($u as $k => $v) {
+        if (is_array($v)) {
+            foreach ($v as $vv) {
+                $newUrl = path_concat($newUrl, $k . '[]__' . $vv);
             }
         } else {
-            $newUrl = path_concat($newUrl,$k.'__'.$v);
+            $newUrl = path_concat($newUrl, $k . '__' . $v);
         }
     }
-    
-    $newUrl = path_concat($newUrl,'src',$src);
+
+    $newUrl = path_concat($newUrl, 'src', $src);
     return $newUrl;
 
 }
@@ -2692,8 +2692,8 @@ class pagination
         /**
          * Paramètres existants pour ne pas perdre les autres données
          */
-        if(empty($GLOBALS['site'])) {
-            $this->params =  !empty($_POST) ? $_POST : $_GET;
+        if (empty($GLOBALS['site'])) {
+            $this->params = !empty($_POST) ? $_POST : $_GET;
         } else {
             $this->params = $GLOBALS['site']->g_url->paramsUrl;
             $this->params = !empty($GLOBALS['site']->g_url->paramsUrl) ? $GLOBALS['site']->g_url->paramsUrl : !empty($_POST) ? $_POST : $_GET;
@@ -2779,17 +2779,17 @@ class pagination
         for ($p = 1; $p <= $this->nbPages; $p++) {
 
             if ($this->nbPages > 10) {
-                
+
                 if ( // si c'est la première ou la dernière page
-                    ($p == 1 || $p == $this->nbPages 
+                ($p == 1 || $p == $this->nbPages
                     // si c'est la page en cours
-                    || $p == $page 
+                    || $p == $page
                     // Si c'est une "dizaine" pour faire des paliers
-                    || ($p % 10 == 0) 
+                    || ($p % 10 == 0)
                     // si c'est une page autour de la page en cours 
-                    || abs($page - $p) < 2)) 
-                    {
-                   // Alors on affiche
+                    || abs($page - $p) < 2)
+                ) {
+                    // Alors on affiche
                 } else {
                     // Si on a déjà affiché les trois petits points
                     if ($lastDotted) {
@@ -2797,7 +2797,7 @@ class pagination
                     } else {
                         $num = $tpl->addBlock('NUM');
                         $num->class = '';
-                        $num->url =  $this->getUrlWithParams(array_merge($this->params, array('page' => ($p))));
+                        $num->url = $this->getUrlWithParams(array_merge($this->params, array('page' => ($p))));
                         $num->num = '...';
                         $lastDotted = true;
                         continue;
