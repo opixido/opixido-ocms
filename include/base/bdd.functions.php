@@ -237,7 +237,7 @@ function getSelectTables($table, $alias = 'T')
     return $sql;
 }
 
-function sqlOnlyOnline($table, $alias = '',$forceTestsInAdmin=false)
+function sqlOnlyOnline($table, $alias = '', $forceTestsInAdmin = false)
 {
 
     global $_Gconfig;
@@ -550,7 +550,8 @@ function getTabField($table)
             derror('GetTabField : Badtable : "' . $table . '"');
             return array();
         }
-        while (list($k, $v) = each($t)) {
+
+        foreach ($t as $k => $v) {
             $v->table = $table;
             $t2[strtolower($k)] = $v;
         }

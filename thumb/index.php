@@ -4,14 +4,14 @@
  * Kesako ?
  * Un cache buster je pense ...
  */
-if (!empty($_REQUEST['c'])) {
-    unset($_REQUEST['c']);
+if (!empty($_GET['c'])) {
+    unset($_GET['c']);
 }
 
 /**
  * On rempli le request avec tout ce qu'il faut en parsant l'URL propre
  */
-if (empty($_REQUEST)) {
+if (empty($_GET)) {
 
     $x = explode('?', ($_SERVER['REQUEST_URI']));
     $_SERVER['REQUEST_URI'] = $x[0];

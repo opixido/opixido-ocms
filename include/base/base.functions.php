@@ -1390,7 +1390,7 @@ function arrayInWord($arr, $word)
         return false;
     }
     //return in_array($word, $arr);
-    while (list(, $v) = each($arr)) {
+    foreach ($arr as $v) {
         if (strpos($word, $v) !== false)
             return true;
     }
@@ -1833,8 +1833,8 @@ function GetTitleFromRow($table, $row, $separator = " ", $html = false)
     reset($tabForms[$table]['titre']);
     $tab = getTabField($table);
     $titre = array();
-    while (list($k, $v) = each($tabForms[$table]['titre'])) {
 
+    foreach ($tabForms[$table]['titre'] as $k => $v) {
         if (akev($relations, $table) && akev($relations[$table], $v)) {
             $re = GetRowFromId($relations[$table][$v], $row[$v]);
             $row[$v] = GetTitleFromRow($relations[$table][$v], $re);
@@ -2261,29 +2261,29 @@ function getServerUrl()
  *
  * @return PHPMailer PHPMailer
  */
-function includeMail()
+function includeMail($debug = false)
 {
-
-    /**
-     * Inclusion
-     */
-    if (!akev($GLOBALS, 'mailIncluded')) {
-        $GLOBALS['mailIncluded'] = true;
-        $GLOBALS['gb_obj']->includeFile('class.phpmailer.php', 'classes/mail');
-    }
-
     /**
      * Objet
      */
-    $m = new PHPMailer();
+    $m = new PHPMailer\PHPMailer\PHPMailer($debug);
 
     /**
      * Si on est en SMTP
      */
     if (getParam('mail_type') == 'smtp') {
-        $GLOBALS['gb_obj']->includeFile('class.smtp.php', 'classes/mail');
         $m->IsSMTP();
         $m->Host = getParam('mail_host');
+        if (getParam('mail_smtp_login') != 'mail_smtp_login') {
+
+            $m->SMTPAuth = getParam('mail_smtp_login') ? true : false;
+
+
+            $m->Username = getParam('mail_smtp_login');
+            $m->Password = getParam('mail_smtp_pass');
+
+            $m->Port = getParam('mail_smtp_port');
+        }
     } else {
         $m->IsMail();
     }
@@ -2786,7 +2786,7 @@ class pagination
                     || $p == $page
                     // Si c'est une "dizaine" pour faire des paliers
                     || ($p % 10 == 0)
-                    // si c'est une page autour de la page en cours 
+                    // si c'est une page autour de la page en cours
                     || abs($page - $p) < 2)
                 ) {
                     // Alors on affiche

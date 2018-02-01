@@ -13,12 +13,7 @@ if (!defined('BU')) {
 global $co;
 
 
-if (defined('ADODB_DIR')) {
-
-    /**
-     * On inclu ADODB
-     */
-    require_once(ADODB_DIR . 'adodb.inc.php');
+if ($_bdd_type) {
 
     /**
      * @var $co ADODB_mysqli
@@ -37,7 +32,6 @@ if (defined('ADODB_DIR')) {
     if (!$connec) {
         echo 'No MySQL Connection' . "\n\n<br/>";
         echo $co->ErrorMsg();
-        //die('<h1>Regler en premier lieu les informations de connexion MySQL /include/config/config.server.php</h1>');
         $co = false;
         die();
         return;
@@ -47,7 +41,7 @@ if (defined('ADODB_DIR')) {
     /**
      * Pour que ADODB ne retourne que les enregistrements avec les clefs
      * et pas les index
-     * Limite l'utilisation m�moire
+     * Limite l'utilisation memoire
      */
     $co->SetFetchMode(ADODB_FETCH_ASSOC);
 

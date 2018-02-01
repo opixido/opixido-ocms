@@ -24,7 +24,7 @@
 /* AS USUAL ... IE NEEDS A FIX .... */
 if (count($_POST)) {
     reset($_POST);
-    while (list($k, $v) = each($_POST)) {
+    foreach ($_POST as $k => $v) {
         if (substr($k, -2) == "_x" || substr($k, -2) == "_y") {
             $_POST[substr($k, 0, -2)] = $v;
         }
@@ -791,9 +791,6 @@ function backupDb()
  * print $dump->dumpDatabase("mydb",false,false);
  *
  */
-@set_time_limit(720); #720sec
-session_cache_expire(720);   #720 min expire
-
 class MySQLDump
 {
 
@@ -812,6 +809,8 @@ class MySQLDump
         #header ('Content-Type: text/html; charset=iso-8859-1');
         // Connect to database
         $db = @mysql_select_db($database);
+        @set_time_limit(720); #720sec
+        session_cache_expire(720);   #720 min expire
 
         @ini_set('memory_limit', '128M');
 
@@ -1055,25 +1054,25 @@ function getPicto($nom, $taille = "32x32")
     }
     $p = '';
     if (!empty($tabForms[$nom]['picto'])) {
-        $p =  $tabForms[$nom]['picto'];
-    } else if (tradExists('cp_picto_'.$nom)) {
-        $p = t('cp_picto_'.$nom);
+        $p = $tabForms[$nom]['picto'];
+    } else if (tradExists('cp_picto_' . $nom)) {
+        $p = t('cp_picto_' . $nom);
     } else if (tradExists($nom)) {
         $p = t($nom);
     }
-    
+
     $folder = ADMIN_PICTOS_FOLDER;
     $pos = strpos($p, ADMIN_PICTOS_FOLDER);
     if ($pos !== false) {
         $p = substr($p, $pos + strlen(ADMIN_PICTOS_FOLDER) + 5);
-    } else if( $pos = strpos($p, ADMIN_PICTOS_FOLDER2) !== false) {
-         $t = explode('/',substr($p, $pos + strlen(ADMIN_PICTOS_FOLDER2)-1))[0];
-         
-         $p = substr($p, $pos + strlen(ADMIN_PICTOS_FOLDER2) + 2);
-         $folder = ADMIN_PICTOS_FOLDER2;
-         $taille = explode('x',$taille);
-         $taille = $taille[0];
-         $p = str_replace('-'.$t.'.png','-'.$taille.'.png',$p);
+    } else if ($pos = strpos($p, ADMIN_PICTOS_FOLDER2) !== false) {
+        $t = explode('/', substr($p, $pos + strlen(ADMIN_PICTOS_FOLDER2) - 1))[0];
+
+        $p = substr($p, $pos + strlen(ADMIN_PICTOS_FOLDER2) + 2);
+        $folder = ADMIN_PICTOS_FOLDER2;
+        $taille = explode('x', $taille);
+        $taille = $taille[0];
+        $p = str_replace('-' . $t . '.png', '-' . $taille . '.png', $p);
     } else {
         $p = $nom;
     }
@@ -1106,7 +1105,7 @@ function cleanFiles()
 			<input type="hidden" name="globalAction" value="cleanFiles" />';
     $useless = 0;
     $totf = 0;
-    $delGet = akev($_REQUEST,'del');
+    $delGet = akev($_REQUEST, 'del');
     if ($tables = opendir('../' . $uploadRep)) {
 
         while (false !== ($table = readdir($tables))) {
@@ -1244,13 +1243,13 @@ function autoGeocodeAllFields()
     }
 }
 
-function updateDatabase($cli=false)
+function updateDatabase($cli = false)
 {
 
     $plugins = GetPlugins();
     global $co;
-    if($cli) {
-        echo "\n"."# Updates"."\n";
+    if ($cli) {
+        echo "\n" . "# Updates" . "\n";
     }
     $nbTot = $nbDone = 0;
     foreach ($plugins as $plugin) {
@@ -1260,7 +1259,7 @@ function updateDatabase($cli=false)
             $updates = explode(',', $row['plugin_updates']);
             $res = glob(path_concat($upPl, '*.{php,sql}'), GLOB_BRACE);
 
-            if(!$cli) {
+            if (!$cli) {
                 echo '<h2>' . $plugin . '</h2>';
             }
             foreach ($res as $file) {
@@ -1268,12 +1267,12 @@ function updateDatabase($cli=false)
                 $parse = explode('_', $filename);
                 $nbTot++;
 
-                if (!in_array($parse[0], $updates)  || $file == akev($_GET,'redo') ) {
+                if (!in_array($parse[0], $updates) || $file == akev($_GET, 'redo')) {
                     $nbDone++;
-                    if(!$cli) {
+                    if (!$cli) {
                         echo '<div class="alert alert-info">A FAIRE : ' . $file . '<br/>';
                     } else {
-                        echo "\n".' * '.$plugin.' : '.$file.''."\n";
+                        echo "\n" . ' * ' . $plugin . ' : ' . $file . '' . "\n";
                     }
                     if (strstr($file, '.sql') !== false) {
                         $res = importSqlFile($file);
@@ -1283,13 +1282,13 @@ function updateDatabase($cli=false)
                     } else {
                         include($file);
                     }
-                    if(!$cli) {
+                    if (!$cli) {
                         echo '</div>';
                     }
                     $updates[] = $parse[0];
                 } else {
-                    
-                    if(!$cli) {
+
+                    if (!$cli) {
                         echo '<div class="alert alert-success">FAIT ' . $file . ' <a href="?globalAction=updateDatabase&redo=' . $file . '">🔄</a><br/>';
                         echo '</div>';
                     }
@@ -1298,8 +1297,8 @@ function updateDatabase($cli=false)
             $co->autoExecute('s_plugin', array('plugin_updates' => implode(',', $updates)), 'UPDATE', 'plugin_nom=' . sql($plugin));
         }
     }
-    if($cli) {
-        echo "\n"." * *  ".$nbDone." updates to be done / ".$nbTot;
+    if ($cli) {
+        echo "\n" . " * *  " . $nbDone . " updates to be done / " . $nbTot;
     }
 }
 
@@ -1327,4 +1326,40 @@ function createAndInstallPlugin($nom)
     $co->autoExecute('s_plugin', $p, 'INSERT');
     $a = new genAction('installPlugin', 's_plugin', $nom);
     $a->doit();
+}
+
+
+/**
+ * Test l'envoi d'un mail depuis le back office
+ */
+function testMailSend()
+{
+    global $gs_obj;
+
+    if (count($_POST)) {
+        $m = includeMail(true);
+        $m->SMTPDebug = 2;
+
+
+        $m->setFrom($_POST['expediteur']);
+        $m->addAddress($_POST['destinataire']);
+
+        $m->Subject = 'OCMS Test d\'envoi d\'emails ' . $gs_obj->adminnom . date('r');
+
+        $m->Body = date('r');
+
+
+        $m->send();
+
+    }
+
+    $f = new simpleForm('?globalAction=testMailSend', 'post');
+
+    $f->add('email', $gs_obj->adminemail, 'expediteur', 'expediteur');
+    $f->add('email', $gs_obj->adminemail, 'destinataire', 'destinataire');
+
+    $f->add('submit', 'envoyer');
+
+    echo $f->gen();
+
 }

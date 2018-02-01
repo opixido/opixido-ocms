@@ -26,16 +26,18 @@ if (!is_object($this->gs))
 
 /**
  * Genform Module
- * 
+ *
  * Gère les tables de relations N<=>N
  *
  */
-class genform_tablerel extends genform_base {
+class genform_tablerel extends genform_base
+{
 
     public $fk_champ = '';
     public $valuesSelect = '';
 
-    function init() {
+    function init()
+    {
 
         global $orderFields, $tablerel, $tabForms, $_Gconfig;
 
@@ -45,7 +47,8 @@ class genform_tablerel extends genform_base {
          * */
         reset($tablerel[$this->champ]);
         $found = false;
-        while (list( $k, $v ) = each($tablerel[$this->champ])) {
+
+        foreach ($tablerel[$this->champ] as $k => $v) {
 
             if ($v == $this->table && !$found) {
                 $found = true;
@@ -55,7 +58,6 @@ class genform_tablerel extends genform_base {
                 $this->fk_table = $v;
             }
         }
-
 
 
         /**
@@ -71,7 +73,7 @@ class genform_tablerel extends genform_base {
 
 
         /**
-         *  Clef primaire de la seconde table 
+         *  Clef primaire de la seconde table
          * */
         reset($tablerel[$this->champ]);
         $this->pk2 = getPrimaryKey($this->fk_table);
@@ -104,7 +106,6 @@ class genform_tablerel extends genform_base {
         }
 
 
-
         if (!empty($_Gconfig['specialListingWhere'][$this->champ])) {
 
             $this->sqlLeft = $this->sqlLeftInit = 'SELECT T2.*
@@ -120,10 +121,10 @@ class genform_tablerel extends genform_base {
 							  ORDER BY ' . $this->nomSql;
         }
     }
-    
-    
-    
-    public function genSimpleArbo() {
+
+
+    public function genSimpleArbo()
+    {
 
         $this->sel = $this->getSelectedItems();
         $this->sel = explode(',', str_replace(" ", "", $this->sel));
@@ -133,8 +134,8 @@ class genform_tablerel extends genform_base {
         list($otherTable, $otherTableFk) = $_Gconfig['tablerelAsSimpleArbo'][$this->table][$this->champ];
 
         $this->addBuffer('<ul class="tablerelfullarbo" id="' . $this->champ . '">');
-        $this->getSubsWhere(array($otherTable,'',$otherTableFk), ' '.$otherTableFk.' = 0' );
-       
+        $this->getSubsWhere(array($otherTable, '', $otherTableFk), ' ' . $otherTableFk . ' = 0');
+
 
         $this->addBuffer('</ul>');
         $this->addBuffer('<input type="hidden" name="genform_rel__' . $this->champ . '__' . $this->pk2 . '_temoin" value="1" />');
@@ -144,7 +145,8 @@ class genform_tablerel extends genform_base {
             });</script>');
     }
 
-    function genFullarbo() {
+    function genFullarbo()
+    {
 
         $this->sel = $this->getSelectedItems();
         $this->sel = explode(',', str_replace(" ", "", $this->sel));
@@ -180,7 +182,8 @@ class genform_tablerel extends genform_base {
             });</script>');
     }
 
-    function getSubsWhere($config, $where) {
+    function getSubsWhere($config, $where)
+    {
 
         $sql = 'SELECT * FROM ' . $config[0] . ' WHERE ' . $where;
         $res = DoSql($sql);
@@ -201,7 +204,8 @@ class genform_tablerel extends genform_base {
         }
     }
 
-    function genCheckBoxField() {
+    function genCheckBoxField()
+    {
 
         $r = DoSql($this->sqlLeftInit);
 
@@ -225,7 +229,8 @@ class genform_tablerel extends genform_base {
         $this->addBuffer('<input type="hidden" name="genform_rel__' . $this->champ . '__' . $this->pk2 . '_temoin" value="1" />');
     }
 
-    function genAjaxField() {
+    function genAjaxField()
+    {
 
         $h = '';
 
@@ -236,7 +241,6 @@ class genform_tablerel extends genform_base {
         $sel = choose($sel, "''");
         $vals = 'SELECT * FROM ' . $this->fk_table . ' WHERE ' . $this->pk2 . ' IN (' . $sel . ') ';
         $res = DoSql($vals);
-
 
 
         $assi = '';
@@ -269,19 +273,20 @@ class genform_tablerel extends genform_base {
         $this->addBuffer($h);
     }
 
-    function genForm() {
+    function genForm()
+    {
 
         global $previewField, $tabForms, $_Gconfig;
 
         if (isset($_Gconfig['tablerelAsTags'][$this->champ])) {
             return $this->genAjaxField();
         } else
-        if (isset($_Gconfig['tablerelAsCheckbox'][$this->champ])) {
-            return $this->genCheckBoxField();
-        } else
-        if (isset($_Gconfig['tablerelAsFullarbo'][$this->champ])) {
-            return $this->genFullarbo();
-        }
+            if (isset($_Gconfig['tablerelAsCheckbox'][$this->champ])) {
+                return $this->genCheckBoxField();
+            } else
+                if (isset($_Gconfig['tablerelAsFullarbo'][$this->champ])) {
+                    return $this->genFullarbo();
+                }
         if (isset($_Gconfig['tablerelAsSimpleArbo'][$this->table][$this->champ])) {
             return $this->genSimpleArbo();
         }
@@ -294,10 +299,8 @@ class genform_tablerel extends genform_base {
         $this->gf->genHelpImage('help_tablerel');
 
 
-
         $this->addBuffer('<table ><tr>');
         $this->addBuffer('<td width="10">&nbsp;');
-
 
 
         $this->addBuffer('</td>');
@@ -400,7 +403,6 @@ class genform_tablerel extends genform_base {
         $this->addBuffer('<td>');
 
 
-
         /**
          * SELECT DE GAUCHE
          */
@@ -460,7 +462,6 @@ class genform_tablerel extends genform_base {
         $this->addBuffer('</td>');
 
 
-
         /**
          * SELECT DE DROITE
          */
@@ -504,7 +505,6 @@ class genform_tablerel extends genform_base {
         }
 
 
-
         /**
          * IFRAME POUR AFFICHER LA PREVIEW
          */
@@ -523,12 +523,14 @@ class genform_tablerel extends genform_base {
         }
     }
 
-    function genValue() {
+    function genValue()
+    {
 
         $this->addBuffer($this->valuesSelect);
     }
 
-    function gen() {
+    function gen()
+    {
 
         $this->getSelectedItems();
         /**
@@ -546,13 +548,14 @@ class genform_tablerel extends genform_base {
         return $this->getBuffer();
     }
 
-    function getSelectedItems() {
+    function getSelectedItems()
+    {
 
         global $tabForms, $_Gconfig;
         $arraySelected = "";
 
         /**
-         * On sélectionne les elements deja selectionnés 
+         * On sélectionne les elements deja selectionnés
          * (Uniquement si on est pas en mode creation, auquel cas il ne peut y en avoir)
          */
         if ($this->id && $this->id != "new") {
@@ -576,7 +579,6 @@ class genform_tablerel extends genform_base {
             if ($this->ordered) {
                 $sql .= ' ORDER BY T1.' . $this->orderField;
             }
-
 
 
             $res = GetAll($sql);
@@ -626,7 +628,7 @@ class genform_tablerel extends genform_base {
 
                 $this->valuesSelect .= $thisValue;
 
-                $this->optionsSelected .= ( '<option selected="selected" value="' . $row[$this->pk2] . '">' . $thisValue . '</option>' );
+                $this->optionsSelected .= ('<option selected="selected" value="' . $row[$this->pk2] . '">' . $thisValue . '</option>');
 
                 /**
                  * Liste des elements deja selectionnés é mettre dans la clause NOT IN

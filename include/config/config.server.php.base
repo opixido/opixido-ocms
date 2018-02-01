@@ -135,7 +135,7 @@ define('IMG_GENERATOR', BU . '/imgps.php');
 define('THUMBPATH', BU . '/thumb/');
 
 /**
- * Gestion des chemins d'accès aux includes et ADODB
+ * Gestion des chemins d'accès aux includes
  */
 $pathHere = str_replace(SEP . 'config', '', dirname(__FILE__));
 
@@ -145,11 +145,6 @@ $pathHere = str_replace(SEP . 'config', '', dirname(__FILE__));
  */
 define('INCLUDE_PATH', $pathHere);
 
-/**
- * Chemin vers ADODB pour inclusion des sous fichiers
- * d'ADODB
- * */
-define('ADODB_DIR', INCLUDE_PATH . SEP . 'adodb5' . SEP);
 
 /**
  * Chemin vers le dossier où l'on upload en FTP les fichiers trop gros

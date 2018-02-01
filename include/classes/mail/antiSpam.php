@@ -1,12 +1,13 @@
 <?php
 
-class antiSpam {
+class antiSpam
+{
 
-    function genMailTo($email) {
+    function genMailTo($email)
+    {
 
         return '<a href="mailto:' . $email . '">' . $email . '</a>';
     }
 
 }
 
-?>

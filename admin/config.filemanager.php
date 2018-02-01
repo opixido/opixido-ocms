@@ -21,7 +21,8 @@ if (empty($_GET['field_id'])) {
 /**
  * Chemin relatif vers le dossier
  */
-$config['current_path'] = dirname(__FILE__) . '/../fichier/rte/';
+$config['current_path'] = realpath(dirname(__FILE__) . '/../fichier/rte/') . '/';
+$config['current_path'] = '../../fichier/rte/';
 
 /**
  * Thumbs dans dossier de cache admin
@@ -67,30 +68,32 @@ if (empty($_SESSION['gs_admin_id'])) {
 if (!file_exists($config['current_path'] . $_SESSION['gs_adminuser'])) {
     mkdir($config['current_path'] . $_SESSION['gs_adminuser']);
     file_put_contents($config['current_path'] . $_SESSION['gs_adminuser'] . '/config.php', '<?php 
-if($_SESSION[\'gs_admin_id\'] == "' . ($_SESSION['gs_admin_id']) . '") { 
-    $delete_files = true;
-    $create_folders = true;
-    $delete_folders = true;
-    $upload_files = true;
-    $rename_files = true;
-    $rename_folders = true;
-    $duplicate_files = true;
-    $create_text_files = true;
-    $edit_text_files = true;
-    $copy_cut_files = true;
-    $copy_cut_dirs = true;
+if($_SESSION[\'gs_admin_id\'] == "' . ($_SESSION['gs_admin_id']) . '" || $_SESSION["superAdmin"]) { 
+       return [\'delete_files\' => true,
+        \'create_folders\' => true,
+        \'delete_folders\' => true,
+        \'upload_files\' => true,
+        \'rename_files\' => true,
+        \'rename_folders\' => true,
+        \'duplicate_files\' => true,
+        \'create_text_files\' => true,
+        \'edit_text_files\' => true,
+        \'copy_cut_files\' => true,
+        \'copy_cut_dirs\' => true];
 } else {
-    $delete_files = false;
-    $create_folders = false;
-    $delete_folders = false;
-    $upload_files = false;
-    $rename_files = false;
-    $rename_folders = false;
-    $duplicate_files = false;
-    $create_text_files = false;
-    $edit_text_files = false;
-    $copy_cut_files = false;
-    $copy_cut_dirs = false;
+    return [
+        \'delete_files\' => false,
+        \'create_folders\' => false,
+        \'delete_folders\' => false,
+        \'upload_files\' => false,
+        \'rename_files\' => false,
+        \'rename_folders\' => false,
+        \'duplicate_files\' => false,
+        \'create_text_files\' => false,
+        \'edit_text_files\' => false,
+        \'copy_cut_files\' => false,
+        \'copy_cut_dirs\' => false,
+    ];
 }');
 }
 
@@ -102,28 +105,28 @@ if (!file_exists($config['current_path'] . $config['ocms_SharedFolder'])) {
     file_put_contents($config['current_path'] . $config['ocms_SharedFolder'] . '/config.php', '<?php 
     
 if($_SESSION[\'superAdmin\']) { 
-    $delete_files = true;
-    $create_folders = true;
-    $delete_folders = true;
-    $upload_files = true;
-    $rename_files = true;
-    $rename_folders = true;
-    $duplicate_files = true;
-    $create_text_files = true;
-    $edit_text_files = true;
-    $copy_cut_files = true;
-    $copy_cut_dirs = true;
+       return [\'delete_files\' => true,
+        \'create_folders\' => true,
+        \'delete_folders\' => true,
+        \'upload_files\' => true,
+        \'rename_files\' => true,
+        \'rename_folders\' => true,
+        \'duplicate_files\' => true,
+        \'create_text_files\' => true,
+        \'edit_text_files\' => true,
+        \'copy_cut_files\' => true,
+        \'copy_cut_dirs\' => true];
 } else {
-    $delete_files = false;
-    $create_folders = false;
-    $delete_folders = false;
-    $upload_files = false;
-    $rename_files = false;
-    $rename_folders = false;
-    $duplicate_files = false;
-    $create_text_files = false;
-    $edit_text_files = false;
-    $copy_cut_files = false;
-    $copy_cut_dirs = false;
+    return [\'delete_files\' => false,
+        \'create_folders\' => false,
+        \'delete_folders\' => false,
+        \'upload_files\' => false,
+        \'rename_files\' => false,
+        \'rename_folders\' => false,
+        \'duplicate_files\' => false,
+        \'create_text_files\' => false,
+        \'edit_text_files\' => false,
+        \'copy_cut_files\' => false,
+        \'copy_cut_dirs\' => false];
 }');
 }

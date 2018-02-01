@@ -9,8 +9,10 @@
 ini_set('memory_limit', '320M');
 define('IN_ADMIN', true);
 
+error_reporting(E_ALL && ~E_DEPRECATED);
 
 /* On aura toujours besoin de ca */
+require_once('../../vendor/autoload.php');
 require_once('../../include/include.php');
 $gb_obj = new genBase();
 $gb_obj->includeConfig();

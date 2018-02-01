@@ -2,6 +2,7 @@
 
 global $isTopNavRub, $noCopyTable, $tab_noCopyField, $tabForms, $uploadRep, $relations, $relinv, $tablerel, $searchField, $specialUpload, $previewField, $orderFields, $adminMenus, $rteFields, $neededFields, $neededSymbol, $uploadFields, $mailFields, $validateFields, $adminInfos, $gs_roles, $gs_actions, $formsRep, $frontAdminTrads, $gr_on, $rootId, $homeId, $headRootId, $footRootId, $basePath, $baseWebPath, $lexiqueId, $languages, $google_key, $_Gconfig, $adminTypesToMail, $functionField, $multiVersionField, $_Gconfig;
 
+
 $_SESSION['cache'][UNIQUE_SITE] = array();
 
 header('Content-Type: text/html; charset=utf-8');
@@ -139,20 +140,21 @@ $relations['s_gabarit']['fk_default_rubrique_id'] = 's_rubrique';
 
 
 $_Gconfig['specialListing'] = array();
-$_Gconfig['specialListing'][ 's_para_type' ]['s_paragraphe' . '.' . 'fk_para_type_id' ] = 'specialListingParagraphesGabarit';
+$_Gconfig['specialListing']['s_para_type']['s_paragraphe' . '.' . 'fk_para_type_id'] = 'specialListingParagraphesGabarit';
 
-function specialListingParagraphesGabarit($a) {
-  /**
-   * On essai de retrouver la rubrique parente via les levels d'admin
-   * */
-  $curentRubrique = ($_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]);
-  if(!empty($curentRubrique['curId'])) {
-    $row = getRowFromId($curentRubrique['curTable'],$curentRubrique['curId']);
-    if(!empty($row['fk_gabarit_id'])) {
-      return DoSql('SELECT * FROM s_para_type WHERE fk_gabarit_id = '.sql($row['fk_gabarit_id']).' OR fk_gabarit_id = 0 ORDER BY para_type_titre ASC ');
+function specialListingParagraphesGabarit($a)
+{
+    /**
+     * On essai de retrouver la rubrique parente via les levels d'admin
+     * */
+    $curentRubrique = ($_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]);
+    if (!empty($curentRubrique['curId'])) {
+        $row = getRowFromId($curentRubrique['curTable'], $curentRubrique['curId']);
+        if (!empty($row['fk_gabarit_id'])) {
+            return DoSql('SELECT * FROM s_para_type WHERE fk_gabarit_id = ' . sql($row['fk_gabarit_id']) . ' OR fk_gabarit_id = 0 ORDER BY para_type_titre ASC ');
+        }
     }
-  }
-  return DoSql('SELECT * FROM s_para_type WHERE fk_gabarit_id = 0 ORDER BY para_type_titre ASC');
+    return DoSql('SELECT * FROM s_para_type WHERE fk_gabarit_id = 0 ORDER BY para_type_titre ASC');
 }
 
 /**

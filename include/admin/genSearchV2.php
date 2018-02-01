@@ -29,7 +29,7 @@ class genSearchV2
         $this->full_custom_fields_request = array();
         // -- constantes de validation de gestion des exports sous csv
 
-        $this->searchField = akev($searchField,$this->table);
+        $this->searchField = akev($searchField, $this->table);
 
         if (!empty($_REQUEST['relOne'])) {
             $this->relOne = $_REQUEST['relOne'];
@@ -68,8 +68,7 @@ class genSearchV2
          */
         $sql = ' ' . getPrimaryKey($this->table) . ',
 					' . GetTitleFromTable($this->table, " , ");
-					
-					
+
 
         if ($this->relOne) {
             $sql .= ' , ' . getPrimaryKey($this->relOne);
@@ -97,7 +96,7 @@ class genSearchV2
 
         $rCount = DoSql($sqlCount);
 
-        if(!$rCount) {
+        if (!$rCount) {
             global $co;
             var_dump($sqlCount);
             var_dump($co->ErrorMsg());
@@ -226,11 +225,11 @@ class genSearchV2
 
 
         // validation bouton recherche rapide
-        if (akev($_REQUEST,'exportResults') == 'true') {
+        if (akev($_REQUEST, 'exportResults') == 'true') {
             $this->isExportResults = true;
             $this->exportRes($res, 'basicExport');
         } // validation bouton recherche avancée
-        else if (akev($_REQUEST,'exportAdvancedResults') == 'true') {
+        else if (akev($_REQUEST, 'exportAdvancedResults') == 'true') {
             $this->isExportAdvancedResults = true;
             $this->exportRes($res, 'advancedExport');
         } // sinon on affiche simplement le resultat
@@ -349,15 +348,13 @@ class genSearchV2
 
 
         $i = 0;
-        //while(list($k,$v) = each($tables[$table])) {
 
         if (!count($this->searchField)) {
             $this->searchField[$table] = $tabForms[$table]['titre'];
         }
 
 
-        while (list($kk, $vv) = each($this->searchField)) {
-
+        foreach ($this->searchField as $kk => $vv) {
             $k = $vv;
             $v = akev($fields, $vv);
 
@@ -377,7 +374,8 @@ class genSearchV2
                     p('<label> ' . t($k) . '</label>');
                     reset($tablerel);
                     reset($tablerel[$k]);
-                    while (list($k2, $v2) = each($tablerel[$k])) {
+
+                    foreach ($tablerel[$k] as $k2 => $v2) {
                         if ($v2 == $table) {
                             $fk1 = $k2;
                         } else {
@@ -667,7 +665,8 @@ class genSearchV2
 
 
                 echo('<table class="itemtab">');
-                while (list($kk, $vv) = each($tablo)) {
+
+                foreach ($tablo as $kk => $vv) {
 
 
                     $form->bufferPrint = "";
@@ -697,12 +696,11 @@ class genSearchV2
 
             $t = $this->tabField;
             $r .= ('<th style="width:20px;"  scope="col">Id</th>');
-            //while(list($k,$v) = each($tables[$table])) {
 
             /**
              * Entêtes du tableau des résultats
              */
-            while (list(, $k) = each($tablo)) {
+            foreach ($tablo as $v => $k) {
 
                 /**
                  * Champs de type boolean
@@ -740,7 +738,7 @@ class genSearchV2
              * Liste des résultats
              */
             //for ($k = $lstart; $k < $lend; $k++) {
-            foreach ($res as $row) {
+            foreach ($res as $k => $row) {
                 /*
                   $res->Move($k);
                   $row = $res->FetchRow();
@@ -761,7 +759,8 @@ class genSearchV2
 
                 $t1 = getmicrotime();
 
-                while (list($kk, $vv) = each($tablo)) {
+
+                foreach ($tablo as $kk => $vv) {
 
                     $form->bufferPrint = "";
                     $form->genFields($vv);
@@ -1079,11 +1078,13 @@ class genSearchV2
             $wheresql .= ' AND ( 0 ';
             $mots = explode(" ", $searchTxt);
 
-            while (list($k, $v) = each($tabfield)) {
+
+            foreach ($tabfield as $k => $v) {
                 if ($v->type == "varchar" || $v->type == "text") {
                     reset($mots);
                     $wheresql .= " OR ( 1 ";
-                    while (list(, $mot) = each($mots)) {
+
+                    foreach ($mots as $mot) {
                         $wheresql .= " AND " . $k . ' LIKE "%' . $mot . '%" ';
                     }
                     $wheresql .= " ) ";
@@ -1115,7 +1116,8 @@ class genSearchV2
         /**
          * Looping on the search Fields
          */
-        while (list($k, $v) = each($mySearchField)) {
+
+        foreach ($mySearchField as $k => $v) {
 
             $k = $v;
 
@@ -1133,7 +1135,8 @@ class genSearchV2
                  * It's an n:n relation
                  */
                 reset($tablerel[$k]);
-                while (list($k2, $v2) = each($tablerel[$k])) {
+
+                foreach ($tablerel[$k] as $k2 => $v2) {
                     if ($v2 == $table) {
                         $fk1 = $k2;
                     } else {
@@ -1188,7 +1191,8 @@ class genSearchV2
                 if (isBaseLgField($k, $table)) {
 
                     $mots = explode(" ", $v);
-                    while (list(, $mot) = each($mots)) {
+
+                    foreach ($mots as $mot) {
                         $wheresql .= ' AND ( 0 ';
                         foreach ($_Gconfig['LANGUAGES'] as $lg) {
                             $wheresql .= " OR " . $k . "_" . $lg . " LIKE '%" . $mot . "%' " . "\n";
@@ -1197,7 +1201,7 @@ class genSearchV2
                     }
                 } else {
                     $mots = explode(" ", $v);
-                    while (list(, $mot) = each($mots)) {
+                    foreach ($mots as $mot) {
                         $wheresql .= " AND " . $k . " LIKE '%" . $mot . "%' " . "\n";
                     }
                 }
@@ -1366,7 +1370,8 @@ class genSearchV2
         /**
          * Recherche des mots du champ libre dans les champs de la table de type texte
          */
-        while (list($k, $v) = each($tabfield)) {
+
+        foreach ($tabfield as $k => $v) {
 
             if ($v->type == "varchar" || $v->type == "text" || $v->type == "date") {
 
@@ -1374,7 +1379,8 @@ class genSearchV2
 
                 $sql .= " OR ( 1 ";
 
-                while (list(, $mot) = each($mots)) {
+
+                foreach ($mots as $mot) {
 
                     $sql .= " AND " . $k . ' LIKE ' . sql('%' . $mot . '%') . ' ';
                 }

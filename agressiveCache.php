@@ -77,7 +77,7 @@ session_start();
  */
 function newarrayInWord($arr, $word)
 {
-    while (list(, $v) = each($arr)) {
+    foreach ($arr as $v) {
         if (strstr($word, $v) !== false)
             return true;
     }

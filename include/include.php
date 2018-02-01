@@ -148,8 +148,15 @@ class genBase
         $list = array('config.server.php', 'config.locale.php', 'connect.php', 'config.base.php', 'config.app.php');
 
         foreach ($list as $file) {
-            if(!file_exists($curfolder . '/' . $file)) {
+            if (!file_exists($curfolder . '/' . $file)) {
                 echo('File : ' . $file . ' not included yet : Install Mode');
+                define('IN_INSTALL', true);
+                define('BU', '');
+                define('UNIQUE_SITE', 'OcmsUninstalled');
+                define('INCLUDE_PATH', __DIR__);
+                define('ADMIN_URL', BU . '/admin');
+                define('LG_DEF', 'fr');
+                define('crypto_key', 'OcmsUninstalledKey');
             } else {
                 $res = include_once($curfolder . '/' . $file);
                 if (!$res) {
@@ -194,8 +201,8 @@ class genBase
          * Cache in session
          */
         $cachename = 'cache_' . md5($_SERVER['SCRIPT_FILENAME']);
-        if (array_key_exists($cachename, $_SESSION) && array_key_exists('gb_folderList', $_SESSION[ $cachename ]) && array_key_exists($folder, $_SESSION[ $cachename ]['gb_folderList']) && $usecache) {
-            return $_SESSION[ $cachename ]['gb_folderList'][ $folder ];
+        if (array_key_exists($cachename, $_SESSION) && array_key_exists('gb_folderList', $_SESSION[$cachename]) && array_key_exists($folder, $_SESSION[$cachename]['gb_folderList']) && $usecache) {
+            return $_SESSION[$cachename]['gb_folderList'][$folder];
         }
 
         /**
@@ -211,7 +218,7 @@ class genBase
                     }
                 }
             }
-            $_SESSION[ $cachename ]['gb_folderList'][ $folder ] = $nlist;
+            $_SESSION[$cachename]['gb_folderList'][$folder] = $nlist;
             return $nlist;
         } else {
             die('Wrong configuration can\'t include anything : ' . $folder);
@@ -239,7 +246,7 @@ class genBase
                     }
                 }
             }
-            $_SESSION['cache'][ UNIQUE_SITE ]['gb_folderList'][ $folder ] = $nList;
+            $_SESSION['cache'][UNIQUE_SITE]['gb_folderList'][$folder] = $nList;
             return $nlist;
         } else {
             debug('no such directory : ' . $folder);
@@ -307,11 +314,11 @@ class genBase
         $path = $this->getIncludePath($file, $folder);
         if (!ake($this->cacheLoadedFiles, $path)) {
             if (is_file($path)) {
-                $this->cacheLoadedFiles[ $path ] = file_get_contents($path);
+                $this->cacheLoadedFiles[$path] = file_get_contents($path);
             }
         }
 
-        return $this->cacheLoadedFiles[ $path ];
+        return $this->cacheLoadedFiles[$path];
 
         return false;
     }

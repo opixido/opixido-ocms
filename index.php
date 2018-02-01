@@ -20,8 +20,13 @@
 # @link http://code.google.com/p/opixido-ocms/
 # @package ocms
 #
-    
+
 include('agressiveCache.php');
+
+/**
+ * Composer files
+ */
+require 'vendor/autoload.php';
 
 /**
  * On inclu le fichier qui permettra d'inclure tous les autres
@@ -32,7 +37,7 @@ require('./include/include.php');
  * Utile pour les connexions au front office
  *
  */
-define('IN_ADMIN',false);
+define('IN_ADMIN', false);
 
 
 /**
@@ -42,9 +47,9 @@ define('IN_ADMIN',false);
 $gb_obj = new genBase;
 
 /**
- * Cet objet est global pour permettre des inclusions 
+ * Cet objet est global pour permettre des inclusions
  * de n'importe quel script
- * 
+ *
  * @var genBase
  */
 $GLOBALS['gb_obj'] = &$gb_obj;
@@ -82,11 +87,11 @@ $site = new genSite();
  */
 $site->init();
 
-/** 
+/**
  * Post-initialisation
  */
 $site->afterInit();
- 
+
 
 /**
  * Génération Complète du code

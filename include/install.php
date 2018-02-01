@@ -42,7 +42,6 @@ class genInstall
     function __construct()
     {
 
-        define('IN_INSTALL', true);
 
         $this->setForms();
 
@@ -78,7 +77,6 @@ class genInstall
             $this->createConfigFile();
 
             $GLOBALS['gb_obj']->includeConfig();
-            require_once(ADODB_DIR . 'adodb.inc.php');
 
             global $co;
             echo '<div class="start">';

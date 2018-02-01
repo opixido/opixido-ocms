@@ -163,7 +163,7 @@ class genAdmin
                     break;
                 } else {
                     $_SESSION['visibleRubs'][$id] = true;
-                    $id =akev($this->reverserubs,$id);
+                    $id = akev($this->reverserubs, $id);
                 }
             }
         }
@@ -247,7 +247,7 @@ class genAdmin
 
         if ($real) {
             $real = GetSingle('SELECT ' . MULTIVERSION_FIELD . ' FROM s_rubrique WHERE rubrique_id = ' . sql($real));
-            if($real) {
+            if ($real) {
                 $this->real_rub_id = $real[MULTIVERSION_FIELD];
                 return $this->real_rub_id;
             }
@@ -330,7 +330,7 @@ class genAdmin
             p('<div id="tools" >');
 
             if ($this->gs->can('add', $this->table)) {
-                p('<a class="btn btn-primary btn-large" href="?curTable=' . $this->table . '&amp;curId=new&relOne=' . akev($_REQUEST,'relOne') . '"><img src="' . ADMIN_PICTOS_FOLDER2 . '24/Very_Basic/plus-24.png" alt=""  /> ' . t('ajouter_elem') . '</a></div>');
+                p('<a class="btn btn-primary btn-large" href="?curTable=' . $this->table . '&amp;curId=new&relOne=' . akev($_REQUEST, 'relOne') . '"><img src="' . ADMIN_PICTOS_FOLDER2 . '24/Very_Basic/plus-24.png" alt=""  /> ' . t('ajouter_elem') . '</a></div>');
             }
 
             if (ake($_Gconfig['tableActions'], $this->table)) {
@@ -339,7 +339,7 @@ class genAdmin
                  */
                 foreach ($_Gconfig['tableActions'][$this->table] as $action) {
                     if ($this->gs->can($action, $this->table) && $action != akev($_REQUEST, 'tableAction')) {
-                        p('<a class="btn" href="?curTable=' . $this->table . '&tableAction=' . $action . '"> <img src="' . ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/' . t('src_'.$action) . '.png" alt=""  /> ' . t($action) . '</a>');
+                        p('<a class="btn" href="?curTable=' . $this->table . '&tableAction=' . $action . '"> <img src="' . ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/' . t('src_' . $action) . '.png" alt=""  /> ' . t($action) . '</a>');
                     }
                 }
             }
@@ -385,7 +385,8 @@ class genAdmin
          * Action sur l'enregistrement en cours
          */
         if (ake('genform_action', $_REQUEST)) {
-            while (list($action,) = each($_REQUEST['genform_action'])) {
+
+            foreach ($_REQUEST['genform_action'] as $action => $vze) {
                 $this->action = new GenAction($action, $this->table, $this->id, $this->row);
                 $this->action->DoIt();
 
@@ -712,7 +713,8 @@ class genAdmin
             $f = new GenForm($this->table, 'post', 0, $row);
             $f->editMode = true;
             $f->onlyData = true;
-            while (list($k,) = each($row)) {
+
+            foreach ($row as $k => $vze) {
                 if ($i % 2)
                     print($this->csvenc($f->gen($k)) . ';');
                 $i++;
@@ -797,7 +799,7 @@ class genAdmin
          * Nouveau et rechercher
          */
         if ($this->id) {
-            if (($this->table == 's_rubrique' || (!empty($_SESSION[gfuid()]['levels'][1]) &&  akev($_SESSION[gfuid()]['levels'][1], 'curTable') == 's_rubrique')) && empty($_REQUEST['relOne'])) {
+            if (($this->table == 's_rubrique' || (!empty($_SESSION[gfuid()]['levels'][1]) && akev($_SESSION[gfuid()]['levels'][1], 'curTable') == 's_rubrique')) && empty($_REQUEST['relOne'])) {
 
             } else {
 
@@ -829,7 +831,7 @@ class genAdmin
             $root_id = !empty($_SESSION[gfuid()]['levels'][1]['curId']) ? $_SESSION[gfuid()]['levels'][1]['curId'] : $_REQUEST['curId'];
         } else if (isset($_REQUEST['curTable'])) {
             $table = $_REQUEST['curTable'];
-            $root_id = akev($_REQUEST,'curId');
+            $root_id = akev($_REQUEST, 'curId');
         } else
             $table = false;
 
@@ -855,7 +857,7 @@ class genAdmin
             if (akev($_SESSION[gfuid()], 'nbLevels') > 0) {
 
                 for ($p = 1; $p <= $_SESSION[gfuid()]['nbLevels'] + 1; $p++) {
-                    if(!empty($_SESSION[gfuid()]['levels'][$p])) {
+                    if (!empty($_SESSION[gfuid()]['levels'][$p])) {
                         $v = $_SESSION[gfuid()]['levels'][$p];
                         if (isset($v['curTable'])) {
                             $src = getPicto($v['curTable'], ADMIN_PICTOS_FORM_SIZE);
@@ -881,7 +883,7 @@ class genAdmin
         if (ake('genform_action', $_REQUEST) && is_array($_REQUEST['genform_action'])) {
 
             reset($_REQUEST['genform_action']);
-            while (list($action,) = each($_REQUEST['genform_action'])) {
+            foreach ($_REQUEST['genform_action'] as $action => $vze) {
 
                 $this->action = new GenAction($action, $this->table, $this->id, $this->row);
                 $this->action->GenIt();
@@ -1113,7 +1115,7 @@ class smallAdmin
         if (!$this->realRubId && !empty($_REQUEST['curId'])) {
             if (isMultiVersion($_REQUEST['curTable'])) {
                 $curRub = getRowFromId($_REQUEST['curTable'], $_REQUEST['curId']);
-                if($curRub) {
+                if ($curRub) {
                     $this->realRubId = $curRub[MULTIVERSION_FIELD];
                 }
             } else {
@@ -1284,7 +1286,7 @@ class smallAdmin
                  * plus ou moins
                  */
                 $paramShow = isset($_SESSION['visibleRubs'][$real_rub]) ? 'hideRub=' . $real_rub : 'showRub=' . $real_rub;
-                if(!empty($_REQUEST['curId'])) {
+                if (!empty($_REQUEST['curId'])) {
                     $paramShow .= '&curId=' . $_REQUEST['curId'];
                 }
                 $plusmoins = isset($_SESSION['visibleRubs'][$real_rub]) ? '<img src="./img/moins.gif" alt="" />' : '<img src="./img/plus.gif" alt="" />';

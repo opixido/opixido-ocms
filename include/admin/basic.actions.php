@@ -24,12 +24,6 @@
 
 function s_admin_update($id, $row = array())
 {
-
-
-    if (!count($row)) {
-        $row = getRowFromId('s_admin', $id);
-    }
-
     $sql = 'DELETE FROM s_admin_rows WHERE fk_admin_id = "' . $id . '"';
     DoSql($sql);
 
@@ -265,10 +259,10 @@ function du($dir)
 function emptyCacheCli()
 {
     global $_Gconfig;
-  
-    echo "\n".'# Caches'."\n";
+
+    echo "\n" . '# Caches' . "\n";
     foreach ($_Gconfig['cachePaths'] as $k => $v) {
-        echo " * ".($k)."\n";
+        echo " * " . ($k) . "\n";
         emptyDir($v, true);
     }
 

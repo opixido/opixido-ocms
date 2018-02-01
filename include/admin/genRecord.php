@@ -77,26 +77,26 @@ class genRecord
 
                 $this->JustInserted = true;
                 $chp = '';
-                if (isset($_SESSION[ gfuid() ]['levels'][ $_SESSION[ gfuid() ]['nbLevels'] ]) && isset($_SESSION[ gfuid() ]['levels'][ $_SESSION[ gfuid() ]['nbLevels'] ]['insertOtherField']) || isset($_SESSION[ gfuid() ]['genform__add_sub_table'])) {
+                if (isset($_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]) && isset($_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['insertOtherField']) || isset($_SESSION[gfuid()]['genform__add_sub_table'])) {
                     global $relinv;
                     reset($relinv);
 
-                    $otherTable = !empty($_SESSION[ gfuid() ]['genform__add_sub_table']) ? $_SESSION[ gfuid() ]['genform__add_sub_table'] : $_SESSION[ gfuid() ]['levels'][ $_SESSION[ gfuid() ]['nbLevels'] ]['curTable'];
-                    $fk_id = !empty($_SESSION[ gfuid() ]['levels'][ $_SESSION[ gfuid() ]['nbLevels'] ]['curId']) ?
-                        $fk_id = $_SESSION[ gfuid() ]['levels'][ $_SESSION[ gfuid() ]['nbLevels'] ]['curId'] :
-                        $_SESSION[ gfuid() ]['genform__add_sub_id'];
+                    $otherTable = !empty($_SESSION[gfuid()]['genform__add_sub_table']) ? $_SESSION[gfuid()]['genform__add_sub_table'] : $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['curTable'];
+                    $fk_id = !empty($_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['curId']) ?
+                        $fk_id = $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['curId'] :
+                        $_SESSION[gfuid()]['genform__add_sub_id'];
 
 
-                    if (!empty($relinv[ $otherTable ])) {
-                        foreach ($relinv[ $otherTable ] as $v) {
+                    if (!empty($relinv[$otherTable])) {
+                        foreach ($relinv[$otherTable] as $v) {
                             if ($v[0] == $this->table) {
                                 $chp = $v[1];
                             }
                         }
                     }
-                    if (!empty($_SESSION[ gfuid() ]['newTableFk'])) {
-                        $chp = $_SESSION[ gfuid() ]['newTableFk'];
-                        $_SESSION[ gfuid() ]['newTableFk'] = '';
+                    if (!empty($_SESSION[gfuid()]['newTableFk'])) {
+                        $chp = $_SESSION[gfuid()]['newTableFk'];
+                        $_SESSION[gfuid()]['newTableFk'] = '';
                     }
                 }
 
@@ -109,23 +109,23 @@ class genRecord
                 $auto = false;
                 $tableInfo = MetaColumns($this->table);
 
-                if ($tableInfo[ strtoupper($_REQUEST['curTableKey']) ]->auto_increment > 0) {
+                if ($tableInfo[strtoupper($_REQUEST['curTableKey'])]->auto_increment > 0) {
                     $auto = true;
                 }
 
 
                 /* On fait confiance a l'auto_increment */
-                if ($auto || $_REQUEST[ 'genform_' . $_REQUEST['curTableKey'] ] != '') {
-                    if (empty($_REQUEST[ 'genform_' . $_REQUEST['curTableKey'] ])) {
-                        $_REQUEST[ 'genform_' . $_REQUEST['curTableKey'] ] = '';
+                if ($auto || $_REQUEST['genform_' . $_REQUEST['curTableKey']] != '') {
+                    if (empty($_REQUEST['genform_' . $_REQUEST['curTableKey']])) {
+                        $_REQUEST['genform_' . $_REQUEST['curTableKey']] = '';
                     }
-                    $sql = "INSERT INTO " . $this->table . " (" . $_REQUEST['curTableKey'] . ") VALUES ('" . $_REQUEST[ 'genform_' . $_REQUEST['curTableKey'] ] . "')";
+                    $sql = "INSERT INTO " . $this->table . " (" . $_REQUEST['curTableKey'] . ") VALUES ('" . $_REQUEST['genform_' . $_REQUEST['curTableKey']] . "')";
 
 
                     $oldId = InsertId();
                     $res = DoSql($sql);
                     if ($res) {
-                        $iid = $_REQUEST[ 'genform_' . $_REQUEST['curTableKey'] ] ? $_REQUEST[ 'genform_' . $_REQUEST['curTableKey'] ] : InsertId();
+                        $iid = $_REQUEST['genform_' . $_REQUEST['curTableKey']] ? $_REQUEST['genform_' . $_REQUEST['curTableKey']] : InsertId();
                     }
 
                     $this->id = $iid;
@@ -153,12 +153,12 @@ class genRecord
 
                 $_GET['curId'] = $_POST['curId'] = $_REQUEST['curId'] = $this->id;
 
-                if (!empty($_SESSION[ gfuid() ]['sqlWaitingForInsert'])) {
-                    foreach ($_SESSION[ gfuid() ]['sqlWaitingForInsert'] as $v) {
+                if (!empty($_SESSION[gfuid()]['sqlWaitingForInsert'])) {
+                    foreach ($_SESSION[gfuid()]['sqlWaitingForInsert'] as $v) {
                         doSql(str_replace('[INSERTID]', $this->id, $v));
                     }
                 }
-                $_SESSION[ gfuid() ]['sqlWaitingForInsert'] = array();
+                $_SESSION[gfuid()]['sqlWaitingForInsert'] = array();
 
                 /* Si on vient de rajouter un element qui pointe vers le nbLevel precedent */
 
@@ -172,8 +172,8 @@ class genRecord
                     $query = ' UPDATE ' . $this->table . ' SET ' . $chp . ' =  "' . $fk_id . '" WHERE ' . $this->pk . ' = ' . sql($this->id);
                     DoSql($query);
 
-                    $_SESSION[ gfuid() ]['levels'][ $_SESSION[ gfuid() ]['nbLevels'] ]['insertOtherField'] = "";
-                    $_SESSION[ gfuid() ]['genform__add_sub_id'] = $_SESSION[ gfuid() ]['genform__add_sub_table'] = "";
+                    $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['insertOtherField'] = "";
+                    $_SESSION[gfuid()]['genform__add_sub_id'] = $_SESSION[gfuid()]['genform__add_sub_table'] = "";
                 }
 
                 global $genMessages;
@@ -235,7 +235,7 @@ class genRecord
             die();
         }
 
-        $_SESSION[ gfuid() ]['curFields'] = array();
+        $_SESSION[gfuid()]['curFields'] = array();
         // mail('conort@gmail.com','clean',gfuid());
 
         return $this->id;
@@ -267,12 +267,12 @@ class genRecord
         $chps = getTabField($this->table);
 
 
-        if (!empty($chps[ $_Gconfig['field_date_crea'] ])) {
+        if (!empty($chps[$_Gconfig['field_date_crea']])) {
             DoSql('UPDATE ' . $this->table . ' SET ' . $_Gconfig['field_date_crea'] . ' = NOW() 
             		WHERE ' . $this->pk . ' = "' . $this->id . '"');
         }
 
-        if (!empty($chps[ $_Gconfig['field_creator'] ]) && $this->gs) {
+        if (!empty($chps[$_Gconfig['field_creator']]) && $this->gs) {
             DoSql('UPDATE ' . $this->table . ' SET ' . $_Gconfig['field_creator'] . ' = ' . sql($this->gs->adminid) . '
             		 WHERE ' . $this->pk . ' = "' . $this->id . '"');
         }
@@ -332,8 +332,8 @@ class genRecord
             $sql = 'SELECT ' . VERSION_FIELD . ' FROM ' . $this->table . ' WHERE ' . $this->pk . ' = "' . mes($this->id) . '"';
             $row = GetSingle($sql);
 
-            $gr = new GenRecord($this->table, $row[ VERSION_FIELD ]);
-            $gr->DeleteRow($row[ VERSION_FIELD ]);
+            $gr = new GenRecord($this->table, $row[VERSION_FIELD]);
+            $gr->DeleteRow($row[VERSION_FIELD]);
         }
 
 
@@ -349,7 +349,7 @@ class genRecord
     {
         global $_Gconfig;
         $chps = getTabField($this->table);
-        if (isset($chps[ $_Gconfig['field_date_maj'] ])) {
+        if (isset($chps[$_Gconfig['field_date_maj']])) {
             DoSql('UPDATE ' . $this->table . ' SET ' . $_Gconfig['field_date_maj'] . ' = NOW() WHERE ' . $this->pk . ' = "' . $this->id . '"');
         }
 
@@ -377,14 +377,14 @@ class genRecord
         if (is_array($gr_on)) {
 
             if (array_key_exists($action, $gr_on) &&
-                array_key_exists($this->table, $gr_on[ $action ])
+                array_key_exists($this->table, $gr_on[$action])
             ) {
 
-                if (!is_array($gr_on[ $action ][ $this->table ])) {
-                    $gr_on[ $action ][ $this->table ] = array($gr_on[ $action ][ $this->table ]);
+                if (!is_array($gr_on[$action][$this->table])) {
+                    $gr_on[$action][$this->table] = array($gr_on[$action][$this->table]);
                 }
 
-                foreach ($gr_on[ $action ][ $this->table ] as $v) {
+                foreach ($gr_on[$action][$this->table] as $v) {
 
                     if (function_exists($v)) {
                         $status = call_user_func($v, $this->id, $this->row, $this, $this->table);
@@ -394,12 +394,12 @@ class genRecord
                 }
             }
 
-            if (array_key_exists($action, $gr_on) && array_key_exists('ANY_TABLE', $gr_on[ $action ])) {
+            if (array_key_exists($action, $gr_on) && array_key_exists('ANY_TABLE', $gr_on[$action])) {
 
-                if (!is_array($gr_on[ $action ]['ANY_TABLE'])) {
-                    $gr_on[ $action ]['ANY_TABLE'] = array($gr_on[ $action ]['ANY_TABLE']);
+                if (!is_array($gr_on[$action]['ANY_TABLE'])) {
+                    $gr_on[$action]['ANY_TABLE'] = array($gr_on[$action]['ANY_TABLE']);
                 }
-                foreach ($gr_on[ $action ]['ANY_TABLE'] as $v) {
+                foreach ($gr_on[$action]['ANY_TABLE'] as $v) {
                     if (function_exists($v)) {
 
                         $status = call_user_func($v, $this->id, $this->row, $this, $this->table);
@@ -432,7 +432,7 @@ class genRecord
             $obj = new GenForm($this->table, '', $id);
 
             while (list($champ, $v) = @each($obj->tab_default_field)) {
-                if (isUploadField($champ) && strlen($obj->tab_default_field[ $champ ])) {
+                if (isUploadField($champ) && strlen($obj->tab_default_field[$champ])) {
                     /**
                      *
                      * @unlink ($uploadRep.$obj->tab_default_field[$champ])
@@ -449,14 +449,14 @@ class genRecord
              */
             global $relinv;
             reset($relinv);
-            if (!empty($relinv[ $this->table ])) {
-                foreach ($relinv[ $this->table ] as $v) {
+            if (!empty($relinv[$this->table])) {
+                foreach ($relinv[$this->table] as $v) {
                     $sql = 'SELECT * FROM ' . $v[0] . ' WHERE ' . $v[1] . ' = "' . $id . '"';
                     $res = GetAll($sql);
                     $tpk = getPrimaryKey($v[0]);
                     foreach ($res as $row) {
-                        $gr = new genRecord($v[0], $row[ $tpk ]);
-                        $gr->DeleteRow($row[ $tpk ]);
+                        $gr = new genRecord($v[0], $row[$tpk]);
+                        $gr->DeleteRow($row[$tpk]);
                     }
                 }
                 reset($relinv);
@@ -470,10 +470,10 @@ class genRecord
 
             $_REQUEST["curId"] = $this->id = "";
 
-            if (!empty($orderFields[ $this->table ]) && !empty($orderFields[ $this->table ][1])) {
-                $fk_id = $obj->tab_default_field[ $orderFields[ $this->table ][1] ];
+            if (!empty($orderFields[$this->table]) && !empty($orderFields[$this->table][1])) {
+                $fk_id = $obj->tab_default_field[$orderFields[$this->table][1]];
                 $ord = new GenOrder($this->table, 0, $fk_id);
-                $ord->reorderAfterDelete($obj->tab_default_field[ $orderFields[ $this->table ][0] ]);
+                $ord->reorderAfterDelete($obj->tab_default_field[$orderFields[$this->table][0]]);
                 $ord->reOrder();
             }
 
@@ -486,14 +486,14 @@ class genRecord
             foreach ($tablerel as $k => $v) {
                 if (in_array($this->table, $v)) {
                     $v_inv = array_flip($v);
-                    $fkch = $v_inv[ $this->table ];
+                    $fkch = $v_inv[$this->table];
                     $sql = 'DELETE FROM ' . $k . ' WHERE ' . $fkch . ' = "' . $id . '"';
                     DoSql($sql);
                 }
             }
 
-            if (!empty($_Gconfig['relOne'][ $this->table ])) {
-                foreach ($_Gconfig['relOne'][ $this->table ] as $relTable => $relPk) {
+            if (!empty($_Gconfig['relOne'][$this->table])) {
+                foreach ($_Gconfig['relOne'][$this->table] as $relTable => $relPk) {
                     $r = getRowFromId($relTable, $id);
                     if ($r) {
                         $gr = new genRecord($relTable, $id);
@@ -523,12 +523,12 @@ class genRecord
         $this->tables = array($this->table);
         $this->wheres = array(' ' . getPrimaryKey($this->table) . ' = ' . sql($this->id));
 
-        if (empty($_Gconfig['relOne'][ $this->table ])) {
+        if (empty($_Gconfig['relOne'][$this->table])) {
             return;
         }
 
-        foreach ($_Gconfig['relOne'][ $this->table ] as $table => $clef) {
-            if (!empty($this->tab_default_field[ $clef ])) {
+        foreach ($_Gconfig['relOne'][$this->table] as $table => $clef) {
+            if (!empty($this->tab_default_field[$clef])) {
                 $this->tables[] = $table;
                 $this->wheres[] = ' ' . $clef . ' = ' . getPrimaryKey($this->table);
                 $this->tab_field = array_merge($this->tab_field, getTabField($table));
@@ -576,7 +576,7 @@ class genRecord
         // debug('New Record');
 
 
-        while (list($key_name, $value) = each($_POST)) {
+        foreach ($_POST as $key_name => $value) {
 
 
             /* Est - ce un champ valable ? */
@@ -584,13 +584,13 @@ class genRecord
                 /* Nom du champ */
                 $name = str_replace("genform_", "", $key_name);
 
-                if (isset($tab_field[ $name ]) && !$tab_field[ $name ]->not_null && !strlen($value)) {
+                if (isset($tab_field[$name]) && !$tab_field[$name]->not_null && !strlen($value)) {
                     $value = 'NULL';
                 }
 
                 if (array_key_exists($name, $functionField)) {
-                    if (array_key_exists('after', $functionField[ $name ])) {
-                        $value = call_user_func($functionField[ $name ]['after'], $value);
+                    if (array_key_exists('after', $functionField[$name])) {
+                        $value = call_user_func($functionField[$name]['after'], $value);
                     }
                 }
 
@@ -602,8 +602,8 @@ class genRecord
                     $tab = explode("__", $key_name);
                     // if($this->table != $tab[1]) {
                     $_REQUEST['newTable'] = $tab[1];
-                    if (isset($_POST[ $key_name . "_value" ])) {
-                        $_REQUEST['newId'] = $_POST[ $key_name . "_value" ];
+                    if (isset($_POST[$key_name . "_value"])) {
+                        $_REQUEST['newId'] = $_POST[$key_name . "_value"];
                     } else {
                         $_REQUEST['newId'] = akev($_POST, "genform_" . akev($tab, 2));
                     }
@@ -616,10 +616,10 @@ class genRecord
                         $table_to_del = $tab[1];
                         $table_to_del_pk = GetPrimaryKey($table_to_del);
                         $id_to_del = false;
-                        if (!empty($_POST[ $key_name . "_value" ])) {
-                            $id_to_del = $_POST[ $key_name . "_value" ];
+                        if (!empty($_POST[$key_name . "_value"])) {
+                            $id_to_del = $_POST[$key_name . "_value"];
                         } else if (!empty($tab[2])) {
-                            $id_to_del = $_POST[ "genform_" . $tab[2] ];
+                            $id_to_del = $_POST["genform_" . $tab[2]];
                         }
                         //debug('DELETE  : '.$id_to_del.' from '.$table_to_del);
                         if (($id_to_del > 0 || $id_to_del != "") && $this->gs->can('del', $table_to_del, $id_to_del)) {
@@ -644,7 +644,7 @@ class genRecord
                                 $tab = explode("__", $key_name);
                                 // if($this->table != $tab[1]) {
                                 $_REQUEST['newTable'] = $tab[1];
-                                $_SESSION[ gfuid() ]['newTableFk'] = $tab[2];
+                                $_SESSION[gfuid()]['newTableFk'] = $tab[2];
                                 $_REQUEST['insertOtherField'] = "1";
                                 $_REQUEST['newId'] = "new";
                                 // }
@@ -677,8 +677,9 @@ class genRecord
 
                                             $tab = explode("__", $key_name);
                                             $found = false;
-                                            reset($tablerel[ $tab[1] ]);
-                                            while (list($k, $v) = each($tablerel[ $tab[1] ])) {
+                                            reset($tablerel[$tab[1]]);
+
+                                            foreach ($tablerel[$tab[1]] as $k => $v) {
                                                 if ($v == $this->table && !$found) {
                                                     $fk1 = $k;
                                                     $found = true;
@@ -687,7 +688,7 @@ class genRecord
                                                     $fk_table = $v;
                                                 }
                                             }
-                                            reset($tablerel[ $tab[1] ]);
+                                            reset($tablerel[$tab[1]]);
 
                                             if (empty($_REQUEST['genform_cancel_x'])) {
                                                 $sql = "DELETE FROM " . $tab[1] . " WHERE " . $fk1 . " = " . $this->id;
@@ -699,7 +700,7 @@ class genRecord
                                                         $orderField = '';
                                                         $orderValue = '';
                                                         if (array_key_exists($tab[1], $orderFields)) {
-                                                            $orderField = ',' . $orderFields[ $tab[1] ][0];
+                                                            $orderField = ',' . $orderFields[$tab[1]][0];
                                                             $orderValue = ',' . $order;
                                                         }
                                                         $sql = 'INSERT INTO ' . $tab[1] . ' ( ' . $fk1 . ' , ' . $fk2 . '' . $orderField . ')  VALUES (' . $this->id . ',' . $v . '' . $orderValue . ') ';
@@ -711,7 +712,7 @@ class genRecord
 
                                             if (isNeeded($this->table, $tab[1]) && (!count($value) || $value == "")) {
                                                 $isError = 1;
-                                                $fieldError[ $tab[1] ] = 1;
+                                                $fieldError[$tab[1]] = 1;
                                             }
                                         } else
                                             /**
@@ -723,8 +724,9 @@ class genRecord
 
                                                 $tab = explode("__", $key_name);
                                                 $found = false;
-                                                reset($tablerel[ $tab[1] ]);
-                                                while (list($k, $v) = each($tablerel[ $tab[1] ])) {
+                                                reset($tablerel[$tab[1]]);
+
+                                                foreach ($tablerel[$tab[1]] as $k => $v) {
                                                     if ($v == $this->table && !$found) {
                                                         $fk1 = $k;
                                                         $found = true;
@@ -733,7 +735,7 @@ class genRecord
                                                         $fk_table = $v;
                                                     }
                                                 }
-                                                reset($tablerel[ $tab[1] ]);
+                                                reset($tablerel[$tab[1]]);
 
                                                 if (empty($_REQUEST['genform_cancel_x'])) {
                                                     $sql = "DELETE FROM " . $tab[1] . " WHERE " . $fk1 . " = " . $this->id;
@@ -746,7 +748,7 @@ class genRecord
                                                              * Nouvel élément
                                                              */
                                                             if (strpos($k, '-') !== false) {
-                                                                $c = $_Gconfig['tablerelAsTags'][ $tab[1] ]['allowAdd'];
+                                                                $c = $_Gconfig['tablerelAsTags'][$tab[1]]['allowAdd'];
                                                                 if ($c) {
 
                                                                     $rinsert = array($c => $v);
@@ -760,7 +762,7 @@ class genRecord
                                                             $orderField = '';
                                                             $orderValue = '';
                                                             if (array_key_exists($tab[1], $orderFields)) {
-                                                                $orderField = ',' . $orderFields[ $tab[1] ][0];
+                                                                $orderField = ',' . $orderFields[$tab[1]][0];
                                                                 $orderValue = ',' . $order;
                                                             }
                                                             $sql = 'INSERT INTO ' . $tab[1] . ' ( ' . $fk1 . ' , ' . $fk2 . '' . $orderField . ')  VALUES (' . $this->id . ',' . $v . '' . $orderValue . ') ';
@@ -771,30 +773,30 @@ class genRecord
                                                 }
                                                 if (isNeeded($this->table, $tab[1]) && (!count($value) || $value == "")) {
                                                     $isError = 1;
-                                                    $fieldError[ $tab[1] ] = 1;
+                                                    $fieldError[$tab[1]] = 1;
                                                 }
                                             } else
 
                                                 /* Est-il dans la liste des champs que j'ai le droit de modifier */
 
-                                                if (!empty($_SESSION[ gfuid() ]['curFields']) && in_array($name, $_SESSION[ gfuid() ]['curFields'])) {
+                                                if (!empty($_SESSION[gfuid()]['curFields']) && in_array($name, $_SESSION[gfuid()]['curFields'])) {
 
 
-                                                    if (isset($tab_field[ $name ])) {
+                                                    if (isset($tab_field[$name])) {
 
                                                         if (is_array($value)) {
                                                             $value = implode(',', $value);
                                                         }
 
                                                         /* Nombre reel */
-                                                        if ($tab_field[ $name ]->type == "real") {
+                                                        if ($tab_field[$name]->type == "real") {
                                                             $val1 = (real)$value;
                                                             if (preg_match("/[A-Za-z]/", $value)) {
                                                                 // echo "Found letters";
                                                                 $isError = 1;
-                                                                $fieldError[ $name ] = 1;
+                                                                $fieldError[$name] = 1;
                                                             }
-                                                        } /* Entier non FK */ else if ($tab_field[ $name ]->type == "int" && !strstr($name, "fk") !== false && $value != "") {
+                                                        } /* Entier non FK */ else if ($tab_field[$name]->type == "int" && !strstr($name, "fk") !== false && $value != "") {
                                                             $val1 = (int)$value;
                                                             $value = str_replace(" ", "", $value);
                                                             $value = str_replace(".", "", $value);
@@ -802,36 +804,36 @@ class genRecord
                                                             if (preg_match("/[A-Za-z]/", $value) && $value != "NULL") {
                                                                 // echo "Found letters";
                                                                 $isError = 1;
-                                                                $fieldError[ $name ] = 1;
+                                                                $fieldError[$name] = 1;
                                                             }
 
                                                             /* DATE */
-                                                        } else if ($tab_field[ $name ]->type == "date" && false) {
-                                                            $value = $_POST[ 'genform_' . $name . '_year' ] . '-' . $_POST[ 'genform_' . $name . '_month' ] . '-' . $_POST[ 'genform_' . $name . '_day' ];
+                                                        } else if ($tab_field[$name]->type == "date" && false) {
+                                                            $value = $_POST['genform_' . $name . '_year'] . '-' . $_POST['genform_' . $name . '_month'] . '-' . $_POST['genform_' . $name . '_day'];
                                                             $dates = explode("-", $value);
 
                                                             /* TIME */
-                                                        } else if ($tab_field[ $name ]->type == "time") {
-                                                            $_POST[ 'genform_' . $name . '_min' ] = $_POST[ 'genform_' . $name . '_min' ] != '' ? $_POST[ 'genform_' . $name . '_min' ] : '00';
-                                                            $_POST[ 'genform_' . $name . '_sec' ] = $_POST[ 'genform_' . $name . '_sec' ] != '' ? $_POST[ 'genform_' . $name . '_sec' ] : '00';
-                                                            $_POST[ 'genform_' . $name . '_hour' ] = $_POST[ 'genform_' . $name . '_hour' ] != '' ? $_POST[ 'genform_' . $name . '_hour' ] : '00';
+                                                        } else if ($tab_field[$name]->type == "time") {
+                                                            $_POST['genform_' . $name . '_min'] = $_POST['genform_' . $name . '_min'] != '' ? $_POST['genform_' . $name . '_min'] : '00';
+                                                            $_POST['genform_' . $name . '_sec'] = $_POST['genform_' . $name . '_sec'] != '' ? $_POST['genform_' . $name . '_sec'] : '00';
+                                                            $_POST['genform_' . $name . '_hour'] = $_POST['genform_' . $name . '_hour'] != '' ? $_POST['genform_' . $name . '_hour'] : '00';
 
 
-                                                            $value = $_POST[ 'genform_' . $name . '_hour' ] . ':' . $_POST[ 'genform_' . $name . '_min' ] . ':' . $_POST[ 'genform_' . $name . '_sec' ];
-                                                        } else if ($tab_field[ $name ]->type == "datetime") {
+                                                            $value = $_POST['genform_' . $name . '_hour'] . ':' . $_POST['genform_' . $name . '_min'] . ':' . $_POST['genform_' . $name . '_sec'];
+                                                        } else if ($tab_field[$name]->type == "datetime") {
 
                                                             /* $_POST['genform_' . $name . '_hh'] = $_POST['genform_' . $name . '_hh'] != '' ? $_POST['genform_' . $name . '_hh'] : '00';
                                                               $_POST['genform_' . $name . '_mm'] = $_POST['genform_' . $name . '_mm'] != '' ? $_POST['genform_' . $name . '_mm'] : '00';
                                                               $_POST['genform_' . $name . '_ss'] = $_POST['genform_' . $name . '_ss'] != '' ? $_POST['genform_' . $name . '_ss'] : '00';
                                                              */
 
-                                                            $value = $_POST[ 'genform_' . $name ] . ' ' . $_POST[ 'genform_' . $name . '_hh' ] . ':' . $_POST[ 'genform_' . $name . '_mm' ] . ':' . $_POST[ 'genform_' . $name . '_ss' ];
+                                                            $value = $_POST['genform_' . $name] . ' ' . $_POST['genform_' . $name . '_hh'] . ':' . $_POST['genform_' . $name . '_mm'] . ':' . $_POST['genform_' . $name . '_ss'];
 
                                                             $dates = explode("-", $value);
                                                         }
                                                     } else if (arrayInWord($mailFields, $name) && 0) {
-                                                        if ($_POST[ 'genform_' . $name . '_beforeat' ] && $_POST[ 'genform_' . $name . '_afterat' ]) {
-                                                            $value = $_POST[ 'genform_' . $name . '_beforeat' ] . "@" . $_POST[ 'genform_' . $name . '_afterat' ];
+                                                        if ($_POST['genform_' . $name . '_beforeat'] && $_POST['genform_' . $name . '_afterat']) {
+                                                            $value = $_POST['genform_' . $name . '_beforeat'] . "@" . $_POST['genform_' . $name . '_afterat'];
                                                         } else {
                                                             $value = "";
                                                         }
@@ -849,7 +851,7 @@ class genRecord
                                                     $value = trim($value);
                                                     if (($value == "" || $value == "0" || $value == "0.0" || $value == "NULL" || $value == "::" || (is_array($value) && count($value) == 0)) && isNeeded($this->table, $name)) {
                                                         $isError = 1;
-                                                        $fieldError[ $name ] = 1;
+                                                        $fieldError[$name] = 1;
                                                     }
 
                                                     /*
@@ -949,7 +951,7 @@ class genRecord
 
 
                                                     if (strlen($name)) {
-                                                        $this->curValues[ $name ] = $value;
+                                                        $this->curValues[$name] = $value;
 
                                                         $query .= $this->updateQuery($name, $value);
                                                     }
@@ -960,7 +962,8 @@ class genRecord
 
         if ($_FILES) {
             reset($_FILES);
-            while (list($k, $v) = each($_FILES)) {
+
+            foreach ($_FILES as $k => $v) {
                 if (!$v['error'] && $v['name']) {
                     $name = str_replace("genform_", "", $k);
 
@@ -978,8 +981,9 @@ class genRecord
         }
 
         /* SI c'est un champ en RTE */
-        if (isset($_SESSION[ "genform_" . $this->table ]) && !isset($_POST['genform_cancel_x'])) {
-            while (list($k, $v) = each($_SESSION[ "genform_" . $this->table ])) {
+        if (isset($_SESSION["genform_" . $this->table]) && !isset($_POST['genform_cancel_x'])) {
+            
+            foreach ($_SESSION["genform_" . $this->table] as $k => $v) {
                 if (!$this->gs->can('edit', $this->table, '', $this->id, $k, $v) && !$this->JustInserted) {
                     $this->gs->showError();
                     die();
@@ -988,7 +992,7 @@ class genRecord
                 $query .= $this->updateQuery($k, ((($v)))); //
             }
 
-            $_SESSION[ "genform_" . $this->table ] = "";
+            $_SESSION["genform_" . $this->table] = "";
         }
 
         $res = false;
@@ -1000,11 +1004,11 @@ class genRecord
             $res = DoSql($query);
         }
 
-        if (!empty($orderFields[ $this->table ])) {
+        if (!empty($orderFields[$this->table])) {
             if (!$fk_id) {
                 // $myobj = new GenForm($this->table,"",$this->id);
                 $myobj = getRowFromId($this->table, $this->id);
-                $fk_id = akev($myobj, akev($orderFields[ $this->table ], 1));
+                $fk_id = akev($myobj, akev($orderFields[$this->table], 1));
             }
             $ord = new GenOrder($this->table, $this->id, $fk_id);
 

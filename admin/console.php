@@ -60,7 +60,6 @@ $genMessages = new genMessages();
 $gb_obj->includeAdmin();
 
 
-
 $gs_obj = new genSecurity();
 
 initPlugins();
@@ -72,6 +71,8 @@ $plugs = GetPlugins();
 foreach ($plugs as $v) {
     $GLOBALS['gb_obj']->includeFile('admin.php', PLUGINS_FOLDER . '' . $v . '/');
 }
+
+importMovies();
 
 ob_end_clean();
 

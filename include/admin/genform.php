@@ -132,7 +132,7 @@ class GenForm
         if (is_array($this->id))
             $this->setTabFromRow();
         //if ( $this->id && $this->id != "new" )
-        if (count($_row) > 1)
+        if (is_array($_row) && count($_row) > 1)
             $this->tab_default_field = $_row;
         else
             $this->setTabDefaultField(' ' . $this->pk . ' = "' . $this->id . '"');
@@ -167,7 +167,7 @@ class GenForm
         $this->language = LG();
 
         global $tabForms;
-        $this->pages =akev($tabForms[$this->table_name],"pages");
+        $this->pages = akev($tabForms[$this->table_name], "pages");
 
 
         $this->getLgs();
@@ -271,7 +271,8 @@ class GenForm
                 $this->tab_default_field[$k] = '';
             }
         }
-        while (list($k, $v) = each($_REQUEST)) {
+
+        foreach ($_REQUEST as $k => $v) {
             if (strstr($k, 'genform_default__')) {
                 $this->tab_default_field[str_replace('genform_default__', '', $k)] = $_REQUEST[$k];
             }
@@ -649,7 +650,7 @@ class GenForm
         $jsColor = '';
         $this->bufferPrint = "";
 
-        if(!$this->onlyData) {
+        if (!$this->onlyData) {
             $this->addBuffer('<div class="well genform_champ_out" id="genform_div_' . $tab_name . '">');
         }
 
@@ -783,7 +784,7 @@ class GenForm
 
         if (isset($_Gconfig['fullArbo'][$this->table_name]) && ake($_Gconfig['fullArbo'][$this->table_name], $name)) {
 
-            
+
             include_once($gb_obj->getIncludePath('genform.fullarbo.php', 'admin/genform_modules'));
 
             $vals = $_Gconfig['fullArbo'][$this->table_name][$name];
@@ -1244,7 +1245,7 @@ class GenForm
 
             if ($this->gs->can('edit', $this->table, $this->tab_default_field)) {
                 p(' <button class="btn btn-primary" id="genform_ok" name="genform_ok"  >');
-                p('<img src="' . getPicto('src_save',24).'"  alt="" />');
+                p('<img src="' . getPicto('src_save', 24) . '"  alt="" />');
                 p('<span>' . t('save') . '</span></button><br/>');
             }
 
