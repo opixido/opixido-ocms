@@ -572,3 +572,8 @@ $_Gconfig['futurOfflineFields'] = array();
 $_Gconfig['futurOnlineFields'] = array();
 
 $_Gconfig['doDie404'] = true;
+
+/**
+ * Liste des actions accessibles en ligne de commande
+ */
+$_Gconfig['cmdActions'] = array();
