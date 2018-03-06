@@ -22,6 +22,10 @@
 # @package ocms
 #
 
+if (PHP_SAPI != 'cli') {
+    die();
+}
+
 ob_start();
 
 define('IN_ADMIN', true);
@@ -72,8 +76,36 @@ foreach ($plugs as $v) {
     $GLOBALS['gb_obj']->includeFile('admin.php', PLUGINS_FOLDER . '' . $v . '/');
 }
 
-importMovies();
-
 ob_end_clean();
+
+
+/**
+ * Toutes les actions sont superAdmin
+ */
+$gs_obj->superAdmin = true;
+
+
+global $_Gconfig;
+/**
+ * Récupération de l'argument 1 comme nom de fonction
+ */
+if (!empty($argv[1])) {
+    /**
+     * La fonction doit être définie dans les cmdActions
+     */
+    if (in_array($argv[1], $_Gconfig['cmdActions'])) {
+        echo 'Execute ' . $argv[1] . "\n";
+        /**
+         * On récupère les arguments passés après pour les passer à la fonction
+         */
+        $params = array_slice($argv, 2);
+
+        /**
+         * On appel la fonction avec les arguments
+         */
+        call_user_func_array($argv[1], $params);
+    }
+}
+
 
 
