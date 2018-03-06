@@ -114,6 +114,7 @@ function genformPreviewFk(curtable, nom, champs, iframenom) {
 
 lgfieldcur = new Array();
 window.currentLg = false;
+
 function showLgField(field, lg, skipAjax) {
     $('.lgbtn').removeClass('disabled');
     $('.lgbtn_' + lg).addClass('disabled');
@@ -166,10 +167,10 @@ var tempY = 0;
 
 document.onmousemove = function (e) {
     x = (navigator.appName.substring(0, 3) == "Net") ? e.pageX : event.x
-    + document.body.scrollLeft;
+        + document.body.scrollLeft;
     mouseX = x;
     y = (navigator.appName.substring(0, 3) == "Net") ? e.pageY : event.y
-    + document.body.scrollTop;
+        + document.body.scrollTop;
     mouseY = y;
 };
 
@@ -477,17 +478,24 @@ function generatepass(plength) {
     return temp;
 }
 
+/**
+ * A la soumission du formulaire on sélectionne tous les items des select multiple de droite
+ * Et on convertit le champ en array pour tout récupérer
+ */
 function doSubmitForm() {
     for (p in multiField) {
-        for (z = 0; z < (multiField[p].options.length); z++) {
-            multiField[p].options[z].selected = true;
+        /**
+         * Test Pour ne pas le faire deux fois en cas de double click
+         */
+        if (!multiField[p].converted) {
+            for (z = 0; z < (multiField[p].options.length); z++) {
+                multiField[p].options[z].selected = true;
+            }
+            multiField[p].converted = true;
+            multiField[p].readonly = "readonly";
+            multiField[p].name = multiField[p].name + "[]";
         }
-        multiField[p].readonly = "readonly";
-        multiField[p].name = multiField[p].name + "[]";
-
     }
-// updateRTEs();
-
 }
 
 function selectToSearch(obj) {
@@ -666,6 +674,7 @@ function searchSelectMass(co) {
         return str;
     };
 }());
+
 /**
  * Verifie les tableaux de langue pour les champs URL
  * lors de la creation d'une rubrique
@@ -772,7 +781,7 @@ function checkFields() {
 $.extend($.expr[':'], {
     'containsi': function (elem, i, match, array) {
         return (elem.textContent || elem.innerText || '').toLowerCase()
-                .indexOf((match[3] || "").toLowerCase()) >= 0;
+            .indexOf((match[3] || "").toLowerCase()) >= 0;
     }
 });
 
