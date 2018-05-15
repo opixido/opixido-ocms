@@ -181,7 +181,7 @@ if (!class_exists('genSecurity')) {
                     $sql = "SELECT admin_nom,admin_pwd,admin_type,admin_id, admin_last_cx,admin_email
                 			FROM s_admin
                 			WHERE 
-                			admin_login like '" . mes($this->adminuser) . "' ";
+                			admin_login like " . sql($this->adminuser) . "";
 
                     $row = GetSingle($sql);
 
