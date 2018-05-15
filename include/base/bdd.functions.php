@@ -583,9 +583,8 @@ function sql($param, $type = 'string')
     } else if ($param == 'NULL') {
         return $param;
     } else {
-
-        $param = str_replace('\\', '\\\\', $param);
-        $param = (str_replace('"', '\"', $param));
+        global $co;
+        return $co->quote($param);
     }
     return '"' . $param . '"';
 }
