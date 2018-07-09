@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with oCMS. If not, see <http://www.gnu.org/licenses/>.
 #
-# @author Celio Conort / Opixido 
+# @author Celio Conort / Opixido
 # @copyright opixido 2012
 # @link http://code.google.com/p/opixido-ocms/
 # @package ocms
@@ -153,7 +153,7 @@ function autoConfig($table)
         }
     }
 
-    //$_Gconfig['adminMenus']['auto'][] = $table;	
+    //$_Gconfig['adminMenus']['auto'][] = $table;
 }
 
 /**
@@ -1988,12 +1988,12 @@ function getRubFromGabarit($gab, $param = '', $all = false)
 
     if (empty($GLOBALS['GlobalObjCache'][UNIQUE_SITE]['cache_rubgab'][$gab . $param . $all])) {
 
-        $sql = 'SELECT ' . ($all ? 'R.*' : 'R.rubrique_id') . '  , 
+        $sql = 'SELECT ' . ($all ? 'R.*' : 'R.rubrique_id') . '  ,
                     G.* FROM s_rubrique AS R, s_gabarit AS G
-					WHERE G.gabarit_id = R.fk_gabarit_id AND 
-					G.gabarit_classe LIKE "' . mes($gab) . '" 
-					' . sqlRubriqueOnlyOnline('R') . ' AND 
-					( G.fk_default_rubrique_id = R.rubrique_id  OR 
+					WHERE G.gabarit_id = R.fk_gabarit_id AND
+					G.gabarit_classe LIKE "' . mes($gab) . '"
+					' . sqlRubriqueOnlyOnline('R') . ' AND
+					( G.fk_default_rubrique_id = R.rubrique_id  OR
 					G.fk_default_rubrique_id = R.' . MULTIVERSION_FIELD . '  ) ';
 
         if ($param) {
@@ -2003,9 +2003,9 @@ function getRubFromGabarit($gab, $param = '', $all = false)
 
         if (!count($row)) {
             $sql = 'SELECT ' . ($all ? 'R.*' : 'R.rubrique_id') . ' FROM s_rubrique AS R, s_gabarit AS G
-						WHERE G.gabarit_id = R.fk_gabarit_id AND 
-						G.gabarit_classe LIKE "' . mes($gab) . '" 
-						' . sqlRubriqueOnlyOnline('R') . ' AND 
+						WHERE G.gabarit_id = R.fk_gabarit_id AND
+						G.gabarit_classe LIKE "' . mes($gab) . '"
+						' . sqlRubriqueOnlyOnline('R') . ' AND
 						rubrique_gabarit_param LIKE ' . sql('%' . $param . '%') . '  ';
             $row = GetSingle($sql);
         }
@@ -2830,7 +2830,7 @@ class pagination
         if (!empty($GLOBALS['site']) && $GLOBALS['site']->g_url && $this->useGenUrl) {
             return getUrlWithParams($p);
         } else {
-            return '?' . http_build_str($p);
+            return '?' . http_build_query($p);
         }
     }
 

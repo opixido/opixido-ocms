@@ -79,7 +79,7 @@ class genSearchV2
         if ($this->relOne) {
             $sql .= ' , ' . $this->relOne;
         }
-        $sql .= ' 
+        $sql .= '
 				WHERE 1 ' . GetOnlyEditableVersion($this->table, 'T') . '
 				' . $GLOBALS['gs_obj']->sqlCanRow($this->table);
 
@@ -195,7 +195,7 @@ class genSearchV2
                     $key_id = (strpos($k, 'cf_') === 0) ? $k : '';
                     if (array_key_exists($key_id, $_REQUEST)) {
                         // le contenu du champs personnalisé est complété
-                        if (!empty($_REQUEST[$k])) {
+                        if (!empty($_REQUEST[$k]) || $_REQUEST[$k] === "0") {
                             $this->fullRealFields[str_replace('cf_', '', $k)] = $v;
                             $this->full_custom_fields_request[$k] = array();
                             // si c'est un tableau
@@ -295,7 +295,7 @@ class genSearchV2
         p('<input type="hidden" name="relOne" value="' . $this->relOne . '" />');
         p('<input type="hidden" name="resume" value="1" />');
         p('<label style="margin-top:5px;float:left;" for="selectChooseSel">' . t('access_direct') . '</label>
-                
+
                 	<select id="selectChooseSel" name="curId" onChange="gid(\'formChooseSel\').submit();" style="margin-top:5px;float:left;">');
 
         p('<option value="" >--- ' . t("choose_item") . ' ---</option>');
@@ -336,7 +336,7 @@ class genSearchV2
         p('
         	<script type="text/javascript">
         		function submitFormRech(a,b) {
-        			window.location = "?curTable=' . $_REQUEST['curTable'] . '&curId="+b;        			
+        			window.location = "?curTable=' . $_REQUEST['curTable'] . '&curId="+b;
         		}
         	</script>
         ');
@@ -388,8 +388,8 @@ class genSearchV2
                     $thiskey = GetPrimaryKey($fk_table);
 
                     if (!empty($gs_obj->myroles[$fk_table]['rows'])) {
-                        $sql = "SELECT * FROM " . $fk_table . " 
-                            WHERE 1 " . GetOnlyEditableVersion($fk_table) . " 
+                        $sql = "SELECT * FROM " . $fk_table . "
+                            WHERE 1 " . GetOnlyEditableVersion($fk_table) . "
                                 AND " . getPrimaryKey($fk_table) . "
                                     IN (" . implode(",", $gs_obj->myroles[$fk_table]['rows']) . ")
                                 ORDER BY " . $label;
@@ -459,7 +459,7 @@ class genSearchV2
                             $sel0 = $vv === "0" ? 'selected="selected"' : '';
                             $sel1 = $vv == 1 ? 'selected="selected"' : '';
                             p('
-                            <select class="span12" name="' . $k . '">
+                            <select class="span12" name="cf_' . $k . '">
                                 <option ' . $sel . ' value="">' . ta($k) . '</option>
                                 <option ' . $sel0 . '  value="0">' . t('non') . '</option>
                                 <option ' . $sel1 . ' value="1">' . t('oui') . '</option>
@@ -467,7 +467,7 @@ class genSearchV2
                         ');
                         } else if ($type == "datetime" || $type == "date") {
                             p('<label class=""> ' . t($k) . '</label>');
-                            $vv = akev($_POST, $k . '_type');
+                            $vv = akev($_REQUEST, $k . '_type');
                             $sel = $vv == "" ? 'selected="selected"' : '';
                             $sel0 = $vv == "inf" ? 'selected="selected"' : '';
                             $sel1 = $vv == "eg" ? 'selected="selected"' : '';
@@ -508,16 +508,16 @@ class genSearchV2
                             p('<label class="hide-text"> ' . t($k) . '</label>');
 
                             p('<input class="span12" placeholder=' . alt(ta($k)) . '  type="text"
-                        			id="cf_' . $k . '" name="cf_' . $k . '" 
+                        			id="cf_' . $k . '" name="cf_' . $k . '"
                         			value="' . akev($this->fullRealFields, $k) . '" />');
 
                             p('
 
-                        <script type="text/javascript">                        
+                        <script type="text/javascript">
                         jQuery(function(){
                                 options = { serviceUrl:"?xhr=autocompletesearch&table=' . $_REQUEST['curTable'] . '&champ=' . $k . '", onSelect: submitFormRech   };
                                 a = $("#' . $k . '").autocomplete(options);
-							});	
+							});
                          </script>
 						');
                         }
@@ -605,7 +605,7 @@ class genSearchV2
         <input type="hidden" name="curTable" value="' . $this->table . '" />
         <input type="hidden" name="fromList" value="1" />
         <input type="hidden" name="relOne" value="' . $this->relOne . '" />
-        
+
         ';
 
 
@@ -815,21 +815,21 @@ class genSearchV2
         p('
 	   	<script type="text/javascript">
 	   	$("table.table tr").click(function() {
-	   		
+
 	   		if($(this).find("input[type=checkbox]").is(":checked")) {
-	   		
+
 	   			$(this).find("input[type=checkbox]").attr("checked",false);
 	   			$(this).removeClass("tr_selected");
-	   			
+
 	   		} else {
-	   		
+
 	   			$(this).find("input[type=checkbox]").attr("checked",true);
 	   			$(this).addClass("tr_selected");
-	   			
+
 	   		}
 	   	});
 	   	</script>
-	   	
+
 	   	<div style="clear:both;text-align:right" class="well form-inline" >');
 
         $html = '';
@@ -1100,8 +1100,7 @@ class genSearchV2
 
         foreach ($this->full_custom_fields_request as $k => $v) {
 
-            if (isset($_GET['page']) && $_GET['page'] != '1') {
-                $v = unserialize($v[0]);
+            if (isset($_GET['page'])) {
                 $isCustomPageFullSearch = true;
             }
 
