@@ -601,38 +601,31 @@ function refreshUploaders() {
     }
 }
 
-/**
- * Boutons de prévisualisation
- * @type Boolean|@exp;window@call;open
- */
-window.previewWindow = false;
+/*
+* Boutons de prévisualisation
+* @type Boolean|@exp;window@call;open
+*/
+var previewWindow;
 $(document).ready(function() {
-    $('.previsu a').click(function(e) {
-        e.preventDefault();
-        /**
-         * Pour virer le cache
-         */
-        var href = $(this).attr('href') + "&nocache=" + Math.random();
-        /**
-         * On met à jour après enregistrement via ajax de la page
-         */
-        doSaveAllAndStay(function() {
-            window.previewWindow.location = href + Math.random();
-        });
+   $('.previsu a').click(function(e) {
+       e.preventDefault();
+       /**
+        * Pour virer le cache
+        */
+       var href = $(this).attr('href') + "&nocache=" + Math.random();
 
-        /**
-         * Si la fenetre est déjà ouverte
-         * ET que son objet contient toujours un objet "window"
-         * Sinon ça signifie qu'elle a été fermée, mais previewWindow
-         * reste disponible ...
-         */
-        if (window.previewWindow && window.previewWindow.window) {
-            window.previewWindow.location = href;
-        }
-        else {
-            window.previewWindow = window.open(href, 'preview', 'width=1024,height=600,scrollbars=yes');
-        }
-
-        window.previewWindow.focus();
-    });
+       previewWindow = window.open(href, 'preview', 'width=1024,height=600,scrollbars=yes');
+       /**
+        * On met à jour après enregistrement via ajax de la page
+        */
+       if ($("#genform_formulaire")[0]) {
+           doSaveAllAndStay(function() {
+               previewWindow.location = href + Math.random();
+               previewWindow.focus();
+           });
+       }else{
+           previewWindow.location = href + Math.random();
+           previewWindow.focus();
+       }
+   });
 });
