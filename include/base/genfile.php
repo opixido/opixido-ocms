@@ -275,10 +275,52 @@ class genFile
 
     function getVal($v)
     {
-        if (empty($this->row)) {
-            $this->row = getRowFromId($this->table, $this->id);
+        global $relations, $relinv;
+
+        /**
+         * Sauvegarde du tableau $relations en l'état
+         */
+        $oldRelations = $relations;
+
+        /**
+         * Pour que l'objet row() retrouve les FK alors qu'on est dans un $relinv
+         * on est obligé de reporter tous les relinv dans le tableau $relations
+         */
+        foreach ($relinv as $rubparent => $vv) {
+            foreach ($vv as $sub) {
+                $relations[$sub[0]][$sub[1]] = $rubparent;
+            }
         }
-        return akev($this->row, $v);
+
+        /**
+         * On sépare le string sur le . pour récupérer les différentes relations/champs
+         */
+        $parts = explode('.', $v);
+        $curRow = new row($this->table, $this->id);
+        foreach ($parts as $part) {
+            /**
+             * l'objet row va retrouver ce qu'il faut et générer un nouvel objet row si c'est un FK
+             * issu de $relations
+             */
+            $curRow = $curRow->$part;
+        }
+
+        /**
+         * On remet le tableau à l'endroit
+         */
+        $relations = $oldRelations;
+
+        /**
+         * Si notre dernier élément est un objet on prend son identifiant
+         */
+        if (is_object($curRow)) {
+            return $curRow->id;
+        }
+
+        /**
+         * Sinon c'était un champ on prend sa valeur
+         */
+        return mb_strlen($curRow) > 0 ? nicename($curRow) : '_';
     }
 
     /**
