@@ -29,6 +29,8 @@ define('IN_ADMIN', true);
 error_reporting(E_ALL & ~E_NOTICE);
 
 require_once('../include/include.php');
+require_once('../vendor/autoload.php');
+
 
 
 /* On aura toujours besoin de ca */
@@ -64,4 +66,5 @@ loadParams();
 header('content-type:text/plain');
 
 updateDatabase(true);
+recheckTranslations();
 emptyCacheCli();
