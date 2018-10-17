@@ -30,14 +30,21 @@ class genParagraphes
 {
 
     var $paragraphes;
+
+    /**
+     * @var genSite
+     */
     var $site;
+    /**
+     * @var genRubrique
+     */
     var $rubrique;
     var $id = 'paragraphes';
 
     function __construct($site, $paragraphes)
     {
         $this->site = $site;
-        $this->rubrique = $this->site->g_rubrique;
+        $this->rubrique = $this->site->g_rubrique->rObj;
         $this->paragraphes = $paragraphes;
     }
 
@@ -56,7 +63,7 @@ class genParagraphes
              *  Creation du template
              * */
             $tpl = new genTemplate(true);
-            
+
             $obj = new paragraphe($para);
 
             if (!empty($para['para_type_tpl_file'])) {
@@ -64,8 +71,8 @@ class genParagraphes
                 $folder = dirname($para['para_type_tpl_file']);
                 $tpl->loadTemplate($file, $folder);
             } else
-                if (ake($_REQUEST, 'ocms_mode') && $para[ 'para_type_template_' . $_REQUEST['ocms_mode'] ]) {
-                    $tpl->setTemplate($para[ 'para_type_template_' . $_REQUEST['ocms_mode'] ]);
+                if (ake($_REQUEST, 'ocms_mode') && $para['para_type_template_' . $_REQUEST['ocms_mode']]) {
+                    $tpl->setTemplate($para['para_type_template_' . $_REQUEST['ocms_mode']]);
                 } else {
                     $tpl->setTemplate('' . $para['para_type_template']);
                 }
@@ -151,8 +158,8 @@ class genParagraphes
             $html .= '</div>';
 
 
-            $this->paragraphes[ $nbparaK ]['html'] = $html;
-            $this->paragraphes[ $nbparaK ]['titre'] = getLgValue('paragraphe_titre', $para);
+            $this->paragraphes[$nbparaK]['html'] = $html;
+            $this->paragraphes[$nbparaK]['titre'] = getLgValue('paragraphe_titre', $para);
         }
 
         return $this->paragraphes;
@@ -161,7 +168,7 @@ class genParagraphes
     function gen()
     {
 
-        $c = new genCache('para_' . $this->id . '_' . $this->site->getCurId(), ($this->rubrique->date_publi));
+        $c = new genCache('para_' . $this->id . '_' . $this->site->getCurId(), strtotime($this->rubrique->row['ocms_date_modif']));
 
         if (!$c->cacheExists()) {
 
