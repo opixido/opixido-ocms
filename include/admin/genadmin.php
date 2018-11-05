@@ -919,6 +919,7 @@ class genAdmin
                   On stock les infos actuelles dans la session
                  */
                 $_SESSION[gfuid()]['nbLevels']++;
+                $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']] = array();
                 $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['curTable'] = $_REQUEST['curTable'];
                 $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['curTableKey'] = $_REQUEST['curTableKey'];
                 $_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]['curId'] = $_REQUEST['curId'];
