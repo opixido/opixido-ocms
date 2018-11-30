@@ -605,7 +605,7 @@ if (!function_exists('getPrimaryKey')) {
             if (empty($GLOBALS['GlobalObjCache'][UNIQUE_SITE]['pks'][$table])) {
                 global $co;
                 $t = $co->MetaPrimaryKeys($table);
-                if (count($t) == 1)
+                if ($t && count($t) == 1)
                     $GLOBALS['GlobalObjCache'][UNIQUE_SITE]['pks'][$table] = $t[0];
                 else
                     $GLOBALS['GlobalObjCache'][UNIQUE_SITE]['pks'][$table] = false;
