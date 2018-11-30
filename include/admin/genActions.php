@@ -68,7 +68,9 @@ class genAction
                 $gr->checkDoOn($this->action);
                 logAction($this->action, $this->table, $this->id);
                 DoSql('UPDATE s_param SET param_valeur = ' . sql(time()) . ' WHERE param_id = "date_update_' . $this->table . '" ');
-                return $this->obj->doIt();
+                $res = $this->obj->doIt();
+                $gr->checkDoOn('after_' . $this->action);
+                return $res;
             } else {
                 return false;
             }
@@ -243,8 +245,8 @@ class genActionDel
         if (!$_REQUEST['fromList']) {
             global $_Gconfig;
             if (in_array($this->table, $_Gconfig['multiVersionTable'])) {
-                if (!empty($this->row[ MULTIVERSION_FIELD ]) && $this->row[ MULTIVERSION_FIELD ] != $this->id) {
-                    header('location:?curTable=' . $this->table . '&resume=1&curId=' . $this->row[ MULTIVERSION_FIELD ]);
+                if (!empty($this->row[MULTIVERSION_FIELD]) && $this->row[MULTIVERSION_FIELD] != $this->id) {
+                    header('location:?curTable=' . $this->table . '&resume=1&curId=' . $this->row[MULTIVERSION_FIELD]);
                     die();
                 }
             }
@@ -320,7 +322,7 @@ class genActionMoveRubrique
 					SET 
 					fk_rubrique_id = ' . sql($_REQUEST['move_rubrique']) . ' 
 					, rubrique_ordre = ' . $row['MX'] . '
-					WHERE ' . MULTIVERSION_FIELD . ' = ' . sql($this->row[ MULTIVERSION_FIELD ]) . '
+					WHERE ' . MULTIVERSION_FIELD . ' = ' . sql($this->row[MULTIVERSION_FIELD]) . '
 					
 					';
             DoSql($sql);
@@ -338,13 +340,13 @@ class genActionMoveRubrique
                 <input type="hidden" name="curTable" value="' . $this->table . '" />
                 ');
 
-        p('<h1>' . t('deplacer') . ' ' . $this->row[ 'rubrique_titre_' . LG() ] . t('deplacer_sous') . '</h1>');
+        p('<h1>' . t('deplacer') . ' ' . $this->row['rubrique_titre_' . LG()] . t('deplacer_sous') . '</h1>');
         p('<fieldset class="well" >');
 
 
         if (!empty($_REQUEST['relOne'])) {
             global $_Gconfig;
-            $parent = $_Gconfig['relOneParent']['s_rubrique'][ $_REQUEST['relOne'] ];
+            $parent = $_Gconfig['relOneParent']['s_rubrique'][$_REQUEST['relOne']];
             if (!is_int($parent)) {
 
                 $sql = 'SELECT * FROM s_rubrique AS R, s_gabarit AS G '
@@ -358,7 +360,7 @@ class genActionMoveRubrique
                 } else {
                     foreach ($parents as $row) {
                         if ($GLOBALS['gs_obj']->can('edit', 's_rubrique', $row, $row['rubrique_id'])) {
-                            print('<label><input type="radio" name="move_rubrique" value="' . $row[ MULTIVERSION_FIELD ] . '"> ' . getLgValue('rubrique_titre', $row) . '</label>');
+                            print('<label><input type="radio" name="move_rubrique" value="' . $row[MULTIVERSION_FIELD] . '"> ' . getLgValue('rubrique_titre', $row) . '</label>');
                         }
                     }
                 }
@@ -392,7 +394,7 @@ class genActionMoveRubrique
                         echo '<hr style="border-top:1px solid #555"/>';
                     }
                     //$row = addRowToTab($row,$row['level']);
-                    print('<label>' . str_repeat('&nbsp; &nbsp; &nbsp;', $row['level']) . '<input type="radio" name="move_rubrique" value="' . $row[ MULTIVERSION_FIELD ] . '"> ' . getLgValue('rubrique_titre', $row) . '</label>');
+                    print('<label>' . str_repeat('&nbsp; &nbsp; &nbsp;', $row['level']) . '<input type="radio" name="move_rubrique" value="' . $row[MULTIVERSION_FIELD] . '"> ' . getLgValue('rubrique_titre', $row) . '</label>');
                 }
             }
         }
@@ -428,13 +430,13 @@ class genActionHideVersion
             $this->row = $row;
         }
 
-        $this->onlineRow = getRowfromid($table, $this->row[ VERSION_FIELD ]);
+        $this->onlineRow = getRowfromid($table, $this->row[VERSION_FIELD]);
     }
 
     public function checkCondition()
     {
 
-        if ($this->onlineRow[ ONLINE_FIELD ])
+        if ($this->onlineRow[ONLINE_FIELD])
             return true;
         else
             return false;
@@ -444,7 +446,7 @@ class genActionHideVersion
     {
 
         $res = DoSql('UPDATE ' . $this->table . ' SET ' . ONLINE_FIELD . ' = "0"
-				WHERE ' . getPrimaryKey($this->table) . ' = "' . $this->onlineRow[ getPrimaryKey($this->table) ] . '" ');
+				WHERE ' . getPrimaryKey($this->table) . ' = "' . $this->onlineRow[getPrimaryKey($this->table)] . '" ');
 
         if ($res) {
             dinfo(t('element_plus_visible'));
@@ -481,7 +483,7 @@ class genActionHideObject
     public function checkCondition()
     {
 
-        if ($this->row[ ONLINE_FIELD ])
+        if ($this->row[ONLINE_FIELD])
             return true;
         else
             return false;
@@ -526,7 +528,7 @@ class genActionShowObject
     public function checkCondition()
     {
 
-        if ($this->row[ ONLINE_FIELD ] != "1")
+        if ($this->row[ONLINE_FIELD] != "1")
             return true;
         else
             return false;
@@ -545,8 +547,8 @@ class genActionShowObject
         global $tablerel_reverse;
         genTableRelReverse();
 
-        if (!empty($tablerel_reverse[ $this->table ])) {
-            foreach ($tablerel_reverse[ $this->table ] as $k => $v) {
+        if (!empty($tablerel_reverse[$this->table])) {
+            foreach ($tablerel_reverse[$this->table] as $k => $v) {
                 $res = $r->{$v['tablerel']};
                 if (isNull($res) && isNeeded($this->table, $v['tablerel'])) {
                     $errors[] = $v['tablerel'];
@@ -571,6 +573,8 @@ class genActionShowObject
         } else {
             derror(t('erreur_showversion'));
         }
+
+
     }
 
 }
@@ -610,7 +614,7 @@ class objDuplication
         /**
          * New ID or current ID ?
          */
-        if (($new_id == 'new' && empty($tablerel[ $this->table ]))) {
+        if (($new_id == 'new' && empty($tablerel[$this->table]))) {
             $new_id = insertEmptyRecord($this->table);
         } else {
             $r = getRowFromId($this->table, $new_id);
@@ -649,9 +653,9 @@ class objDuplication
                  */
                 if (!strpos($v, '/') && isUploadField($k)) {
                     $oldfile = new genFile($this->table, $k, $this->id, $v);
-                    $oldfiles[] = array('path'   => $oldfile->getSystemPath(),
-                                        'valeur' => $v,
-                                        'champ'  => $k);
+                    $oldfiles[] = array('path' => $oldfile->getSystemPath(),
+                        'valeur' => $v,
+                        'champ' => $k);
                     /**
                      * On ne rempli pas ce champ
                      * Sinon l'uploadFile essai de supprimer un fichier
@@ -659,7 +663,7 @@ class objDuplication
                      */
                     //$record[$k] = $v;
                 } else {
-                    $record[ $k ] = $v;
+                    $record[$k] = $v;
                 }
             }
         }
@@ -694,8 +698,8 @@ class objDuplication
         /**
          * On duplique les tables liées (relations inverses) 1<=n
          */
-        if (!empty($relinv[ $this->table ])) {
-            foreach ($relinv[ $this->table ] as $k => $v) {
+        if (!empty($relinv[$this->table])) {
+            foreach ($relinv[$this->table] as $k => $v) {
 
                 if (!@in_array($k, $this->noCopyField) && !@in_array($this->table . '.' . $k, $this->noCopyField)) {
                     $this->deleteAndDupli($v[0], $v[1], $this->id, $newId);
@@ -706,17 +710,17 @@ class objDuplication
         /**
          * On duplique les tables de relations n<=>n
          */
-        if (!empty($tablerel_reverse[ $this->table ])) {
-            foreach ($tablerel_reverse[ $this->table ] as $k => $v) {
-                if (!@in_array($v['tablerel'], $_Gconfig['tablerelNotToDuplicate'][ $this->table ])) {
+        if (!empty($tablerel_reverse[$this->table])) {
+            foreach ($tablerel_reverse[$this->table] as $k => $v) {
+                if (!@in_array($v['tablerel'], $_Gconfig['tablerelNotToDuplicate'][$this->table])) {
                     $this->deleteAndDupli($v['tablerel'], $v['myfk'], $this->id, $newId);
                 }
             }
         }
 
-        if (!empty($_Gconfig['relOne'][ $this->table ])) {
-            foreach ($_Gconfig['relOne'][ $this->table ] as $table => $clef) {
-                if (!empty($this->row[ $clef ])) {
+        if (!empty($_Gconfig['relOne'][$this->table])) {
+            foreach ($_Gconfig['relOne'][$this->table] as $table => $clef) {
+                if (!empty($this->row[$clef])) {
                     $d = new objDuplication($table, $this->id);
                     $d->duplicateTo($newId);
                 }
@@ -772,8 +776,8 @@ class objDuplication
                 $res = GetAll($sql);
 
                 foreach ($res as $row) {
-                    $gr = new genRecord($table, $row[ $pk ]);
-                    $gr->deleteRow($row[ $pk ]);
+                    $gr = new genRecord($table, $row[$pk]);
+                    $gr->deleteRow($row[$pk]);
                 }
             }
         }
@@ -791,15 +795,15 @@ class objDuplication
         global $co;
         foreach ($res as $row) {
 
-            if (!empty($tablerel[ $table ])) {
+            if (!empty($tablerel[$table])) {
 
-                $row[ $fkchamp ] = $idto;
+                $row[$fkchamp] = $idto;
                 $co->autoexecute($table, $row, 'INSERT');
             } else {
                 //$record = array();
-                $row[ $fkchamp ] = $idto;
+                $row[$fkchamp] = $idto;
 
-                $ob = new objDuplication($table, $row[ getPrimaryKey($table) ], $row);
+                $ob = new objDuplication($table, $row[getPrimaryKey($table)], $row);
                 $id = $ob->duplicateTo('new');
             }
         }
@@ -835,9 +839,9 @@ class genActionValidateVersion
 
         if (ake($this->row, $_Gconfig['field_date_maj'])) {
 
-            $r = getRowFromId($this->table, $this->row[ VERSION_FIELD ]);
+            $r = getRowFromId($this->table, $this->row[VERSION_FIELD]);
 
-            if (strtotime($this->row[ $_Gconfig['field_date_maj'] ]) > strtotime($r[ $_Gconfig['field_date_maj'] ])) {
+            if (strtotime($this->row[$_Gconfig['field_date_maj']]) > strtotime($r[$_Gconfig['field_date_maj']])) {
                 return true;
             } else {
                 return false;
@@ -853,7 +857,7 @@ class genActionValidateVersion
         global $uploadFields, $_Gconfig, $relinv, $tablerel, $tablerel_reverse;
 
 
-        $newId = $this->row[ VERSION_FIELD ];
+        $newId = $this->row[VERSION_FIELD];
 
         $od = new objDuplication($this->table, $this->id, $this->row);
         $od->noCopyField[] = VERSION_FIELD;
@@ -861,17 +865,17 @@ class genActionValidateVersion
         $newId = $od->duplicateTo($newId);
 
         $record = array();
-        $record[ ONLINE_FIELD ] = 1;
+        $record[ONLINE_FIELD] = 1;
 
         global $co;
         ($co->AutoExecute($this->table, $record, 'UPDATE', ' ' . getPrimaryKey($this->table) . ' = ' . sql($newId)));
 
-        $record[ ONLINE_FIELD ] = 0;
+        $record[ONLINE_FIELD] = 0;
         ($co->AutoExecute($this->table, $record, 'UPDATE', ' ' . getPrimaryKey($this->table) . ' = ' . sql($this->id)));
 
         if (ake($this->row, $_Gconfig['field_date_maj'])) {
 
-            DoSql('UPDATE ' . $this->table . ' SET ' . $_Gconfig['field_date_maj'] . ' = NOW() WHERE ' . getPrimaryKey($this->table) . ' = ' . sql($this->row[ VERSION_FIELD ]));
+            DoSql('UPDATE ' . $this->table . ' SET ' . $_Gconfig['field_date_maj'] . ' = NOW() WHERE ' . getPrimaryKey($this->table) . ' = ' . sql($this->row[VERSION_FIELD]));
         }
 
         dinfo(t('modifications_en_ligne'));
@@ -889,12 +893,12 @@ class genActionAskValidation extends ocms_action
     {
 
         global $_Gconfig;
-        if ($this->row[ ONLINE_FIELD ] == 1 || $this->row[ ONLINE_FIELD ] == -1) {
+        if ($this->row[ONLINE_FIELD] == 1 || $this->row[ONLINE_FIELD] == -1) {
             return false;
         }
         if (ake($this->row, $_Gconfig['field_date_maj'])) {
-            $r = getRowFromId($this->table, $this->row[ VERSION_FIELD ]);
-            if (strtotime($this->row[ $_Gconfig['field_date_maj'] ]) > strtotime($r[ $_Gconfig['field_date_maj'] ])) {
+            $r = getRowFromId($this->table, $this->row[VERSION_FIELD]);
+            if (strtotime($this->row[$_Gconfig['field_date_maj']]) > strtotime($r[$_Gconfig['field_date_maj']])) {
                 return true;
             } else {
                 return false;
@@ -951,10 +955,10 @@ class genActionRefuseValidation extends ocms_action
     function checkCondition()
     {
         global $_Gconfig;
-        if ($this->row[ ONLINE_FIELD ] == "-1") {
+        if ($this->row[ONLINE_FIELD] == "-1") {
             if (ake($this->row, $_Gconfig['field_date_maj'])) {
-                $r = getRowFromId($this->table, $this->row[ VERSION_FIELD ]);
-                if (strtotime($this->row[ $_Gconfig['field_date_maj'] ]) > strtotime($r[ $_Gconfig['field_date_maj'] ])) {
+                $r = getRowFromId($this->table, $this->row[VERSION_FIELD]);
+                if (strtotime($this->row[$_Gconfig['field_date_maj']]) > strtotime($r[$_Gconfig['field_date_maj']])) {
                     return true;
                 } else {
                     return false;
@@ -971,7 +975,7 @@ class genActionRefuseValidation extends ocms_action
         global $_Gconfig;
         $m = includeMail();
 
-        $admin = getRowFromId('s_admin', $this->row[ $_Gconfig['field_creator'] ]);
+        $admin = getRowFromId('s_admin', $this->row[$_Gconfig['field_creator']]);
 
         $m->AddAddress($admin['admin_email']);
 
@@ -1172,9 +1176,9 @@ class genActionAsk_for_validation
         //debug($mails);
         //$genMessages->add($mails);
         sendMails(
-            $mails, t('mail_ask_validation'), array('id'       => $this->id, 'titre' => GetRubTitle($this->row),
-                                                    'url'      => GetRubUrl($this->row),
-                                                    'personne' => GetCurrentLogin()));
+            $mails, t('mail_ask_validation'), array('id' => $this->id, 'titre' => GetRubTitle($this->row),
+            'url' => GetRubUrl($this->row),
+            'personne' => GetCurrentLogin()));
 
         //debug($mails);
         foreach ($mails as $curMail) {
@@ -1422,7 +1426,7 @@ class genActionTranslate
  *
  * ******************************* */
 
-// INSTALLATION  
+// INSTALLATION
 class genActionInstallPlugin
 {
 
@@ -1497,7 +1501,7 @@ class genActionInstallPlugin
                 $tabFields = getTabField($table);
                 $sql = 'REPLACE ' . $table . ' SET ';
                 foreach ($v as $champ => $valeur) {
-                    if ($tabFields[ $champ ]) {
+                    if ($tabFields[$champ]) {
                         $sql .= (' ' . $champ . ' = ' . sql($valeur) . ' ,');
                     }
                 }
@@ -1619,9 +1623,9 @@ class genActionShowMV extends baseAction
         global $_Gconfig;
 
         $sql = 'SELECT * FROM ' . $this->table . ' WHERE 1 ';
-        if ($this->row[ MULTIVERSION_FIELD ]) {
+        if ($this->row[MULTIVERSION_FIELD]) {
 
-            $mainId = $this->row[ MULTIVERSION_FIELD ];
+            $mainId = $this->row[MULTIVERSION_FIELD];
         } else {
             $mainId = $this->id;
         }
@@ -1630,41 +1634,41 @@ class genActionShowMV extends baseAction
 
         $res = GetAll($sql);
 
-        $label = $this->getStateLabel($this->row[ MULTIVERSION_STATE ]);
+        $label = $this->getStateLabel($this->row[MULTIVERSION_STATE]);
 
 
         p('<div class="well">');
 
-        echo '<div class="alert alert-' . $label . '">' . t('mv_version_' . $this->row[ MULTIVERSION_STATE ]) . '</div>';
+        echo '<div class="alert alert-' . $label . '">' . t('mv_version_' . $this->row[MULTIVERSION_STATE]) . '</div>';
 
         p('<table class="table table-striped table-bordered"><tr><th colspan="2">' . t('mv_versions') . '</th></tr>');
 
         foreach ($res as $k => $row) {
 
-            if ($row[ getPrimaryKey($this->table) ] != $this->id) {
+            if ($row[getPrimaryKey($this->table)] != $this->id) {
                 p('<tr class=""><td>');
-                p('<a href="?curTable=' . $this->table . '&amp;curId=' . $row[ getPrimaryKey($this->table) ] . '&amp;resume=1">' . htmlentities(GetTitleFromRow($this->table, $row), ENT_QUOTES, 'utf-8'));
+                p('<a href="?curTable=' . $this->table . '&amp;curId=' . $row[getPrimaryKey($this->table)] . '&amp;resume=1">' . htmlentities(GetTitleFromRow($this->table, $row), ENT_QUOTES, 'utf-8'));
             } else {
                 p('<tr class="info"><td>');
                 p(htmlentities(GetTitleFromRow($this->table, $row), ENT_QUOTES, 'utf-8'));
             }
 
 
-            if (!empty($row[ MULTIVERSION_FIELDNAME ])) {
-                p('<br/><span class="badge">' . $row[ MULTIVERSION_FIELDNAME ] . '</span>');
+            if (!empty($row[MULTIVERSION_FIELDNAME])) {
+                p('<br/><span class="badge">' . $row[MULTIVERSION_FIELDNAME] . '</span>');
             } else {
-                p('<br/><span class="badge" title=' . alt(niceDateTime($row[ $_Gconfig['field_date_maj'] ])) . '>' . niceTextDate($row[ $_Gconfig['field_date_maj'] ]) . '</span>');
+                p('<br/><span class="badge" title=' . alt(niceDateTime($row[$_Gconfig['field_date_maj']])) . '>' . niceTextDate($row[$_Gconfig['field_date_maj']]) . '</span>');
             }
 
-            if ($row[ getPrimaryKey($this->table) ] != $this->id) {
+            if ($row[getPrimaryKey($this->table)] != $this->id) {
                 p('</a>');
             }
 
 
-            $label = $this->getStateLabel($row[ MULTIVERSION_STATE ]);
+            $label = $this->getStateLabel($row[MULTIVERSION_STATE]);
 
 
-            p('<td><span class="label label-' . $label . '">' . t('enum_' . $row[ MULTIVERSION_STATE ]) . '</span></td>');
+            p('<td><span class="label label-' . $label . '">' . t('enum_' . $row[MULTIVERSION_STATE]) . '</span></td>');
             //p('<td><img src="' . t('src_enum_' . $row[MULTIVERSION_STATE]) . '" alt=' . alt(t('enum_' . $row[MULTIVERSION_STATE])) . ' /></td>');
             p('</td></tr>');
         }
@@ -1697,9 +1701,9 @@ class genActionDuplicateMV extends baseAction
         $newId = $od->duplicateTo('new');
 
         $record = array();
-        $record[ MULTIVERSION_FIELD ] = $this->row[ MULTIVERSION_FIELD ] ? $this->row[ MULTIVERSION_FIELD ] : $this->id;
-        $record[ MULTIVERSION_STATE ] = MV_STATE_DRAFT;
-        $record[ MULTIVERSION_FIELDNAME ] = $_REQUEST[ MULTIVERSION_FIELDNAME ];
+        $record[MULTIVERSION_FIELD] = $this->row[MULTIVERSION_FIELD] ? $this->row[MULTIVERSION_FIELD] : $this->id;
+        $record[MULTIVERSION_STATE] = MV_STATE_DRAFT;
+        $record[MULTIVERSION_FIELDNAME] = $_REQUEST[MULTIVERSION_FIELDNAME];
 
         global $co;
         ($co->AutoExecute($this->table, $record, 'UPDATE', ' ' . getPrimaryKey($this->table) . ' = ' . sql($newId)));
@@ -1716,14 +1720,14 @@ function checkDeleteMv($id, $row, $gr, $table)
             $row = getRowFromId($table, $id);
         }
 
-        if ($row[ getPrimaryKey($table) ] === $row[ MULTIVERSION_FIELD ]) {
-            $sql = 'SELECT ' . getPrimaryKey($table) . ' FROM ' . $table . ' WHERE ' . getPrimaryKey($table) . ' != ' . sql($row[ MULTIVERSION_FIELD ]) . ' '
-                . ' AND ' . MULTIVERSION_FIELD . ' = ' . sql($row[ MULTIVERSION_FIELD ]);
+        if ($row[getPrimaryKey($table)] === $row[MULTIVERSION_FIELD]) {
+            $sql = 'SELECT ' . getPrimaryKey($table) . ' FROM ' . $table . ' WHERE ' . getPrimaryKey($table) . ' != ' . sql($row[MULTIVERSION_FIELD]) . ' '
+                . ' AND ' . MULTIVERSION_FIELD . ' = ' . sql($row[MULTIVERSION_FIELD]);
             $res = getAll($sql);
 
             foreach ($res as $row) {
-                $gr = new genRecord($table, $row[ getPrimaryKey($table) ]);
-                $gr->DeleteRow($row[ getPrimaryKey($table) ]);
+                $gr = new genRecord($table, $row[getPrimaryKey($table)]);
+                $gr->DeleteRow($row[getPrimaryKey($table)]);
             }
         }
     }
@@ -1737,7 +1741,7 @@ class genActionPublishMV extends baseAction
 
     function checkCondition()
     {
-        if ($this->row[ MULTIVERSION_STATE ] !== MV_STATE_ONLINE) {
+        if ($this->row[MULTIVERSION_STATE] !== MV_STATE_ONLINE) {
             return true;
         } else {
             return false;
@@ -1747,19 +1751,19 @@ class genActionPublishMV extends baseAction
     function doIt()
     {
         global $_Gconfig;
-        if ($this->row[ MULTIVERSION_FIELD ] != $this->id) {
+        if ($this->row[MULTIVERSION_FIELD] != $this->id) {
             /**
              * Si on publie un brouillon ou une archive
              */
             $d = new objDuplication($this->table, $this->id);
-            $d->duplicateTo($this->row[ MULTIVERSION_FIELD ]);
+            $d->duplicateTo($this->row[MULTIVERSION_FIELD]);
         }
         /**
          * Quoi qu'il en soit en met à "en_ligne" la version réelle
          */
         $r = array(MULTIVERSION_STATE => MV_STATE_ONLINE, $_Gconfig['field_date_maj'] => time());
         global $co;
-        $co->autoExecute($this->table, $r, 'UPDATE', getPrimarykey($this->table) . ' = ' . sql($this->row[ MULTIVERSION_FIELD ]));
+        $co->autoExecute($this->table, $r, 'UPDATE', getPrimarykey($this->table) . ' = ' . sql($this->row[MULTIVERSION_FIELD]));
 
         $sql = 'UPDATE s_param SET param_valeur = UNIX_TIMESTAMP() WHERE param_id = "date_update_arbo" ';
         DoSql($sql);
@@ -1789,12 +1793,12 @@ class genActionEditOtherMV extends baseAction
     public function __construct($action, $table, $id, $row = array())
     {
         parent::__construct($action, $table, $id, $row);
-        $this->rowObj = new row($this->table,$this->id);
+        $this->rowObj = new row($this->table, $this->id);
     }
 
     public function checkCondition()
     {
-        return ($this->row[ MULTIVERSION_STATE ] === 'en_ligne');
+        return ($this->row[MULTIVERSION_STATE] === 'en_ligne');
     }
 
     public function getForm()
@@ -1811,14 +1815,14 @@ class genActionEditOtherMV extends baseAction
              */
             $draft = $drafts->FetchRow();
             echo '<div class="well">';
-            echo '<a href="?curTable='.$this->table.'&curId=' . $draft[getPrimaryKey($this->table)] . '" class="btn btn-primary">' . ta('mv_edit_draft') . '</a>';
+            echo '<a href="?curTable=' . $this->table . '&curId=' . $draft[getPrimaryKey($this->table)] . '" class="btn btn-primary">' . ta('mv_edit_draft') . '</a>';
             echo '</div>';
         } else {
             /**
              * Sinon on propose l'ajout d'un brouillon
              */
             echo '<div class="well">';
-            echo '<a href="?curTable='.$this->table.'&genform_action[duplicateMV]=1&curId=' . $this->id . '" class="btn btn-primary">' . ta('mv_duplicate_and_edit_draft') . '</a>';
+            echo '<a href="?curTable=' . $this->table . '&genform_action[duplicateMV]=1&curId=' . $this->id . '" class="btn btn-primary">' . ta('mv_duplicate_and_edit_draft') . '</a>';
             echo '</div>';
         }
     }
@@ -1837,12 +1841,12 @@ class genActionEditOtherMV extends baseAction
              */
             $draft = $drafts->FetchRow();
 
-            return '<a href="?curTable='.$_REQUEST['curTable'].'&curId=' . $draft[getPrimaryKey($this->table)] . '"><img src="' . t('src_edit') . '" alt=' . alt(t('edit')) . ' title=' . alt(t('edit')) . '></a>';
+            return '<a href="?curTable=' . $_REQUEST['curTable'] . '&curId=' . $draft[getPrimaryKey($this->table)] . '"><img src="' . t('src_edit') . '" alt=' . alt(t('edit')) . ' title=' . alt(t('edit')) . '></a>';
         } else {
             /**
              * Sinon on propose l'ajout d'un brouillon
              */
-            return '<a class="" href="?curTable='.$_REQUEST['curTable'].'&genform_action[duplicateMV]=1&curId=' . $this->id . '" ><img src="' . t('src_edit') . '" alt=' . alt(t('edit')) . ' title=' . alt(t('edit')) . '></a>';
+            return '<a class="" href="?curTable=' . $_REQUEST['curTable'] . '&genform_action[duplicateMV]=1&curId=' . $this->id . '" ><img src="' . t('src_edit') . '" alt=' . alt(t('edit')) . ' title=' . alt(t('edit')) . '></a>';
         }
     }
 
@@ -1856,7 +1860,7 @@ class genActionUnpublishMV extends baseAction
 
     function checkCondition()
     {
-        if ($this->row[ MULTIVERSION_STATE ] === MV_STATE_ONLINE) {
+        if ($this->row[MULTIVERSION_STATE] === MV_STATE_ONLINE) {
             return true;
         } else {
             return false;
@@ -1908,7 +1912,7 @@ class genActionDeleteMv extends baseAction
 
     function checkCondition()
     {
-        if ($this->row[ MULTIVERSION_FIELD ] != $this->id) {
+        if ($this->row[MULTIVERSION_FIELD] != $this->id) {
             return true;
         }
         return false;
@@ -1929,10 +1933,10 @@ class genActionMoveTableRowUp extends baseAction
     function checkCondition()
     {
         global $_Gconfig;
-        if ($this->row[ $_Gconfig['arboredTable'][ $this->table ] ] > 0) {
+        if ($this->row[$_Gconfig['arboredTable'][$this->table]] > 0) {
             return false;
         }
-        if ($this->row[ $_Gconfig['orderedTable'][ $this->table ] ] == 1) {
+        if ($this->row[$_Gconfig['orderedTable'][$this->table]] == 1) {
             return false;
         }
         return true;
@@ -1941,13 +1945,13 @@ class genActionMoveTableRowUp extends baseAction
     function doIt()
     {
         global $_Gconfig;
-        $chp = $_Gconfig['orderedTable'][ $this->table ];
+        $chp = $_Gconfig['orderedTable'][$this->table];
         $pk = getPrimaryKey($this->table);
         $sql = 'SELECT ' . $pk . ',' . $chp . '
 						FROM ' . $this->table . '
-						WHERE ' . $chp . ' < ' . $this->row[ $chp ] . ' ';
+						WHERE ' . $chp . ' < ' . $this->row[$chp] . ' ';
 
-        if ($fk = $_Gconfig['arboredTable'][ $this->table ]) {
+        if ($fk = $_Gconfig['arboredTable'][$this->table]) {
             $sql .= ' AND ( ' . $fk . ' = 0 OR ' . $fk . ' IS NULL ) ';
         }
 
@@ -1957,9 +1961,9 @@ class genActionMoveTableRowUp extends baseAction
 
         $row = GetSingle($sql);
 
-        DoSql('UPDATE ' . $this->table . ' SET ' . $chp . ' = ' . ($row[ $chp ]) . ' WHERE ' . $pk . ' = ' . $this->id);
+        DoSql('UPDATE ' . $this->table . ' SET ' . $chp . ' = ' . ($row[$chp]) . ' WHERE ' . $pk . ' = ' . $this->id);
 
-        DoSql('UPDATE ' . $this->table . ' SET ' . $chp . ' = ' . ($this->row[ $chp ]) . ' WHERE ' . $pk . ' = ' . $row[ $pk ]);
+        DoSql('UPDATE ' . $this->table . ' SET ' . $chp . ' = ' . ($this->row[$chp]) . ' WHERE ' . $pk . ' = ' . $row[$pk]);
     }
 
     function getForm()
@@ -1977,19 +1981,19 @@ class genActionMoveTableRowDown extends baseAction
     function checkCondition()
     {
         global $_Gconfig;
-        if ($this->row[ $_Gconfig['arboredTable'][ $this->table ] ] > 0) {
+        if ($this->row[$_Gconfig['arboredTable'][$this->table]] > 0) {
             return false;
         }
         if (!$GLOBALS['currentOrderedMax']) {
-            $sql = 'SELECT MAX(' . $_Gconfig['orderedTable'][ $this->table ] . ') AS MAXI FROM ' . $this->table . ' ';
-            if ($fk = $_Gconfig['arboredTable'][ $this->table ]) {
+            $sql = 'SELECT MAX(' . $_Gconfig['orderedTable'][$this->table] . ') AS MAXI FROM ' . $this->table . ' ';
+            if ($fk = $_Gconfig['arboredTable'][$this->table]) {
                 $sql .= ' WHERE ( ' . $fk . ' = 0 OR ' . $fk . ' IS NULL ) ';
             }
             $sql .= ' LIMIT 0,1';
             $row = GetSingle($sql);
             $GLOBALS['currentOrderedMax'] = $row['MAXI'];
         }
-        if ($this->row[ $_Gconfig['orderedTable'][ $this->table ] ] == $GLOBALS['currentOrderedMax']) {
+        if ($this->row[$_Gconfig['orderedTable'][$this->table]] == $GLOBALS['currentOrderedMax']) {
             return false;
         }
         return true;
@@ -1998,13 +2002,13 @@ class genActionMoveTableRowDown extends baseAction
     function doIt()
     {
         global $_Gconfig;
-        $chp = $_Gconfig['orderedTable'][ $this->table ];
+        $chp = $_Gconfig['orderedTable'][$this->table];
         $pk = getPrimaryKey($this->table);
         $sql = 'SELECT ' . $pk . ',' . $chp . '
 						FROM ' . $this->table . '
-						WHERE ' . $chp . ' > ' . $this->row[ $chp ] . ' ';
+						WHERE ' . $chp . ' > ' . $this->row[$chp] . ' ';
 
-        if ($fk = $_Gconfig['arboredTable'][ $this->table ]) {
+        if ($fk = $_Gconfig['arboredTable'][$this->table]) {
             $sql .= ' AND ( ' . $fk . ' = 0 OR ' . $fk . ' IS NULL ) ';
         }
 
@@ -2013,9 +2017,9 @@ class genActionMoveTableRowDown extends baseAction
 						';
         $row = GetSingle($sql);
 
-        DoSql('UPDATE ' . $this->table . ' SET ' . $chp . ' = ' . ($row[ $chp ]) . ' WHERE ' . $pk . ' = ' . $this->id);
+        DoSql('UPDATE ' . $this->table . ' SET ' . $chp . ' = ' . ($row[$chp]) . ' WHERE ' . $pk . ' = ' . $this->id);
 
-        DoSql('UPDATE ' . $this->table . ' SET ' . $chp . ' = ' . ($this->row[ $chp ]) . ' WHERE ' . $pk . ' = ' . $row[ $pk ]);
+        DoSql('UPDATE ' . $this->table . ' SET ' . $chp . ' = ' . ($this->row[$chp]) . ' WHERE ' . $pk . ' = ' . $row[$pk]);
     }
 
     function getForm()
@@ -2032,9 +2036,9 @@ function insertTableRowOrder($id, $quoi, $gr, $table)
     $r = getRowFromId($table, $id);
 
 
-    $sql = 'SELECT MAX(' . $_Gconfig['orderedTable'][ $table ] . ') AS MAXI FROM ' . $table;
-    if ($fk = $_Gconfig['arboredTable'][ $table ]) {
-        if ($r[ $fk ] > 0) {
+    $sql = 'SELECT MAX(' . $_Gconfig['orderedTable'][$table] . ') AS MAXI FROM ' . $table;
+    if ($fk = $_Gconfig['arboredTable'][$table]) {
+        if ($r[$fk] > 0) {
             return false;
         }
         $sql .= ' WHERE ( ' . $fk . ' = 0 OR ' . $fk . ' IS NULL ) ';
@@ -2043,7 +2047,7 @@ function insertTableRowOrder($id, $quoi, $gr, $table)
 
     $row = GetSingle($sql);
 
-    DoSql('UPDATE ' . $table . ' SET ' . $_Gconfig['orderedTable'][ $table ] . ' = ' . ($row['MAXI'] + 1) . '
+    DoSql('UPDATE ' . $table . ' SET ' . $_Gconfig['orderedTable'][$table] . ' = ' . ($row['MAXI'] + 1) . '
 				WHERE ' . getPrimaryKey($table) . ' = ' . $id);
 }
 
@@ -2053,14 +2057,11 @@ function deleteTableRowOrder($id, $quoi, $gr, $table)
 
     $row = getRowFromId($table, $id);
 
-    $sql = 'UPDATE ' . $table . ' SET ' . $_Gconfig['orderedTable'][ $table ] . ' = (' . $_Gconfig['orderedTable'][ $table ] . ' - 1)
-				WHERE ' . $_Gconfig['orderedTable'][ $table ] . ' > ' . $row[ $_Gconfig['orderedTable'][ $table ] ];
+    $sql = 'UPDATE ' . $table . ' SET ' . $_Gconfig['orderedTable'][$table] . ' = (' . $_Gconfig['orderedTable'][$table] . ' - 1)
+				WHERE ' . $_Gconfig['orderedTable'][$table] . ' > ' . $row[$_Gconfig['orderedTable'][$table]];
 
-    if ($fk = $_Gconfig['arboredTable'][ $table ]) {
-        if ($r[ $fk ] > 0) {
-            return false;
-        }
-        $sql .= ' AND ( ' . $fk . ' = ' . sql($row[ $fk ]) . ' OR ' . $fk . ' IS NULL ) ';
+    if ($fk = $_Gconfig['arboredTable'][$table]) {
+        $sql .= ' AND ( ' . $fk . ' = ' . sql($row[$fk]) . ' OR ' . $fk . ' IS NULL ) ';
     }
 
     //$sql .= ' LIMIT 0,1';
