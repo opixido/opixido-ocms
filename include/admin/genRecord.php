@@ -608,354 +608,345 @@ class genRecord
                         $_REQUEST['newId'] = akev($_POST, "genform_" . akev($tab, 2));
                     }
                     // }
-                } else
-                    if (strstr($key_name, "genform_delfk_") !== false && !strstr($key_name, "_value") !== false && $value != "") {
+                } else if (strstr($key_name, "genform_delfk_") !== false && !strstr($key_name, "_value") !== false && $value != "") {
 
-                        $tab = explode("__", $key_name);
-                        // if($this->table != $tab[1]) {
-                        $table_to_del = $tab[1];
-                        $table_to_del_pk = GetPrimaryKey($table_to_del);
-                        $id_to_del = false;
-                        if (!empty($_POST[$key_name . "_value"])) {
-                            $id_to_del = $_POST[$key_name . "_value"];
-                        } else if (!empty($tab[2])) {
-                            $id_to_del = $_POST["genform_" . $tab[2]];
-                        }
-                        //debug('DELETE  : '.$id_to_del.' from '.$table_to_del);
-                        if (($id_to_del > 0 || $id_to_del != "") && $this->gs->can('del', $table_to_del, $id_to_del)) {
-                            $del_sql = 'DELETE FROM ' . $table_to_del . ' WHERE ' . $table_to_del_pk . ' = "' . $id_to_del . '"';
-                            DoSql($del_sql);
+                    $tab = explode("__", $key_name);
+                    // if($this->table != $tab[1]) {
+                    $table_to_del = $tab[1];
+                    $table_to_del_pk = GetPrimaryKey($table_to_del);
+                    if (!$table_to_del_pk) {
+                        continue;
+                    }
+                    $id_to_del = false;
+                    if (!empty($_POST[$key_name . "_value"])) {
+                        $id_to_del = $_POST[$key_name . "_value"];
+                    } else if (!empty($tab[2])) {
+                        $id_to_del = $_POST["genform_" . $tab[2]];
+                    }
+                    //debug('DELETE  : '.$id_to_del.' from '.$table_to_del);
+                    if (($id_to_del > 0 || $id_to_del != "") && $this->gs->can('del', $table_to_del, $id_to_del)) {
+                        $del_sql = 'DELETE FROM ' . $table_to_del . ' WHERE ' . $table_to_del_pk . ' = "' . $id_to_del . '"';
+                        DoSql($del_sql);
 
-                            $genMessages->add(t('suppression_ok') . ' ' . t($table_to_del), 'info');
+                        $genMessages->add(t('suppression_ok') . ' ' . t($table_to_del), 'info');
+                    }
+                    // }
+                } else if (strstr($key_name, "genform_add_") !== false) {
+                    /* FK SIMPLE */
+                    $tab = explode("_-_", $key_name);
+                    if ($this->table != $tab[1]) {
+                        $_REQUEST['newTable'] = $tab[1];
+                        $_REQUEST['fieldToUpdate'] = $tab[2];
+                        $_REQUEST['newId'] = "new";
+                    }
+                } else if (strstr($key_name, "genform_addfk_") !== false) {
+                    /* TABLE FK DISTANTE */
+                    $tab = explode("__", $key_name);
+                    // if($this->table != $tab[1]) {
+                    $_REQUEST['newTable'] = $tab[1];
+                    $_SESSION[gfuid()]['newTableFk'] = $tab[2];
+                    $_REQUEST['insertOtherField'] = "1";
+                    $_REQUEST['newId'] = "new";
+                    // }
+                } else if (strstr($key_name, "genform_addrel_") !== false) {
+                    /* TABLE DE RELATION */
+                    $tab = explode("__", $key_name);
+                    if ($this->table != $tab[1]) {
+                        $_REQUEST['newTable'] = $tab[3];
+                        $_REQUEST['fieldToUpdate'] = $tab[2];
+                        $_REQUEST['tableToUpdate'] = $tab[1];
+                        $_REQUEST['newId'] = "new";
+                    }
+                } else if (strstr($key_name, "genform_editrel_") !== false && $value > 0) {
+                    /* TABLE DE RELATION */
+                    $tab = explode("__", $key_name);
+                    if ($this->table != $tab[1]) {
+                        $_REQUEST['newTable'] = $tab[3];
+                        /* $_REQUEST['fieldToUpdate'] = $tab[2];
+                          $_REQUEST['tableToUpdate'] = $tab[1]; */
+                        /* debug($key_name);
+                          debug('edit : '.$value); */
+                        $_REQUEST['newId'] = $value;
+                    }
+                } else if (strstr($key_name, "genform_rel") !== false && strstr($key_name, "_temoin") !== false) {
+                    $key_name = str_replace("_temoin", "", $key_name);
+                    $value = akev($_POST, $key_name);
+
+                    $tab = explode("__", $key_name);
+                    $found = false;
+                    reset($tablerel[$tab[1]]);
+
+                    foreach ($tablerel[$tab[1]] as $k => $v) {
+                        if ($v == $this->table && !$found) {
+                            $fk1 = $k;
+                            $found = true;
+                        } else {
+                            $fk2 = $k;
+                            $fk_table = $v;
                         }
-                        // }
-                    } else
-                        if (strstr($key_name, "genform_add_") !== false) {
-                            /* FK SIMPLE */
-                            $tab = explode("_-_", $key_name);
-                            if ($this->table != $tab[1]) {
-                                $_REQUEST['newTable'] = $tab[1];
-                                $_REQUEST['fieldToUpdate'] = $tab[2];
-                                $_REQUEST['newId'] = "new";
+                    }
+                    reset($tablerel[$tab[1]]);
+
+                    if (empty($_REQUEST['genform_cancel_x'])) {
+                        $sql = "DELETE FROM " . $tab[1] . " WHERE " . $fk1 . " = " . $this->id;
+                        DoSql($sql);
+
+                        $order = 1;
+                        while (list($k, $v) = @each($value)) {
+                            if ($v) {
+                                $orderField = '';
+                                $orderValue = '';
+                                if (array_key_exists($tab[1], $orderFields)) {
+                                    $orderField = ',' . $orderFields[$tab[1]][0];
+                                    $orderValue = ',' . $order;
+                                }
+                                $sql = 'INSERT INTO ' . $tab[1] . ' ( ' . $fk1 . ' , ' . $fk2 . '' . $orderField . ')  VALUES (' . $this->id . ',' . $v . '' . $orderValue . ') ';
+                                DoSql($sql);
+                                $order++;
                             }
-                        } else
-                            if (strstr($key_name, "genform_addfk_") !== false) {
-                                /* TABLE FK DISTANTE */
-                                $tab = explode("__", $key_name);
-                                // if($this->table != $tab[1]) {
-                                $_REQUEST['newTable'] = $tab[1];
-                                $_SESSION[gfuid()]['newTableFk'] = $tab[2];
-                                $_REQUEST['insertOtherField'] = "1";
-                                $_REQUEST['newId'] = "new";
-                                // }
-                            } else
-                                if (strstr($key_name, "genform_addrel_") !== false) {
-                                    /* TABLE DE RELATION */
-                                    $tab = explode("__", $key_name);
-                                    if ($this->table != $tab[1]) {
-                                        $_REQUEST['newTable'] = $tab[3];
-                                        $_REQUEST['fieldToUpdate'] = $tab[2];
-                                        $_REQUEST['tableToUpdate'] = $tab[1];
-                                        $_REQUEST['newId'] = "new";
+                        }
+                    }
+
+                    if (isNeeded($this->table, $tab[1]) && (!count($value) || $value == "")) {
+                        $isError = 1;
+                        $fieldError[$tab[1]] = 1;
+                    }
+                } else if (strstr($key_name, "genform_tagrel") !== false && strstr($key_name, "_temoin") !== false) {
+                    /**
+                     * Tablerel gérée avec des tags !
+                     */
+                    $key_name = str_replace("_temoin", "", $key_name);
+                    $value = akev($_POST, $key_name);
+
+                    $tab = explode("__", $key_name);
+                    $found = false;
+                    reset($tablerel[$tab[1]]);
+
+                    foreach ($tablerel[$tab[1]] as $k => $v) {
+                        if ($v == $this->table && !$found) {
+                            $fk1 = $k;
+                            $found = true;
+                        } else {
+                            $fk2 = $k;
+                            $fk_table = $v;
+                        }
+                    }
+                    reset($tablerel[$tab[1]]);
+
+                    if (empty($_REQUEST['genform_cancel_x'])) {
+                        $sql = "DELETE FROM " . $tab[1] . " WHERE " . $fk1 . " = " . $this->id;
+                        DoSql($sql);
+
+                        $order = 1;
+                        while (list($k, $v) = @each($value)) {
+                            if ($v) {
+                                /**
+                                 * Nouvel élément
+                                 */
+                                if (strpos($k, '-') !== false) {
+                                    $c = $_Gconfig['tablerelAsTags'][$tab[1]]['allowAdd'];
+                                    if ($c) {
+
+                                        $rinsert = array($c => $v);
+                                        global $co;
+                                        $co->Autoexecute($fk_table, $rinsert, 'INSERT');
+                                        $v = InsertId();
                                     }
-                                } else
-                                    if (strstr($key_name, "genform_editrel_") !== false && $value > 0) {
-                                        /* TABLE DE RELATION */
-                                        $tab = explode("__", $key_name);
-                                        if ($this->table != $tab[1]) {
-                                            $_REQUEST['newTable'] = $tab[3];
-                                            /* $_REQUEST['fieldToUpdate'] = $tab[2];
-                                              $_REQUEST['tableToUpdate'] = $tab[1]; */
-                                            /* debug($key_name);
-                                              debug('edit : '.$value); */
-                                            $_REQUEST['newId'] = $value;
-                                        }
-                                    } else
-                                        if (strstr($key_name, "genform_rel") !== false && strstr($key_name, "_temoin") !== false) {
-                                            $key_name = str_replace("_temoin", "", $key_name);
-                                            $value = akev($_POST, $key_name);
+                                } else {
+                                    $v = $k;
+                                }
+                                $orderField = '';
+                                $orderValue = '';
+                                if (array_key_exists($tab[1], $orderFields)) {
+                                    $orderField = ',' . $orderFields[$tab[1]][0];
+                                    $orderValue = ',' . $order;
+                                }
+                                $sql = 'INSERT INTO ' . $tab[1] . ' ( ' . $fk1 . ' , ' . $fk2 . '' . $orderField . ')  VALUES (' . $this->id . ',' . $v . '' . $orderValue . ') ';
+                                DoSql($sql);
+                                $order++;
+                            }
+                        }
+                    }
+                    if (isNeeded($this->table, $tab[1]) && (!count($value) || $value == "")) {
+                        $isError = 1;
+                        $fieldError[$tab[1]] = 1;
+                    }
+                } else if (!empty($_SESSION[gfuid()]['curFields']) && in_array($name, $_SESSION[gfuid()]['curFields'])) {
+                    /* Est-il dans la liste des champs que j'ai le droit de modifier */
+                    if (isset($tab_field[$name])) {
 
-                                            $tab = explode("__", $key_name);
-                                            $found = false;
-                                            reset($tablerel[$tab[1]]);
+                        if (is_array($value)) {
+                            $value = implode(',', $value);
+                        }
 
-                                            foreach ($tablerel[$tab[1]] as $k => $v) {
-                                                if ($v == $this->table && !$found) {
-                                                    $fk1 = $k;
-                                                    $found = true;
-                                                } else {
-                                                    $fk2 = $k;
-                                                    $fk_table = $v;
-                                                }
-                                            }
-                                            reset($tablerel[$tab[1]]);
+                        /* Nombre reel */
+                        if ($tab_field[$name]->type == "real") {
+                            $val1 = (real)$value;
+                            if (preg_match("/[A-Za-z]/", $value)) {
+                                // echo "Found letters";
+                                $isError = 1;
+                                $fieldError[$name] = 1;
+                            }
+                        } /* Entier non FK */ else if ($tab_field[$name]->type == "int" && !strstr($name, "fk") !== false && $value != "") {
+                            $val1 = (int)$value;
+                            $value = str_replace(" ", "", $value);
+                            $value = str_replace(".", "", $value);
+                            $value = str_replace(",", "", $value);
+                            if (preg_match("/[A-Za-z]/", $value) && $value != "NULL") {
+                                // echo "Found letters";
+                                $isError = 1;
+                                $fieldError[$name] = 1;
+                            }
 
-                                            if (empty($_REQUEST['genform_cancel_x'])) {
-                                                $sql = "DELETE FROM " . $tab[1] . " WHERE " . $fk1 . " = " . $this->id;
-                                                DoSql($sql);
+                            /* DATE */
+                        } else if ($tab_field[$name]->type == "date" && false) {
+                            $value = $_POST['genform_' . $name . '_year'] . '-' . $_POST['genform_' . $name . '_month'] . '-' . $_POST['genform_' . $name . '_day'];
+                            $dates = explode("-", $value);
 
-                                                $order = 1;
-                                                while (list($k, $v) = @each($value)) {
-                                                    if ($v) {
-                                                        $orderField = '';
-                                                        $orderValue = '';
-                                                        if (array_key_exists($tab[1], $orderFields)) {
-                                                            $orderField = ',' . $orderFields[$tab[1]][0];
-                                                            $orderValue = ',' . $order;
-                                                        }
-                                                        $sql = 'INSERT INTO ' . $tab[1] . ' ( ' . $fk1 . ' , ' . $fk2 . '' . $orderField . ')  VALUES (' . $this->id . ',' . $v . '' . $orderValue . ') ';
-                                                        DoSql($sql);
-                                                        $order++;
-                                                    }
-                                                }
-                                            }
-
-                                            if (isNeeded($this->table, $tab[1]) && (!count($value) || $value == "")) {
-                                                $isError = 1;
-                                                $fieldError[$tab[1]] = 1;
-                                            }
-                                        } else
-                                            /**
-                                             * Tablerel gérée avec des tags !
-                                             */
-                                            if (strstr($key_name, "genform_tagrel") !== false && strstr($key_name, "_temoin") !== false) {
-                                                $key_name = str_replace("_temoin", "", $key_name);
-                                                $value = akev($_POST, $key_name);
-
-                                                $tab = explode("__", $key_name);
-                                                $found = false;
-                                                reset($tablerel[$tab[1]]);
-
-                                                foreach ($tablerel[$tab[1]] as $k => $v) {
-                                                    if ($v == $this->table && !$found) {
-                                                        $fk1 = $k;
-                                                        $found = true;
-                                                    } else {
-                                                        $fk2 = $k;
-                                                        $fk_table = $v;
-                                                    }
-                                                }
-                                                reset($tablerel[$tab[1]]);
-
-                                                if (empty($_REQUEST['genform_cancel_x'])) {
-                                                    $sql = "DELETE FROM " . $tab[1] . " WHERE " . $fk1 . " = " . $this->id;
-                                                    DoSql($sql);
-
-                                                    $order = 1;
-                                                    while (list($k, $v) = @each($value)) {
-                                                        if ($v) {
-                                                            /**
-                                                             * Nouvel élément
-                                                             */
-                                                            if (strpos($k, '-') !== false) {
-                                                                $c = $_Gconfig['tablerelAsTags'][$tab[1]]['allowAdd'];
-                                                                if ($c) {
-
-                                                                    $rinsert = array($c => $v);
-                                                                    global $co;
-                                                                    $co->Autoexecute($fk_table, $rinsert, 'INSERT');
-                                                                    $v = InsertId();
-                                                                }
-                                                            } else {
-                                                                $v = $k;
-                                                            }
-                                                            $orderField = '';
-                                                            $orderValue = '';
-                                                            if (array_key_exists($tab[1], $orderFields)) {
-                                                                $orderField = ',' . $orderFields[$tab[1]][0];
-                                                                $orderValue = ',' . $order;
-                                                            }
-                                                            $sql = 'INSERT INTO ' . $tab[1] . ' ( ' . $fk1 . ' , ' . $fk2 . '' . $orderField . ')  VALUES (' . $this->id . ',' . $v . '' . $orderValue . ') ';
-                                                            DoSql($sql);
-                                                            $order++;
-                                                        }
-                                                    }
-                                                }
-                                                if (isNeeded($this->table, $tab[1]) && (!count($value) || $value == "")) {
-                                                    $isError = 1;
-                                                    $fieldError[$tab[1]] = 1;
-                                                }
-                                            } else
-
-                                                /* Est-il dans la liste des champs que j'ai le droit de modifier */
-
-                                                if (!empty($_SESSION[gfuid()]['curFields']) && in_array($name, $_SESSION[gfuid()]['curFields'])) {
+                            /* TIME */
+                        } else if ($tab_field[$name]->type == "time") {
+                            $_POST['genform_' . $name . '_min'] = $_POST['genform_' . $name . '_min'] != '' ? $_POST['genform_' . $name . '_min'] : '00';
+                            $_POST['genform_' . $name . '_sec'] = $_POST['genform_' . $name . '_sec'] != '' ? $_POST['genform_' . $name . '_sec'] : '00';
+                            $_POST['genform_' . $name . '_hour'] = $_POST['genform_' . $name . '_hour'] != '' ? $_POST['genform_' . $name . '_hour'] : '00';
 
 
-                                                    if (isset($tab_field[$name])) {
+                            $value = $_POST['genform_' . $name . '_hour'] . ':' . $_POST['genform_' . $name . '_min'] . ':' . $_POST['genform_' . $name . '_sec'];
+                        } else if ($tab_field[$name]->type == "datetime") {
 
-                                                        if (is_array($value)) {
-                                                            $value = implode(',', $value);
-                                                        }
+                            /* $_POST['genform_' . $name . '_hh'] = $_POST['genform_' . $name . '_hh'] != '' ? $_POST['genform_' . $name . '_hh'] : '00';
+                              $_POST['genform_' . $name . '_mm'] = $_POST['genform_' . $name . '_mm'] != '' ? $_POST['genform_' . $name . '_mm'] : '00';
+                              $_POST['genform_' . $name . '_ss'] = $_POST['genform_' . $name . '_ss'] != '' ? $_POST['genform_' . $name . '_ss'] : '00';
+                             */
 
-                                                        /* Nombre reel */
-                                                        if ($tab_field[$name]->type == "real") {
-                                                            $val1 = (real)$value;
-                                                            if (preg_match("/[A-Za-z]/", $value)) {
-                                                                // echo "Found letters";
-                                                                $isError = 1;
-                                                                $fieldError[$name] = 1;
-                                                            }
-                                                        } /* Entier non FK */ else if ($tab_field[$name]->type == "int" && !strstr($name, "fk") !== false && $value != "") {
-                                                            $val1 = (int)$value;
-                                                            $value = str_replace(" ", "", $value);
-                                                            $value = str_replace(".", "", $value);
-                                                            $value = str_replace(",", "", $value);
-                                                            if (preg_match("/[A-Za-z]/", $value) && $value != "NULL") {
-                                                                // echo "Found letters";
-                                                                $isError = 1;
-                                                                $fieldError[$name] = 1;
-                                                            }
+                            $value = $_POST['genform_' . $name] . ' ' . $_POST['genform_' . $name . '_hh'] . ':' . $_POST['genform_' . $name . '_mm'] . ':' . $_POST['genform_' . $name . '_ss'];
 
-                                                            /* DATE */
-                                                        } else if ($tab_field[$name]->type == "date" && false) {
-                                                            $value = $_POST['genform_' . $name . '_year'] . '-' . $_POST['genform_' . $name . '_month'] . '-' . $_POST['genform_' . $name . '_day'];
-                                                            $dates = explode("-", $value);
+                            $dates = explode("-", $value);
+                        }
+                    } else if (arrayInWord($mailFields, $name) && 0) {
+                        if ($_POST['genform_' . $name . '_beforeat'] && $_POST['genform_' . $name . '_afterat']) {
+                            $value = $_POST['genform_' . $name . '_beforeat'] . "@" . $_POST['genform_' . $name . '_afterat'];
+                        } else {
+                            $value = "";
+                        }
+                    } else if (is_array($value)) {
+                        $value = implode(",", $value);
+                    }
+                    /**
+                     * Fout la merde
+                     */
+                    // $value = addmyslashes($value);
 
-                                                            /* TIME */
-                                                        } else if ($tab_field[$name]->type == "time") {
-                                                            $_POST['genform_' . $name . '_min'] = $_POST['genform_' . $name . '_min'] != '' ? $_POST['genform_' . $name . '_min'] : '00';
-                                                            $_POST['genform_' . $name . '_sec'] = $_POST['genform_' . $name . '_sec'] != '' ? $_POST['genform_' . $name . '_sec'] : '00';
-                                                            $_POST['genform_' . $name . '_hour'] = $_POST['genform_' . $name . '_hour'] != '' ? $_POST['genform_' . $name . '_hour'] : '00';
+                    if ($value == DEFAULT_URL_VALUE)
+                        $value = "";
 
+                    $value = trim($value);
+                    if (($value == "" || $value == "0" || $value == "0.0" || $value == "NULL" || $value == "::" || (is_array($value) && count($value) == 0)) && isNeeded($this->table, $name)) {
+                        $isError = 1;
+                        $fieldError[$name] = 1;
+                    }
 
-                                                            $value = $_POST['genform_' . $name . '_hour'] . ':' . $_POST['genform_' . $name . '_min'] . ':' . $_POST['genform_' . $name . '_sec'];
-                                                        } else if ($tab_field[$name]->type == "datetime") {
+                    /*
+                     * On supprime un fichier
+                     */
 
-                                                            /* $_POST['genform_' . $name . '_hh'] = $_POST['genform_' . $name . '_hh'] != '' ? $_POST['genform_' . $name . '_hh'] : '00';
-                                                              $_POST['genform_' . $name . '_mm'] = $_POST['genform_' . $name . '_mm'] != '' ? $_POST['genform_' . $name . '_mm'] : '00';
-                                                              $_POST['genform_' . $name . '_ss'] = $_POST['genform_' . $name . '_ss'] != '' ? $_POST['genform_' . $name . '_ss'] : '00';
-                                                             */
+                    if (substr($name, -4) == "_del" || substr($name, -4) == "_del_x") {
+                        $name = substr($name, 0, -4);
+                        $_REQUEST['genform_stay'] = 1;
 
-                                                            $value = $_POST['genform_' . $name] . ' ' . $_POST['genform_' . $name . '_hh'] . ':' . $_POST['genform_' . $name . '_mm'] . ':' . $_POST['genform_' . $name . '_ss'];
+                        /**
+                         *
+                         * @unlink ($uploadRep.$myobj->tab_default_field[$name]);
+                         */
+                        $gf = new GenFile($this->table, $name, $this->id);
+                        $gf->deleteFile();
+                        $value = "";
+                    }
 
-                                                            $dates = explode("-", $value);
-                                                        }
-                                                    } else if (arrayInWord($mailFields, $name) && 0) {
-                                                        if ($_POST['genform_' . $name . '_beforeat'] && $_POST['genform_' . $name . '_afterat']) {
-                                                            $value = $_POST['genform_' . $name . '_beforeat'] . "@" . $_POST['genform_' . $name . '_afterat'];
-                                                        } else {
-                                                            $value = "";
-                                                        }
-                                                    } else if (is_array($value)) {
-                                                        $value = implode(",", $value);
-                                                    }
-                                                    /**
-                                                     * Fout la merde
-                                                     */
-                                                    // $value = addmyslashes($value);
+                    if (substr($name, -11) == "_fromfolder") {
+                        /**
+                         * gestion des fichiers en lien vers un dossier
+                         */
+                        if ($value) {
+                            if ($value == "-1") {
+                                $value = '';
+                            } else {
+                                $value = '**' . $value;
+                            }
+                            $name = substr($name, 0, -11);
+                        } else {
+                            $name = '';
+                            $value = '';
+                        }
+                    }
 
-                                                    if ($value == DEFAULT_URL_VALUE)
-                                                        $value = "";
+                    /**
+                     * Gestion des fichiers � copier depuis le dossier upload
+                     */
+                    if ((substr($name, -10) == "_importftp") && $value != "0" && $value != "NULL") {
+                        $name = substr($name, 0, -10);
 
-                                                    $value = trim($value);
-                                                    if (($value == "" || $value == "0" || $value == "0.0" || $value == "NULL" || $value == "::" || (is_array($value) && count($value) == 0)) && isNeeded($this->table, $name)) {
-                                                        $isError = 1;
-                                                        $fieldError[$name] = 1;
-                                                    }
+                        $gf = new GenFile($this->table, $name, $this->id, $value, false);
+                        if ($gf->uploadFile(path($_Gconfig['ftpUpload_path'], $value))) {
+                            $value = $gf->getRealName();
+                        }
+                    } else if (substr($name, -10) == "_importftp") {
+                        $name = '';
+                        $value = '';
+                    }
 
-                                                    /*
-                                                     * On supprime un fichier
-                                                     */
-
-                                                    if (substr($name, -4) == "_del" || substr($name, -4) == "_del_x") {
-                                                        $name = substr($name, 0, -4);
-                                                        $_REQUEST['genform_stay'] = 1;
-
-                                                        /**
-                                                         *
-                                                         * @unlink ($uploadRep.$myobj->tab_default_field[$name]);
-                                                         */
-                                                        $gf = new GenFile($this->table, $name, $this->id);
-                                                        $gf->deleteFile();
-                                                        $value = "";
-                                                    }
-
-                                                    if (substr($name, -11) == "_fromfolder") {
-                                                        /**
-                                                         * gestion des fichiers en lien vers un dossier
-                                                         */
-                                                        if ($value) {
-                                                            if ($value == "-1") {
-                                                                $value = '';
-                                                            } else {
-                                                                $value = '**' . $value;
-                                                            }
-                                                            $name = substr($name, 0, -11);
-                                                        } else {
-                                                            $name = '';
-                                                            $value = '';
-                                                        }
-                                                    }
-
-                                                    /**
-                                                     * Gestion des fichiers � copier depuis le dossier upload
-                                                     */
-                                                    if ((substr($name, -10) == "_importftp") && $value != "0" && $value != "NULL") {
-                                                        $name = substr($name, 0, -10);
-
-                                                        $gf = new GenFile($this->table, $name, $this->id, $value, false);
-                                                        if ($gf->uploadFile(path($_Gconfig['ftpUpload_path'], $value))) {
-                                                            $value = $gf->getRealName();
-                                                        }
-                                                    } else if (substr($name, -10) == "_importftp") {
-                                                        $name = '';
-                                                        $value = '';
-                                                    }
-
-                                                    /**
-                                                     * Gestion des fichiers � copier depuis le filemanager
-                                                     */
-                                                    if ((substr($name, -14) == "_importmanager") && $value != "0" && $value != "NULL" && $value) {
-                                                        $name = substr($name, 0, -14);
-                                                        $value = urldecode($value);
-                                                        debug($name);
-                                                        debug($value);
-                                                    } else if (substr($name, -14) == "_importmanager") {
-                                                        $name = '';
-                                                        $value = '';
-                                                    }
+                    /**
+                     * Gestion des fichiers � copier depuis le filemanager
+                     */
+                    if ((substr($name, -14) == "_importmanager") && $value != "0" && $value != "NULL" && $value) {
+                        $name = substr($name, 0, -14);
+                        $value = urldecode($value);
+                        debug($name);
+                        debug($value);
+                    } else if (substr($name, -14) == "_importmanager") {
+                        $name = '';
+                        $value = '';
+                    }
 
 
-                                                    /**
-                                                     * CHAMPS RTE
-                                                     */
-                                                    if (@in_array($name, $rteFields)) {
-                                                        if (strlen(trim(strip_tags($value))) > 1 && strpos($value, '<p>') === false) {
-                                                            $value = '<p>' . $value . '</p>';
-                                                        }
+                    /**
+                     * CHAMPS RTE
+                     */
+                    if (@in_array($name, $rteFields)) {
+                        if (strlen(trim(strip_tags($value))) > 1 && strpos($value, '<p>') === false) {
+                            $value = '<p>' . $value . '</p>';
+                        }
 
-                                                        $value = str_replace(
-                                                            array('<b>', '</b>', '<u>', '</u>', '<i>', '</i>'), array('<strong>', '</strong>', '<span style="text-decoration:underline">', '</span>', '<em>', '</em>'), $value);
-                                                        $value = strip_tags($value, '<p><a><abbr><accronym><sup><sub><ul><li><ol><br><br/><strong><em><span>');
-                                                    }
-
-
-                                                    /**
-                                                     * CHAMPS RTE
-                                                     */
-                                                    if (in_array($name, $_Gconfig['passwordFields'])) {
-                                                        if (strlen($value) > 0) {
-                                                            $value = password_hash($value, PASSWORD_BCRYPT);
-                                                        } else {
-                                                            $name = '';
-                                                        }
-                                                    }
+                        $value = str_replace(
+                            array('<b>', '</b>', '<u>', '</u>', '<i>', '</i>'), array('<strong>', '</strong>', '<span style="text-decoration:underline">', '</span>', '<em>', '</em>'), $value);
+                        $value = strip_tags($value, '<p><a><abbr><accronym><sup><sub><ul><li><ol><br><br/><strong><em><span>');
+                    }
 
 
-                                                    $aid = $this->JustInserted ? 'new' : $this->id;
-                                                    if (!$this->gs->can('edit', $this->table, '', $aid, $name, $value) && !$this->gs->can('edit', $this->table, '', $aid, getBaseLgField($name), $value)) {
-                                                        $this->gs->showError();
-                                                        die();
-                                                    }
+                    /**
+                     * CHAMPS RTE
+                     */
+                    if (in_array($name, $_Gconfig['passwordFields'])) {
+                        if (strlen($value) > 0) {
+                            $value = password_hash($value, PASSWORD_BCRYPT);
+                        } else {
+                            $name = '';
+                        }
+                    }
 
 
-                                                    if (strlen($name)) {
-                                                        $this->curValues[$name] = $value;
+                    $aid = $this->JustInserted ? 'new' : $this->id;
+                    if (!$this->gs->can('edit', $this->table, '', $aid, $name, $value) && !$this->gs->can('edit', $this->table, '', $aid, getBaseLgField($name), $value)) {
+                        $this->gs->showError();
+                        die();
+                    }
 
-                                                        $query .= $this->updateQuery($name, $value);
-                                                    }
-                                                }
+
+                    if (strlen($name)) {
+                        $this->curValues[$name] = $value;
+
+                        $query .= $this->updateQuery($name, $value);
+                    }
+                }
             }
         }
 
@@ -982,7 +973,7 @@ class genRecord
 
         /* SI c'est un champ en RTE */
         if (isset($_SESSION["genform_" . $this->table]) && !isset($_POST['genform_cancel_x'])) {
-            
+
             foreach ($_SESSION["genform_" . $this->table] as $k => $v) {
                 if (!$this->gs->can('edit', $this->table, '', $this->id, $k, $v) && !$this->JustInserted) {
                     $this->gs->showError();
