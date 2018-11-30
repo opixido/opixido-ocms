@@ -41,7 +41,8 @@ define('SEC_MINUTE', 60);
 define('SEC_HOUR', 3600);
 define('SEC_DAY', 86400);
 
-class Date {
+class Date
+{
     /* unix timestamp */
 
     var $ts;
@@ -54,7 +55,8 @@ class Date {
     /* @scope protected */
     var $change = 0; // 1 if date needs recalculation
 
-    function Date($ts = "") {
+    function __construct($ts = "")
+    {
         $this->input = $ts;
         if ($ts) {
             $this->setTimestamp($ts);
@@ -63,7 +65,7 @@ class Date {
         }
     }
 
-    /*     * **
+    /*
      * 	Build a date from an ISO datetime string
      * @params $datetime string the iso-X datetime with both date and time components
      * @static @factory
@@ -80,7 +82,8 @@ class Date {
      * 	timezone code is yet ignored ( not handled )
      */
 
-    function fromDatetime($datetime) {
+    function fromDatetime($datetime)
+    {
         if (!preg_match("/^(\d{4})-?(\d{2})-?(\d{2})T?(\d{2}):?(\d{2}):?(\d{2})(.?)$/", $datetime, $a)) {
             return NULL;
         }
@@ -90,11 +93,13 @@ class Date {
         return $obj;
     }
 
-    function toString($format) {
+    function toString($format)
+    {
         return strftimeloc($format, $this->getTimestamp());
     }
 
-    function __tostring() {
+    function __tostring()
+    {
 
         if ($this->ts <= 0) {
             return false;
@@ -107,61 +112,71 @@ class Date {
      * @static
      */
 
-    function format($format, $timestamp) {
+    function format($format, $timestamp)
+    {
         return strftimeloc($format, $timestamp);
     }
 
     /*     * ************************************************** GETTERS *** */
 
-    function getYear() {
+    function getYear()
+    {
         if ($this->change)
             $this->_calc();
         return $this->Y;
     }
 
-    function getMonth() {
+    function getMonth()
+    {
         if ($this->change)
             $this->_calc();
         return $this->M;
     }
 
-    function getDay() {
+    function getDay()
+    {
         if ($this->change)
             $this->_calc();
         return $this->D;
     }
 
-    function getWeekday() {
+    function getWeekday()
+    {
         if ($this->change)
             $this->_calc();
         return $this->weekday;
     }
 
-    function getYearDay() {
+    function getYearDay()
+    {
         if ($this->change)
             $this->_calc();
         return date("z", $this->ts);
     }
 
-    function getHours() {
+    function getHours()
+    {
         if ($this->change)
             $this->_calc();
         return $this->h;
     }
 
-    function getMinutes() {
+    function getMinutes()
+    {
         if ($this->change)
             $this->_calc();
         return $this->m;
     }
 
-    function getSeconds() {
+    function getSeconds()
+    {
         if ($this->change)
             $this->_calc();
         return $this->s;
     }
 
-    function getSecondsInDay() {
+    function getSecondsInDay()
+    {
         if ($this->change)
             $this->_calc();
         $ts1 = mktime(0, 0, 0, $this->M, $this->D, $this->Y);
@@ -169,73 +184,85 @@ class Date {
     }
 
     // return Unix timestamp (seconds since epoch )
-    function getTimestamp() {
+    function getTimestamp()
+    {
         if ($this->change)
             $this->_calc();
         return $this->ts;
     }
 
-    function daysInMonth() {
+    function daysInMonth()
+    {
         if ($this->change)
             $this->_calc();
         return date("t", $this->ts);
     }
 
-    function daysInYear() {
+    function daysInYear()
+    {
         if ($this->change)
             $this->_calc();
         return date("t", $this->ts);
     }
 
-    function DaysTo($date) {
+    function DaysTo($date)
+    {
         if (!is_object($date) || get_class($date) != "date")
             return false;
         $deltats = $date->getTimestamp() - $this->getTimestamp();
         if ($deltats > 0)
-            return (int) floor($deltats / SEC_DAY);
+            return (int)floor($deltats / SEC_DAY);
         else
-            return (int) ceil($deltats / SEC_DAY);
+            return (int)ceil($deltats / SEC_DAY);
     }
 
-    function compareTo($date) {
+    function compareTo($date)
+    {
         if (!is_object($date) || get_class($date) != "date")
             return false;
         return $this->getTimestamp() - $date->getTimestamp();
     }
 
-    function addDays($numdays) {
+    function addDays($numdays)
+    {
         $this->D += $numdays;
         $this->_calc();
     }
 
-    function addMonths($num) {
+    function addMonths($num)
+    {
         $this->M += $num;
         $this->_calc();
     }
 
-    function addYears($num) {
+    function addYears($num)
+    {
         $this->Y += $num;
         $this->_calc();
     }
 
-    function addHours($num) {
+    function addHours($num)
+    {
         $this->h += $num;
         $this->_calc();
     }
 
-    function addMinutes($num) {
+    function addMinutes($num)
+    {
         $this->m += $num;
         $this->_calc();
     }
 
-    function addSeconds($num) {
+    function addSeconds($num)
+    {
         $this->s += $num;
         $this->_calc();
     }
 
     /*     * ************************************************** SETTERS *** */
 
-    function setTimestamp($ts) {
+    function setTimestamp($ts)
+    {
         // TODO : basic validation
         if (!is_int($ts)) {
             $this->ts = strtotime($ts);
@@ -254,57 +281,67 @@ class Date {
         unset($a);
     }
 
-    function setDate($Y, $M, $D = 1) {
+    function setDate($Y, $M, $D = 1)
+    {
         $this->Y = $Y;
         $this->M = $M;
         $this->D = $D;
         $this->change = 1;
     }
 
-    function setTime($h, $m, $s = 0) {
+    function setTime($h, $m, $s = 0)
+    {
         $this->h = $h;
         $this->m = $m;
         $this->s = $s;
         $this->change = 1;
     }
 
-    function setHours($val) {
+    function setHours($val)
+    {
         $this->h = $val;
         $this->change = 1;
     }
 
-    function setMinutes($val) {
+    function setMinutes($val)
+    {
         $this->m = $val;
         $this->change = 1;
     }
 
-    function setSeconds($val) {
+    function setSeconds($val)
+    {
         $this->s = $val;
         $this->change = 1;
     }
 
-    function setYear($val) {
+    function setYear($val)
+    {
         $this->Y = $val;
         $this->change = 1;
     }
 
-    function setMonth($val) {
+    function setMonth($val)
+    {
         $this->M = $val;
         $this->change = 1;
     }
 
-    function setDay($val) {
+    function setDay($val)
+    {
         $this->D = $val;
         $this->change = 1;
     }
 
-    // setWeekday( [0-6] ) 
-    function setWeekday($weekday) {
+    // setWeekday( [0-6] )
+    function setWeekday($weekday)
+    {
         $this->D += ($weekday - $this->weekday);
         $this->change = 1;
     }
 
-    function isValid() {
+    function isValid()
+    {
         if (!checkdate($this->M, $this->D, $this->Y))
             return false;
         if ($this->Y < 1970 || $this->Y > 2038)
@@ -315,9 +352,10 @@ class Date {
     }
 
     /**
-     * 	@protected 
+     * @protected
      */
-    function _calc() {
+    function _calc()
+    {
         $this->ts = mktime($this->h, $this->m, $this->s, $this->M, $this->D, $this->Y);
         $a = getdate($this->ts);
         $this->Y = $a['year'];
@@ -332,4 +370,3 @@ class Date {
 
 }
 
-?>
