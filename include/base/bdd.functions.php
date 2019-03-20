@@ -582,7 +582,7 @@ function sql($param, $type = 'string')
         $param = (int)$param;
     } else if ($param == 'NULL') {
         return $param;
-    } else {
+    } else if($co) {
         global $co;
         return $co->quote($param);
     }
