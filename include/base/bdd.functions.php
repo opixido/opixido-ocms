@@ -578,12 +578,12 @@ function sql($param, $type = 'string')
         debug_print_backtrace();
         return '""';
     }
+    global $co;
     if ($type == 'int') {
         $param = (int)$param;
     } else if ($param == 'NULL') {
         return $param;
     } else if($co) {
-        global $co;
         return $co->quote($param);
     }
     return '"' . $param . '"';
