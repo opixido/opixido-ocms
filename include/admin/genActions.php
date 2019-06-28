@@ -629,6 +629,8 @@ class objDuplication
             derror('No ID');
             return false;
         }
+        
+        $tabField = getTabField($this->table);
 
         /**
          * Préparation de la requête
@@ -651,7 +653,7 @@ class objDuplication
                  * Si c'est un champ d'upload
                  * on le met de côté
                  */
-                if (!strpos($v, '/') && isUploadField($k)) {
+                if (!strpos($v, '/') && isUploadField($k) && array_key_exists($k, $tabField)) {
                     $oldfile = new genFile($this->table, $k, $this->id, $v);
                     $oldfiles[] = array('path' => $oldfile->getSystemPath(),
                         'valeur' => $v,
