@@ -297,8 +297,6 @@ class genHeaders {
     }
 
     public function fixCssPath($content, $cssPath) {
-
-        var_dump($cssPath);
         $cssPath = str_replace("\\", "/", dirname($cssPath));
         $cssPath = str_replace(str_replace("\\", "/", $_SERVER['DOCUMENT_ROOT']), '', $cssPath) . '/';
 
