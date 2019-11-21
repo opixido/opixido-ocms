@@ -8,13 +8,10 @@
 
         <?php
         $css = array(
-            /*    'admin/css/style.css',
-              'admin/css/style_suite.css', */
+
             'admin/css/arbo.css',
-            /* 'admin/genform/css/genform.css', */
             'admin/jq/css/bootstrap/jquery-ui-1.8.16.custom.css',
             'admin/css/bootstrap-2.1.1.css',
-            /* 'admin/css/bootstrap.ocms.css', */
             'admin/jq/css/tipsy.css',
             'admin/jq/css/fg.menu.css',
             'admin/jq/css/jquery.tagedit.css',

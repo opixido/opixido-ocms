@@ -374,15 +374,16 @@ foreach ($_Gconfig['LANGUAGES'] as $lg) {
  */
 $_Gconfig['tinyMce']['conf'] = array(
     'mode'                      => "exact",
-    'theme'                     => "modern",
+    'theme'                     => "silver",
     'language'                  => "fr_FR",
+    'language_url'              => 'js/langs/fr_FR.js',
     'browser_spellcheck'        => "true",
     'width'                     => '100%',
-    'plugins'                   => "autoresize autolink lists link image charmap print preview hr anchor pagebreak searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime nonbreaking save table contextmenu directionality emoticons template paste textcolor responsivefilemanager",
+    'plugins'                   => "autoresize autolink lists link image charmap print preview hr anchor pagebreak searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime nonbreaking save table contextmenu directionality emoticons template paste textcolor ",
     'entity_encoding'           => "raw",
     'content_css'               => BU . "/css/baseadmin.css",
     'theme_advanced_styles'     => '',
-    'toolbar1'                  => "pastetext insertfile undo redo | styleselect | bold italic | bullist numlist outdent indent | link image responsivefilemanager ",
+    'toolbar1'                  => "pastetext insertfile undo redo | styleselect | bold italic | bullist numlist outdent indent | link image  ",
     'toolbar2'                  => "",
     'toolbar3'                  => "",
     'browser_spellcheck'        => 'true',
@@ -400,6 +401,20 @@ $_Gconfig['tinyMce']['conf'] = array(
     'body_class'                => 'paragraphe',
     'style_formats'             => ""
         . "[{title: 'Chapeau',inline:'span', classes:'para-chapeau'},"
-        . "{title: 'Légende', inline:'span', classes:'para-legende'}]"
+        . "{title: 'Légende', inline:'span', classes:'para-legende'}]",
+    'branding'                  =>  'false',
+    'font_formats'              => '',
+    'fontsize_formats'          => '',
+    'menu' => [
+        'file'                  =>  ['title'=>'','items'=>[]],
+        'edit'                  =>  [ 'title'=> 'Modifier', 'items'=> 'undo redo | cut copy paste | selectall | searchreplace' ],
+        'view'                  =>  [ 'title'=> 'View', 'items'=> 'code | visualaid visualchars visualblocks | spellchecker | preview fullscreen' ],
+        'insert'                =>  [ 'title'=> 'Insert', 'items'=> 'image link media  codesample inserttable | charmap emoticons hr | pagebreak nonbreaking anchor toc | insertdatetime' ],
+        'format'                =>  [ 'title'=> 'Format', 'items'=> 'bold italic underline strikethrough superscript subscript codeformat | formats blockformats | removeformat' ],
+        'tools'                 =>  [ 'title'=> 'Tools', 'items'=> 'spellchecker spellcheckerlanguage | code wordcount' ],
+        'table'                 =>  [ 'title'=> 'Table', 'items'=> 'inserttable tableprops deletetable row column cell' ],
+        'help'                  =>  [ 'title'=> 'Help', 'items'=> 'help']
+    ]
+
 );
 

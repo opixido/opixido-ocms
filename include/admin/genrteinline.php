@@ -50,7 +50,7 @@ class genRteInline {
 
         if (!$GLOBALS['rteIncluded']) {
             $formFooters .= ' 
-		    <script src="tinymce/tinymce.min.js"></script>
+		    <script src="../vendor/tinymce/tinymce/tinymce.min.js"></script>
 			';
         }
 

@@ -1,4 +1,5 @@
-#gen_actions {}
+#gen_actions {
+}
 
 #toolsright {
     float: right;
@@ -13,7 +14,7 @@
 }
 
 .table th {
-    background: #eee!important;
+    background: #eee !important;
 }
 
 #contenant {
@@ -33,29 +34,29 @@ input.selectMSearch {
     font-size: 10px;
     margin-top: 0;
     padding-top: 0;
-    padding: 0!important;
+    padding: 0 !important;
 }
 
 select.selectM {
-    margin-bottom: 0!important;
+    margin-bottom: 0 !important;
     height: 60px;
 }
 
 .add-on-mini {
-    padding: 0 2px 0 2px!important;
+    padding: 0 2px 0 2px !important;
 }
 
 input,
 textarea {
-    color: #000!important;
+    color: #000 !important;
 }
 
 ::-webkit-input-placeholder {
-    color: #777!important;
+    color: #777 !important;
 }
 
 :-moz-placeholder {
-    color: #777!important;
+    color: #777 !important;
 }
 
 .tab-content {
@@ -70,8 +71,7 @@ textarea {
     top: 110px;
     text-align: right;
     z-index: 20;
-    max-width: 25%;
-    ;
+    max-width: 25%;;
 }
 
 #resume #gen_actions {
@@ -159,12 +159,12 @@ textarea {
 }
 
 .nav-tabs li a {
-    background: #eee!important;
+    background: #eee !important;
 }
 
 .nav-tabs .active a,
 .tab-content {
-    background: #ddd!important;
+    background: #ddd !important;
 }
 
 #genform_header_btn_lgs {
@@ -222,7 +222,8 @@ tr.myDragClass td.dragHandle {
     background: url(../img/move.png) no-repeat center center #eee !important;
 }
 
-tr.myDragClass {}
+tr.myDragClass {
+}
 
 .genform_champ_out {
     position: relative;
@@ -247,7 +248,7 @@ tr.myDragClass {}
 }*/
 
 .genform_champ table input[type=text] {
-    width: 100px!important
+    width: 100px !important
 }
 
 #resume .label {
@@ -265,12 +266,12 @@ tr.myDragClass {}
     background-color: #2C2C2C;
     background-image: -moz-linear-gradient(center top, #555555, #333333);
     background-repeat: repeat-x;
-    border-radius: 0px 0px 10px 10px!important;
+    border-radius: 0px 0px 10px 10px !important;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25), 0 -1px 0 rgba(0, 0, 0, 0.1) inset;
 }
 
 .brand {
-    padding-left: 25px!important;
+    padding-left: 25px !important;
 }
 
 #gen_actions .btn {
@@ -313,7 +314,7 @@ td .well {
 }
 
 input.hasDatepicker {
-    width: 7em!important;
+    width: 7em !important;
     text-align: center;
 }
 
@@ -336,17 +337,17 @@ input.hasDatepicker {
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
     border-radius: 4px;
-    filter: progid: dximagetransform.microsoft.gradient(startColorstr='#333333', endColorstr='#222222', GradientType=0);
+    filter: progid:dximagetransform.microsoft.gradient(startColorstr='#333333', endColorstr='#222222', GradientType=0);
     -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25), inset 0 -1px 0 rgba(0, 0, 0, 0.1);
     -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25), inset 0 -1px 0 rgba(0, 0, 0, 0.1);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25), inset 0 -1px 0 rgba(0, 0, 0, 0.1);
 }
 
-.navbar .nav>li>a:hover {
+.navbar .nav > li > a:hover {
     color: white;
 }
 
-.navbar .nav>li>a {
+.navbar .nav > li > a {
     text-shadow: none;
     color: #aaa;
 }
@@ -355,9 +356,9 @@ input.hasDatepicker {
     text-shadow: none;
 }
 
-.navbar .nav li.dropdown.open>.dropdown-toggle,
-.navbar .nav li.dropdown.active>.dropdown-toggle,
-.navbar .nav li.dropdown.open.active>.dropdown-toggle {
+.navbar .nav li.dropdown.open > .dropdown-toggle,
+.navbar .nav li.dropdown.active > .dropdown-toggle,
+.navbar .nav li.dropdown.open.active > .dropdown-toggle {
     background: inherit;
     color: white;
 }
@@ -372,19 +373,19 @@ input.hasDatepicker {
 
 .ajax_lg_select {
     box-sizing: border-box;
-    width: 10%!important;
-    display: inline-block!important;
-    padding: 0!important;
-    padding-left: 20px!important;
-    min-height: 30px!important;
-    background-position: 2px center!important;
+    width: 10% !important;
+    display: inline-block !important;
+    padding: 0 !important;
+    padding-left: 20px !important;
+    min-height: 30px !important;
+    background-position: 2px center !important;
 }
 
 #zegenform .ajax_lgs input[type=text] {
     box-sizing: border-box;
-    width: 90%!important;
+    width: 90% !important;
     display: inline-block;
-    min-height: 30px!important;
+    min-height: 30px !important;
 }
 
 #search input,
@@ -430,6 +431,7 @@ input.hasDatepicker {
     display: inline-block;
     width: 16px;
 }
+
 /*
 .dropdown-toggle span {
     background: #eee;
@@ -460,4 +462,13 @@ input.hasDatepicker {
 
 .navbar .btn-toolbar {
     margin: 0;
+}
+
+.sr-only {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    left: -999999px;
+    top: -999999px;
 }

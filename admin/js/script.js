@@ -580,7 +580,7 @@ function toggleFieldset(obj) {
 
 function toggleRteInline(tarea) {
     var obj = $('#' + tarea);
-    obj.hide();
+    obj.addClass('sr-only');
     var vval = jQuery.trim(obj.val());
     if (vval.length < 3) {
         vval = '<span class="light">Champ Vide</span>';
@@ -590,8 +590,6 @@ function toggleRteInline(tarea) {
         + '" title="Cliquez-ici pour modifier ce texte" >' + vval
         + '</div>');
     $('#preview_' + tarea + '').click(function () {
-        obj.show();
-
         setupTinymce(tarea);
         $(this).remove();
     });
