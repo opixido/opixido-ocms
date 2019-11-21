@@ -55,6 +55,8 @@ $config['transliteration'] = true;
 $config['convert_spaces'] = true;
 $config['replace_with'] = '-';
 
+$config['tui_defaults_config']['usageStatistics'] = false;
+
 /**
  * Sinon c'est qu'on est pas connecté
  */

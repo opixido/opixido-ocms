@@ -1,7 +1,8 @@
 <?php
 
 
-$_folders = glob($current_path . '*', GLOB_ONLYDIR);
+$_folders = glob(__DIR__ . '/*', GLOB_ONLYDIR);
+$hidden_folders = [];
 foreach ($_folders as $_folder) {
     $_folder = basename($_folder);
     if ($_folder == 'General' || $_folder == $_SESSION['gs_adminuser']) {
@@ -10,6 +11,7 @@ foreach ($_folders as $_folder) {
         $hidden_folders[] = $_folder;
     }
 }
+
 
 return [
     'delete_files' => false,
@@ -23,5 +25,5 @@ return [
     'edit_text_files' => false,
     'copy_cut_files' => false,
     'copy_cut_dirs' => false,
-    'hidden_folders' => $_folder
+    'hidden_folders' => $hidden_folders
 ];
