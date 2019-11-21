@@ -67,7 +67,7 @@ $_Gconfig['protocole'] = $protocole;
  *
  */
 define('LG_DEF', '**LG_DEF**');
-define('SEP', DIRECTORY_SEPARATOR);
+define('SEP', '/');
 
 /**
  * Base URL
