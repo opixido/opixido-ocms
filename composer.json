@@ -12,6 +12,7 @@
     "minimum-stability": "stable",
     "require": {
         "adodb/adodb-php": "^5.20",
-        "phpmailer/phpmailer": "^6.0"
+        "phpmailer/phpmailer": "^6.0",
+        "tinymce/tinymce": ">= 4"
     }
 }
