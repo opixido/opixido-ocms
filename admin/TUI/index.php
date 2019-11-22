@@ -130,7 +130,7 @@
     function saveTUI() {
         $('#loading').show();
         var name = "<?=($_REQUEST['curName'])?>";
-        var format = name.toLowerCase().indexOf('.png') ? 'png' : 'jpeg';
+        var format = name.toLowerCase().indexOf('.png') !== -1 ? 'png' : 'jpeg';
         var newURL = imageEditor.toDataURL({format: format, quality: .8});
         $.ajax({
             type: "POST",
