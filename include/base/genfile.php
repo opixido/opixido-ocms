@@ -414,7 +414,6 @@ class genFile
     {
         if (!$this->isImage())
             return $this->getWebUrl();
-        var_dump($this->getSystemPath(true));
         if ($this->imageExists) {
             return $this->getCacheFile(path_concat(THUMBPATH) . '?q=' . $this->quality . '&amp;w=' . $w . '&amp;h=' . $h . '&amp;src=' . $this->getSystemPath(true) . '' . $this->getFilters($fltr));
             //return path_concat(THUMBPATH).'?q='.$this->quality.'&amp;w='.$w.'&amp;h='.$h.'&amp;table='.$this->table.'&amp;champ='.$this->champ.'&amp;id='.$this->id;
@@ -1143,7 +1142,7 @@ class genFile
                 //$h .= ( ' <br/><img src="thumb/?w='.$this->thumbWidth.'&amp;h='.$this->thumbHeight.'&amp;src='.$systemCh.'" alt="'.t($name).'" id="imgprev_'.$name.'" /><br/>');
                 $h .= (' <img src="' . $this->getThumbUrl($this->thumbWidth, $this->thumbHeight) . '" alt="IMAGE" id="imgprev_' . $name . '"  /><br/>');
             else
-                $h .= (' <img src="' . $chemin . '" alt="' . t($name) . '" width="' . $this->thumbWidth . '" />');
+                $h .= (' <img src="' . $chemin . '?' . time() . '" alt="' . t($name) . '" width="' . $this->thumbWidth . '" />');
         } // <param name="FlashVars" value="clip=' . $this->getWebUrl() . '&amp;margin=2&amp;bgcolor1=000000&amp;bgcolor2=000000&amp;showstop=1&amp;loadingcolor=555555&amp;showvolume=1&amp;showtime=1&amp;showfullscreen=1&amp;playercolor=ffffff&amp;buttoncolor=000000&amp;showiconplay=1&amp;iconplaybgcolor=ffffff&amp;videobgcolor=ffffff&amp;loadonstop=0" />
         else if ($this->isVideo()) {
             $h .= ('' . t('voir'));
@@ -1161,7 +1160,7 @@ class genFile
         $ssch = substr($this->getWebUrl(), strlen(BU));
 
         if ($this->isImage($chemin) && $this->useImageEditor) {
-            $h .= ('<a class="btn btn-mini" href="TUI/index.php?img=' . $ssch . '&update=imgprev_' . $name . '" onclick="window.open(this.href,\'\',\'width=900,height=700\');return false" >' . t('edis_image') . '</a>');
+            $h .= ('<a class="btn btn-mini" href="TUI/index.php?img=' . $ssch . '%3F' . time() . '&curTable=' . $this->table . '&curChamp=' . $this->champ . '&curId=' . $this->id . '&update=imgprev_' . $name . '&curName=' . $this->fileName . '" onclick="window.open(this.href,\'\',\'width=900,height=700\');return false" >' . t('edis_image') . '</a>');
         }
 
 

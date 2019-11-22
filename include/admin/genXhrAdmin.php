@@ -701,7 +701,27 @@ class genXhrAdmin
 
     public function uploadBase64()
     {
+        $data = $_POST['image'];
+        if (preg_match('/^data:image\/(\w+);base64,/', $data, $type)) {
+            $data = substr($data, strpos($data, ',') + 1);
+            $type = strtolower($type[1]); // jpg, png, gif
 
+            if (!in_array($type, ['jpg', 'jpeg', 'gif', 'png'])) {
+                throw new \Exception('invalid image type');
+            }
+
+            $data = base64_decode($data);
+
+            if ($data === false) {
+                throw new \Exception('base64_decode failed');
+            }
+        } else {
+            throw new \Exception('did not match data URI with image data');
+        }
+        $gf = new genFile($_REQUEST['curTable'], $_REQUEST['curChamp'], $_REQUEST['curId'], $_REQUEST['curName'], false, false);
+        $gf->uploadFile(($data), true, true);
+
+        echo $gf->genAdminTag();;
     }
 
     function uploadDiaporama()

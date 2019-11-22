@@ -12,6 +12,7 @@
     </style>
     <link rel="stylesheet" href="https://uicdn.toast.com/tui-image-editor/latest/tui-image-editor.css">
 
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/3.3.2/fabric.js"></script>
     <script src="https://uicdn.toast.com/tui.code-snippet/v1.5.0/tui-code-snippet.min.js"></script>
     <script src="https://uicdn.toast.com/tui-color-picker/v2.2.3/tui-color-picker.js"></script>
@@ -24,7 +25,7 @@
 <body>
 <div id="tui-image-editor"></div>
 <script>
-    var instance = new tui.ImageEditor(document.querySelector('#tui-image-editor'), {
+    var imageEditor = new tui.ImageEditor(document.querySelector('#tui-image-editor'), {
         includeUI: {
             loadImage: {
                 path: "https://<?=$_SERVER['HTTP_HOST'] . $_REQUEST['img']?>",
@@ -111,33 +112,37 @@
                 // colorpicker style
                 'colorpicker.button.border': '1px solid #1e1e1e',
                 'colorpicker.title.color': '#fff'
-            }
+            },
+            menuBarPosition: 'left',
+            usageStatistics: false
         },
         usageStatistics: false,
-        menuBarPosition: 'left'
+
     });
 
+
+    $('.tui-image-editor-header-logo img').attr('src', '../img/logo.png').css('width', 'auto').css('height', 'auto');
+    $('.tui-image-editor-header-buttons > *').remove();
+    $('.tui-image-editor-header-buttons').append('<button class="tui-image-editor-download-btn" style="background: #00b4fa;border: none;border-radius: 5px;">Valider</button>');
+
+    $('.tui-image-editor-download-btn').on('click', saveTUI);
+
     function saveTUI() {
-        show_animation();
-        newURL = imageEditor.toDataURL();
+
+        var newURL = imageEditor.toDataURL();
         $.ajax({
             type: "POST",
             url: "../index.php?xhr=uploadBase64",
             data: {
-                url: newURL,
-                path: $('#sub_folder').val() + $('#fldr_value').val(),
-                name: $('#tui-image-editor').attr('data-name')
+                image: newURL,
+                curTable: "<?=($_REQUEST['curTable'])?>",
+                curChamp: "<?=($_REQUEST['curChamp'])?>",
+                curName: "<?=($_REQUEST['curName'])?>",
+                curId: "<?=(int)$_REQUEST['curId']?>"
             }
         }).done(function (msg) {
-            exitTUI();
-            d = new Date();
-            $("figure[data-name='" + $('#tui-image-editor').attr('data-name') + "']").find('.img-container img').each(function () {
-                $(this).attr('src', $(this).attr('src') + "?" + d.getTime());
-            });
-            $("figure[data-name='" + $('#tui-image-editor').attr('data-name') + "']").find('figcaption a.preview').each(function () {
-                $(this).attr('data-url', $(this).data('url') + "?" + d.getTime());
-            });
-            hide_animation();
+            window.opener.$('#lgfield_<?= ($_REQUEST['curChamp'])?> .genform_uploadfile').replaceWith(msg);
+            window.close();
         });
         return false;
     }
