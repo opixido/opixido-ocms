@@ -8,6 +8,8 @@ if (!empty($_GET['c'])) {
     unset($_GET['c']);
 }
 
+ini_set('display_errors','off');
+
 /**
  * On rempli le request avec tout ce qu'il faut en parsant l'URL propre
  */
@@ -42,6 +44,13 @@ if (empty($_GET)) {
          * Séparateur de clef/valeur
          */
         $x = explode('__', $v);
+
+        /**
+         * Webp automatique si supporté
+         */
+        if ($x[0] == 'f' && strpos($_SERVER['HTTP_ACCEPT'], 'image/webp') !== false) {
+            $x[1] = 'webp';
+        }
 
         if (!empty($x[1])) {
             /**
