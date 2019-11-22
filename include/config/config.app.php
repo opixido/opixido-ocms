@@ -304,35 +304,35 @@ $_Gconfig['fileListingFromFolder'] = array();
  * );
  */
 $_Gconfig['menus']['__default__'] = array(
-    'max_levels'         => 1,
-    'use_images'         => false,
+    'max_levels' => 1,
+    'use_images' => false,
     'use_premade_images' => false,
-    'open_selected'      => false,
-    'max_open_selected'  => 3,
-    'tpl_name'           => 'menu.item',
-    'tpl_folder'         => 'template',
-    'profile'            => 'menu_gauche',
-    'rollover'           => 'menu_gauche_hover',
-    'rollovers'          => array(),
-    'width'              => array(),
-    'imgW'               => array(),
-    'caps'               => false
+    'open_selected' => false,
+    'max_open_selected' => 3,
+    'tpl_name' => 'menu.item',
+    'tpl_folder' => 'template',
+    'profile' => 'menu_gauche',
+    'rollover' => 'menu_gauche_hover',
+    'rollovers' => array(),
+    'width' => array(),
+    'imgW' => array(),
+    'caps' => false
 );
 
 $_Gconfig['menus']['menu-bas'] = array(
-    'max_levels'         => 1,
-    'use_images'         => false,
+    'max_levels' => 1,
+    'use_images' => false,
     'use_premade_images' => false,
-    'open_selected'      => false,
-    'max_open_selected'  => 3,
-    'tpl_name'           => 'menu.item',
-    'tpl_folder'         => 'plugins/jukebox/tpl',
-    'profile'            => 'menu_gauche',
-    'rollover'           => 'menu_gauche_hover',
-    'rollovers'          => array(),
-    'width'              => array(),
-    'imgW'               => array(),
-    'caps'               => false
+    'open_selected' => false,
+    'max_open_selected' => 3,
+    'tpl_name' => 'menu.item',
+    'tpl_folder' => 'plugins/jukebox/tpl',
+    'profile' => 'menu_gauche',
+    'rollover' => 'menu_gauche_hover',
+    'rollovers' => array(),
+    'width' => array(),
+    'imgW' => array(),
+    'caps' => false
 );
 
 /**
@@ -349,7 +349,7 @@ $_Gconfig['gsNoFollowRel'] = array();
 $_Gconfig['mapsFields'] = array();
 
 
-$tabForms["s_rubrique"]["picto"] = ADMIN_PICTOS_FOLDER2 ."48/Editing/text_box-48.png";
+$tabForms["s_rubrique"]["picto"] = ADMIN_PICTOS_FOLDER2 . "48/Editing/text_box-48.png";
 $tabForms["s_admin"]["picto"] = ADMIN_PICTOS_FOLDER2 . "48/Users/user_menu_female-48.png";
 $tabForms["s_trad"]["picto"] = ADMIN_PICTOS_FOLDER2 . "48/Editing/text_box-48.png";
 $tabForms["s_plugin"]["picto"] = ADMIN_PICTOS_FOLDER2 . "24/Programming/plugin-24.png";
@@ -358,13 +358,13 @@ $tabForms["s_admin_trad"]["picto"] = ADMIN_PICTOS_FOLDER2 . "48/Programming/edit
 
 
 foreach ($_Gconfig['LANGUAGES'] as $lg) {
-    $specialUpload["s_paragraphe"][ "paragraphe_img_1_" . $lg ]["system"] = $basePath . "/fichier/s_rubrique/*fk_rubrique_id*/";
-    $specialUpload["s_paragraphe"][ "paragraphe_img_1_" . $lg ]["name"] = "*NAME*.*EXT*";
-    $specialUpload["s_paragraphe"][ "paragraphe_img_1_" . $lg ]["web"] = "/fichier/s_rubrique/*fk_rubrique_id*/";
+    $specialUpload["s_paragraphe"]["paragraphe_img_1_" . $lg]["system"] = $basePath . SEP . "fichier" . SEP . "s_rubrique" . SEP . "*fk_rubrique_id*" . SEP;
+    $specialUpload["s_paragraphe"]["paragraphe_img_1_" . $lg]["name"] = "*NAME*.*EXT*";
+    $specialUpload["s_paragraphe"]["paragraphe_img_1_" . $lg]["web"] = "/fichier/s_rubrique/*fk_rubrique_id*/";
 
-    $specialUpload["s_paragraphe"][ "paragraphe_file_1_" . $lg ]["system"] = $basePath . "/fichier/s_rubrique/*fk_rubrique_id*/";
-    $specialUpload["s_paragraphe"][ "paragraphe_file_1_" . $lg ]["name"] = "*NAME*.*EXT*";
-    $specialUpload["s_paragraphe"][ "paragraphe_file_1_" . $lg ]["web"] = "/fichier/s_rubrique/*fk_rubrique_id*/";
+    $specialUpload["s_paragraphe"]["paragraphe_file_1_" . $lg]["system"] = $basePath . SEP . "fichier" . SEP . "s_rubrique" . SEP . "*fk_rubrique_id*" . SEP;
+    $specialUpload["s_paragraphe"]["paragraphe_file_1_" . $lg]["name"] = "*NAME*.*EXT*";
+    $specialUpload["s_paragraphe"]["paragraphe_file_1_" . $lg]["web"] = "/fichier/s_rubrique/*fk_rubrique_id*/";
 }
 
 
@@ -373,47 +373,47 @@ foreach ($_Gconfig['LANGUAGES'] as $lg) {
  * @example $_Gconfig['tinyMce']['addConf']['theme_advanced_blockformats'] = 'p,div,h1,h2,h3,h4,h5,h6,blockquote,dt,dd,code,samp';
  */
 $_Gconfig['tinyMce']['conf'] = array(
-    'mode'                      => "exact",
-    'theme'                     => "silver",
-    'language'                  => "fr_FR",
-    'language_url'              => 'js/langs/fr_FR.js',
-    'browser_spellcheck'        => "true",
-    'width'                     => '100%',
-    'plugins'                   => "autoresize autolink lists link image charmap print preview hr anchor pagebreak searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime nonbreaking save table contextmenu directionality emoticons template paste textcolor ",
-    'entity_encoding'           => "raw",
-    'content_css'               => BU . "/css/baseadmin.css",
-    'theme_advanced_styles'     => '',
-    'toolbar1'                  => "pastetext insertfile undo redo | styleselect | bold italic | bullist numlist outdent indent | link image  ",
-    'toolbar2'                  => "",
-    'toolbar3'                  => "",
-    'browser_spellcheck'        => 'true',
-    'visual'                    => 'true',
-    'resize'                    => 'both',
-    'paste_as_text'             => 'true',
+    'mode' => "exact",
+    'theme' => "silver",
+    'language' => "fr_FR",
+    'language_url' => 'js/langs/fr_FR.js',
+    'browser_spellcheck' => "true",
+    'width' => '100%',
+    'plugins' => "autoresize autolink lists link image charmap print preview hr anchor pagebreak searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime nonbreaking save table contextmenu directionality emoticons template paste textcolor ",
+    'entity_encoding' => "raw",
+    'content_css' => BU . "/css/baseadmin.css",
+    'theme_advanced_styles' => '',
+    'toolbar1' => "pastetext insertfile undo redo | styleselect | bold italic | bullist numlist outdent indent | link image  ",
+    'toolbar2' => "",
+    'toolbar3' => "",
+    'browser_spellcheck' => 'true',
+    'visual' => 'true',
+    'resize' => 'both',
+    'paste_as_text' => 'true',
     'external_filemanager_path' => ADMIN_URL . '/filemanager/',
-    'filemanager_title'         => "Médiathèque",
-    'external_plugins'          => array("filemanager" => ADMIN_URL . "/filemanager/plugin.min.js"),
-    'relative_urls'             => 0,
-    'insertdatetime_formats'    => array("%H:%M:%S", "%Y-%m-%d", "%I:%M:%S %p", "%D", '%d/%m/%Y'),
-    'content_css'               => array('/css/global.css', '/css/specialadmin.css'
+    'filemanager_title' => "Médiathèque",
+    'external_plugins' => array("filemanager" => ADMIN_URL . "/filemanager/plugin.min.js"),
+    'relative_urls' => 0,
+    'insertdatetime_formats' => array("%H:%M:%S", "%Y-%m-%d", "%I:%M:%S %p", "%D", '%d/%m/%Y'),
+    'content_css' => array('/css/global.css', '/css/specialadmin.css'
     ),
-    'body_id'                   => 'paragraphes',
-    'body_class'                => 'paragraphe',
-    'style_formats'             => ""
+    'body_id' => 'paragraphes',
+    'body_class' => 'paragraphe',
+    'style_formats' => ""
         . "[{title: 'Chapeau',inline:'span', classes:'para-chapeau'},"
         . "{title: 'Légende', inline:'span', classes:'para-legende'}]",
-    'branding'                  =>  'false',
-    'font_formats'              => '',
-    'fontsize_formats'          => '',
+    'branding' => 'false',
+    'font_formats' => '',
+    'fontsize_formats' => '',
     'menu' => [
-        'file'                  =>  ['title'=>'','items'=>[]],
-        'edit'                  =>  [ 'title'=> 'Modifier', 'items'=> 'undo redo | cut copy paste | selectall | searchreplace' ],
-        'view'                  =>  [ 'title'=> 'View', 'items'=> 'code | visualaid visualchars visualblocks | spellchecker | preview fullscreen' ],
-        'insert'                =>  [ 'title'=> 'Insert', 'items'=> 'image link media  codesample inserttable | charmap emoticons hr | pagebreak nonbreaking anchor toc | insertdatetime' ],
-        'format'                =>  [ 'title'=> 'Format', 'items'=> 'bold italic underline strikethrough superscript subscript codeformat | formats blockformats | removeformat' ],
-        'tools'                 =>  [ 'title'=> 'Tools', 'items'=> 'spellchecker spellcheckerlanguage | code wordcount' ],
-        'table'                 =>  [ 'title'=> 'Table', 'items'=> 'inserttable tableprops deletetable row column cell' ],
-        'help'                  =>  [ 'title'=> 'Help', 'items'=> 'help']
+        'file' => ['title' => '', 'items' => []],
+        'edit' => ['title' => 'Modifier', 'items' => 'undo redo | cut copy paste | selectall | searchreplace'],
+        'view' => ['title' => 'View', 'items' => 'code | visualaid visualchars visualblocks | spellchecker | preview fullscreen'],
+        'insert' => ['title' => 'Insert', 'items' => 'image link media  codesample inserttable | charmap emoticons hr | pagebreak nonbreaking anchor toc | insertdatetime'],
+        'format' => ['title' => 'Format', 'items' => 'bold italic underline strikethrough superscript subscript codeformat | formats blockformats | removeformat'],
+        'tools' => ['title' => 'Tools', 'items' => 'spellchecker spellcheckerlanguage | code wordcount'],
+        'table' => ['title' => 'Table', 'items' => 'inserttable tableprops deletetable row column cell'],
+        'help' => ['title' => 'Help', 'items' => 'help']
     ]
 
 );

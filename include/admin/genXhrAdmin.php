@@ -159,6 +159,9 @@ class genXhrAdmin
 
             case 'genformReloadField';
                 $this->reloadField();
+
+            case 'uploadBase64':
+                $this->uploadBase64();
         }
     }
 
@@ -693,6 +696,12 @@ class genXhrAdmin
         }
         // Return JSON-RPC response
         die('{"jsonrpc" : "2.0", "result" : null, "id" : "id"}');
+    }
+
+
+    public function uploadBase64()
+    {
+
     }
 
     function uploadDiaporama()

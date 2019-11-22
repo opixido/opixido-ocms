@@ -223,7 +223,7 @@ $_Gconfig['passwordFieldsMd5'] = array();
 /**
  *  Version par defaut pour tous les champs non speciaux
  * */
-$specialUpload["genfile_default"]["genfile_default"]["system"] = $basePath . "/fichier/*TABLE*/*ID*/";
+$specialUpload["genfile_default"]["genfile_default"]["system"] = $basePath . SEP . "fichier" . SEP . "*TABLE*" . SEP . "*ID*" . SEP;
 $specialUpload["genfile_default"]["genfile_default"]["name"] = "*NAME*.*EXT*";
 $specialUpload["genfile_default"]["genfile_default"]["web"] = "/fichier/*TABLE*/*ID*/";
 
@@ -481,8 +481,8 @@ $_Gconfig['genform']['nonEmptyForeignKey'] = array(
  * Plus utilisé je pense ...
  * Déprécié pour $_Gconfig['versionedTable']
  * @deprecated
-
-$multiVersionField['s_rubrique'] = 'fk_rubrique_version_id';
+ *
+ * $multiVersionField['s_rubrique'] = 'fk_rubrique_version_id';
  */
 /**
  * Liste des tables avec plusieurs versions possibles

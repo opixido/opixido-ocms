@@ -1415,7 +1415,7 @@ function isRteField($name)
     return in_array($name, $rteFields) || in_array(getBaseLgField($name), $rteFields);
 }
 
-function path_concat()
+function path_concat($sep = SEP)
 {
     /*
       Concatene deux bouts de chemins en un seul
