@@ -621,7 +621,7 @@ class genFile
                 /**
                  * On ne supprime pas les fichiers du dossier partagé
                  */
-                $res = unlink($this->systemPath);
+                $res = unlink($this->getSystemPath());
                 if ($updateDb) {
                     $sql = ('UPDATE ' . $this->table . ' SET ' . $this->champ . ' = "" WHERE ' . getPrimaryKey($this->table) . ' = ' . sql($this->id));
                     DoSql($sql);

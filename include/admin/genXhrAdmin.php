@@ -121,9 +121,11 @@ class genXhrAdmin
 
             case 'del404':
                 del404();
+                break;
 
             case 'reorderRelinv';
                 $this->reorderRelinv();
+                break;
 
             case 'autocompletesearch':
                 $this->autocompletesearch();
@@ -153,15 +155,19 @@ class genXhrAdmin
 
             case 'loadFileTag':
                 $this->loadFileTag();
+                break;
 
             case 'deleteFile':
                 $this->deleteFile();
+                break;
 
-            case 'genformReloadField';
+            case 'genformReloadField':
                 $this->reloadField();
+                break;
 
             case 'uploadBase64':
                 $this->uploadBase64();
+                break;
         }
     }
 

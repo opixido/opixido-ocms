@@ -128,8 +128,10 @@
     $('.tui-image-editor-download-btn').on('click', saveTUI);
 
     function saveTUI() {
-
-        var newURL = imageEditor.toDataURL();
+        $('#loading').show();
+        var name = "<?=($_REQUEST['curName'])?>";
+        var format = name.toLowerCase().indexOf('.png') ? 'png' : 'jpeg';
+        var newURL = imageEditor.toDataURL({format: format, quality: .8});
         $.ajax({
             type: "POST",
             url: "../index.php?xhr=uploadBase64",
@@ -147,5 +149,19 @@
         return false;
     }
 </script>
+
+<style>
+    #loading {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url(../img/loading_old.gif) no-repeat center center rgba(0, 0, 0, .7);
+        z-index: 9;
+        display: none;
+    }
+</style>
+<div id="loading"></div>
 </body>
 </html>
