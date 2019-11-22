@@ -1157,10 +1157,9 @@ class genFile
 
         /* Edition via l'ImageManager */
 
-        $ssch = substr($this->getWebUrl(), strlen(BU));
 
         if ($this->isImage($chemin) && $this->useImageEditor) {
-            $h .= ('<a class="btn btn-mini" href="TUI/index.php?img=' . $ssch . '%3F' . time() . '&curTable=' . $this->table . '&curChamp=' . $this->champ . '&curId=' . $this->id . '&update=imgprev_' . $name . '&curName=' . $this->fileName . '" onclick="window.open(this.href,\'\',\'width=900,height=700\');return false" >' . t('edis_image') . '</a>');
+            $h .= ('<a class="btn btn-mini" href="TUI/index.php?img=' . $this->getWebUrl() . '%3F' . time() . '&curTable=' . $this->table . '&curChamp=' . $this->champ . '&curId=' . $this->id . '&update=imgprev_' . $name . '&curName=' . $this->fileName . '" onclick="window.open(this.href,\'\',\'width=900,height=700\');return false" >' . t('edis_image') . '</a>');
         }
 
 

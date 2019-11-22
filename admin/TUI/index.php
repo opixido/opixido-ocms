@@ -28,7 +28,7 @@
     var imageEditor = new tui.ImageEditor(document.querySelector('#tui-image-editor'), {
         includeUI: {
             loadImage: {
-                path: "https://<?=$_SERVER['HTTP_HOST'] . $_REQUEST['img']?>",
+                path: "<?=$_REQUEST['img']?>",
                 name: "oCMS"
             },
             theme: {
