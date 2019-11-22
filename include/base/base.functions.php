@@ -323,10 +323,10 @@ function sendMail($to, $subject, $message, $headers = '')
 /**
  * Transforme un nom de fichier en nom un peu plus propre
  *
- * @example  nom.du.fichier.pdf =>  Nom du fichier [PDF]
- *
  * @param string $str
  * @return string
+ * @example  nom.du.fichier.pdf =>  Nom du fichier [PDF]
+ *
  */
 function systemToNiceName($str)
 {
@@ -878,9 +878,9 @@ function pretty_bytes($bytes, $precision = 1)
 
 /**
  * Retourne un nombre de secondes formaté proprement en secondes, minutes ou heures
- * @example 35 => 35s   65 => 1min5s  3665 => 1h1min
  * @param int $seconds
  * @return string
+ * @example 35 => 35s   65 => 1min5s  3665 => 1h1min
  */
 function niceSeconds($seconds)
 {
@@ -935,11 +935,11 @@ function showError($str)
 /**
  * Met en majuscule les premiers mots après $impexp
  *
- * @example phrase 1. phrase 2    => ". " => Phrase 1. Phrase 2
- *
  * @param string $impexp Délimiteur de majuscule
  * @param string $sentence_split phrase
  * @return string
+ * @example phrase 1. phrase 2    => ". " => Phrase 1. Phrase 2
+ *
  */
 function ucSentence($sentence_split, $impexpA = array(". ", "! ", "? "))
 {
@@ -1477,9 +1477,9 @@ function numpad($nb, $cpt)
 }
 
 /**
+ * @return false
  * @deprecated Now in base.js
  *
- * @return false
  */
 function getFlashDetection()
 {
@@ -1892,7 +1892,8 @@ function getDescFromRow($table, $row, $limit = 60, $separator = " ")
         $tabForms[$table]['desc'] = array($tabForms[$table]['desc']);
     }
     reset($tabForms[$table]['desc']);
-    while (list($k, $v) = each($tabForms[$table]['desc'])) {
+
+    foreach ($tabForms[$table]['desc'] as $k => $v) {
         if (isBaseLgField($v, $table)) {
             $titre .= limitWords(getLgValue($v, $row), $limit) . $separator;
         } else {
@@ -2088,10 +2089,10 @@ if (ini_get('magic_quotes_gpc')) {
 /**
  * Remplace les & par des &amp;
  *
- * @todo FAIRE UNE EXPRESSION REGULIERE
- *
  * @param string $str
  * @return string
+ * @todo FAIRE UNE EXPRESSION REGULIERE
+ *
  */
 function etamp($str)
 {

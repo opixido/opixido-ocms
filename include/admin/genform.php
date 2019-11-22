@@ -358,7 +358,8 @@ class GenForm
 
         if (empty($this->pages)) {
 
-            while (list($k, $v) = each($this->tab_field)) {
+
+            foreach ($this->tab_field as $k => $v) {
                 if (strlen($k) > 2 && $k != $this->pk && $k != $_Gconfig['field_date_maj']) {
 
                     if (isLgField($k) && isDefaultLgField($k, $this->table)) {
@@ -949,7 +950,8 @@ class GenForm
 
                 reset($fieldError);
                 p("<div class='genform_error'><h3>" . t('mal_remplit') . "</h3>");
-                while (list($k, $v) = each($fieldError)) {
+
+                foreach ($fieldError as $k => $v) {
                     p("<span > - " . t($k) . "</span><br/>");
                 }
                 p('</div>');
@@ -1039,7 +1041,8 @@ class GenForm
             if (count($this->multiFields)) {
                 $i = 0;
 
-                while (list(, $v) = each($this->multiFields)) {
+
+                foreach ($this->multiFields as $v) {
                     p('multiField[' . $i . '] = gid("genform_formulaire").' . $v . ';');
                     $i++;
                 }

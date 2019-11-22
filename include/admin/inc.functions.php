@@ -118,7 +118,8 @@ function getNomForValue($titre, $row)
     if (is_array($titre)) {
         reset($titre);
         $nomSee = '';
-        while (list(, $chp) = each($titre)) {
+
+        foreach ($titre as $chp) {
             $nomSee .= " " . $row[$chp] . "";
         }
     } else {

@@ -37,7 +37,7 @@ class row
 
         if (is_array($roworid) && count($roworid)) {
             $this->row = $roworid;
-            $this->id = $this->row[ getPrimaryKey($table) ];
+            $this->id = $this->row[getPrimaryKey($table)];
         } else {
             $this->id = $roworid;
             $this->row = getRowFromId($this->table, $this->id);
@@ -47,7 +47,7 @@ class row
             $this->id = 0;
             return false;
         }
-        $this->id = $this->row[ getPrimaryKey($table) ];
+        $this->id = $this->row[getPrimaryKey($table)];
 
         $this->tabField = getTabField($this->table);
         $this->site = akev($GLOBALS, 'site');
@@ -84,7 +84,7 @@ class row
          * Raw value ...
          */
         if ($raw) {
-            return $this->row[ $field ];
+            return $this->row[$field];
         }
 
         /**
@@ -99,16 +99,16 @@ class row
 
             if (isBaseLgField($field, $this->table, $this->tabField)) {
                 $f = $field . '_' . LG();
-                if (empty($this->row[ $field . '_' . LG() ])) {
+                if (empty($this->row[$field . '_' . LG()])) {
                     $olg = getOtherLg();
-                    if (!empty($this->row[ $field . '_' . $olg ])) {
+                    if (!empty($this->row[$field . '_' . $olg])) {
                         $f = $field . '_' . $olg;
                     }
                 }
             } else {
                 $f = $field;
             }
-            $table = $this->tabField[ $f ]->table;
+            $table = $this->tabField[$f]->table;
             $this->$field = new genFile($table, $f, $this->id, $this->row);
         } /**
          * LG() Field
@@ -116,9 +116,9 @@ class row
             $this->$field = getLgValue($field, $this->row);
         } /**
          * Foreign key
-         */ else if (!empty($relations[ $this->table ][ $field ])) {
+         */ else if (!empty($relations[$this->table][$field])) {
 
-            $fk_table = $relations[ $this->table ][ $field ];
+            $fk_table = $relations[$this->table][$field];
             $coup = mb_substr($fk_table, strpos($this->table, '_') + 1);
             $classe = false;
             if (class_exists($fk_table)) {
@@ -128,18 +128,19 @@ class row
             }
 
             if ($classe) {
-                $this->$field = new $classe($this->row[ $field ]);
+                $this->$field = new $classe($this->row[$field]);
             } else {
-                $this->$field = new row($fk_table, $this->row[ $field ]);
+                $this->$field = new row($fk_table, $this->row[$field]);
             }
-        } else if (!empty($tablerel[ $field ])) {
+        } else if (!empty($tablerel[$field])) {
 
             /**
              * Table de relation
              */
             $found = false;
-            reset($tablerel[ $field ]);
-            while (list($k, $v) = each($tablerel[ $field ])) {
+            reset($tablerel[$field]);
+
+            foreach ($tablerel[$field] as $k => $v) {
 
                 if ($v == $this->table && !$found) {
                     $found = true;
@@ -156,11 +157,11 @@ class row
 						FROM ' . $fk_table . ' AS T, ' . $field . ' AS R
 						WHERE T.' . getPrimaryKey($fk_table) . ' = R.' . $pk2 . '
 						AND R.' . $pk1 . ' = ' . sql($this->id) . '';
-						
-				$sql .= sqlOnlyRealAndOnline($fk_table,'T');
 
-                if (!empty($orderFields[ $field ])) {
-                    $sql .= ' ORDER BY R.' . $orderFields[ $field ][0];
+                $sql .= sqlOnlyRealAndOnline($fk_table, 'T');
+
+                if (!empty($orderFields[$field])) {
+                    $sql .= ' ORDER BY R.' . $orderFields[$field][0];
                 }
 
                 $this->$field = GetAll($sql);
@@ -172,18 +173,18 @@ class row
             /**
              * Relation inverse
              */
-        } else if (!empty($relinv[ $this->table ][ $field ])) {
+        } else if (!empty($relinv[$this->table][$field])) {
 
 
-            $foreignTable = $relinv[ $this->table ][ $field ][0];
+            $foreignTable = $relinv[$this->table][$field][0];
 
             $sql = 'SELECT *
 				    FROM ' . $foreignTable . '
-				    WHERE ' . $relinv[ $this->table ][ $field ][1] . ' = ' . $this->id;
+				    WHERE ' . $relinv[$this->table][$field][1] . ' = ' . $this->id;
 
-            if (!empty($orderFields[ $foreignTable ])) {
+            if (!empty($orderFields[$foreignTable])) {
 
-                $sql .= ' ORDER BY ' . $orderFields[ $foreignTable ][0];
+                $sql .= ' ORDER BY ' . $orderFields[$foreignTable][0];
             }
 
             $this->$field = GetAll($sql);
@@ -194,21 +195,21 @@ class row
         } else {
 
             $type = '';
-            if (!empty($this->tabField[ $field ])) {
-                $type = $this->tabField[ $field ]->type;
+            if (!empty($this->tabField[$field])) {
+                $type = $this->tabField[$field]->type;
             }
 
             if ($type == 'date' || $type == 'datetime') {
 
-                $this->$field = new DateTime($this->row[ $field ]);
+                $this->$field = new DateTime($this->row[$field]);
             }
 
             if (substr($type, 0, 4) == 'set(') {
-                $this->$field = explode(',', $this->row[ $field ]);
+                $this->$field = explode(',', $this->row[$field]);
             }
 
             if (array_key_exists($field, $this->row)) {
-                return $this->row[ $field ];
+                return $this->row[$field];
             }
 
             return false;
@@ -225,14 +226,15 @@ class row
 
     /**
      *
-     * @global type $_Gconfig
      * @return ADOdb_RECORDSET
+     * @global type $_Gconfig
      */
-    public function getDrafts() {
+    public function getDrafts()
+    {
         global $_Gconfig;
-        $sql = 'SELECT * FROM '.$this->table.' WHERE '
-                . '     ' . MULTIVERSION_FIELD . ' = ' . sql($this->row[MULTIVERSION_FIELD]) . ' AND '
-                . ' ' . MULTIVERSION_STATE . ' = ' . sql(MV_STATE_DRAFT) . ' ORDER BY ' . $_Gconfig['field_date_maj'] . ' DESC';
+        $sql = 'SELECT * FROM ' . $this->table . ' WHERE '
+            . '     ' . MULTIVERSION_FIELD . ' = ' . sql($this->row[MULTIVERSION_FIELD]) . ' AND '
+            . ' ' . MULTIVERSION_STATE . ' = ' . sql(MV_STATE_DRAFT) . ' ORDER BY ' . $_Gconfig['field_date_maj'] . ' DESC';
 
         return doSql($sql);
     }

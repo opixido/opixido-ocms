@@ -629,7 +629,7 @@ class objDuplication
             derror('No ID');
             return false;
         }
-        
+
         $tabField = getTabField($this->table);
 
         /**
@@ -641,7 +641,8 @@ class objDuplication
          * On copie d'abord les champs normaux
          */
         $oldfiles = array();
-        while (list($k, $v) = each($this->row)) {
+
+        foreach ($this->row as $k => $v) {
             /**
              * Si il n'est pas dans la liste des fichiers à ne pas copier
              * et que la clef n'est pas numérique (duplicat ADODB)

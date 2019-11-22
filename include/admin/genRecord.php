@@ -431,7 +431,8 @@ class genRecord
 
             $obj = new GenForm($this->table, '', $id);
 
-            while (list($champ, $v) = @each($obj->tab_default_field)) {
+
+            foreach ($obj->tab_default_field as $champ => $v) {
                 if (isUploadField($champ) && strlen($obj->tab_default_field[$champ])) {
                     /**
                      *
@@ -692,7 +693,8 @@ class genRecord
                         DoSql($sql);
 
                         $order = 1;
-                        while (list($k, $v) = @each($value)) {
+
+                        foreach ($value as $k => $v) {
                             if ($v) {
                                 $orderField = '';
                                 $orderValue = '';
@@ -738,7 +740,8 @@ class genRecord
                         DoSql($sql);
 
                         $order = 1;
-                        while (list($k, $v) = @each($value)) {
+
+                        foreach ($value as $k => $v) {
                             if ($v) {
                                 /**
                                  * Nouvel élément
