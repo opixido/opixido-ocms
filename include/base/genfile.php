@@ -40,6 +40,9 @@ class genFile
     public $realSystemPath = false;
     public $mask = '';
     public $useImageEditor = true;
+    public $uploadFromUrl = false;
+    public $row = [];
+    public $id = null;
 
     /**
      *
@@ -161,6 +164,7 @@ class genFile
         if (!strlen($this->valeur) && $id && !is_array($this->valeurInit)) {
             $row = GetRowFromId($this->table, $this->id); //getSingle($sql);
             $this->valeur = akev($row, $champ);
+            $this->row = $row;
         }
 
 
@@ -716,7 +720,10 @@ class genFile
         $fullpath = $this->getSystemPath(); //$this->systemPath. $this->fileName;
         //debug('copy to : '.$this->systemPath.$this->fileName);
         //print($tmpname.'    - '.$fullpath.'<br/>');
-        if ($fromString) {
+
+        if ($this->uploadFromUrl) {
+            file_put_contents($fullpath, fopen($tmpname, 'r'));
+        } else if ($fromString) {
             $cop = file_put_contents($fullpath, $tmpname);
         } else {
             $cop = copy($tmpname, $fullpath);
@@ -1071,7 +1078,7 @@ class genFile
 
         if ($this->classe) {
 
-            return $this->classe->getSystemPath();
+            return $this->classe->getSystemPath($short);
         }
 
         if (!$this->realSystemPath) {
