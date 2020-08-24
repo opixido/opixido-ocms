@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with oCMS. If not, see <http://www.gnu.org/licenses/>.
 #
-# @author Celio Conort / Opixido 
+# @author Celio Conort / Opixido
 # @copyright opixido 2012
 # @link http://code.google.com/p/opixido-ocms/
 # @package ocms
@@ -616,25 +616,36 @@ class genFile
      */
     function deleteFile($updateDb = false)
     {
-
-
         if (strlen($this->fileName) && strlen($this->valeur)) {
-            $dir = dirname($this->systemPath);
-            $dir = realpath($dir);
-            if (!$this->fileIsLinkedToFolder()) {
+            //On vérifie si le fichier est présent dans la médiathèque du champ rte
+            if (strpos(BU . $this->webPath, BU . '/fichier/rte/') !== false) {
                 /**
-                 * On ne supprime pas les fichiers du dossier partagé
+                 * On ne supprime pas les fichiers de la médiathèque
                  */
-                $res = unlink($this->getSystemPath());
                 if ($updateDb) {
                     $sql = ('UPDATE ' . $this->table . ' SET ' . $this->champ . ' = "" WHERE ' . getPrimaryKey($this->table) . ' = ' . sql($this->id));
                     DoSql($sql);
                 }
                 $this->valeur = '';
-            } else {
                 return true;
+            } else {
+                $dir = dirname($this->systemPath);
+                $dir = realpath($dir);
+                if (!$this->fileIsLinkedToFolder()) {
+                    /**
+                     * On ne supprime pas les fichiers du dossier partagé
+                     */
+                    $res = unlink($this->getSystemPath());
+                    if ($updateDb) {
+                        $sql = ('UPDATE ' . $this->table . ' SET ' . $this->champ . ' = "" WHERE ' . getPrimaryKey($this->table) . ' = ' . sql($this->id));
+                        DoSql($sql);
+                    }
+                    $this->valeur = '';
+                } else {
+                    return true;
+                }
+                return $res;
             }
-            return $res;
         }
     }
 
@@ -1173,7 +1184,7 @@ class genFile
         $h .= (' <button name="genform_' . $name . '_del"
                         onclick="if(confirm(\'' . t('supprimer_fichier') . '\')) {deleteFile(\'' . $this->table . '\',\'' . $name . '\',\'' . $this->id . '\',this,\'\')}return false"
                             class="btn btn-important btn-mini"
-			><img src="' . t('src_delete') . '"  
+			><img src="' . t('src_delete') . '"
 			 /> ' . t('supprimer') . '</button>');
 
         $h .= ('</div>');

@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with oCMS. If not, see <http://www.gnu.org/licenses/>.
 #
-# @author Celio Conort / Opixido 
+# @author Celio Conort / Opixido
 # @copyright opixido 2012
 # @link http://code.google.com/p/opixido-ocms/
 # @package ocms
@@ -135,11 +135,11 @@ if ($this->tab_default_field[ $name ]) {
                 $this->addBuffer('<img src="' . $chemin . '" width="' . $this->thumbWidth . '" />');
             }
             $this->addBuffer('</a> ');
-        } else if($gf->isVideo() ){ 
-            
+        } else if($gf->isVideo() ){
+
             $this->addBuffer(' <a href="' . $chemin . '" target="_blank">' . $this->trad('voir') . '</a> ');
             $this->addBuffer(' <video preload="none" width="'.$this->smallThumbWidth.'" controls src="' . $chemin . '"></video> ');
-            
+
         } else {
 
             /*
@@ -161,9 +161,9 @@ if (!$this->editMode) {
                     <div id="container_' . $name . '" class="upload_container">
                         <div id="filelist_' . $name . '" class="upload_filelist"></div>
                             <input type="hidden" value="" id="genform_' . $name . '_importmanager" name="genform_' . $name . '_importmanager"  />
-                          <a class="btn btn-inverse" id="genform_' . $name . '_importmanager_link" href="./filemanager/dialog.php?popup=1&type=2&field_id=genform_' . $name . '_importmanager"><img src="' . path_concat(ADMIN_PICTOS_FOLDER . ADMIN_PICTOS_ARBO_SIZE . '/actions/document-open.png') . '" alt="" /> ' . t('choisir') . '</a>  
+                          <a class="btn btn-inverse" id="genform_' . $name . '_importmanager_link" href="./filemanager/dialog.php?popup=1&type=2&field_id=genform_' . $name . '_importmanager"><img src="' . path_concat(ADMIN_PICTOS_FOLDER . ADMIN_PICTOS_ARBO_SIZE . '/actions/document-open.png') . '" alt="" /> ' . t('choisir') . '</a>
                         <a class="btn btn-inverse" id="pickfiles_' . $name . '" href="javascript:;"><img src="' . path_concat(ADMIN_PICTOS_FOLDER . ADMIN_PICTOS_ARBO_SIZE . '/actions/document-save-as.png') . '" alt="" /> ' . t('upload_parcourir') . ' </a>
-                        
+
                             <div class="clearer"></div>
                     </div>
 <script type="text/javascript">
@@ -179,6 +179,9 @@ if (!$this->editMode) {
                 if(inp.val() != vali) {
                     var field = inp.closest(".genform_champ_out").attr("id").replace("genform_div_","");
                     genformReloadField(field);
+                    if(window.uploader_' . $name . ') {
+                        delete window.uploader_' . $name . ';
+                    }
                 }
             });
         return false;
@@ -188,7 +191,7 @@ if (!$this->editMode) {
      $("#pickfiles_' . $name . '").on("hover dragover dragenter",function() {
         if(window.uploader_' . $name . ') {
              return;
-        } 
+        }
         $("#pickfiles_' . $name . '").unbind("hover dragover dragenter").hover(refreshUploaders);
         window.uploader_' . $name . ' = new plupload.Uploader({
                 runtimes : "html5,flash,gears,silverlight,html4",
@@ -219,7 +222,7 @@ if (!$this->editMode) {
                 }
                 refreshUploaders();
             });
-        window.startUpload' . $name . ' = function () {           
+        window.startUpload' . $name . ' = function () {
             window.uploader_' . $name . '.settings.multipart_params.curId = $("#curId").val();
             window.uploader_' . $name . '.settings.headers.curId = $("#curId").val();
             window.uploader_' . $name . '.start();
@@ -232,7 +235,7 @@ if (!$this->editMode) {
                     setTimeout("window.startUpload' . $name . '()",500);
                 }
                 window.filesUploading++;
-                
+
                 refreshUploaders();
                 $("#filelist_' . $name . '").html("<div class=\'well\' id=\'" + files[i].id + "\'><span class=\'badge\'>" + files[i].name + " (" + plupload.formatSize(files[i].size) + ")  </span> <div class=\'progress progress-striped active\'>Initialisation du transfert <img src=\"img/loading.gif\" alt=\"\" /></div></div>");
         });
@@ -300,7 +303,7 @@ if (!$this->editMode) {
 
                 $this->addBuffer('
                     <img class="inputimage" onclick="showHide(\'filelisting_' . $name . '\')" type="image" src="' . t('src_importftp') . '"  alt="' . t('import_from_ftp') . '" />
-                                      
+
                      <div class="filelisting" style="display:none;" id="filelisting_' . $name . '">');
 
 
