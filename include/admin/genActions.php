@@ -710,22 +710,29 @@ class objDuplication
             }
         }
 
+        $currentReloneTable = '';
+        if (!empty($_Gconfig['relOne'][$this->table])) {
+            foreach ($_Gconfig['relOne'][$this->table] as $table => $clef) {
+                if (!empty($this->row[$clef])) {
+                    $currentReloneTable = $table;
+                    $d = new objDuplication($table, $this->id);
+                    $d->duplicateTo($newId);
+                }
+            }
+        }
+
         /**
          * On duplique les tables de relations n<=>n
          */
         if (!empty($tablerel_reverse[$this->table])) {
             foreach ($tablerel_reverse[$this->table] as $k => $v) {
-                if (!@in_array($v['tablerel'], $_Gconfig['tablerelNotToDuplicate'][$this->table])) {
+                if (!@in_array($v['tablerel'], $_Gconfig['tablerelNotToDuplicate'][$this->table])
+                    &&
+                    /**
+                     * Prise en compte des tablerel dupliquées depuis une relone mais pas une autre
+                     */
+                    !@in_array($v['tablerel'], $_Gconfig['tablerelNotToDuplicate'][$this->table . '.' . $currentReloneTable])) {
                     $this->deleteAndDupli($v['tablerel'], $v['myfk'], $this->id, $newId);
-                }
-            }
-        }
-
-        if (!empty($_Gconfig['relOne'][$this->table])) {
-            foreach ($_Gconfig['relOne'][$this->table] as $table => $clef) {
-                if (!empty($this->row[$clef])) {
-                    $d = new objDuplication($table, $this->id);
-                    $d->duplicateTo($newId);
                 }
             }
         }
