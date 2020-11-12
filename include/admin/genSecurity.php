@@ -793,6 +793,10 @@ if (!class_exists('genSecurity')) {
                 return true;
             }
 
+            if (array_key_exists($action, $this->myroles)) {
+                return true;
+            }
+            
             return false;
         }
 
