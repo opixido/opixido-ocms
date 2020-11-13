@@ -966,8 +966,16 @@ class genSearchV2
                 $tableEtrangere = $relations[$this->table][$_REQUEST['order']];
 
                 $addToFROM = ', ' . $tableEtrangere . ' AS Z ';
-                $addToWHERE = ' AND Z.' . getPrimaryKey($tableEtrangere) . ' = T.' . $_REQUEST['order'] . ' ';
-
+                if ($this->relOne) {
+                    $tableInfo = MetaColumns($this->relOne);
+                    if (ake($tableInfo, strtoupper($_REQUEST['order']))) {
+                        $addToWHERE = ' AND Z.' . getPrimaryKey($tableEtrangere) . ' = ' . $this->relOne . '.' . $_REQUEST['order'] . ' ';
+                    } else {
+                        $addToWHERE = ' AND Z.' . getPrimaryKey($tableEtrangere) . ' = T.' . $_REQUEST['order'] . ' ';
+                    }
+                } else {
+                    $addToWHERE = ' AND Z.' . getPrimaryKey($tableEtrangere) . ' = T.' . $_REQUEST['order'] . ' ';
+                }
                 $labelTableEtrangere = $tabForms[$tableEtrangere]['titre'][0];
 
                 /**
