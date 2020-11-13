@@ -846,9 +846,14 @@ class genAdmin
         }
 
 
-        if (!empty($_REQUEST['curId'])) {
+        if (empty($_REQUEST['curId'])) {
+          if(empty($_REQUEST['relOne'])){
             p('<h1 style="display:inline;font-size:130%;font-weight:normal;padding:0;margin:0;">' . ta($_REQUEST['curTable']) . '</h1>');
+          }else{
+            p('<h1 style="display:inline;font-size:130%;font-weight:normal;padding:0;margin:0;">' . ta($_REQUEST['curTable'].'/'.$_REQUEST['relOne']) . '</h1>');
+          }
         }
+        
         if ($root_id && $root_id != 'new') {
             p('<a class="btn btn-mini" title=' . alt(t('road_fiche_resume') . ' : ' . limitWords(strip_tags($this->GetRecordTitle($table, $root_id)), 10)) . ' href="?curTable=' . $table . '&amp;curId=' . $root_id . '&resume=1" ><img class="inputimage"  src="' . t('src_view') . '" alt="" /></a>');
         }
