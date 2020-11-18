@@ -241,6 +241,9 @@ class genActionDel
         $gr = new genRecord($this->table, $this->id);
         $gr->DeleteRow($this->id);
 
+        updateNextCacheUpdate();
+        saveTemoinChange();
+        
         //dinfo(t('element_supprime'));
         if (!$_REQUEST['fromList']) {
             global $_Gconfig;
@@ -327,6 +330,9 @@ class genActionMoveRubrique
 					';
             DoSql($sql);
 
+            updateNextCacheUpdate();
+            saveTemoinChange();
+        
             dinfo(ta('rubrique_deplacee'));
         } else {
             $this->getPostForm();
@@ -453,6 +459,8 @@ class genActionHideVersion
         } else {
             derror(t('erreur_hideversion'));
         }
+        updateNextCacheUpdate();
+        saveTemoinChange();
     }
 
 }
@@ -500,6 +508,9 @@ class genActionHideObject
         } else {
             derror(t('erreur_hideversion'));
         }
+        
+        updateNextCacheUpdate();
+        saveTemoinChange();
     }
 
 }
@@ -573,6 +584,9 @@ class genActionShowObject
         } else {
             derror(t('erreur_showversion'));
         }
+        
+        updateNextCacheUpdate();
+        saveTemoinChange();        
 
 
     }
@@ -1100,6 +1114,9 @@ class genActionValidate
 
 
         dinfo(t('modifications_en_ligne'));
+        
+        updateNextCacheUpdate();
+        saveTemoinChange();
     }
 
 }
@@ -1299,6 +1316,8 @@ class genActionUnvalidate
         DoSql($sql);
 
         UpdateArboTime();
+        updateNextCacheUpdate();
+        saveTemoinChange();
 
 
         $genMessages->add(t('rubrique_devalider_ok'), 'info');
@@ -1904,7 +1923,8 @@ class genActionDelete extends baseAction
 
     function doIt()
     {
-
+        updateNextCacheUpdate();
+        saveTemoinChange();
     }
 
     function getSmallForm()
@@ -1930,7 +1950,8 @@ class genActionDeleteMv extends baseAction
 
     function doIt()
     {
-
+        updateNextCacheUpdate();
+        saveTemoinChange();
     }
 
 }
