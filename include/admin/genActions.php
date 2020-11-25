@@ -44,7 +44,7 @@ class genAction
             $this->row = GetRowFromId($table, $id);
         }
 
-        if ($gs_obj->can($this->action, $this->table, $this->row, $this->id)) {
+        if ($gs_obj->can($this->action, $this->table, $this->row, $this->id) || in_array($this->action, $_Gconfig['forceRowActions'][$this->table])) {
 
             $cname = 'genAction' . ucfirst($action);
             if (class_exists($cname)) {
