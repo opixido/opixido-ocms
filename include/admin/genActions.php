@@ -38,7 +38,7 @@ class genAction
         $this->table = $table;
         $this->id = $id;
         $this->row = $row;
-        global $gs_obj;
+        global $gs_obj, $_Gconfig;
 
         if (count($this->row) < 1) {
             $this->row = GetRowFromId($table, $id);
