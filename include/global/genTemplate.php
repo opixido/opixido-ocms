@@ -135,7 +135,11 @@ class genTemplate
         $this->vars[ $nom ] = $valeur;
 
         if ($this->doreplace && !in_array('@@' . $nom . '@@', $this->replaces) && !is_array($valeur) && !is_object($valeur)) {
-            $this->replaces[] = '@@' . $nom . '@@';
+            if (!is_array($valeur) && !is_object($valeur)) {
+                $this->replaces[] = '@@' . $nom . '@@';
+            } else {
+                $this->replaces[] = '';
+            }
         }
 
         return $this;
