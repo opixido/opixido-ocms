@@ -471,11 +471,22 @@ class genRecord
 
             $_REQUEST["curId"] = $this->id = "";
 
-            if (!empty($orderFields[$this->table]) && !empty($orderFields[$this->table][1])) {
-                $fk_id = $obj->tab_default_field[$orderFields[$this->table][1]];
-                $ord = new GenOrder($this->table, 0, $fk_id);
-                $ord->reorderAfterDelete($obj->tab_default_field[$orderFields[$this->table][0]]);
-                $ord->reOrder();
+             /**
+             * On parcourt les relinv, si cet enregistrement était la relinv de quelque chose il faut modifier l'ordre
+             */
+            if (!empty($orderFields[$this->table])) {
+                foreach ($relinv as $tableParente => $Fakes) {
+                    foreach ($Fakes as $fake => $valeurs) {
+                        if ($valeurs[0] == $this->table) {
+                            $fk_id = $obj->tab_default_field[$valeurs[1]];
+                            if ($fk_id) {
+                                $ord = new GenOrder($this->table, 0, $fk_id, $valeurs[1]);
+                                $ord->reorderAfterDelete($obj->tab_default_field[$orderFields[$this->table][0]]);
+                                $ord->reOrder();
+                            }
+                        }
+                    }
+                }
             }
 
 
