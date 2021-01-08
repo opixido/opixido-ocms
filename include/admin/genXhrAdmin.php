@@ -375,13 +375,13 @@ class genXhrAdmin
                 if (!$_REQUEST['id'] || $_REQUEST['id'] == 'new') {
                     $_SESSION['sqlWaitingForInsert'][] = 'UPDATE ' . $vals[0] . ' SET ' . $vals[1] . ' = [INSERTID] WHERE ' . getPrimaryKey($vals[0]) . ' = ' . sql($id);
                 }
-                if ($orderFields[$vals[0]] && $orderFields[$vals[0]][1] == $vals[1]) {
-                    $clefEx = $orderFields[$vals[0]][1];
+                
+                if ($orderFields[$vals[0]]) {
+                    $clefEx = $vals[1];
                     $champOrdre = $orderFields[$vals[0]][0];
                     $r = getSingle('SELECT MAX(' . $champOrdre . ') AS MAXX FROM ' . $vals[0] . ' WHERE ' . $clefEx . ' = ' . sql($_REQUEST['id']));
                     $maxx = $r['MAXX'] + 1;
-                    //echo $maxx;
-                    //echo ' : '.
+
                     DoSql('UPDATE ' . $vals[0] . ' SET ' . $champOrdre . ' = ' . $maxx . ' WHERE ' . getPrimaryKey($vals[0]) . ' = ' . sql($id));
                 }
 
