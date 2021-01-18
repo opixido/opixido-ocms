@@ -1,6 +1,6 @@
 <?php
 /*
- * Ajout TimothÃ©e Octobre 2013
+ * Ajout Timothée Octobre 2013
  */
 
 class ajaxText {
@@ -30,7 +30,7 @@ class ajaxText {
 			
 		$html .= $this->getCurrent();
 		
-		$html .= ' </textarea>'."\n";
+		$html .= '</textarea>'."\n";
 		
 		return $html;
 		
