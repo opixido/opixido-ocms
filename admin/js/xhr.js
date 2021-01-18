@@ -316,7 +316,8 @@ function checkScripts(obj) {
     }
 }
 function ajaxSaveValue(obj, table, champ, id) {
-    if (obj.value) {
+
+    if (typeof obj === 'object' && obj.tagName) {
         v = obj.value;
     } else {
         v = obj;
