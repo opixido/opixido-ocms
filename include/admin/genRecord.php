@@ -1018,7 +1018,11 @@ class genRecord
             $ord = new GenOrder($this->table, $this->id, $fk_id);
 
             if ($this->JustInserted) {
-                $ord->OrderAfterInsertLastAtBottom();
+                if (akev($orderFields[$this->table], 2) == 'top') {
+                    $ord->OrderAfterInsertLastAtTop();
+                } else {
+                    $ord->OrderAfterInsertLastAtBottom();
+                }
             }
 
             $ord->ReOrder();
