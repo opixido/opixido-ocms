@@ -1200,14 +1200,14 @@ function loadTrads($lge)
         $lg = LG();
     }
 
-    if (ake('lgLoaded', $GLOBALS) && $GLOBALS['lgLoaded'][$lg]) {
+    if (ake('lgLoaded', $GLOBALS) && !empty($GLOBALS['lgLoaded'][$lg])) {
         return;
     }
 
     $GLOBALS['lgLoaded'][$lg] = true;
 
-    $sql = 'SELECT trad_id,trad_' . LG() . '';
-    if (LG() != LG_DEF) {
+    $sql = 'SELECT trad_id,trad_' . $lg . '';
+    if ($lg != LG_DEF) {
         $sql .= ' ,trad_' . LG_DEF . '';
     }
     $sql .= ' FROM s_trad ';
@@ -1216,8 +1216,11 @@ function loadTrads($lge)
 
     foreach ($res as $row) {
 
-        $_trads[$row['trad_id']][$lg] = $row['trad_' . LG_DEF];
-        if ($row['trad_' . $lg]) {
+        if (!empty($row['trad_' . LG_DEF])){
+            $_trads[$row['trad_id']][$lg] = $row['trad_' . LG_DEF];
+        }
+
+        if (!empty($row['trad_' . $lg])) {
             $_trads[$row['trad_id']][$lg] = $row['trad_' . $lg];
         }
     }
