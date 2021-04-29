@@ -82,7 +82,7 @@ function executeSql()
 }
 
 /**
- * Rajoute ou supprime une langue globalement pour le site
+ * Rajoute, supprime ou remplace une langue globalement pour le site.
  *
  */
 function changeTranslations()
@@ -91,18 +91,53 @@ function changeTranslations()
 
         $sf = new simpleForm('', 'post');
         $sf->add('text', '', 'Langue : (code sur deux lettres)', 'translationName');
-        $sf->add('select', array(array('label' => 'Ajouter', 'value' => 'add'), array('label' => 'Supprimer', 'value' => 'del')), 'Action : ', 'translationAction', '', true);
+
+        $sf->add('select', array(
+            array('label' => 'Ajouter', 'value' => 'add'),
+            array('label' => 'Supprimer', 'value' => 'del'),
+            array('label' => 'Remplacer par', 'value' => 'replace')
+        ), 'Action : ', 'translationAction', '', true);
+
+        $sf->add('text', '', 'Nouvelle langue : (code sur deux lettres)', 'translationNewName');
         $sf->add('hidden', 'changeTranslations', '', 'globalAction');
         $sf->add('submit', 'GO !');
 
         p($sf->gen());
+
+        $html .= '<script type="text/javascript">
+
+                        function checkType() {
+                            var type = $(\'select[name="translationAction"\').val();
+                            var fieldTNewName = $(\'input[name="translationNewName"\').closest(\'div\');
+
+                            switch(type){
+                                case "add":
+                                    fieldTNewName.hide();
+                                    break;
+
+                                case "del":
+                                    fieldTNewName.hide();
+                                    break;
+
+                                case "replace":
+                                    fieldTNewName.show();
+                                    break;
+                            }
+                        }
+
+                        $(\'select[name="translationAction"\').change(checkType);
+                        checkType();
+
+                    </script>';
+        p($html);
+
     } else {
-        doTranslations($_POST['translationName'], $_POST['translationAction']);
+        doTranslations($_POST['translationName'], $_POST['translationAction'], $_POST['translationNewName']);
     }
     $_SESSION['cache_tabfield'] = array();
 }
 
-function doTranslations($lg, $action = 'add')
+function doTranslations($lg, $action = 'add', $newLg = false)
 {
     $_SESSION['cache'] = array();
 
@@ -115,36 +150,66 @@ function doTranslations($lg, $action = 'add')
 
                 $chpnu = fieldWithoutLg($chp->name);
                 $newName = $chpnu . '_' . $lg;
+                $newReplaceName = ($newLg) ? $chpnu . '_' . $newLg : false;
 
                 if (!empty($chps[$newName])) {
-                    if ($action == 'del') {
 
-                        print('<br/>DROPPING : ' . $table . '.' . $newName);
-                        DoSql('ALTER TABLE ' . $table . ' DROP ' . $newName . '');
-                    } else {
-                        //p('<br/>CAN\'T ADD EXISTENT FIELD : '.$table.'.'.$newName);
+                    switch($action){
+
+                        case 'del':
+                            print('<br/>DROPPING : ' . $table . '.' . $newName);
+                            DoSql('ALTER TABLE ' . $table . ' DROP ' . $newName . '');
+                            break;
+
+                        case 'replace':
+
+                            $dataField = $chp->type . '
+                                ' . ($chp->max_length > 0 ? '(' . $chp->max_length . ') ' : '') . '
+                                ' . ($chp->unsigned ? ' UNSIGNED ' : '') . '
+                                ' . ($chp->not_null ? ' NOT ' : '') . ' NULL
+                                ' . ($chp->has_default ? ' DEFAULT "' . $chp->has_default . '" ' : '');
+
+                            print('<br/>RENAME : ' . $table . '.' . $newName.' BY '. $table . '.' . $newReplaceName. ' => '.$dataField);
+                            DoSql('ALTER TABLE ' . $table . ' CHANGE ' . $newName . ' '.$newReplaceName.' '.$dataField);
+                            break;
+
+                        default:
+                            //p('<br/>CAN\'T ADD EXISTENT FIELD : '.$table.'.'.$newName);
+                            break;
                     }
+
                 } else {
-                    if ($action == 'del') {
-                        p('<br/>CAN\'T DROP INEXISTENT FIELD : ' . $table . '.' . $newName);
-                    } else {
-                        print('<br/>ADDING => ' . $table . '.' . $newName);
 
-                        $sql = 'ALTER TABLE
-									' . $table . '
-									ADD
-									' . $newName . '
-									' . $chp->type . '
-									' . ($chp->max_length > 0 ? '(' . $chp->max_length . ') ' : '') . '
-									' . ($chp->unsigned ? ' UNSIGNED ' : '') . '
-									' . ($chp->not_null ? ' NOT ' : '') . ' NULL									
-									' . ($chp->has_default ? ' DEFAULT "' . $chp->has_default . '" ' : '') . '
+                    switch($action){
 
-									AFTER ' . $chp->name . '
-									';
-                        DoSql($sql);
+                        case 'del':
+                            p('<br/>CAN\'T DROP INEXISTENT FIELD : ' . $table . '.' . $newName);
+                            break;
+
+                        case 'add':
+                            print('<br/>ADDING => ' . $table . '.' . $newName);
+
+                            $sql = 'ALTER TABLE
+                                        ' . $table . '
+                                        ADD
+                                        ' . $newName . '
+                                        ' . $chp->type . '
+                                        ' . ($chp->max_length > 0 ? '(' . $chp->max_length . ') ' : '') . '
+                                        ' . ($chp->unsigned ? ' UNSIGNED ' : '') . '
+                                        ' . ($chp->not_null ? ' NOT ' : '') . ' NULL
+                                        ' . ($chp->has_default ? ' DEFAULT "' . $chp->has_default . '" ' : '') . '
+
+                                        AFTER ' . $chp->name . '
+                                        ';
+                            DoSql($sql);
+                            break;
+
+                        case 'replace':
+                            p('<br/>CAN\'T RENAME INEXISTENT FIELD : ' . $table . '.' . $newName);
+                            break;
                     }
                 }
+
             }
         }
     }
