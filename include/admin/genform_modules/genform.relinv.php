@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with oCMS. If not, see <http://www.gnu.org/licenses/>.
 #
-# @author Celio Conort / Opixido 
+# @author Celio Conort / Opixido
 # @copyright opixido 2012
 # @link http://code.google.com/p/opixido-ocms/
 # @package ocms
@@ -34,7 +34,7 @@ $name = $relinv[$this->table_name][$name][1];
 $ofield = '';
 if ($_REQUEST['curId'] != 'new') {
     /**
-     * L'enregistrement de la table actuel existe deja              
+     * L'enregistrement de la table actuel existe deja
      * */
     if (isset($thirdtable)) {
         $clefthird = getPrimaryKey($tab_name);
@@ -82,9 +82,8 @@ if (!$this->editMode) {
         }
 
         $sortable = array_key_exists($fk_table, $orderFields);
-        $sortable = 1;
 
-        $this->addBuffer('<table class="sortable table table-striped table-bordered table-condensed" rel="' . $fk_table . '__' . $ofield . '" border="0" width="' . ($this->larg - 25) . '" class="genform_table ' . ($sortable ? 'sortable' : '') . ' relinv" ><thead>');
+        $this->addBuffer('<table class="table table-striped table-bordered table-condensed genform_table ' . ($sortable ? 'sortable' : '') . ' relinv" rel="' . $fk_table . '__' . $ofield . '" border="0" width="' . ($this->larg - 25) . '"><thead>');
 
         $ml = 1;
         $cs = $sortable ? 3 : 2;
@@ -121,7 +120,7 @@ if (!$this->editMode) {
                  * Modif Timothée Octobre 2013
                  * ---------------------------
                  * On cherche s'il y a au moins un row qui peut faire l'action
-                 * 
+                 *
                  */
                 foreach ($res as $row) {
                     $ga = new GenAction($actionName, $fk_table, $row[$clef], $row);
@@ -176,7 +175,7 @@ if (!$this->editMode) {
                 $this->addBuffer('<td>');
 
                 $this->addBuffer('<input
-		
+
 								type="image"
 								src="' . t('src_editer') . '"
 								class="inputimage"
@@ -189,7 +188,7 @@ if (!$this->editMode) {
 								type="radio"
 								id="genform_modfk__' . $fk_table . '_value_' . $ml . '"
 								value="' . $row[$clef] . '" />
-		
+
 								');
                 $this->addBuffer('</td>');
             }
@@ -291,9 +290,9 @@ if (!$this->editMode) {
                 if ($nbIt < $nbTotIt) {
 
                     $this->addBuffer('<input type="image"
-                                        			src="' . t('src_down') . '" 
-                                        			class="inputimage" 
-                                        			onclick="gid(\'genform_downfk__' . $fk_table . '__' . $ml . '__' . $name . '\').checked = \'checked\'" 
+                                        			src="' . t('src_down') . '"
+                                        			class="inputimage"
+                                        			onclick="gid(\'genform_downfk__' . $fk_table . '__' . $ml . '__' . $name . '\').checked = \'checked\'"
                                         			 name="genform_stay"  title="' . $this->trad("getdown") . '"/>');
 
                     $this->addBuffer('<input  style="display:none;"
