@@ -117,6 +117,10 @@ class genSearchV2
             }
         }
 
+        //Config permettant d'ajouter un ordre et son type sur un chmap spécifique.
+        if (isset($_Gconfig['orderedTableType'][$this->table])) {
+            $sql .= ' T.' . $_Gconfig['orderedTableType'][$this->table][0] . ' '.$_Gconfig['orderedTableType'][$this->table][1].' , ';
+        }
 
         if (isset($_Gconfig['orderedTable'][$this->table])) {
             $sql .= ' T.' . $_Gconfig['orderedTable'][$this->table] . ' ASC , ';
@@ -1025,6 +1029,11 @@ class genSearchV2
             $addToWHERE .= ' AND ( ' . $_Gconfig['arboredTable'][$this->table] . ' = 0 OR ' . $_Gconfig['arboredTable'][$this->table] . ' IS NULL )';
         }
 
+        //Config permettant d'ajouter un ordre et son type sur un chmap spécifique.
+        if (isset($_Gconfig['orderedTableType'][$this->table])) {
+            $addToORDER .= ' T.' . $_Gconfig['orderedTableType'][$this->table][0] . ' '.$_Gconfig['orderedTableType'][$this->table][1].' , ';
+        }
+
         if (!empty($_Gconfig['orderedTable'][$this->table])) {
             $addToORDER .= ' T.' . $_Gconfig['orderedTable'][$this->table] . ' ASC , ';
         }
@@ -1334,6 +1343,11 @@ class genSearchV2
 
         if (!empty($_Gconfig['arboredTable'][$this->table])) {
             $addToWHERE .= ' AND ( ' . $_Gconfig['arboredTable'][$this->table] . ' = 0 OR ' . $_Gconfig['arboredTable'][$this->table] . ' IS NULL )';
+        }
+
+        //Config permettant d'ajouter un ordre et son type sur un chmap spécifique.
+        if (isset($_Gconfig['orderedTableType'][$this->table])) {
+            $addToORDER .= ' T.' . $_Gconfig['orderedTableType'][$this->table][0] . ' '.$_Gconfig['orderedTableType'][$this->table][1].' , ';
         }
 
         if (!empty($_Gconfig['orderedTable'][$this->table])) {

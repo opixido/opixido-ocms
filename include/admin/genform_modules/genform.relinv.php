@@ -43,6 +43,12 @@ if ($_REQUEST['curId'] != 'new') {
 
         $sql = 'SELECT * FROM ' . $fk_table . ' WHERE ' . $name . ' = "' . $this->id . '" ORDER BY ';
 
+
+        //Config permettant d'ajouter un ordre et son type sur un chmap spécifique.
+        if (isset($_Gconfig['orderedTableType'][$fk_table])) {
+            $sql .= $_Gconfig['orderedTableType'][$fk_table][0] . ' '.$_Gconfig['orderedTableType'][$fk_table][1].' , ';
+        }
+
         if (!empty($orderFields[$fk_table])) {
             $sql .= $orderFields[$fk_table][0] . " ,  ";
             $ofield = $orderFields[$fk_table][0];
