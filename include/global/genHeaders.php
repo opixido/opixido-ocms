@@ -270,10 +270,11 @@ class genHeaders {
              * On récupère le contenu de toutes les CSS
              */
             foreach ($fichiers as $v) {
-                if ($csT = file_get_contents($_SERVER['DOCUMENT_ROOT'] . BU . SEP . $v)) {
-                    $css .= $this->fixCssPath($csT, path_concat($_SERVER['DOCUMENT_ROOT'], BU, SEP, $v)) . "\n";
+                $path = path_concat($_SERVER['DOCUMENT_ROOT'], BU, $v);
+                if ($csT = file_get_contents($path)) {
+                    $css .= $this->fixCssPath($csT, $path) . "\n";
                 } else {
-                    devbug('Cant load CSS : ' . $_SERVER['DOCUMENT_ROOT'] . BU . SEP . $v);
+                    devbug('Cant load CSS : ' . $path);
                 }
             }
             /**
