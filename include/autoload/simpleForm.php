@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with oCMS. If not, see <http://www.gnu.org/licenses/>.
 #
-# @author Celio Conort / Opixido 
+# @author Celio Conort / Opixido
 # @copyright opixido 2012
 # @link http://code.google.com/p/opixido-ocms/
 # @package ocms
@@ -246,18 +246,23 @@ class simpleForm
         $s .= '</form>' . "\n";
 
         $s .= '
-				<script>		
+				<script>
 				document.getElementById("' . $this->id . '").submit = (function(){
-				
+
 					var neededFields  = new Array(0	';
 
         foreach ($this->fields as $k => $v) {
             if ($v['needed']) {
-                $s .= ',' . alt($k);
+
+                if($v['type'] == 'checkbox'){
+                    $s .= ',' . alt($k.'_'.niceName($v['value'][0]['value']));
+                }else{
+                    $s .= ',' . alt($k);
+                }
             }
         }
         $s .= ' );
-	    
+
 	    var errorFields = new Array();
 	    var len = neededFields.length;
 	    var message = ' . alt(t('simpleform_check')) . ' +"\n\n";
@@ -270,7 +275,12 @@ class simpleForm
 			    $("#div_"+neededFields[p]).addClass("formError");
 			    errorFound = true;
 			    message += "- "+$("#div_"+neededFields[p]+" label:first span:first").text()+"\n";
-		    }
+            }
+            else if(ob.attr("type") == "checkbox" && !ob.is(":checked")) {
+                ob.closest(".div_checkbox").addClass("formError");
+                errorFound = true;
+                message += "- "+ob.val()+"\n";
+            }
 		    else if(ob.attr("rel") == "email" && ob.val().search(validRegExp) == -1) {
 				    errorFound = true;
 				    message += "- "+$("#div_"+neededFields[p]+" label:first span:first").text()+"\n";
@@ -278,7 +288,7 @@ class simpleForm
 			    $("#div_"+neededFields[p]).removeClass("formError");
 			    $("#div_"+neededFields[p]+" label").removeClass("formError");
 		    }
-	    }				
+	    }
 	    if(errorFound) {
 		    alert(message);
 		    return false;
@@ -306,7 +316,7 @@ class simpleForm
 		function(){
 			$("#' . $field['id'] . '").datepicker({
 				showOn: "button",
-				buttonImage: "' . BU . '/admin/img/calendar.gif", 
+				buttonImage: "' . BU . '/admin/img/calendar.gif",
 				buttonImageOnly: true,
 				changeMonth: true,
 				changeYear: true,
@@ -317,7 +327,7 @@ class simpleForm
 			})
 		}
 		);
-		
+
 		</script>
 		';
 
@@ -483,12 +493,12 @@ class simpleForm
         if (is_object($GLOBALS['site']->plugins['captcha'])) {
 
             $html = '<div class="captcha">
-						<img style="float:left;" id="captcha" src="' . $GLOBALS['site']->plugins['captcha']->getImg() . '" alt="" /> 
-					 ' . t('simpleform_captcha') . ' 
+						<img style="float:left;" id="captcha" src="' . $GLOBALS['site']->plugins['captcha']->getImg() . '" alt="" />
+					 ' . t('simpleform_captcha') . '
 					 <br/>
 					 <input  ' . akev($field, 'tag') . ' type="text" name="' . $field['name'] . '" value="" maxlength="6" size="6" />
 					 <a class="reload_captcha" href="javascript:;" onclick="javasript:gid(\'captcha\').src = gid(\'captcha\').src+\'r\'">' . t('simpleform_reload_captcha') . '</a>
-					 </div> 
+					 </div>
 					 <div class="clearer">&nbsp;</div>
 					 ';
         } else {
@@ -510,12 +520,12 @@ class simpleForm
         $unique = time() . rand(0, 1000);
         $_SESSION['captchaQuestion'][ $unique ] = $chiffre1 + $chiffre2;
 
-        $html = '<span class="captcha_q">' . t('simpleform_captchaq') . ' 
+        $html = '<span class="captcha_q">' . t('simpleform_captchaq') . '
 					<strong>' . $chiffre1 . ' + ' . $chiffre2 . ' = </strong>
 					<input  ' . akev($field, 'tag') . ' id="' . $field['id'] . '" type="text" name="captchaq" class="text captchaq" value="" size="2" />
 					<input type="hidden" name="captchaq_uniq" class="hidden" value="' . $unique . '"/>
 					</span>
-					
+
 					';
 
         return $html;
@@ -605,8 +615,8 @@ class simpleForm
                 $value['value'] = $val;
             }
             $sel = is_array($field['selected']) && in_array(trim($value['value']), $field['selected']) ? 'checked="checked"' : '';
-            $s .= '<label id="label_' . $field['name'] . '_' . $value['value'] . '" for="' . $field['name'] . '_' . $value['value'] . '">'
-                . '<input type="checkbox" id="' . $field['name'] . '_' . $value['value'] . '" name="' . $field['name'] . '[]" ' . $tag . ' ' . $sel . ' value="' . $value['value'] . '">'
+            $s .= '<label id="label_' . niceName($field['name'] . '_' . $value['value']) . '" for="' . niceName($field['name'] . '_' . $value['value']) . '" ' . $field['tag'] . '>'
+                . '<input type="checkbox" id="' . niceName($field['name'] . '_' . $value['value']) . '" name="' . $field['name'] . '[]" ' . $tag . ' ' . $sel . ' value="' . $value['value'] . '">'
                 . '<p>' . $value['label'] . '</p>'
                 . '<div class="clearfix"></div></label>' . "\n";
         }
