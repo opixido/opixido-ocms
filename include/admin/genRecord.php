@@ -795,7 +795,7 @@ class genRecord
 
                         /* Nombre reel */
                         if ($tab_field[$name]->type == "real") {
-                            $val1 = (real)$value;
+                            $val1 = (float)$value;
                             if (preg_match("/[A-Za-z]/", $value)) {
                                 // echo "Found letters";
                                 $isError = 1;
