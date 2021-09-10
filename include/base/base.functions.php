@@ -2700,7 +2700,7 @@ class pagination
             $this->params = !empty($_POST) ? $_POST : $_GET;
         } else {
             $this->params = $GLOBALS['site']->g_url->paramsUrl;
-            $this->params = !empty($GLOBALS['site']->g_url->paramsUrl) ? $GLOBALS['site']->g_url->paramsUrl : !empty($_POST) ? $_POST : $_GET;
+            $this->params = !empty($GLOBALS['site']->g_url->paramsUrl) ? $GLOBALS['site']->g_url->paramsUrl : (!empty($_POST) ? $_POST : $_GET);
         }
 
         unset($this->params['genform_action']);
