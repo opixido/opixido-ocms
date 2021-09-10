@@ -1864,7 +1864,7 @@ function GetTitleFromRow($table, $row, $separator = " ", $html = false)
 
     $titre = array_diff($titre, array(''));
 
-    return implode($titre, $separator);
+    return implode($separator, $titre);
 }
 
 /**
