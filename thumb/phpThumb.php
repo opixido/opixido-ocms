@@ -12,9 +12,13 @@
 
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
-ini_set('magic_quotes_runtime', '0');
-if (ini_get('magic_quotes_runtime')) {
-	die('"magic_quotes_runtime" is set in php.ini, cannot run phpThumb with this enabled');
+
+// check for magic quotes in PHP < 7.4.0 (when these functions became deprecated)
+if (version_compare(PHP_VERSION, '7.4.0', '<')) {
+	ini_set('magic_quotes_runtime', '0');
+	if (ini_get('magic_quotes_runtime')) {
+		die('"magic_quotes_runtime" is set in php.ini, cannot run phpThumb with this enabled');
+	}
 }
 // Set a default timezone if web server has not done already in php.ini
 if (!ini_get('date.timezone') && function_exists('date_default_timezone_set')) { // PHP >= 5.1.0
@@ -37,7 +41,7 @@ function SendSaveAsFileHeaderIfNeeded($getimagesize=false) {
 	//if (empty($_GET['sia']) && empty($_GET['down']) && !empty($phpThumb->thumbnail_image_width) && !empty($phpThumb->thumbnail_image_height)) {
 	if (empty($_GET['sia']) && empty($_GET['down']) && !empty($getimagesize[0]) && !empty($getimagesize[1])) {
 		// if we know the output image dimensions we can generate a better default filename
-		$downloadfilename = phpthumb_functions::SanitizeFilename((!empty($phpThumb->src) ? basename($phpThumb->src) : md5($this->rawImageData)).'-'.intval($getimagesize[0]).'x'.intval($getimagesize[1]).'.'.(!empty($_GET['f']) ? $_GET['f'] : 'jpg'));
+		$downloadfilename = phpthumb_functions::SanitizeFilename((!empty($phpThumb->src) ? basename($phpThumb->src) : md5($phpThumb->rawImageData)).'-'.intval($getimagesize[0]).'x'.intval($getimagesize[1]).'.'.(!empty($_GET['f']) ? $_GET['f'] : 'jpg'));
 	}
 	if (!empty($downloadfilename)) {
 		$phpThumb->DebugMessage('SendSaveAsFileHeaderIfNeeded() sending header: Content-Disposition: '.(!empty($_GET['down']) ? 'attachment' : 'inline').'; filename="'.$downloadfilename.'"', __FILE__, __LINE__);
@@ -71,7 +75,7 @@ function RedirectToCachedFile() {
 		if (preg_match('#^'.preg_quote($nice_docroot).'(.*)$#', $nice_cachefile, $matches)) {
 			$phpThumb->DebugMessage('* Would have sent headers (3): Location: '.dirname($matches[1]).'/'.urlencode(basename($matches[1])), __FILE__, __LINE__);
 		} else {
-			$phpThumb->DebugMessage('* Would have sent data: readfile('.$phpThumb->cache_filename.')', __FILE__, __LINE__);
+			$phpThumb->DebugMessage('* Would have sent data: file_get_contents('.$phpThumb->cache_filename.')', __FILE__, __LINE__);
 		}
 
 	} else {
@@ -102,7 +106,7 @@ function RedirectToCachedFile() {
 		if (empty($phpThumb->config_cache_force_passthru) && preg_match('#^'.preg_quote($nice_docroot).'(.*)$#', $nice_cachefile, $matches)) {
 			header('Location: '.dirname($matches[1]).'/'.urlencode(basename($matches[1])));
 		} else {
-			@readfile($phpThumb->cache_filename);
+			echo file_get_contents($phpThumb->cache_filename);
 		}
 		exit;
 
@@ -218,16 +222,19 @@ if (isset($_GET['phpThumbDebug']) && ($_GET['phpThumbDebug'] == '0')) {
 }
 ////////////////////////////////////////////////////////////////
 
-// returned the fixed string if the evil "magic_quotes_gpc" setting is on
-if (get_magic_quotes_gpc()) {
-	// deprecated: 'err', 'file', 'goto',
-	$RequestVarsToStripSlashes = array('src', 'wmf', 'down');
-	foreach ($RequestVarsToStripSlashes as $key) {
-		if (isset($_GET[$key])) {
-			if (is_string($_GET[$key])) {
-				$_GET[$key] = stripslashes($_GET[$key]);
-			} else {
-				unset($_GET[$key]);
+// check for magic quotes in PHP < 7.4.0 (when these functions became deprecated)
+if (version_compare(PHP_VERSION, '7.4.0', '<')) {
+	// returned the fixed string if the evil "magic_quotes_gpc" setting is on
+	if (get_magic_quotes_gpc()) {
+		// deprecated: 'err', 'file', 'goto',
+		$RequestVarsToStripSlashes = array('src', 'wmf', 'down');
+		foreach ($RequestVarsToStripSlashes as $key) {
+			if (isset($_GET[$key])) {
+				if (is_string($_GET[$key])) {
+					$_GET[$key] = stripslashes($_GET[$key]);
+				} else {
+					unset($_GET[$key]);
+				}
 			}
 		}
 	}
@@ -380,7 +387,7 @@ if (isset($_GET['phpThumbDebug']) && ($_GET['phpThumbDebug'] == '2')) {
 $PHPTHUMB_DEFAULTS_DISABLEGETPARAMS = (bool) ($phpThumb->config_cache_default_only_suffix && (strpos($phpThumb->config_cache_default_only_suffix, '*') !== false));
 
 // deprecated: 'err', 'file', 'goto',
-$allowedGETparameters = array('src', 'new', 'w', 'h', 'wp', 'hp', 'wl', 'hl', 'ws', 'hs', 'f', 'q', 'sx', 'sy', 'sw', 'sh', 'zc', 'bc', 'bg', 'bgt', 'fltr', 'xto', 'ra', 'ar', 'aoe', 'far', 'iar', 'maxb', 'down', 'phpThumbDebug', 'hash', 'md5s', 'sfn', 'dpi', 'sia', 'nocache');
+$allowedGETparameters = array('src', 'new', 'w', 'h', 'wp', 'hp', 'wl', 'hl', 'ws', 'hs', 'f', 'q', 'sx', 'sy', 'sw', 'sh', 'zc', 'ica', 'bc', 'bg', 'bgt', 'fltr', 'xto', 'ra', 'ar', 'aoe', 'far', 'iar', 'maxb', 'down', 'phpThumbDebug', 'hash', 'md5s', 'sfn', 'dpi', 'sia', 'nocache');
 foreach ($_GET as $key => $value) {
 	if (!empty($PHPTHUMB_DEFAULTS_DISABLEGETPARAMS) && ($key != 'src')) {
 		// disabled, do not set parameter
@@ -429,10 +436,10 @@ if (isset($_GET['phpThumbDebug']) && ($_GET['phpThumbDebug'] == '3')) {
 $CanPassThroughDirectly = true;
 if ($phpThumb->rawImageData) {
 	// data from SQL, should be fine
-} elseif (preg_match('#^http\://[^\\?&]+\\.(jpe?g|gif|png|webp)$#i', $phpThumb->src)) {
+} elseif (preg_match('#^https?\\://[^\\?&]+\\.(jpe?g|gif|png|webp)$#i', $phpThumb->src)) {
 	// assume is ok to passthru if no other parameters specified
-} elseif (preg_match('#^(f|ht)tp\://#i', $phpThumb->src)) {
-	$phpThumb->DebugMessage('$CanPassThroughDirectly=false because preg_match("#^(f|ht)tp\://#i", '.$phpThumb->src.')', __FILE__, __LINE__);
+} elseif (preg_match('#^(f|ht)tps?\\://#i', $phpThumb->src)) {
+	$phpThumb->DebugMessage('$CanPassThroughDirectly=false because preg_match("#^(f|ht)tps?://#i", '.$phpThumb->src.')', __FILE__, __LINE__);
 	$CanPassThroughDirectly = false;
 } elseif (!@is_readable($phpThumb->sourceFilename)) {
 	$phpThumb->DebugMessage('$CanPassThroughDirectly=false because !@is_readable('.$phpThumb->sourceFilename.')', __FILE__, __LINE__);
@@ -450,7 +457,7 @@ foreach ($_GET as $key => $value) {
 		case 'w':
 		case 'h':
 			// might be OK if exactly matches original
-			if (preg_match('#^http\://[^\\?&]+\\.(jpe?g|gif|png|webp)$#i', $phpThumb->src)) {
+			if (preg_match('#^https?\\://[^\\?&]+\\.(jpe?g|gif|png|webp)$#i', $phpThumb->src)) {
 				// assume it is not ok for direct-passthru of remote image
 				$CanPassThroughDirectly = false;
 			}
@@ -484,7 +491,7 @@ $phpThumb->DebugMessage('$CanPassThroughDirectly="'. (int) $CanPassThroughDirect
 while ($CanPassThroughDirectly && $phpThumb->src) {
 	// no parameters set, passthru
 
-	if (preg_match('#^http\://[^\\?&]+\.(jpe?g|gif|png|webp)$#i', $phpThumb->src)) {
+	if (preg_match('#^https?\\://[^\\?&]+\.(jpe?g|gif|png|webp)$#i', $phpThumb->src)) {
 		$phpThumb->DebugMessage('Passing HTTP source through directly as Location: redirect ('.$phpThumb->src.')', __FILE__, __LINE__);
 		header('Location: '.$phpThumb->src);
 		exit;
@@ -525,7 +532,7 @@ while ($CanPassThroughDirectly && $phpThumb->src) {
 		if ($phpThumb->config_disable_onlycreateable_passthru || (function_exists($theImageCreateFunction) && ($dummyImage = @$theImageCreateFunction($SourceFilename)))) {
 
 			// great
-			if (@is_resource($dummyImage)) {
+			if (@is_resource($dummyImage) || (@is_object($dummyImage) && $dummyImage instanceOf \GdImage)) {
 				unset($dummyImage);
 			}
 
@@ -544,7 +551,7 @@ while ($CanPassThroughDirectly && $phpThumb->src) {
 			if ($contentType = phpthumb_functions::ImageTypeToMIMEtype(@$phpThumb->getimagesizeinfo[2])) {
 				header('Content-Type: '.$contentType);
 			}
-			@readfile($SourceFilename);
+			echo file_get_contents($SourceFilename);
 			exit;
 
 		} else {
