@@ -43,6 +43,10 @@ class genFile
     public $uploadFromUrl = false;
     public $row = [];
     public $id = null;
+    /**
+     * @var string Phpthumb variable to rotate image based on exif data
+     */
+    public $ar = 'x';
 
     /**
      *
@@ -419,8 +423,8 @@ class genFile
         if (!$this->isImage())
             return $this->getWebUrl();
         if ($this->imageExists) {
-            return $this->getCacheFile(path_concat(THUMBPATH) . '?q=' . $this->quality . '&amp;w=' . $w . '&amp;h=' . $h . '&amp;src=' . $this->getSystemPath(true) . '' . $this->getFilters($fltr));
-            //return path_concat(THUMBPATH).'?q='.$this->quality.'&amp;w='.$w.'&amp;h='.$h.'&amp;table='.$this->table.'&amp;champ='.$this->champ.'&amp;id='.$this->id;
+            return $this->getCacheFile(path_concat(THUMBPATH) . '?ar=' . $this->ar . '&q=' . $this->quality . '&amp;w=' . $w . '&amp;h=' . $h . '&amp;src=' . $this->getSystemPath(true) . '' . $this->getFilters($fltr));
+            //return path_concat(THUMBPATH).'?ar='.$this->ar.'&q='.$this->quality.'&amp;w='.$w.'&amp;h='.$h.'&amp;table='.$this->table.'&amp;champ='.$this->champ.'&amp;id='.$this->id;
         } else {
             return '';
         }
@@ -436,8 +440,8 @@ class genFile
     function getThumbUrlExact($w = 200, $h = 200, $fltr = array())
     {
         if ($this->imageExists) {
-            return $this->getCacheFile(path_concat(THUMBPATH) . '?q=' . $this->quality . '&amp;zc=1&amp;w=' . $w . '&amp;h=' . $h . '&amp;src=' . $this->getSystemPath(true) . $this->getFilters($fltr));
-            return path_concat(THUMBPATH) . '?q=' . $this->quality . '&amp;zc=1&amp;w=' . $w . '&amp;h=' . $h . '&amp;table=' . $this->table . '&amp;champ=' . $this->champ . '&amp;id=' . $this->id;
+            return $this->getCacheFile(path_concat(THUMBPATH) . '?ar=' . $this->ar . '&q=' . $this->quality . '&amp;zc=1&amp;w=' . $w . '&amp;h=' . $h . '&amp;src=' . $this->getSystemPath(true) . $this->getFilters($fltr));
+            return path_concat(THUMBPATH) . '?ar=' . $this->ar . '&q=' . $this->quality . '&amp;zc=1&amp;w=' . $w . '&amp;h=' . $h . '&amp;table=' . $this->table . '&amp;champ=' . $this->champ . '&amp;id=' . $this->id;
         } else {
             return '';
         }
@@ -453,9 +457,9 @@ class genFile
     function getCropUrl($w = 200, $h = 200, $fltr = array())
     {
         if ($this->imageExists) {
-            return $this->getCacheFile(path_concat(THUMBPATH) . '?q=' . $this->quality . '&amp;zc=1&amp;w=' . $w . '&amp;h=' . $h . '&amp;src=' . $this->getSystemPath(true) . $this->getFilters($fltr));
-            return path_concat(THUMBPATH) . '?q=' . $this->quality . '&amp;zc=1&amp;w=' . $w . '&amp;h=' . $h . '&amp;src=' . $this->getSystemPath() . $this->getFilters($fltr);
-            return path_concat(THUMBPATH) . '?q=' . $this->quality . '&amp;zc=1&amp;sw=' . $w . '&amp;sh=' . $h . '&amp;table=' . $this->table . '&amp;champ=' . $this->champ . '&amp;id=' . $this->id;
+            return $this->getCacheFile(path_concat(THUMBPATH) . '?ar=' . $this->ar . '&q=' . $this->quality . '&amp;zc=1&amp;w=' . $w . '&amp;h=' . $h . '&amp;src=' . $this->getSystemPath(true) . $this->getFilters($fltr));
+            return path_concat(THUMBPATH) . '?ar=' . $this->ar . '&q=' . $this->quality . '&amp;zc=1&amp;w=' . $w . '&amp;h=' . $h . '&amp;src=' . $this->getSystemPath() . $this->getFilters($fltr);
+            return path_concat(THUMBPATH) . '?ar=' . $this->ar . '&q=' . $this->quality . '&amp;zc=1&amp;sw=' . $w . '&amp;sh=' . $h . '&amp;table=' . $this->table . '&amp;champ=' . $this->champ . '&amp;id=' . $this->id;
         } else {
             return '';
         }
