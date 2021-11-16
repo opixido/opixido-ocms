@@ -588,7 +588,7 @@ if (!class_exists('genSecurity')) {
          * @param string $champ
          * @param mixed $valeur
          */
-        function logAction($action, $table, $row = array(), $id = 0, $champ = "", $valeur)
+        function logAction($action, $table, $row = array(), $id = 0, $champ = "", $valeur = '')
         {
 
             $this->doneActions[] = array($action, $table, $row, $id, $champ, $valeur);
@@ -796,7 +796,7 @@ if (!class_exists('genSecurity')) {
             if (array_key_exists($action, $this->myroles)) {
                 return true;
             }
-            
+
             return false;
         }
 
@@ -873,7 +873,7 @@ if (!class_exists('genSecurity')) {
             return false;
         }
 
-        function canChamp($action, $table, $row = array(), $id = 0, $champ, $valeur)
+        function canChamp($action, $table, $row = array(), $id = 0, $champ = '', $valeur = '')
         {
 
 

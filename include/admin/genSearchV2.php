@@ -407,7 +407,7 @@ class genSearchV2
                     p('<select class="selectM" id="' . $k . '" name="cf_' . $k . '[]" multiple="multiple" >');
 
                     foreach ($res as $row) {
-                        $sel = @in_array($row[$thiskey], $_POST[$k]) ? 'selected="selected"' : '';
+                        $sel = isset($_POST[$k]) && @in_array($row[$thiskey], $_POST[$k]) ? 'selected="selected"' : '';
                         p('<option ' . $sel . ' value="' . $row[$thiskey] . '">' . limit(GetTitleFromRow($fk_table, $row, " "), 30) . '</option>');
                     }
 

@@ -481,7 +481,7 @@ class GenForm
 
         if ($this->editMode && !$this->onlyData)
             $this->addBuffer('<div class="row-fluid"><div class="span3 label">'); //<label class="genform_txtres"><span >
-        else if (!$this->onlyData && !$fieldError[$name])
+        else if (!$this->onlyData && empty($fieldError[$name]))
             $this->addBuffer('<label class="genform_txt label">');
         else if (!$this->onlyData && $fieldError[$name])
             $this->addBuffer('<label class="genform_txt_error label label-important">');
@@ -822,12 +822,12 @@ class GenForm
                     $f->attributs = $attributs;
 
                     $this->addBuffer($f->gen());
-                } else if (@array_key_exists($name, $relinv[$this->table_name])) {
+                } else if (!empty($relinv[$this->table_name]) && array_key_exists($name, $relinv[$this->table_name])) {
                     /**
                      * CLEF ETRANGERE
                      */
                     include($gb_obj->getIncludePath('genform.relinv.php', 'admin/genform_modules'));
-                } else if (@array_key_exists($name, $relations[$this->table_name]) || @array_key_exists(getBaseLgField($name), $relations[$this->table_name])) {
+                } else if (isset($relations[$this->table_name]) && (@array_key_exists($name, $relations[$this->table_name]) || @array_key_exists(getBaseLgField($name), $relations[$this->table_name]))) {
 
                     /**
                      *    Relation simple

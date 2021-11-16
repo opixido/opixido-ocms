@@ -129,7 +129,7 @@ class genMenu
         $ulId = empty($rootId) ? '' : ' id="menu_' . $this->nom_menu . '"';
         $divid = empty($rootId) ? '' : ' id="div_menu_' . $this->nom_menu . '"';
         if ($divid) {
-            $html = '<div' . $divid . '><ul' . $ulId . '  class="level_' . $this->level . ' ' . akev($this->conf,'ul_class') . '" ' . akev($this->conf,'ul_tag') . '>';
+            $html = '<div' . $divid . '><ul' . $ulId . '  class="level_' . $this->level . ' ' . akev($this->conf, 'ul_class') . '" ' . akev($this->conf, 'ul_tag') . '>';
         } else {
             $html = '<ul' . $ulId . ' class="level_' . $this->level . '">';
         }
@@ -263,7 +263,7 @@ class genMenu
      * @param unknown_type $selected
      * @return unknown
      */
-    function genImageMenu($val, $nom_menu, $nb = 0, $selected)
+    function genImageMenu($val, $nom_menu, $nb = 0, $selected = false)
     {
 
 

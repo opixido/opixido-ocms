@@ -182,14 +182,14 @@ function getImg($table, $champ, $id, $row = array())
     return $f->getWeburl();
 }
 
-function getThumb($table, $champ, $id, $row = array(), $w, $h)
+function getThumb($table, $champ, $id, $row = array(), $w = 200, $h = 200)
 {
 
     $f = new GenFile($table, $champ, $id, $row);
     return $f->getThumbUrl($w, $h);
 }
 
-function getCrop($table, $champ, $id, $row = array(), $w, $h)
+function getCrop($table, $champ, $id, $row = array(), $w = 200, $h = 200)
 {
 
     $f = new GenFile($table, $champ, $id, $row);
@@ -600,7 +600,7 @@ function niceTextDate($date, $jour = false)
     if ($jour) {
         $type = '%A ' . $type;
     }
-    @setlocale($GLOBALS['CURLOCALE']);
+    @setlocale(LC_ALL, $GLOBALS['CURLOCALE']);
 
     $s = strftimeloc($type, $d);
 
@@ -1216,7 +1216,7 @@ function loadTrads($lge)
 
     foreach ($res as $row) {
 
-        if (!empty($row['trad_' . LG_DEF])){
+        if (!empty($row['trad_' . LG_DEF])) {
             $_trads[$row['trad_id']][$lg] = $row['trad_' . LG_DEF];
         }
 

@@ -127,7 +127,7 @@ class genRubrique
             $this->gabarit = GetRowFromId('s_gabarit', $this->rubrique['fk_gabarit_id'], 1);
         }
 
-        if (strlen(trim($this->gabarit['gabarit_classe']))) {
+        if (!empty($this->gabarit['gabarit_classe']) && strlen(trim($this->gabarit['gabarit_classe']))) {
             $this->hasBddInfo = true;
         } else if (GABARIT_DEF) {
             $this->gabarit = GetRowFromId('s_gabarit', GABARIT_DEF, 1);

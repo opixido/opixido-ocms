@@ -475,7 +475,7 @@ class genAdmin
 
         $this->genPlugins();
 
-        if (@method_exists($this->action->obj, 'gen')) {
+        if (isset($this->action) && $this->action->obj && @method_exists($this->action->obj, 'gen')) {
             $this->action->obj->gen();
         }
 

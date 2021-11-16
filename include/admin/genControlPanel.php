@@ -68,7 +68,7 @@ class genControlPanel {
 
         $res = DoSql($sql);
         $tables = array_merge($_Gconfig['bigMenus'], $_Gconfig['adminMenus']);        
-        $tables = call_user_func_array('array_merge', $tables);
+        $tables = call_user_func_array('array_merge', array_values($tables));
         
         $h = '<ul class="nav nav-list"><li class="nav-header">' . ta('lastActions') . '</li>';
         if ($res->NumRows() == 0) {

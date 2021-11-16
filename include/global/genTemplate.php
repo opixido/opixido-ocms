@@ -30,7 +30,7 @@ class genTemplate
      *
      * @var array
      */
-    private $vars;
+    private $vars = array();
 
     /**
      * Tableau des variables images à remplacer
@@ -132,7 +132,7 @@ class genTemplate
      */
     public function setVar($nom, $valeur, $strreplace = false)
     {
-        $this->vars[ $nom ] = $valeur;
+        $this->vars[$nom] = $valeur;
 
         if ($this->doreplace && !in_array('@@' . $nom . '@@', $this->replaces)) {
             if (!is_array($valeur) && !is_object($valeur)) {
@@ -149,11 +149,11 @@ class genTemplate
      * Définit une variable
      * Alias de setVar()
      *
-     * @uses $this->setVar()
-     *
      * @param string $nom Son nom
      * @param mixed $valeur Sa valeur
      * @param boolean $strreplace UNUSED
+     * @uses $this->setVar()
+     *
      */
     public function set($nom, $valeur, $strreplace = false)
     {
@@ -193,11 +193,11 @@ class genTemplate
     public function setImg($nom, $src, $alt = '')
     {
 
-        $this->imgs[ $nom ] = array();
-        $this->imgs[ $nom ]['src'] = $src;
+        $this->imgs[$nom] = array();
+        $this->imgs[$nom]['src'] = $src;
         if (!strlen($alt))
             $alt = "";
-        $this->imgs[ $nom ]['alt'] = $alt;
+        $this->imgs[$nom]['alt'] = $alt;
         return $this;
     }
 
@@ -211,20 +211,20 @@ class genTemplate
     public function setGFImg($nom, $table, $champ, $row, $alt = '')
     {
 
-        $this->imgs[ $nom ] = array();
+        $this->imgs[$nom] = array();
         $gf = new genFile($table, $champ, $row, $row, true, !ake($row, $champ));
 
-        $this->imgs[ $nom ]['src'] = $gf->getWebUrl();
+        $this->imgs[$nom]['src'] = $gf->getWebUrl();
         if (!strlen($alt))
             $alt = "";
-        $this->imgs[ $nom ]['alt'] = $alt;
-        $this->imgs[ $nom ]['gf'] = $gf;
+        $this->imgs[$nom]['alt'] = $alt;
+        $this->imgs[$nom]['gf'] = $gf;
         return $this;
     }
 
     public function getGfImg($nom)
     {
-        return $this->imgs[ $nom ]['gf'];
+        return $this->imgs[$nom]['gf'];
     }
 
     /**
@@ -284,7 +284,7 @@ class genTemplate
      */
     private function getImgUrl($nom)
     {
-        return $this->imgs[ $nom ]['src'];
+        return $this->imgs[$nom]['src'];
     }
 
     /**
@@ -295,7 +295,7 @@ class genTemplate
      */
     private function getImgAlt($nom)
     {
-        return $this->imgs[ $nom ]['alt'];
+        return $this->imgs[$nom]['alt'];
     }
 
     /**
@@ -308,21 +308,21 @@ class genTemplate
     private function getImg($nom, $newalt = false)
     {
 
-        if (is_array($this->imgs[ $nom ])) { //is_file($this->imgs[$nom]['src'])) {
+        if (is_array($this->imgs[$nom])) { //is_file($this->imgs[$nom]['src'])) {
             //$taile = @getimagesize($this->imgs[$nom]['src']);
             $taile = false;
             //debug(@gethostbyname('www.ined.loc'));
-            if (!strlen(trim($this->imgs[ $nom ]['src']))) {
+            if (!strlen(trim($this->imgs[$nom]['src']))) {
                 return '';
             }
 
             if ($newalt) {
-                $this->imgs[ $nom ]['alt'] = $newalt;
+                $this->imgs[$nom]['alt'] = $newalt;
             }
             if (is_array($taile)) {
-                return '<img style="width:' . ($taile[0]) . 'px;height:' . ($taile[1]) . 'px;" src="' . $this->imgs[ $nom ]['src'] . '" alt="' . $this->imgs[ $nom ]['alt'] . '" />';
+                return '<img style="width:' . ($taile[0]) . 'px;height:' . ($taile[1]) . 'px;" src="' . $this->imgs[$nom]['src'] . '" alt="' . $this->imgs[$nom]['alt'] . '" />';
             } else {
-                return '<img src="' . $this->imgs[ $nom ]['src'] . '" alt="' . altify($this->imgs[ $nom ]['alt']) . '" />';
+                return '<img src="' . $this->imgs[$nom]['src'] . '" alt="' . altify($this->imgs[$nom]['alt']) . '" />';
             }
         } else {
             return ''; //return $this->getDefaultImage($this->imgs[$nom]['src']);
@@ -341,13 +341,13 @@ class genTemplate
      */
     private function getThumb($nom, $w, $h, $newalt = false)
     {
-        if (is_array($this->imgs[ $nom ])) {
+        if (is_array($this->imgs[$nom])) {
             if ($newalt) {
-                $this->imgs[ $nom ]['alt'] = $newalt;
+                $this->imgs[$nom]['alt'] = $newalt;
             }
             $url = $this->getThumbUrl($nom, $w, $h);
 
-            return '<img src="' . $url . '" alt="' . altify($this->imgs[ $nom ]['alt']) . '" />';
+            return '<img src="' . $url . '" alt="' . altify($this->imgs[$nom]['alt']) . '" />';
         } else {
             return '';
         }
@@ -363,13 +363,13 @@ class genTemplate
      */
     private function getThumbUrl($nom, $w, $h, $add = '')
     {
-        if (!empty($this->imgs[ $nom ]['gf']) && !$this->imgs[ $nom ]['gf']->isImage())
-            return $this->imgs[ $nom ]['gf']->getWebUrl();
+        if (!empty($this->imgs[$nom]['gf']) && !$this->imgs[$nom]['gf']->isImage())
+            return $this->imgs[$nom]['gf']->getWebUrl();
 
-        if (!$this->imgs[ $nom ]['src']) {
+        if (!$this->imgs[$nom]['src']) {
             return '';
         }
-        return getThumbCacheFile(THUMBPATH . '?src=' . $this->imgs[ $nom ]['src'] . '&amp;w=' . $w . '&amp;h=' . $h . '&amp;f=' . substr($this->imgs[ $nom ]['src'], -3) . '&amp;q=' . $this->q . '' . $add);
+        return getThumbCacheFile(THUMBPATH . '?src=' . $this->imgs[$nom]['src'] . '&amp;w=' . $w . '&amp;h=' . $h . '&amp;f=' . substr($this->imgs[$nom]['src'], -3) . '&amp;q=' . $this->q . '' . $add);
     }
 
     /**
@@ -401,7 +401,7 @@ class genTemplate
 
     public function replaceBlock($bloc, $replace)
     {
-        $this->blocks[ $bloc ]['template'] = $replace;
+        $this->blocks[$bloc]['template'] = $replace;
         return $this;
     }
 
@@ -421,7 +421,7 @@ class genTemplate
         $numargs = func_num_args();
         $arg_list = func_get_args();
         for ($i = 0; $i < $numargs; $i++) {
-            $this->definedBlocks[] = $arg_list[ $i ];
+            $this->definedBlocks[] = $arg_list[$i];
         }
         return $this;
     }
@@ -440,7 +440,7 @@ class genTemplate
         $numargs = func_num_args();
         $arg_list = func_get_args();
         for ($i = 0; $i < $numargs; $i++) {
-            $this->set($arg_list[ $i ], t($arg_list[ $i ]));
+            $this->set($arg_list[$i], t($arg_list[$i]));
         }
         return $this;
     }
@@ -457,14 +457,14 @@ class genTemplate
         if (akev($this->blocks, $nom)) {
 
         } else {
-            $this->blocks[ $nom ] = array();
+            $this->blocks[$nom] = array();
             $start = mb_stripos($this->template, '<' . $nom . '>') + mb_strlen('<' . $nom . '>');
             $end = mb_stripos($this->template, '</' . $nom . '>');
 
             if ($start !== false && $end !== false) {
 
-                $this->blocks[ $nom ]['template'] = mb_substr($this->template, $start, $end - $start);
-                $this->blocks[ $nom ]['blocks'] = array();
+                $this->blocks[$nom]['template'] = mb_substr($this->template, $start, $end - $start);
+                $this->blocks[$nom]['blocks'] = array();
 
                 $this->template = mb_substr($this->template, 0, $start - mb_strlen('<' . $nom . '>')) . '<_' . $nom . '_>' . mb_substr($this->template, $end + mb_strlen('</' . $nom . '>'));
             } else {
@@ -489,16 +489,16 @@ class genTemplate
         if (!akev($this->blocks, $nom)) {
             $this->loadBlock($nom);
         }
-        if (empty($this->blocks[ $nom ]['blocks'])) {
+        if (empty($this->blocks[$nom]['blocks'])) {
             $cur = 0;
         } else {
-            $cur = count($this->blocks[ $nom ]['blocks']);
+            $cur = count($this->blocks[$nom]['blocks']);
         }
-        $this->blocks[ $nom ]['blocks'][ $cur ] = new genTemplate($this->doreplace);
-        if (!empty($this->blocks[ $nom ]['template'])) {
-            $this->blocks[ $nom ]['blocks'][ $cur ]->setTemplate($this->blocks[ $nom ]['template']);
+        $this->blocks[$nom]['blocks'][$cur] = new genTemplate($this->doreplace);
+        if (!empty($this->blocks[$nom]['template'])) {
+            $this->blocks[$nom]['blocks'][$cur]->setTemplate($this->blocks[$nom]['template']);
         }
-        return $this->blocks[ $nom ]['blocks'][ $cur ];
+        return $this->blocks[$nom]['blocks'][$cur];
     }
 
     /**
@@ -532,7 +532,7 @@ class genTemplate
             $this->loadBlock($nom);
         }
 
-        $this->blocks[ $nom ]['template'] = $replace;
+        $this->blocks[$nom]['template'] = $replace;
         if (strlen($replace)) {
             $this->addBlock($nom);
         }
@@ -558,7 +558,7 @@ class genTemplate
          * On supprime les blocs definits mais non utilisés
          */
         foreach ($this->definedBlocks as $v) {
-            if (empty($this->blocks[ $v ])) {
+            if (empty($this->blocks[$v])) {
                 $this->delBlock($v);
             }
         }
@@ -603,7 +603,15 @@ class genTemplate
             /**
              * Les textes
              */
-            $html = str_ireplace($this->replaces, $this->vars, $html);
+            $html =
+                str_ireplace(
+                    $this->replaces,
+                    array_filter($this->vars, function ($v) {
+                        return !is_object($v) && !is_array($v);
+                    }),
+                    $html
+                );
+
 
             /**
              * Les images
@@ -676,7 +684,7 @@ class genTemplate
 
     public function setCondition($nom, $val)
     {
-        $this->conditions[ $nom ] = $val;
+        $this->conditions[$nom] = $val;
         return $this;
     }
 

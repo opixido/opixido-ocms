@@ -1,7 +1,7 @@
 <script type="text/javascript">
 
     oldclick = gid('aongl1').onclick;
-    $('#aongl1').click(function(e) {
+    $('#aongl1').click(function (e) {
         gid('genform_curPage').value = 1;
         gid('reloadpage').click();
         e.preventDefault();
@@ -14,13 +14,10 @@ $sql = 'SELECT * FROM s_admin_role AS AR, s_role AS R, s_role_table AS RT WHERE 
 $res = GetAll($sql);
 
 
-
 if (!$form->editMode) {
     /* p('<strong>Si vous venez de faire des changements dans les roles attribués, cliquez ci-dessous pour mettre à jour les droits</strong><br/>'); */
     p('<input type="submit" id="reloadpage" class="button" value="' . t('admin_actualiser_les_droits') . '" name="stay_on_form" />');
 }
-
-
 
 
 foreach ($res as $row) {
@@ -52,7 +49,8 @@ foreach ($res as $row) {
 
             if (!function_exists('getRubsArbored')) {
 
-                function getRubsArbored($fk_rub = 0, $lev = 1, $droits, $form) {
+                function getRubsArbored($fk_rub = 0, $lev = 1, $droits = [], $form = null)
+                {
 
                     if ($lev > 4)
                         return;
@@ -76,7 +74,7 @@ foreach ($res as $row) {
                         if ($form->editMode && $checked) {
                             p($row['rubrique_titre_fr'] . '<br/>');
                         } else if (!$form->editMode) {
-                            p('<label class="checkbox"><input type="checkbox" ' . $checked . ' name="s_admin_rows[s_rubrique][]" value="' . $row['rubrique_id'] . '" />' . $row['rubrique_titre_fr'].'</label>');
+                            p('<label class="checkbox"><input type="checkbox" ' . $checked . ' name="s_admin_rows[s_rubrique][]" value="' . $row['rubrique_id'] . '" />' . $row['rubrique_titre_fr'] . '</label>');
                         }
                         p('<ul>');
                         getRubsArbored($row['rubrique_id'], $lev + 1, $droits, $form);
@@ -124,8 +122,6 @@ foreach ($res as $row) {
 
     echo '</div>';
 }
-
-
 
 
 //$form->gen('admin_id');
