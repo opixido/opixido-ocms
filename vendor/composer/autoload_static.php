@@ -24,11 +24,16 @@ class ComposerStaticInitOcms
         ),
     );
 
+    public static $classMap = array (
+        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+    );
+
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInitOcms::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInitOcms::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInitOcms::$classMap;
 
         }, null, ClassLoader::class);
     }
