@@ -508,7 +508,7 @@ class genSearchV2
                                 p('<option ' . $sel . ' value="' . $rowe . '">' . t('enum_' . $rowe) . '</option>');
                             }
                             p('</select></div>');
-                        } else {
+                        } else if (akev($fields, $k) || akev($fields, $k . '_' . LG_DEF)) {
                             p('<label class="hide-text"> ' . t($k) . '</label>');
 
                             p('<input class="span12" placeholder=' . alt(ta($k)) . '  type="text"
