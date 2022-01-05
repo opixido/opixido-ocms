@@ -445,9 +445,10 @@ class genUrlV2
     function getDefWebRoot($str)
     {
 
-        $et = explode(';', $str);
+        $et = explode(';', mb_strtolower($str));
+        $httpHostLow = mb_strtolower($_SERVER['HTTP_HOST']);
         foreach ($et as $v) {
-            if (strtolower($v) == strtolower($_SERVER['HTTP_HOST'])) {
+            if ($v == $httpHostLow) {
                 return $v;
             }
         }
