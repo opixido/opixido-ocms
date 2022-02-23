@@ -471,7 +471,7 @@ class genRecord
 
             $_REQUEST["curId"] = $this->id = "";
 
-             /**
+            /**
              * On parcourt les relinv, si cet enregistrement était la relinv de quelque chose il faut modifier l'ordre
              */
             if (!empty($orderFields[$this->table])) {
@@ -932,7 +932,16 @@ class genRecord
 
                         $value = str_replace(
                             array('<b>', '</b>', '<u>', '</u>', '<i>', '</i>'), array('<strong>', '</strong>', '<span style="text-decoration:underline">', '</span>', '<em>', '</em>'), $value);
-                        $value = strip_tags($value, '<p><a><abbr><accronym><sup><sub><ul><li><ol><br><br/><strong><em><span>');
+
+
+                        if (!isset($_Gconfig['rteAllowableTags']) || !isset($_Gconfig['rteAllowableTags'])) {
+                            $_Gconfig['rteAllowableTags']['default'] = '<p><a><abbr><accronym><sup><sub><ul><li><ol><br><br/><strong><em><span>';
+                        }
+                        $allowTags = $_Gconfig['rteAllowableTags']['default'];
+                        if (isset($_Gconfig['rteAllowableTags'][getBaseLgField($name)])) {
+                            $allowTags = $_Gconfig['rteAllowableTags'][getBaseLgField($name)];
+                        }
+                        $value = strip_tags($value, $allowTags);
                     }
 
 

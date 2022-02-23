@@ -585,3 +585,9 @@ $_Gconfig['doDie404'] = true;
  * Liste des actions accessibles en ligne de commande
  */
 $_Gconfig['cmdActions'] = array();
+
+
+/**
+ * Liste des tags autorisés dans les champs wysiwyg
+ */
+$_Gconfig['rteAllowableTags']['default'] = '<p><a><abbr><accronym><sup><sub><ul><li><ol><br><br/><strong><em><span>';
