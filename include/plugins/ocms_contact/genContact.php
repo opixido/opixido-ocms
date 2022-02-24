@@ -162,7 +162,7 @@ class genContact extends ocmsGen
          * Si c'est dans les contacts
          * La liste des contacts
          */
-        $tabC = Array();
+        $tabC = array();
         $tabC[] = array('value' => '', 'label' => '-------------------', 'selected' => true);
         if (count($res)) {
             foreach ($res as $row) {
@@ -398,7 +398,17 @@ class genContact extends ocmsGen
             } else if ($champ['contact_field_type'] == 'captcha_question') {
                 // nothing to do
             } else {
-                $content .= "<tr><th style='text-align:left;padding:3px'>" . getLgValue('contact_field_nom', $champ) . ' : </th><td style="padding:3px">' . "" . nl2br(htmlentities($_REQUEST[$champ['contact_field_name']], ENT_QUOTES, 'utf-8')) . '</td></tr>';
+                $val = $_REQUEST[$champ['contact_field_name']];
+                if (is_array($val)) {
+                    $val = array_map(function ($v) {
+                        return nl2br(htmlentities($v, ENT_QUOTES, 'utf-8'));
+                    }, $val);
+                    $val = implode(', ', $val);
+                } else {
+                    $val = nl2br(htmlentities($_REQUEST[$champ['contact_field_name']], ENT_QUOTES, 'utf-8'));
+                }
+
+                $content .= "<tr><th style='text-align:left;padding:3px'>" . getLgValue('contact_field_nom', $champ) . ' : </th><td style="padding:3px">' . "" . $val . '</td></tr>';
             }
         }
 
