@@ -87,6 +87,10 @@ class genContact extends ocmsGen
          * New Form
          */
         $this->form = new simpleForm('./', 'post', 'contact_form');
+        $this->form->class = 'container';
+        $this->form->divClass = 'form-group';
+        $this->form->checkboxBeforeLabel = true;
+        $this->form->fieldClass = 'form-control';
 
 
         /**
@@ -110,7 +114,7 @@ class genContact extends ocmsGen
         /**
          * Boutons Submit
          */
-        $this->form->add('submit', t('c_submit'), '', 'contact_submit', 'contact_submit');
+        $this->form->add('submit', t('c_submit'), '', 'contact_submit', 'contact_submit', false, false, false, 'class="submit btn btn-primary"');
 
         /**
          * Si le formulaire a été soumis sans erreurs
@@ -193,7 +197,7 @@ class genContact extends ocmsGen
 
             $var = getLgValue('contact_field_values', $row);
             if (empty($row['contact_field_name'])) {
-                $row['contact_field_name'] = nicename($row[ 'contact_field_nom_' . LG_DEF ]);
+                $row['contact_field_name'] = nicename($row['contact_field_nom_' . LG_DEF]);
             }
 
             /*
@@ -203,7 +207,7 @@ class genContact extends ocmsGen
               $field_value = explode(";",$var);
              */
 
-            if ($row['contact_field_type'] == 'select' || $row['contact_field_type'] == 'selectm') {
+            if ($row['contact_field_type'] == 'select' || $row['contact_field_type'] == 'selectm' || $row['contact_field_type'] == 'checkbox') {
                 if (strpos(';', $var)) {
                     $field_value = explode(";", $var);
                 } else {
@@ -212,15 +216,16 @@ class genContact extends ocmsGen
 
                 $var = array();
                 foreach ($field_value as $v) {
-                    $v = explode('=', $v);
-
-                    if (count($v) > 1) {
-
-                        $var[] = array('label' => $v[1], 'value' => $v[0]);
+                    $pos = mb_stripos($v, '=');
+                    if ($pos === false) {
+                        $var[] = array('label' => $v, 'value' => $v);
                     } else {
-                        $var[] = array('label' => $v[0], 'value' => $v[0]);
+                        $val = mb_substr($v, 0, $pos);
+                        $clef = mb_substr($v, $pos + 1);
+                        $var[] = array('label' => $clef, 'value' => $val);
                     }
                 }
+
                 $this->form->add(
                     $row['contact_field_type'], $var, getLgValue('contact_field_nom', $row), $row['contact_field_name'], $row['contact_field_name'], $row['contact_field_needed'], array(akev($_REQUEST, $row['contact_field_name']))
                 );
@@ -384,16 +389,16 @@ class genContact extends ocmsGen
         $content .= '<table>';
         foreach ($this->champs as $champ) {
             if (empty($champ['contact_field_name'])) {
-                $champ['contact_field_name'] = nicename($champ[ 'contact_field_nom_' . LG_DEF ]);
+                $champ['contact_field_name'] = nicename($champ['contact_field_nom_' . LG_DEF]);
             }
             if ($champ['contact_field_type'] == 'file') {
-                if ($_FILES[ $champ['contact_field_name'] ]) {
-                    $m->AddAttachment($_FILES[ $champ['contact_field_name'] ]['tmp_name'], $champ['contact_field_name'] . '_' . $_FILES[ $champ['contact_field_name'] ]['name']);
+                if ($_FILES[$champ['contact_field_name']]) {
+                    $m->AddAttachment($_FILES[$champ['contact_field_name']]['tmp_name'], $champ['contact_field_name'] . '_' . $_FILES[$champ['contact_field_name']]['name']);
                 }
             } else if ($champ['contact_field_type'] == 'captcha_question') {
                 // nothing to do
             } else {
-                $content .= "<tr><th style='text-align:left;padding:3px'>" . getLgValue('contact_field_nom', $champ) . ' : </th><td style="padding:3px">' . "" . nl2br(htmlentities($_REQUEST[ $champ['contact_field_name'] ], ENT_QUOTES, 'utf-8')) . '</td></tr>';
+                $content .= "<tr><th style='text-align:left;padding:3px'>" . getLgValue('contact_field_nom', $champ) . ' : </th><td style="padding:3px">' . "" . nl2br(htmlentities($_REQUEST[$champ['contact_field_name']], ENT_QUOTES, 'utf-8')) . '</td></tr>';
             }
         }
 
