@@ -472,3 +472,9 @@ input.hasDatepicker {
     left: -999999px;
     top: -999999px;
 }
+
+input[type="color"]{
+    height: 40px;
+    width: 40px;
+    padding: 2px 3px;
+}
