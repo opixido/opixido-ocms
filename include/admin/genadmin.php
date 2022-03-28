@@ -330,7 +330,7 @@ class genAdmin
             p('<div id="tools" >');
 
             if ($this->gs->can('add', $this->table)) {
-                p('<a class="btn btn-primary btn-large" href="?curTable=' . $this->table . '&amp;curId=new&relOne=' . akev($_REQUEST, 'relOne') . '"><img src="' . ADMIN_PICTOS_FOLDER2 . '24/Very_Basic/plus-24.png" alt=""  /> ' . t('ajouter_elem') . '</a></div>');
+                p('<a class="btn btn-primary btn-large" href="?curTable=' . $this->table . '&amp;curId=new&relOne=' . akev($_REQUEST, 'relOne') . '"><img src="' . ADMIN_PICTOS_FOLDER2 . '24/Very_Basic/plus-24.png" alt=""  /> ' . t('ajouter_elem') . '</a>');
             }
 
             if (ake($_Gconfig['tableActions'], $this->table)) {
@@ -339,7 +339,7 @@ class genAdmin
                  */
                 foreach ($_Gconfig['tableActions'][$this->table] as $action) {
                     if ($this->gs->can($action, $this->table) && $action != akev($_REQUEST, 'tableAction')) {
-                        p('<a class="btn" href="?curTable=' . $this->table . '&tableAction=' . $action . '"> <img src="' . ADMIN_PICTOS_FOLDER . '' . ADMIN_PICTOS_ARBO_SIZE . '/' . t('src_' . $action) . '.png" alt=""  /> ' . t($action) . '</a>');
+                        p('<a class="btn btn-large" href="?curTable=' . $this->table . '&tableAction=' . $action . '"> <img src="' . t('src_' . $action) . '" alt=""  /> ' . t($action) . '</a>');
                     }
                 }
             }
