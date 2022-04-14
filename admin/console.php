@@ -31,8 +31,8 @@ ob_start();
 define('IN_ADMIN', true);
 
 error_reporting(E_ALL & ~E_NOTICE);
-require_once('../vendor/autoload.php');
-require_once('../include/include.php');
+require_once(__DIR__.'/../vendor/autoload.php');
+require_once(__DIR__.'/../include/include.php');
 
 
 /* On aura toujours besoin de ca */
