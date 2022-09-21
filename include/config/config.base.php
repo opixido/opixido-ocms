@@ -193,7 +193,7 @@ $tablerel['s_admin_role'] = array('fk_role_id' => 's_role', 'fk_admin_id' => 's_
  * $searchField['TABLE'] = array('CHAMPS');
  */
 $searchField = array();
-$searchField['s_rubrique'] = array('rubrique_id', 'rubrique_titre', 'rubrique_titre', 'rubrique_etat', 'fk_creator_id');
+$searchField['s_rubrique'] = array('rubrique_id', 'rubrique_titre');
 $searchField['s_admin'] = array('admin_nom', 'admin_login', 's_admin_role');
 
 

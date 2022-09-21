@@ -448,7 +448,7 @@ class genSearchV2
                         p('<select class="span12" id="' . $k . '"  name="cf_' . $k . '[]" multiple="multiple" >');
                         //p('<option value="">' . ta($k) . '</option>');
                         foreach ($res as $row) {
-                            $sel = @in_array($row[$thiskey], $this->fullRealFields[$k]) ? 'selected="selected"' : '';
+                            $sel = isset($this->fullRealFields[$k]) && in_array($row[$thiskey], $this->fullRealFields[$k]) ? 'selected="selected"' : '';
                             p('<option ' . $sel . ' value="' . $row[$thiskey] . '">' . limit(GetTitleFromRow($tablenom, $row, " "), 30) . '</option>');
                         }
                         p('</select><br/>');
