@@ -202,10 +202,12 @@ class row
             if ($type == 'date' || $type == 'datetime') {
 
                 $this->$field = new DateTime($this->row[$field]);
+                return $this->$field;
             }
 
             if (substr($type, 0, 4) == 'set(') {
                 $this->$field = explode(',', $this->row[$field]);
+                return $this->$field;
             }
 
             if (array_key_exists($field, $this->row)) {

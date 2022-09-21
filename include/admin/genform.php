@@ -783,26 +783,7 @@ class GenForm
 
         $lastBuffer = $this->getBuffer();
 
-        /**
-         * Recherche des modules genform dans des plugins
-         */
-        $gfModuleFound = false;
-        if (isset($_Gconfig['genformModules_first'])) {
-            foreach ($_Gconfig['genformModules_first'] as $gfModule) {
-                $m = new $gfModule($this);
-                if ($m->checkCondition($name)) {
-                    $gfModuleFound = true;
-                    $m->gen($name);
-                    break;
-                }
-            }
-        }
-
-        if ($gfModuleFound) {
-            /**
-             * On ne fait rien, déjà géré au dessus
-             */
-        } else if (isset($_Gconfig['fullArbo'][$this->table_name]) && ake($_Gconfig['fullArbo'][$this->table_name], $name)) {
+        if (isset($_Gconfig['fullArbo'][$this->table_name]) && ake($_Gconfig['fullArbo'][$this->table_name], $name)) {
 
 
             include_once($gb_obj->getIncludePath('genform.fullarbo.php', 'admin/genform_modules'));
@@ -915,23 +896,9 @@ class GenForm
                      */
                     include($gb_obj->getIncludePath('genform.set.php', 'admin/genform_modules'));
                 } else {
-                    /**
-                     * Recherche des modules genform dans des plugins
-                     */
-                    $gfModuleFound = false;
-                    if (isset($_Gconfig['genformModules_last'])) {
-                        foreach ($_Gconfig['genformModules_last'] as $gfModule) {
-                            $m = new $gfModule($this);
-                            if ($m->checkCondition($name)) {
-                                $gfModuleFound = true;
-                                $m->gen($field);
-                                break;
-                            }
-                        }
-                    }
+
                     //debug("Error - $name item inexistant - " . $this->tab_field[$name]->type . "");
-                    if (!$gfModuleFound)
-                        unset($_SESSION['cache']);
+                    unset($_SESSION['cache']);
                 }
 
 
@@ -1095,7 +1062,10 @@ class GenForm
     {
         global $formFooters, $champsRTE;
 
-        $formFooters = str_replace('@@CHAMPS@@', substr($champsRTE, 0, -2), $formFooters);
+        if (!empty($formFooters)) {
+            $formFooters = str_replace('@@CHAMPS@@', substr($champsRTE, 0, -2), $formFooters);
+        }
+
         p($formFooters);
         p("</form>");
     }

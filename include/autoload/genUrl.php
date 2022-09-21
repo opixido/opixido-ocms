@@ -27,7 +27,8 @@
  * Rappatriement / renvoi
  *
  */
-class genUrl {
+class genUrl
+{
 
     /**
      * Tableau qui stocke les url des rubriques
@@ -91,9 +92,10 @@ class genUrl {
     public $rubId = 0;
 
     /**
-     *  Constructeur de la classe genUrl 
+     *  Constructeur de la classe genUrl
      */
-    function __construct($lg = '') {
+    function __construct($lg = '')
+    {
 
 
         $this->lg = $lg;
@@ -112,7 +114,8 @@ class genUrl {
         $this->colorLevel = 'sd';
     }
 
-    function getTopRubId() {
+    function getTopRubId()
+    {
         return $this->topRubId;
     }
 
@@ -121,7 +124,8 @@ class genUrl {
      *
      * @return string Langue actuelle
      */
-    function getLg() {
+    function getLg()
+    {
         return $this->lg;
     }
 
@@ -132,7 +136,8 @@ class genUrl {
      * et dont l'url correspond au $_SERVER['HTTP_HOST'] puis en concatenant  dirname($_SERVER["SCRIPT_NAME"]);
      *
      */
-    function getSiteRoot() {
+    function getSiteRoot()
+    {
 
         global $_Gconfig;
         $host = $_SERVER["HTTP_HOST"];
@@ -156,7 +161,7 @@ class genUrl {
                 'option' => $res['rubrique_option'],
                 'template' => $res['rubrique_template'],
                 'type' => $res['rubrique_type'],
-                'webroot' => ($res['rubrique_type'] == RTYPE_SITEROOT ? $this->getDefWebRoot($res['rubrique_url_' . LG_DEF]) : '' )
+                'webroot' => ($res['rubrique_type'] == RTYPE_SITEROOT ? $this->getDefWebRoot($res['rubrique_url_' . LG_DEF]) : '')
             );
 
 
@@ -224,7 +229,8 @@ class genUrl {
         }
     }
 
-    function getDefWebRoot($str) {
+    function getDefWebRoot($str)
+    {
 
         $et = explode(';', $str);
         foreach ($et as $v) {
@@ -245,7 +251,8 @@ class genUrl {
      *
      * @return unknown
      */
-    function getTabUrl() {
+    function getTabUrl()
+    {
         return $GLOBALS['tabUrl'];
     }
 
@@ -254,7 +261,8 @@ class genUrl {
      *
      * @return unknown
      */
-    function getRoadSup() {
+    function getRoadSup()
+    {
         return $this->roadSup;
     }
 
@@ -263,7 +271,8 @@ class genUrl {
      *
      * @return unknown
      */
-    function isMiniSite() {
+    function isMiniSite()
+    {
         global $_Gconfig;
 
         $host = niceName($_SERVER["HTTP_HOST"]);
@@ -320,7 +329,8 @@ class genUrl {
      *
      * @return array
      */
-    function parseUrl() {
+    function parseUrl()
+    {
 
         global $_Gconfig;
         $x_url = explode('?', $_SERVER['REQUEST_URI']);
@@ -349,7 +359,6 @@ class genUrl {
         $x_url = explode('/', $x_url);
 
         $this->parsedUrl = $x_url;
-
 
 
         global $_Gconfig;
@@ -400,11 +409,7 @@ class genUrl {
         }
 
 
-
-
-
         $this->parsedUrl = $this->trimTab($this->parsedUrl);
-
 
 
         return $x_url;
@@ -414,7 +419,8 @@ class genUrl {
      * Sépare les actions du reste de l'URL
      *
      */
-    function splitAction() {
+    function splitAction()
+    {
 
         $this->action = explode('/', $this->action);
         $this->action = end($this->action);
@@ -425,7 +431,8 @@ class genUrl {
      *
      * @param unknown_type $params
      */
-    function splitParams($params) {
+    function splitParams($params)
+    {
 
         $params = explode(getParam('param_key_sep'), $params);
         $paramNom = '';
@@ -451,7 +458,8 @@ class genUrl {
      * @param unknown_type $lg
      * @return unknown
      */
-    function getUrlInLg($lg) {
+    function getUrlInLg($lg)
+    {
 
         return $this->buildUrlFromId(0, $lg, $this->paramsUrl);
     }
@@ -462,7 +470,8 @@ class genUrl {
      *
      * @return unknown
      */
-    function getRubId() {
+    function getRubId()
+    {
 
         global $homeId, $_Gconfig;
         if (IN_ADMIN) {
@@ -515,7 +524,6 @@ class genUrl {
                 }
 
 
-
                 $select .= ' R1.rubrique_etat  from s_rubrique as R1 ';
 
 
@@ -535,7 +543,6 @@ class genUrl {
                 $where .= ' and R' . $CUR . '.rubrique_type IN ("' . RTYPE_MENUROOT . '","' . RTYPE_SITEROOT . '") AND R' . $nbUrls . '.fk_rubrique_id = R' . $CUR . '.rubrique_id  ';
 
 
-
                 if ($this->minisite) {
                     global $rootId, $headRootId, $footRootId;
                     $where .= ' AND R' . $nbUrls . '.fk_rubrique_id IN ("' . $this->minisite_row['rubrique_id'] . '") ';
@@ -551,16 +558,14 @@ class genUrl {
                 }
 
 
-
                 $sql = $select . $from . $where;
 
                 $res = GetSingle($sql);
                 //echo $sql;
 
 
-
                 /**
-                 * On a pas trouvé la rubrique 
+                 * On a pas trouvé la rubrique
                  * c'est donc une erreur 404
                  */
                 if (count($res) == 0) {
@@ -583,11 +588,8 @@ class genUrl {
                 } else {
 
 
-
                     $this->topRubId = $res['r' . $nbUrls . '_rubrique_id'];
                     $this->rubId = $res['r1_rubrique_id'];
-
-
 
 
                     /**
@@ -609,7 +611,7 @@ class genUrl {
                                 'template' => $res['r' . $i . '_rubrique_template'],
                                 'type' => $res['r' . $i . '_rubrique_type'],
                                 'selected' => true,
-                                    /* 'isFolder'=> $res['r'.$i.'_rubrique_is_folder'],	 */
+                                /* 'isFolder'=> $res['r'.$i.'_rubrique_is_folder'],	 */
                             );
 
 
@@ -644,19 +646,21 @@ class genUrl {
         return $this->rubId;
     }
 
-    function die404() {
+    function die404($e = 'Page not found')
+    {
 
-        echo '<h1>Error 404</h1><p>The page can not be found</p><p><a href="/">Go back</a></p>';
+        echo '<h1>Error 404</h1><p>' . $e . '</p><p><a href="/">Go back</a></p>';
         die();
     }
 
     /**
      * Retourne la seconde langue acceptable
-     * @deprecated 
-     *
      * @return unknown
+     * @deprecated
+     *
      */
-    function otherLg() {
+    function otherLg()
+    {
 
         return getOtherLg();
         global $_Gconfig;
@@ -670,12 +674,13 @@ class genUrl {
     }
 
     /**
-     * alias de 
+     * alias de
+     * @param unknown_type $lg
      * @uses myLocale
      *
-     * @param unknown_type $lg
      */
-    function setLocale($lg) {
+    function setLocale($lg)
+    {
         myLocale($lg);
     }
 
@@ -685,7 +690,8 @@ class genUrl {
      * @param unknown_type $tab
      * @return unknown
      */
-    function trimTab($tab) {
+    function trimTab($tab)
+    {
         $newTab = array();
         global $_Gconfig;
         if ($_Gconfig['onlyOneLgForever']) {
@@ -708,11 +714,12 @@ class genUrl {
 
     /**
      * Retourne l'URL courante dans l'autre langue
-     * @deprecated 
-     * 
      * @return unknown
+     * @deprecated
+     *
      */
-    function getUrlForOtherLg() {
+    function getUrlForOtherLg()
+    {
         //debug($GLOBALS['tabUrl']);
         $p = is_array($this->otherLgParamsUrl) ? $this->otherLgParamsUrl : $this->paramsUrl;
 
@@ -729,7 +736,8 @@ class genUrl {
      * @param array $action
      * @return string
      */
-    function buildUrlFromId($rubId = 0, $lg = '', $params = array(), $action = '') {
+    function buildUrlFromId($rubId = 0, $lg = '', $params = array(), $action = '')
+    {
 
         global $_Gconfig;
 
@@ -795,14 +803,14 @@ class genUrl {
 
         /**
          * Utile si on a plusieurs /bdd/.../bdd/
-
-          $bddPart = explode(''.GetParam('fake_folder_param').'',$url);
-          if(count($bddPart) > 2) {
-          $url = $bddPart[0].''.GetParam('fake_folder_param').''.$bddPart[1];
-          if($bddPart[2]) {
-          $url.= ''.$bddPart[2];
-          }
-          }
+         *
+         * $bddPart = explode(''.GetParam('fake_folder_param').'',$url);
+         * if(count($bddPart) > 2) {
+         * $url = $bddPart[0].''.GetParam('fake_folder_param').''.$bddPart[1];
+         * if($bddPart[2]) {
+         * $url.= ''.$bddPart[2];
+         * }
+         * }
          */
         $GLOBALS['urlCached'][$cachename] = $url;
 
@@ -815,11 +823,13 @@ class genUrl {
      * @param array $params
      * @return string
      */
-    function getUrlWithParams($params) {
+    function getUrlWithParams($params)
+    {
         return $this->buildUrlFromId(0, '', $params);
     }
 
-    function getUrlWithMoreParams($params) {
+    function getUrlWithMoreParams($params)
+    {
         return $this->buildUrlFromId(0, '', array_merge($this->paramsUrl, $params));
     }
 
@@ -828,7 +838,8 @@ class genUrl {
      *
      * @return string
      */
-    function getCurUrl() {
+    function getCurUrl()
+    {
         return $this->buildUrlFromId(0, '', $this->paramsUrl);
     }
 
@@ -838,7 +849,8 @@ class genUrl {
      * @param unknown_type $params
      * @return unknown
      */
-    function addParams($params) {
+    function addParams($params)
+    {
         if (is_array($params) && count($params) > 0) {
             $url = '' . GetParam('fake_folder_param') . '';
 
@@ -863,11 +875,12 @@ class genUrl {
 
     /**
      * Redefinit certains paramètre pour l'autre langue
-     * @deprecated 
-     *
      * @param unknown_type $params
+     * @deprecated
+     *
      */
-    function setOtherLgParams($params) {
+    function setOtherLgParams($params)
+    {
 
         $this->otherLgParamsUrl = $params;
     }
@@ -878,7 +891,8 @@ class genUrl {
      * @param unknown_type $rubId
      * @return unknown
      */
-    function reversRecursRub($rubId) {
+    function reversRecursRub($rubId)
+    {
         global $_Gconfig;
 
         if (!$rubId)
@@ -895,7 +909,6 @@ class genUrl {
 				   ' . sqlRubriqueOnlyOnline('R1') . '
 				   and R1.rubrique_id = ' . sql($rubId);
             $res = GetSingle($sql);
-
 
 
             if (!empty($res) && !is_array(akev($GLOBALS['tabUrl'], akev($res, 'rubId')))) {
@@ -945,7 +958,8 @@ class genUrl {
      * @param str $lg Langue
      * @return string URL
      */
-    function buildUrl($rubId, $lg) {
+    function buildUrl($rubId, $lg)
+    {
         global $_Gconfig;
 
         $lg = strlen($lg) ? $lg : $this->lg;
@@ -1040,13 +1054,13 @@ class genUrl {
      * @param int $rubId Rubrique mère
      * @param int $curLevel Niveau actuel, laisser à 1 par défaut
      * @param int $maxLevel Combien de récursion atteindre ?
-     * @return array Tableau 
+     * @return array Tableau
      */
-    function recursRub($rubId, $curLevel = 1, $maxLevel = 99) {
+    function recursRub($rubId, $curLevel = 1, $maxLevel = 99)
+    {
 
         if (!$rubId)
             return false;
-
 
 
         global $_Gconfig;
@@ -1055,7 +1069,6 @@ class genUrl {
         if (ake($GLOBALS, 'recursDone') && ake($GLOBALS['recursDone'], $rubId . '-' . $maxLevel)) {
             return $GLOBALS['recursDone'][$rubId . '-' . $maxLevel];
         }
-
 
 
         /**
@@ -1118,7 +1131,6 @@ class genUrl {
             $sel = in_array($sRub['rubrique_id'], $this->selectedArbo);
 
 
-
             /**
              * On stock le tabUrl du GenUrl
              * Un cache temporaire
@@ -1174,9 +1186,8 @@ class genUrl {
                 }
 
 
-
                 /**
-                 * Et on fait la récursion 
+                 * Et on fait la récursion
                  */
                 if ($curLevel < $maxLevel) {
                     if (rubHasOption($sRub['rubrique_option'], 'dynSubRubs')) {
@@ -1208,7 +1219,8 @@ class genUrl {
 
     /* Methode permettant de construire le "chemin de fer" de la page en-cours */
 
-    function buildRoad($curId = 0, $includeMenuRoot = false) {
+    function buildRoad($curId = 0, $includeMenuRoot = false)
+    {
         //global $rootId;
 
         if (!$curId) {
@@ -1224,7 +1236,6 @@ class genUrl {
         $road = array();
 
 
-
         if ($curId != $this->rootHomeId) { //getParam('rub_home_id')
             $i = 1;
             while (array_key_exists($key, $GLOBALS['tabUrl']) && $key && $i <= 100) {
@@ -1238,7 +1249,6 @@ class genUrl {
                 }
                 $key = $GLOBALS['tabUrl'][$key]['fkRub'];
             }
-
 
 
             $road[] = array('titre' => t('cp_txt_home'),
@@ -1260,7 +1270,8 @@ class genUrl {
      * @param unknown_type $row
      * @return unknown
      */
-    function hasNextRub($row) {
+    function hasNextRub($row)
+    {
 
         $sql = 'SELECT rubrique_ordre FROM s_rubrique WHERE fk_rubrique_id ="' . $row['fk_rubrique_id'] . '"  ' . sqlRubriqueOnlyReal() . ' AND rubrique_ordre > "' . $row['rubrique_ordre'] . '" ORDER BY rubrique_ordre';
 
@@ -1277,7 +1288,8 @@ class genUrl {
      * @param unknown_type $row
      * @return unknown
      */
-    function hasPreviousRub($row) {
+    function hasPreviousRub($row)
+    {
         $sql = 'SELECT rubrique_ordre FROM s_rubrique WHERE fk_rubrique_id ="' . $row['fk_rubrique_id'] . '"  ' . sqlRubriqueOnlyReal() . ' AND rubrique_ordre < "' . $row['rubrique_ordre'] . '" ORDER BY rubrique_ordre';
 
         $res = GetAll($sql);
@@ -1288,13 +1300,15 @@ class genUrl {
 
     /* Methode qui permet d'ajouter un element au tableau des rubriques hors bdd */
 
-    function addRoad($titre, $url, $id = null) {
+    function addRoad($titre, $url, $id = null)
+    {
         $this->roadSup[] = array('titre' => $titre, 'url' => $url, 'id' => $id);
     }
 
     /* Methode qui retourne le niveau de profondeur */
 
-    function getDepth($rubid = 0) {
+    function getDepth($rubid = 0)
+    {
         $rubid = $rubid ? $rubid : $this->getRubId();
 
         if (!array_key_exists($curId, $GLOBALS['tabUrl']))
@@ -1303,7 +1317,8 @@ class genUrl {
 
     /* Methode qui permet de recuperer la langue du navigateur client */
 
-    function getBrowserLang() {
+    function getBrowserLang()
+    {
         global $_Gconfig;
         $langs = explode(",", $_SERVER["HTTP_ACCEPT_LANGUAGE"]);
 

@@ -30,7 +30,7 @@ class genMenu
     private $tabHeader;  //Tableau contenant les url's du menu topright
     public $tabPrincipal; //Celui contenant les url's du menu principal
     private $tabFooter;  //Celui contenant les url's du menu du footer
-    public $separator;
+    public $separator = '';
     public $visible = true;
     private $level = 1;
 
@@ -106,7 +106,7 @@ class genMenu
         global $rootId;
 
 
-        if (!count($this->tabPrincipal))
+        if (empty($this->tabPrincipal) || !count($this->tabPrincipal))
             $this->tabPrincipal = $this->site->g_url->recursRub($this->id_menu, 1, $this->conf['max_levels']);
         return $this->tabPrincipal;
     }
@@ -150,6 +150,15 @@ class genMenu
                 $tpl->loadTemplate($this->conf['tpl_name'], $this->conf['tpl_folder']);
                 $tpl->set('titre', $this->separator);
                 $html .= $tpl->gen();
+            }
+
+            /**
+             * Si on a ajouté des éléments manuels
+             */
+            if (!empty($value['html'])) {
+                $html .= $value['html'];
+                $cpt++;
+                continue;
             }
 
             $tpl = new genTemplate();

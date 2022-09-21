@@ -272,7 +272,7 @@ class genUrlV2
             $this->die404();
         }
 
-        $this->rubId = getRubFromGabarit('genSitemap');
+        $this->rubId = getRubFromGabarit('gen404');
 
         if (!$this->rubId) {
             global $_Gconfig;
@@ -445,10 +445,9 @@ class genUrlV2
     function getDefWebRoot($str)
     {
 
-        $et = explode(';', mb_strtolower($str));
-        $httpHostLow = mb_strtolower($_SERVER['HTTP_HOST']);
+        $et = explode(';', $str);
         foreach ($et as $v) {
-            if ($v == $httpHostLow) {
+            if (strtolower($v) == strtolower($_SERVER['HTTP_HOST'])) {
                 return $v;
             }
         }

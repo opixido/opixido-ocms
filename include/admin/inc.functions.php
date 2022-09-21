@@ -674,7 +674,7 @@ function setAllUrls()
 {
     global $_Gconfig;
 
-    if ($_GET['langue_source']) {
+    if (!empty($_GET['langue_source'])) {
 
         foreach ($_Gconfig['LANGUAGES'] as $v) {
             if ($v != $_GET['langue_source']) {

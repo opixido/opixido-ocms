@@ -51,7 +51,7 @@ class tablerel
 
         genTableRelReverse();
 
-        $this->fk_courant = $tablerel_fks[ $this->table_courante ][ $this->table_relation ];
+        $this->fk_courant = $tablerel_fks[$this->table_courante][$this->table_relation];
 
         list($this->table_distante, $this->fk_distant) = $this->getOtherTable();
     }
@@ -60,9 +60,9 @@ class tablerel
      * Enregistre les modifications pour l'ID courant
      * avec les valeurs $values
      *
+     * @param array $values
      * @example $values = array(10,25,18084);
      *
-     * @param array $values
      */
     function record($values)
     {
@@ -93,8 +93,8 @@ class tablerel
 
         global $tablerel;
 
-        if (is_array($tablerel[ $this->table_relation ])) {
-            foreach ($tablerel[ $this->table_relation ] as $k => $v) {
+        if (is_array($tablerel[$this->table_relation])) {
+            foreach ($tablerel[$this->table_relation] as $k => $v) {
                 if ($v != $this->table_courante) {
                     return array($v, $k);
                 }
@@ -163,8 +163,8 @@ function genTableRelReverse()
         foreach ($tablerel as $k => $v) {
 
             foreach ($v as $kk => $vv) {
-                $tablerel_reverse[ $vv ][] = array('tablerel' => $k, 'myfk' => $kk);
-                $tablerel_fks[ $vv ][ $k ] = $kk;
+                $tablerel_reverse[$vv][] = array('tablerel' => $k, 'myfk' => $kk);
+                $tablerel_fks[$vv][$k] = $kk;
             }
         }
     }
@@ -193,7 +193,7 @@ function getRowAndRelFromId($table, $id)
     }
 
 
-    if (!array_key_exists($table . "_-REL_" . $id, $getRowFromId_cacheRow) || !$getRowFromId_cacheRow[ $table . "_-REL_" . $id ]) {
+    if (!array_key_exists($table . "_-REL_" . $id, $getRowFromId_cacheRow) || !$getRowFromId_cacheRow[$table . "_-REL_" . $id]) {
 
         $pk = in_array($table, $_Gconfig['multiVersionTable']) ? ' ocms_etat = "en_ligne" AND ocms_version' : GetPrimaryKey($table);
 
@@ -201,8 +201,8 @@ function getRowAndRelFromId($table, $id)
         $where = ' WHERE MT.' . $pk . ' = ' . sql($id) . ' ';
 
         // debug($where);
-        if (!empty($relations[ $table ])) {
-            foreach ($relations[ $table ] as $k => $v) {
+        if (!empty($relations[$table])) {
+            foreach ($relations[$table] as $k => $v) {
                 if ($v != $table) {
                     $sql .= ' LEFT JOIN ' . $v . ' AS T' . $k . ' ON T' . $k . '.' . getPrimaryKey($v) . ' = MT.' . $k . '  ';
                 }
@@ -215,10 +215,10 @@ function getRowAndRelFromId($table, $id)
 
         //debug($sql.$where);
 
-        $getRowFromId_cacheRow[ $table . "_-REL_" . $id ] = $row;
+        $getRowFromId_cacheRow[$table . "_-REL_" . $id] = $row;
     }
 
-    return $getRowFromId_cacheRow[ $table . "_-REL_" . $id ];
+    return $getRowFromId_cacheRow[$table . "_-REL_" . $id];
 }
 
 function formatSqlCode($sql)
@@ -297,7 +297,7 @@ function isRealRubrique($row)
     if (empty($row)) {
         return false;
     }
-    if ($row[ MULTIVERSION_FIELD ] !== $row['rubrique_id']) {
+    if ($row[MULTIVERSION_FIELD] !== $row['rubrique_id']) {
         return false;
     }
     return true;
@@ -305,7 +305,7 @@ function isRealRubrique($row)
 
 function isVersionRubrique($row)
 {
-    if ($row[ MULTIVERSION_FIELD ] !== $row['rubrique_id']) {
+    if ($row[MULTIVERSION_FIELD] !== $row['rubrique_id']) {
         return true;
     }
     return false;
@@ -322,7 +322,7 @@ function isRubriqueOnline($roworid)
     if (!isRealRubrique($row)) {
         $row = getRealForRubrique($row);
     }
-    return $row[ MULTIVERSION_STATE ] == MV_STATE_ONLINE ? true : false;
+    return $row[MULTIVERSION_STATE] == MV_STATE_ONLINE ? true : false;
 }
 
 function isRubriqueRealAndOnline($roworid)
@@ -339,7 +339,7 @@ function isRubriqueRealAndOnline($roworid)
     if (!in_array($row['rubrique_type'], array("folder", "page", "link", "siteroot")))
         return false;
 
-    return $row[ MULTIVERSION_STATE ] == MV_STATE_ONLINE ? true : false;
+    return $row[MULTIVERSION_STATE] == MV_STATE_ONLINE ? true : false;
 }
 
 function sqlRubriqueOnlyReal($alias = "")
@@ -377,8 +377,8 @@ function getRealForRubrique($roworid)
         $row = $roworid;
     }
 
-    if (!isRealRubrique($row) && !empty($row[ MULTIVERSION_FIELD ])) {
-        $sql = 'SELECT * FROM s_rubrique WHERE rubrique_id = "' . $row[ MULTIVERSION_FIELD ] . '"';
+    if (!isRealRubrique($row) && !empty($row[MULTIVERSION_FIELD])) {
+        $sql = 'SELECT * FROM s_rubrique WHERE rubrique_id = "' . $row[MULTIVERSION_FIELD] . '"';
         return GetSingle($sql);
     } else {
         return $row;
@@ -457,7 +457,7 @@ function getNullValue($val, $field, $table)
 
     if (!strlen($val)) {
         $t = getTabField($table);
-        if (!$t[ $field ]->not_null) {
+        if (!$t[$field]->not_null) {
             /* debug($field);
               debug($t[$field]); */
             return 'NULL';
@@ -473,7 +473,7 @@ global $tablerel, $tablerel_reverse;
 if (is_array($tablerel)) {
     foreach ($tablerel as $k => $v) {
         foreach ($v as $kk => $vv) {
-            $tablerel_reverse[ $vv ][] = array('tablerel' => $k, 'myfk' => $kk);
+            $tablerel_reverse[$vv][] = array('tablerel' => $k, 'myfk' => $kk);
         }
     }
 }
@@ -494,7 +494,7 @@ function tablerelGetOtherTable($tablerela, $curtable)
     global $tablerel;
     $ar = array();
     $i = 0;
-    foreach ($tablerel[ $tablerela ] as $k => $v) {
+    foreach ($tablerel[$tablerela] as $k => $v) {
         $i++;
         if ($v != $curtable || $i == 2) {
             $ar['champ'] = $k;
@@ -510,11 +510,11 @@ function tablerelGetOtherTable($tablerela, $curtable)
  * Retourne la liste des champs de langue d'un champ donné
  * pour insérer dans une requete SQL
  *
- * @example rubrique_titre => rubrique_titre_fr, rubrique_titre_en, ...
- *
  * @param unknown_type $champ
  * @param unknown_type $alias
  * @return unknown
+ * @example rubrique_titre => rubrique_titre_fr, rubrique_titre_en, ...
+ *
  */
 function sqlLgField($champ, $alias = '')
 {
@@ -534,10 +534,11 @@ function getGabaritVisibility($gabid)
 {
 
     $rgab = getGabarit($gabid);
-    $GLOBALS['gb_obj']->includeFile($rgab['gabarit_classe'] . '.php', 'bdd');
+
+    $GLOBALS['gb_obj']->includeFile($rgab['gabarit_classe'] . '.php', 'plugins/' . $rgab['gabarit_plugin']);
     $gab = $rgab['gabarit_classe'];
     $gab = new $gab($GLOBALS['site']);
-    return $gab->genvisibility();
+    return $gab->ocms_getVisibility();
 }
 
 function getGabaritSubRubs($rub, $gabid)
@@ -562,7 +563,7 @@ function getEnumValues($table, $champ)
     } else {
         $tab = getTabField($table);
     }
-    $enum = str_replace(array('enum(', '\'', '"', ')'), '', implode(',', $tab[ $champ ]->enums));
+    $enum = str_replace(array('enum(', '\'', '"', ')'), '', implode(',', $tab[$champ]->enums));
     $enums = explode(',', $enum);
     return $enums;
 }
@@ -575,7 +576,7 @@ function getSetValues($table, $champ)
     } else {
         $tab = getTabField($table);
     }
-    $name = $tab[ $champ ]->type;
+    $name = $tab[$champ]->type;
     $set = parseSetValues($name);
 
     return $set;
@@ -586,7 +587,7 @@ function parseSetValues($name)
     $set = explode(",", substr($name, 4, -1));
 
     foreach ($set as $k => $v) {
-        $set[ $k ] = substr($v, 1, -1);
+        $set[$k] = substr($v, 1, -1);
     }
 
     return $set;
@@ -611,6 +612,6 @@ function sqlOnlyRealAndOnline($table, $alias = '')
         $alias = $alias . '.';
     }
     if (in_array($table, $_Gconfig['multiVersionTable'])) {
-        return sqlOnlyReal($table, $alias = '').' AND '.$alias.MULTIVERSION_STATE.' = '.sql(MV_STATE_ONLINE).' ';
+        return sqlOnlyReal($table, $alias = '') . ' AND ' . $alias . MULTIVERSION_STATE . ' = ' . sql(MV_STATE_ONLINE) . ' ';
     }
 }

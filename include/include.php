@@ -150,13 +150,20 @@ class genBase
         foreach ($list as $file) {
             if (!file_exists($curfolder . '/' . $file)) {
                 echo('File : ' . $file . ' not included yet : Install Mode');
-                define('IN_INSTALL', true);
-                define('BU', '');
-                define('UNIQUE_SITE', 'OcmsUninstalled');
-                define('INCLUDE_PATH', __DIR__);
-                define('ADMIN_URL', BU . '/admin');
-                define('LG_DEF', 'fr');
-                define('crypto_key', 'OcmsUninstalledKey');
+                if(!defined('IN_INSTALL')) {
+                    define('IN_INSTALL', true);
+                    define('BU', '');
+                    define('UNIQUE_SITE', 'OcmsUninstalled');
+                    define('INCLUDE_PATH', __DIR__);
+                    define('ADMIN_URL', BU . '/admin');
+                    define('LG_DEF', 'fr');
+                    define('crypto_key', 'OcmsUninstalledKey');
+                    global $_Gconfig;
+                    $_Gconfig['baseWebPath'] = '';
+                    $_Gconfig['basePath'] = '';
+                    $_Gconfig['CDN'] = '';
+                    $_Gconfig['ADMIN_URL'] = '';
+                }
             } else {
                 $res = include_once($curfolder . '/' . $file);
                 if (!$res) {

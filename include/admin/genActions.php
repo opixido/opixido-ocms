@@ -668,7 +668,7 @@ class objDuplication
                  * Si c'est un champ d'upload
                  * on le met de côté
                  */
-                if (!strpos($v, '/') && isUploadField($k) && array_key_exists($k, $tabField)) {
+                if (isUploadField($k) && array_key_exists($k, $tabField) && ($v && !strpos($v, '/')) ) {
                     $oldfile = new genFile($this->table, $k, $this->id, $v);
                     $oldfiles[] = array('path' => $oldfile->getSystemPath(),
                         'valeur' => $v,

@@ -22,7 +22,8 @@
 # @package ocms
 #
 
-class ocmsPlugin {
+class ocmsPlugin
+{
 
     /**
      * Gensite
@@ -36,7 +37,8 @@ class ocmsPlugin {
      *
      * @param gensite $site
      */
-    function __construct($site) {
+    function __construct($site)
+    {
 
         $this->site = $site;
         $this->plugins = &$site->plugins;
@@ -44,7 +46,8 @@ class ocmsPlugin {
 
 }
 
-class baseObj {
+class baseObj
+{
 
     /**
      * gensite
@@ -75,8 +78,13 @@ class baseObj {
     public $clef = 'id';
     public $row = array();
 
-    function __construct($roworid = false) {
+    function __construct($roworid = false)
+    {
+        $this->site = $GLOBALS['site'];
 
+        if (!$this->table) {
+            return;
+        }
         /**
          * Recuperation automatique
          * des informations
@@ -88,11 +96,11 @@ class baseObj {
             $this->id = $roworid;
             $this->row = getRowAndRelFromId($this->table, $this->id);
         } else
-        if (!empty($_REQUEST[$this->clef])) {
-            $this->id = $_REQUEST[$this->clef];
-            $this->row = getRowAndRelFromId($this->table, $this->id);
-        }
-        $this->site = $GLOBALS['site'];
+            if (!empty($_REQUEST[$this->clef])) {
+                $this->id = $_REQUEST[$this->clef];
+                $this->row = getRowAndRelFromId($this->table, $this->id);
+            }
+
     }
 
     /**
@@ -102,7 +110,8 @@ class baseObj {
      * @param string $champ
      * @return mixed
      */
-    function get($champ) {
+    function get($champ)
+    {
 
         if (isBaseLgField($champ, $this->table)) {
             return getLgValue($champ, $this->row);
@@ -124,7 +133,8 @@ class baseObj {
      *
      * @return string HTML
      */
-    function gen() {
+    function gen()
+    {
 
         if ($this->table) {
             if (akev($_GET, $this->clef)) {
@@ -142,7 +152,8 @@ class baseObj {
      *
      * @return string
      */
-    function genOne() {
+    function genOne()
+    {
 
         $row = getRowFromId($this->table, $_GET[$this->clef]);
 
@@ -162,7 +173,8 @@ class baseObj {
      *
      * @return unknown
      */
-    public function genAll() {
+    public function genAll()
+    {
 
         $res = GetAll("SELECT * FROM " . $this->table . ' ORDER BY ' . GetTitleFromTable($this->table, ' , '));
 
@@ -175,12 +187,14 @@ class baseObj {
         return $html;
     }
 
-    public function getTitle() {
+    public function getTitle()
+    {
 
         return GetTitleFromRow($this->table, $this->row);
     }
 
-    public function getUrl() {
+    public function getUrl()
+    {
 
 
         return getUrlWithParams(array(getPrimaryKey($this->table) => $this->id));
@@ -188,9 +202,11 @@ class baseObj {
 
 }
 
-class baseGen extends baseObj {
+class baseGen extends baseObj
+{
 
-    function __construct($site, $params = "") {
+    function __construct($site, $params = "")
+    {
 
         $this->site = $site;
         $this->params = SplitParams($params, ';', '=');
@@ -218,16 +234,19 @@ class baseGen extends baseObj {
 
 }
 
-class ocmsGen extends baseGen {
-    
+class ocmsGen extends baseGen
+{
+
 }
 
 
-class rubrique extends row {
+class rubrique extends row
+{
 
     public $table = 's_rubrique';
 
-    public function __construct($row) {
+    public function __construct($row)
+    {
         parent::__construct($this->table, $row);
     }
 
@@ -237,7 +256,8 @@ class rubrique extends row {
      * @param int $limit
      * @return array
      */
-    public function getNextRubs($limit = 1) {
+    public function getNextRubs($limit = 1)
+    {
 
         return $this->getAdjacentRubs($limit, 'ASC');
     }
@@ -248,7 +268,8 @@ class rubrique extends row {
      * @param int $limit
      * @return array
      */
-    public function getPreviousRub($limit = 1) {
+    public function getPreviousRub($limit = 1)
+    {
 
         return $this->getAdjacentRubs($limit, 'DESC');
     }
@@ -262,7 +283,8 @@ class rubrique extends row {
      * @param string $order ASC or DESC
      * @return array
      */
-    public function getAdjacentRubs($limit = 0, $order = '') {
+    public function getAdjacentRubs($limit = 0, $order = '')
+    {
 
         /**
          * Sql Query
@@ -307,7 +329,8 @@ class rubrique extends row {
      *
      * @return mixed
      */
-    public function getParentRub() {
+    public function getParentRub()
+    {
         if ($this->row['fk_rubrique_id']) {
             return getRowFromId('s_rubrique', $this->row['fk_rubrique_id']);
         }
@@ -319,7 +342,8 @@ class rubrique extends row {
      *
      * @return array
      */
-    public function getChildRubs() {
+    public function getChildRubs()
+    {
         $sql = 'SELECT * FROM s_rubrique WHERE
                     fk_rubrique_id = ' . sql($this->id) . ' ' . sqlRubriqueOnlyOnline() . '
                     ORDER BY rubrique_ordre ASC
@@ -333,7 +357,8 @@ class rubrique extends row {
      * @param array $params
      * @return string
      */
-    public function getUrl($params = array()) {
+    public function getUrl($params = array())
+    {
 
         return getUrlFromId($this->id, LG(), $params);
     }
@@ -343,16 +368,18 @@ class rubrique extends row {
      *
      * @return string Title
      */
-    public function getTitle() {
+    public function getTitle()
+    {
         return $this->rubrique_titre;
     }
 
     /**
      * Returns all subs paragraphs and paragraphs type
-     * 
+     *
      * @return array Paragaphs
      */
-    public function getParagraphes() {
+    public function getParagraphes()
+    {
         $sql = 'SELECT * FROM s_paragraphe, s_para_type WHERE fk_rubrique_id = ' . sql($this->id) . ' AND fk_para_type_id = para_type_id ORDER BY paragraphe_ordre ASC ';
         return GetAll($sql);
     }
@@ -364,13 +391,14 @@ class rubrique extends row {
 }
 
 
-
-class paragraphe extends row {
+class paragraphe extends row
+{
 
     public $table = 's_paragraphe';
 
-    public function __construct($row) {
+    public function __construct($row)
+    {
         parent::__construct($this->table, $row);
     }
-    
+
 }

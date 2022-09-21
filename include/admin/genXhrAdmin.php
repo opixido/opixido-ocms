@@ -245,7 +245,7 @@ class genXhrAdmin
         $this->id = akev($_REQUEST, 'curId');
         if ($this->id) {
             $this->row = getSingle('SELECT * FROM s_rubrique WHERE rubrique_id = ' . sql($this->id));
-            $this->real_rub_id = $this->row['fk_rubrique_version_id'];
+            $this->real_rub_id = $this->row['ocms_version'];
             $this->real_fk_rub = $this->row['fk_rubrique_id'];
         }
         $this->arboRubs = $this->sa->getRubs();

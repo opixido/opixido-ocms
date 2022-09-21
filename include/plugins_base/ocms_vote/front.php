@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with oCMS. If not, see <http://www.gnu.org/licenses/>.
 #
-# @author Celio Conort / Opixido 
+# @author Celio Conort / Opixido
 # @copyright opixido 2012
 # @link http://code.google.com/p/opixido-ocms/
 # @package ocms
@@ -78,13 +78,13 @@ class ocms_voteFront extends ocmsPlugin {
                 /**
                  * On met le cookie comme quoi il a voté
                  */
-                $row = GetSingle('SELECT * FROM plug_vote LEFT JOIN plug_vote_log ON 
+                $row = GetSingle('SELECT * FROM plug_vote LEFT JOIN plug_vote_log ON
 										(
-											ressource_table = vote_log_table 
-											AND vote_log_id = fk_ressource_id 
+											ressource_table = vote_log_table
+											AND vote_log_id = fk_ressource_id
 											AND vote_log_ip = ' . sql($_SERVER['REMOTE_ADDR']) . '
-										) 
-									WHERE fk_ressource_id = ' . sql($_GET['id']) . ' 
+										)
+									WHERE fk_ressource_id = ' . sql($_GET['id']) . '
 									AND ressource_table = ' . sql($_GET['obj']) . '');
 
 
@@ -105,10 +105,10 @@ class ocms_voteFront extends ocmsPlugin {
 
                 DoSql('REPLACE INTO plug_vote SET ressource_table = ' . sql($_GET['obj']) . ' , fk_ressource_id = ' . sql($_GET['id']) . ' , vote_moyenne = ' . sql($moyenne) . ' , vote_nb = ' . sql($nb + 1));
 
-                $sqlLog = 'REPLACE INTO plug_vote_log SET 
-								vote_log_table = ' . sql($_GET['obj']) . ' , 
-								vote_log_id = ' . sql($_GET['id']) . ' , 
-								vote_log_ip = ' . sql($_SERVER['REMOTE_ADDR']) . ' , 
+                $sqlLog = 'REPLACE INTO plug_vote_log SET
+								vote_log_table = ' . sql($_GET['obj']) . ' ,
+								vote_log_id = ' . sql($_GET['id']) . ' ,
+								vote_log_ip = ' . sql($_SERVER['REMOTE_ADDR']) . ' ,
 								vote_log_time = NOW(),
 								vote_log_note = ' . sql($_GET['vote']) . '
 								';
@@ -189,7 +189,7 @@ class ocms_voteFront extends ocmsPlugin {
         }
 
         if ($this->hasVoted($obj, $id, $curRow)) {
-            
+
         } else {
 
             $html .= '<div class="notes"><a href="#" class="voter" onclick="return openVote(this)">' . t('voter') . '</a><div class="voter">';
@@ -219,7 +219,7 @@ class ocms_voteFront extends ocmsPlugin {
     }
 
     function getRow($obj, $id) {
-        $sql = ('SELECT * FROM plug_vote 
+        $sql = ('SELECT * FROM plug_vote
 						LEFT JOIN plug_vote_log ON vote_log_table = ressource_table AND fk_ressource_id = vote_log_id
 						WHERE ressource_table = ' . sql($obj) . ' AND fk_ressource_id = ' . sql($id));
 

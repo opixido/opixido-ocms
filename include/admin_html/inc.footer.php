@@ -95,7 +95,7 @@ if (!empty($GLOBALS['rteElements'])) {
 
     function setupTinymce(elementsId) {
         tinyMCE.init({
-            elements: elementsId <?php
+            selector: elementsId <?php
             foreach ($_Gconfig['tinyMce']['conf'] as $k => $v) {
                 if (is_array($v)) {
                     $v = json_encode($v);

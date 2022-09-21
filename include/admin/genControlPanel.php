@@ -151,7 +151,7 @@ class genControlPanel {
     private function getInfoTime() {
 
         myLocale(LG());
-        $date = ucfirst(strftime('%A %d %B %Y'));
+        $date = ucfirst(ocms_strftime('%A %d %B %Y'));
         //utf8_encode(ucfirst(strftime("%A", strtotime(date('D'))))) .' ' .date('d') .' ' .utf8_encode(ucfirst(strftime("%B", strtotime(date('m'))))) .' ' .date('Y');
 
         return $date;

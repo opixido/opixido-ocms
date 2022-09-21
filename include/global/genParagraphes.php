@@ -96,6 +96,8 @@ class genParagraphes
             $conte = GetLgValue('paragraphe_contenu', $para);
 
 
+
+            $tpl->setVar('id', $para['paragraphe_id']);
             $tpl->setVar('titre', GetLgValue('paragraphe_titre', $para));
             $tpl->setVar('texte', ($conte));
 
@@ -134,7 +136,8 @@ class genParagraphes
             $tpl->setVar('file1_legend', choose(getLgValue('paragraphe_file_1_legend', $para), $fichier->getRealName()));
             $tpl->setVar('link1', getLgValue('paragraphe_link_1', $para));
 
-            if (strlen(trim(GetLgValue('paragraphe_contenu_csv', $para)))) {
+            $csv = GetLgValue('paragraphe_contenu_csv', $para);
+            if ($csv && strlen(trim($csv))) {
                 $params = $_GET;
 
                 $params['para'] = $para['paragraphe_id'];

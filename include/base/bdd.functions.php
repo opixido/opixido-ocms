@@ -113,6 +113,25 @@ function insertEmptyRecord($table, $id = false, $champs = array())
     }
 }
 
+
+function insertRubrique($parent, $titre, $tab = [])
+{
+    $rub = [
+        'fk_rubrique_id' => $parent,
+        'rubrique_titre_' . LG_DEF => $titre,
+        'rubrique_url_' . LG_DEF => niceName($titre),
+        'ocms_etat' => 'en_ligne',
+        'ocms_date_crea' => time(),
+        'ocms_date_modif' => time()
+    ];
+
+    $rub = array_merge($rub, $tab);
+    $id = insertEmptyRecord('s_rubrique', false, $rub);
+
+    DoSql('UPDATE s_rubrique SET ocms_version = rubrique_id WHERE ocms_version IS NULL');
+    return $id;
+}
+
 function sqlParam($param)
 {
     if (in_array($param, array('NULL', 'NOT NULL'))) {
@@ -435,6 +454,9 @@ function MetaColumns($table)
  */
 function mes($str)
 {
+    if (empty($str)) {
+        return '';
+    }
     return str_replace(array("'", '"'), array("\'", '\"'), $str);
     //return mysqli_escape_string($str);
 }
@@ -498,8 +520,13 @@ function getTables()
     if (empty($GLOBALS['GlobalObjCache'][UNIQUE_SITE])) {
         $GLOBALS['GlobalObjCache'][UNIQUE_SITE] = array();
     }
-    if (!ake($GLOBALS['GlobalObjCache'][UNIQUE_SITE], 'tables') && $co) {
-        $GLOBALS['GlobalObjCache'][UNIQUE_SITE]['tables'] = $co->MetaTables('TABLES');
+    if (!ake($GLOBALS['GlobalObjCache'][UNIQUE_SITE], 'tables') ) {
+        if($co) {
+            $GLOBALS['GlobalObjCache'][UNIQUE_SITE]['tables'] = $co->MetaTables('TABLES');
+        } else {
+            $GLOBALS['GlobalObjCache'][UNIQUE_SITE]['tables'] = [];
+
+        }
     }
     return $GLOBALS['GlobalObjCache'][UNIQUE_SITE]['tables'];
 }
@@ -583,7 +610,7 @@ function sql($param, $type = 'string')
         $param = (int)$param;
     } else if ($param == 'NULL') {
         return $param;
-    } else if($co) {
+    } else if ($co) {
         return $co->quote($param);
     }
     return '"' . $param . '"';

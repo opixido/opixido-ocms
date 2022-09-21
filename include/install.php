@@ -39,6 +39,8 @@ class genInstall
      */
     var $f2;
 
+    public $errorsConf = false;
+
     function __construct()
     {
 
@@ -51,7 +53,7 @@ class genInstall
 
         echo '<link rel="stylesheet" type="text/css" href="css/install.css" />';
 
-        if ($_REQUEST['sqlSource']) {
+        if (isset($_REQUEST['sqlSource'])) {
 
             global $co;
             echo path_concat($GLOBALS['gb_obj']->include_path, '', $_REQUEST['sqlSource']);
@@ -76,7 +78,7 @@ class genInstall
 
             $this->createConfigFile();
 
-            $GLOBALS['gb_obj']->includeConfig();
+            @$GLOBALS['gb_obj']->includeConfig();
 
             global $co;
             echo '<div class="start">';
@@ -243,7 +245,9 @@ class genInstall
         $_POST['UNIQUE_SITE'] = uniqid();
         $vars = array('bdd_bdd', 'bdd_user', 'bdd_pwd', 'bdd_type', 'bdd_host', 'CRYPTO_KEY', 'ADMIN_URL', 'WEB_URL', 'session_cookie_server', 'current_ip', 'UNIQUE_SITE');
         foreach ($vars as $var) {
-            $contenu = str_replace('**' . $var . '**', $_POST[$var], $contenu);
+            if (isset($_POST[$var])) {
+                $contenu = str_replace('**' . $var . '**', $_POST[$var], $contenu);
+            }
         }
 
 
@@ -263,7 +267,6 @@ class genInstall
 
         $contenu = str_replace('**LG_DEF**', $_POST['LG_DEF'], $contenu);
 
-        define('LG_DEF', $_POST['LG_DEF']);
         define('LG_TEMP', $_POST['LG_DEF']);
 
 

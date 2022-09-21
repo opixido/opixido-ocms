@@ -3,6 +3,8 @@
 /**
  * Pour avoir BU
  */
+ini_set('display_errors', 0);
+error_reporting(E_ALL & ~E_DEPRECATED & ~E_STRICT);
 require(dirname(__FILE__) . '/../include/config/config.server.php');
 
 if (empty($_GET['field_id'])) {

@@ -383,6 +383,9 @@ function getOnlineRubId($row)
 function niceName($str)
 {
 
+    if (!$str) {
+        return '';
+    }
     $str = trim(mb_strtolower($str, 'utf-8'));
 
 
@@ -476,6 +479,10 @@ function has($s)
 function nicedate($d, $show_year = true, $separator = '/')
 {
 
+    if (is_object($d)) {
+        $d = $d->format('Y-m-d');
+    }
+
     /**
      * Si $d est un date time xxxx-xx-xx 00:00:00
      * on supprime le tmeps
@@ -492,6 +499,7 @@ function nicedate($d, $show_year = true, $separator = '/')
          */
     }
     $t = explode("-", $d);
+    if (count($t) < 2) return '';
     if (LG() == 'uk' || LG() == 'us' || LG() == 'en') {
         if ($show_year)
             return $t[1] . $separator . $t[2] . $separator . $t[0];
@@ -592,7 +600,11 @@ function niceTextDate($date, $jour = false)
     global $lg;
 
     if (is_object($date)) {
-        $date = $date->toString('U');
+        if (method_exists($date, 'format')) {
+            $date = $date->format('Y-m-d');
+        } else {
+            $date = $date->toString('U');
+        }
     }
     $d = strtotime($date);
 
@@ -632,7 +644,7 @@ function nicedate_interval($date1, $date2 = '', $separator = '/', $pre = '', $po
     $d_deb = explode('-', $date1);
     $d_fin = explode('-', $date2);
 
-    @setlocale($GLOBALS['CURLOCALE']);
+    @setlocale(LC_ALL, $GLOBALS['CURLOCALE']);
 
     if ($date1 == $date2 || $date2 == '0000-00-00' || $date2 == '' || $date2 == '0000-00-00 00:00:00') {
         return t('le') . ' ' . $pre . nicetextdate($date1, true, $separator) . $post;
@@ -809,6 +821,9 @@ function SplitGabaritParams($params)
  */
 function altify($str)
 {
+    if (!$str) {
+        return '';
+    }
     return str_replace(array('"', "'"), array("&quot;", "&#39;"), (strip_tags($str)));
 }
 
@@ -823,7 +838,7 @@ function debugEvent($str)
     $GLOBALS['curSQL'] = $str;
     $GLOBALS['curSQLStart'] = getmicrotime();
     $profileSTR = '';
-    if ($_Gconfig['debugSql']) {
+    if (!empty($_Gconfig['debugSql'])) {
         global $h_sqls;
         $ar = debug_backtrace();
         if ((!empty($ar[5]['file'])))
@@ -2069,6 +2084,9 @@ function geta($array, $clef)
 function alt($texte)
 {
 
+    if (!$texte) {
+        return '""';
+    }
     return '"' . str_replace(array('"', "\n", "\r"), array('&quot;', " ", " "), $texte) . '"';
 }
 
@@ -2879,26 +2897,27 @@ function updateNextCacheUpdate()
     if (!$co || !empty($_Gconfig['nextCacheAlreadyUpdated'])) {
         return;
     }
+    $def = date('Y-m-d', time() + 3600 * 24);
 
     $_Gconfig['nextCacheAlreadyUpdated'] = true;
     $sql = 'SELECT ' . $_Gconfig['field_date_online'] . ' FROM s_rubrique WHERE '
         . ' ' . $_Gconfig['field_date_online'] . ' > NOW()'
         . ' ORDER BY  ' . $_Gconfig['field_date_online'] . ' ASC '
         . ' LIMIT 0,1';
-    $val = strtotime($co->getOne($sql));
+    $val = strtotime($co->getOne($sql) ?? $def);
 
     $sql = 'SELECT ' . $_Gconfig['field_date_offline'] . ' FROM s_rubrique WHERE '
         . ' ' . $_Gconfig['field_date_offline'] . ' > NOW()'
         . ' ORDER BY  ' . $_Gconfig['field_date_offline'] . ' ASC '
         . ' LIMIT 0,1';
-    $val = minButNotNull(strtotime($co->getOne($sql)), $val);
+    $val = minButNotNull(strtotime($co->getOne($sql) ?? $def), $val);
 
     foreach ($_Gconfig['futurOnlineFields'] as $k => $v) {
         $sql = 'SELECT ' . $v . ' FROM ' . $k . ' WHERE ' . $v . ' > NOW() '
             . ' ORDER BY ' . $v . ' ASC '
             . 'LIMIT 0,  1 ';
 
-        $val = minButNotNull(strtotime($co->getOne($sql)), $val);
+        $val = minButNotNull(strtotime($co->getOne($sql) ?? $def), $val);
     }
 
     foreach ($_Gconfig['futurOfflineFields'] as $k => $v) {
@@ -2906,7 +2925,7 @@ function updateNextCacheUpdate()
             . ' ORDER BY ' . $v . ' ASC '
             . 'LIMIT 0,  1 ';
 
-        $val = minButNotNull(strtotime($co->getOne($sql)), $val);
+        $val = minButNotNull(strtotime($co->getOne($sql) ?? $def), $val);
     }
 
 

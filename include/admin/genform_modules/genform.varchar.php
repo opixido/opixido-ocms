@@ -36,6 +36,19 @@ if (!$this->editMode) {
 
         $fl = $this->tab_field[$name]->max_length;
 
+        /**
+         * Couleur par défaut
+         */
+        if ($this->tab_default_field[$name]) {
+            $style = 'style="background-color:#' . $this->tab_default_field[$name] . '"';
+        }
+
+        /**
+         * Emplacement de couleur
+         */
+        $this->addBuffer('<span class="colorField" id="colorField_' . $name . '" ' . $style . '>
+    						&nbsp;   &nbsp;   						
+    					 </span> ');
 
         /**
          * Champ de saisie Couleur
@@ -43,6 +56,7 @@ if (!$this->editMode) {
         $this->addBuffer(' &nbsp;<input
                                     type="color"
 									size="6" 
+									onchange="gid(\'colorField_' . $name . '\').style.backgroundColor=\'#\'+this.value;" 
 									id="genform_' . $name . '" ' . $jsColor . ' ' . $attributs . '  
 									name="genform_' . $name . '" maxlength="' . $fl . '" 
 									class="genform_varchar" 

@@ -535,14 +535,6 @@ $_Gconfig['ajaxRelinv']['TABLE']['NOM_DU_FAUX_CHAMP'] = array('SOUS_TABLE', 'CLE
 
 
 /**
- * Gestion des modules genform
- * @example $_Gconfig['genformModules_last'][] = 'genform_moduleTruc'; // Doit hériter de "genform_module"
- */
-
-$_Gconfig['genformModules_first'] = [];
-$_Gconfig['genformModules_last'] = [];
-
-/**
  *   On liste les tables par menu
  *  Ca simplifie le tout
  */

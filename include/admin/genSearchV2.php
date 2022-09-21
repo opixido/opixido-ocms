@@ -96,6 +96,7 @@ class genSearchV2
 
         $rCount = DoSql($sqlCount);
 
+
         if (!$rCount) {
             global $co;
             var_dump($sqlCount);
@@ -508,7 +509,7 @@ class genSearchV2
                                 p('<option ' . $sel . ' value="' . $rowe . '">' . t('enum_' . $rowe) . '</option>');
                             }
                             p('</select></div>');
-                        } else if (akev($fields, $k) || akev($fields, $k . '_' . LG_DEF)) {
+                        } else {
                             p('<label class="hide-text"> ' . t($k) . '</label>');
 
                             p('<input class="span12" placeholder=' . alt(ta($k)) . '  type="text"

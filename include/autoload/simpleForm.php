@@ -36,7 +36,7 @@ class simpleForm
     public $simpleformNeeded = NULL;
     public $nbField = 0;
 
-    public $divClass = '';
+    public $divClass = 'container';
     public $fieldClass = '';
 
     function __construct($action = '', $method = 'get', $id = '', $class = false)
@@ -192,8 +192,8 @@ class simpleForm
                             $field['name'] = $field['name'] . '_confirmation';
                             $field['label'] = $field['label'] . t('simpleform_confirmation');
                             debug($_REQUEST);
-                            if (!empty($_REQUEST[ $field['name'] ])) {
-                                $field['value'] = $_REQUEST[ $field['name'] ];
+                            if (!empty($_REQUEST[$field['name']])) {
+                                $field['value'] = $_REQUEST[$field['name']];
                             }
 
                             $s .= $this->getLabel($field);
@@ -211,8 +211,8 @@ class simpleForm
 
                             $field['name'] = $field['name'] . '_confirmation';
                             $field['label'] = $field['label'] . ' ' . t('simpleform_confirmation');
-                            if (!empty($_REQUEST[ $field['name'] ])) {
-                                $field['value'] = $_REQUEST[ $field['name'] ];
+                            if (!empty($_REQUEST[$field['name']])) {
+                                $field['value'] = $_REQUEST[$field['name']];
                             }
                             $s .= '<div id="' . $field['name'] . '_2">';
                             $s .= $this->getLabel($field);
@@ -254,9 +254,9 @@ class simpleForm
         foreach ($this->fields as $k => $v) {
             if ($v['needed']) {
 
-                if($v['type'] == 'checkbox'){
-                    $s .= ',' . alt($k.'_'.niceName($v['value'][0]['value']));
-                }else{
+                if ($v['type'] == 'checkbox') {
+                    $s .= ',' . alt($k . '_' . niceName($v['value'][0]['value']));
+                } else {
                     $s .= ',' . alt($k);
                 }
             }
@@ -350,33 +350,32 @@ class simpleForm
                 $v = akev($_REQUEST, $field['name']);
 
                 if ($field['type'] == 'text' && !strlen(trim($v))) {
-                    $this->badFields[ $field['name'] ] = $field;
+                    $this->badFields[$field['name']] = $field;
                 } else if ($field['type'] == 'password' && !strlen(trim($v))) {
-                    $this->badFields[ $field['name'] ] = $field;
+                    $this->badFields[$field['name']] = $field;
                 } else if ($field['type'] == 'email' && !checkEmail($v)) {
-                    $this->badFields[ $field['name'] ] = $field;
+                    $this->badFields[$field['name']] = $field;
                 } else if ($field['type'] == 'textarea' && !strlen(trim($v))) {
-                    $this->badFields[ $field['name'] ] = $field;
-                } else if (($field['type'] == 'email_conf') && (!checkEmail($v) || $v != $_REQUEST[ $field['name'] . '_confirmation' ])) {
-                    $this->badFields[ $field['name'] ] = $field;
+                    $this->badFields[$field['name']] = $field;
+                } else if (($field['type'] == 'email_conf') && (!checkEmail($v) || $v != $_REQUEST[$field['name'] . '_confirmation'])) {
+                    $this->badFields[$field['name']] = $field;
                 } else if ($field['type'] == 'select' && $v === "") {
 
-                    $this->badFields[ $field['name'] ] = $field;
-                } else if ($field['type'] == 'checkbox' && count($v) == 0) {
-
-                    $this->badFields[ $field['name'] ] = $field;
+                    $this->badFields[$field['name']] = $field;
+                } else if ($field['type'] == 'checkbox' && (!$v || count($v) == 0)) {
+                    $this->badFields[$field['name']] = $field;
                 }
                 if ($field['type'] == 'captcha') {
                     if (($v == "" || strtolower($v) != strtolower($_SESSION['CAPTCHAString'])) && !$GLOBALS['CAPTCHAOK']) {
-                        $this->badFields[ $field['name'] ] = $field;
+                        $this->badFields[$field['name']] = $field;
                         $GLOBALS['CAPTCHAOK'] = true;
                     } else {
                         $_SESSION['CAPTCHAString'] = '';
                     }
                 } else if ($field['type'] == 'file') {
 
-                    if (($_FILES[ $field['name'] ]['error'])) {
-                        $this->badFields[ $field['name'] ] = $field;
+                    if (($_FILES[$field['name']]['error'])) {
+                        $this->badFields[$field['name']] = $field;
                     }
                 }
             }
@@ -385,12 +384,12 @@ class simpleForm
                 if (empty($_REQUEST['captchaq_uniq'])) {
                     $_REQUEST['captchaq_uniq'] = false;
                 }
-                if (!$_REQUEST['captchaq_uniq'] || !$_REQUEST['captchaq'] || $_REQUEST['captchaq'] != $_SESSION['captchaQuestion'][ $_REQUEST['captchaq_uniq'] ]) {
-                    $this->badFields[ $field['name'] ] = $field;
+                if (!$_REQUEST['captchaq_uniq'] || !$_REQUEST['captchaq'] || $_REQUEST['captchaq'] != $_SESSION['captchaQuestion'][$_REQUEST['captchaq_uniq']]) {
+                    $this->badFields[$field['name']] = $field;
 
-                    $_SESSION['captchaQuestion'][ $_REQUEST['captchaq_uniq'] ] = '';
+                    $_SESSION['captchaQuestion'][$_REQUEST['captchaq_uniq']] = '';
                 }
-                $_SESSION['captchaQuestion'][ $_REQUEST['captchaq_uniq'] ] = '';
+                $_SESSION['captchaQuestion'][$_REQUEST['captchaq_uniq']] = '';
             }
         }
 
@@ -469,7 +468,7 @@ class simpleForm
                     $value['label'] = $value[1];
                 }
 
-                $sel = @in_array(trim($value['value']), $field['selected']) ? 'selected="selected"' : '';
+                $sel = is_array($field['selected']) && in_array(trim($value['value']), $field['selected']) ? 'selected="selected"' : '';
                 $s .= '<option ' . $sel . ' value="' . $value['value'] . '">' . $value['label'] . '</option>' . "\n";
             }
         }
@@ -518,7 +517,7 @@ class simpleForm
         $chiffre1 = rand(1, 10);
         $chiffre2 = rand(1, 10);
         $unique = time() . rand(0, 1000);
-        $_SESSION['captchaQuestion'][ $unique ] = $chiffre1 + $chiffre2;
+        $_SESSION['captchaQuestion'][$unique] = $chiffre1 + $chiffre2;
 
         $html = '<span class="captcha_q">' . t('simpleform_captchaq') . '
 					<strong>' . $chiffre1 . ' + ' . $chiffre2 . ' = </strong>
@@ -683,7 +682,7 @@ class simpleForm
         $s = '<textarea   ' . akev($field, 'tag') . ' rows="5" cols="20"
                 class="' . $this->classError($field) . $this->fieldClass . '"
                 name="' . $field['name'] . '" id="' . $field['id'] . '"
-                >' . htmlentities($field['value']) . '</textarea>' . "\n";
+                >' . htmlentities($field['value'] ?? '') . '</textarea>' . "\n";
 
         return $s;
     }
@@ -767,7 +766,7 @@ class simpleForm
         $s = '';
         if (strlen($field['label'])) {
             $needed = !empty($field['needed']) ? $this->neededSymbol : '';
-            $s = '<label    ' . $this->classError($field) . ' id="label_' . akev($field, 'id') . '" for="' . akev($field, 'id') . '"><span>' . akev($field, 'label') . '</span> ' . $needed . '' . $this->postLabel . '</label>' . "\n";
+            $s = '<label class="label ' . $this->classError($field) . '" id="label_' . akev($field, 'id') . '" for="' . akev($field, 'id') . '"><span>' . akev($field, 'label') . '</span> ' . $needed . '' . $this->postLabel . '</label>' . "\n";
         }
         return $s;
     }
@@ -804,34 +803,34 @@ class simpleForm
         if (!$id || !strlen($id)) {
             $id = $this->getNextId();
         }
-        if (!is_array($value) && !empty($_REQUEST[ $name ]) && $name && $this->isSubmited() && $type != 'radio') {
-            $value = $_REQUEST[ $name ];
+        if (!is_array($value) && !empty($_REQUEST[$name]) && $name && $this->isSubmited() && $type != 'radio') {
+            $value = $_REQUEST[$name];
         }
         if ($type == 'captcha') {
             $needed = true;
             $name = 'captcha_code';
         }
-        if (is_array($value) && !empty($_REQUEST[ $name ]) && !is_array($_REQUEST[ $name ]) && !$selected) {
-            $selected = array($_REQUEST[ $name ]);
+        if (is_array($value) && !empty($_REQUEST[$name]) && !is_array($_REQUEST[$name]) && !$selected) {
+            $selected = array($_REQUEST[$name]);
         }
-        if (is_array($value) && !empty($_REQUEST[ $name ]) && is_array($_REQUEST[ $name ]) && !$selected) {
-            $selected = $_REQUEST[ $name ];
+        if (is_array($value) && !empty($_REQUEST[$name]) && is_array($_REQUEST[$name]) && !$selected) {
+            $selected = $_REQUEST[$name];
         }
 
         if ($needed) {
             $tag .= ' required="required" ';
         }
 
-        $this->fields[ $id ] = array(
-            'type'     => $type,
-            'value'    => $value,
-            'label'    => $label,
-            'name'     => $name,
-            'id'       => $id,
-            'needed'   => $needed,
+        $this->fields[$id] = array(
+            'type' => $type,
+            'value' => $value,
+            'label' => $label,
+            'name' => $name,
+            'id' => $id,
+            'needed' => $needed,
             'selected' => $selected,
             'disabled' => $disabled,
-            'tag'      => $tag);
+            'tag' => $tag);
 
         return $this;
     }

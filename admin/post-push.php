@@ -28,9 +28,8 @@ define('IN_ADMIN', true);
 
 error_reporting(E_ALL & ~E_NOTICE);
 
-require_once('../include/include.php');
-require_once('../vendor/autoload.php');
-
+require_once(__DIR__ . '/../include/include.php');
+require_once(__DIR__ . '/../vendor/autoload.php');
 
 
 /* On aura toujours besoin de ca */
@@ -60,6 +59,11 @@ $t = getmicrotime();
 $genMessages = new genMessages();
 
 $gb_obj->includeAdmin();
+$gs_obj = new genSecurity();
+$gs_obj->superAdmin = true;
+$gs_obj->authentified = true;
+$gs_obj->adminid = 1;
+
 initPlugins();
 loadParams();
 

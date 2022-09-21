@@ -195,7 +195,7 @@ class genTemplate
 
         $this->imgs[$nom] = array();
         $this->imgs[$nom]['src'] = $src;
-        if (!strlen($alt))
+        if (!$alt || !strlen($alt))
             $alt = "";
         $this->imgs[$nom]['alt'] = $alt;
         return $this;
@@ -605,7 +605,7 @@ class genTemplate
              */
             $html =
                 str_ireplace(
-                    $this->replaces,
+                    array_filter($this->replaces),
                     array_filter($this->vars, function ($v) {
                         return !is_object($v) && !is_array($v);
                     }),
@@ -693,6 +693,15 @@ class genTemplate
         return $this->gen();
     }
 
+
+    public function genTemplateFile()
+    {
+        $h = '';
+        foreach ($this->vars as $k => $v) {
+            $h .= '@@' . $k . '@@' . "\n";
+        }
+        return $h;
+    }
+
 }
 
-?>

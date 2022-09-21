@@ -933,7 +933,6 @@ class genRecord
                         $value = str_replace(
                             array('<b>', '</b>', '<u>', '</u>', '<i>', '</i>'), array('<strong>', '</strong>', '<span style="text-decoration:underline">', '</span>', '<em>', '</em>'), $value);
 
-
                         if (!isset($_Gconfig['rteAllowableTags']) || !isset($_Gconfig['rteAllowableTags'])) {
                             $_Gconfig['rteAllowableTags']['default'] = '<p><a><abbr><accronym><sup><sub><ul><li><ol><br><br/><strong><em><span>';
                         }
@@ -942,6 +941,7 @@ class genRecord
                             $allowTags = $_Gconfig['rteAllowableTags'][getBaseLgField($name)];
                         }
                         $value = strip_tags($value, $allowTags);
+                        
                     }
 
 

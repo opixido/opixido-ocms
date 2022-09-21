@@ -590,7 +590,7 @@ function toggleRteInline(tarea) {
         + '" title="Cliquez-ici pour modifier ce texte" >' + vval
         + '</div>');
     $('#preview_' + tarea + '').click(function () {
-        setupTinymce(tarea);
+        setupTinymce('#' + tarea);
         $(this).remove();
     });
 

@@ -381,7 +381,7 @@ class genHeaders {
      * @param string $str
      */
     public function addTitle($str) {
-        if (trim($str)) {
+        if ($str && trim($str)) {
             $this->title = $str . $this->titleSep . $this->title;
         }
     }

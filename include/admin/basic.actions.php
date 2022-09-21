@@ -87,7 +87,7 @@ function executeSql()
  */
 function changeTranslations()
 {
-    if (!$_POST['translationName']) {
+    if (empty($_POST['translationName'])) {
 
         $sf = new simpleForm('', 'post');
         $sf->add('text', '', 'Langue : (code sur deux lettres)', 'translationName');
@@ -104,7 +104,7 @@ function changeTranslations()
 
         p($sf->gen());
 
-        $html .= '<script type="text/javascript">
+        $html = '<script type="text/javascript">
 
                         function checkType() {
                             var type = $(\'select[name="translationAction"\').val();
@@ -315,6 +315,7 @@ function mostUsedWords()
 function du($dir)
 {
     $res = `/usr/bin/du -sk $dir`;             // Unix command
+    if(!$res) { return '?';}
     preg_match('/\d+/', $res, $KB); // Parse result
     $MB = round($KB[0] / 1024, 1);  // From kilobytes to megabytes
     return $MB;
