@@ -127,21 +127,25 @@ class genform_tablerel extends genform_base
     {
 
         $this->sel = $this->getSelectedItems();
-        $this->sel = explode(',', str_replace(" ", "", $this->sel));
+        $this->sel = explode(',', @str_replace(" ", "", $this->sel));
 
         global $_Gconfig;
 
         list($otherTable, $otherTableFk) = $_Gconfig['tablerelAsSimpleArbo'][$this->table][$this->champ];
 
         $this->addBuffer('<ul class="tablerelfullarbo" id="' . $this->champ . '">');
-        $this->getSubsWhere(array($otherTable, '', $otherTableFk), ' ' . $otherTableFk . ' = 0');
+        $sqlAdd = '';
+        if ($otherTable == 's_rubrique') {
+            $sqlAdd = ' AND ocms_version = rubrique_id ';
+        }
+        $this->getSubsWhere(array($otherTable, '', $otherTableFk), ' (' . $otherTableFk . ' = 0 OR ' . $otherTableFk . ' IS NULL ) ', $sqlAdd);
 
 
         $this->addBuffer('</ul>');
         $this->addBuffer('<input type="hidden" name="genform_rel__' . $this->champ . '__' . $this->pk2 . '_temoin" value="1" />');
         $this->addBuffer('<script>$(document).ready(function(){
             $("#' . $this->champ . ' input").attr("name","genform_rel__' . $this->champ . '__' . $this->pk2 . '[]");
-            $("#' . $this->champ . '").collapsibleCheckboxTree({checkParents : true,uncheckChildren: true});
+         //   $("#' . $this->champ . '").collapsibleCheckboxTree({checkParents : true,uncheckChildren: true});
             });</script>');
     }
 
@@ -154,6 +158,7 @@ class genform_tablerel extends genform_base
         global $_Gconfig;
 
         list($parentTable, $parentField) = $_Gconfig['tablerelAsFullarbo'][$this->champ];
+
 
         $nomSql = getTitleFromTable($parentTable, ' , ');
         if (!empty($_Gconfig['specialListingWhereFullArbo'][$this->champ])) {
@@ -178,16 +183,25 @@ class genform_tablerel extends genform_base
         $this->addBuffer('<input type="hidden" name="genform_rel__' . $this->champ . '__' . $this->pk2 . '_temoin" value="1" />');
         $this->addBuffer('<script>$(document).ready(function(){
             $("#' . $this->champ . ' input").attr("name","genform_rel__' . $this->champ . '__' . $this->pk2 . '[]");
-            $("#' . $this->champ . '").collapsibleCheckboxTree({checkParents : false,uncheckChildren : false});
+            $("#' . $this->champ . '").collapsibleCheckboxTree({checkParents : false,uncheckChildren : false, checkChildren:false});
             });</script>');
     }
 
-    function getSubsWhere($config, $where)
+    function getSubsWhere($config, $where, $whereAll = '')
     {
 
-        $sql = 'SELECT * FROM ' . $config[0] . ' WHERE ' . $where;
+        $sql = 'SELECT * FROM ' . $config[0] . ' WHERE ' . $where . $whereAll;
         $res = DoSql($sql);
         $pk = $this->pk2;
+
+        if (!$res) {
+            global $co;
+            debug($config);
+            debug($where);
+            debug($sql);
+            debug($co->errormsg());
+            return;
+        }
         if ($res->RecordCount() > 0) {
             $this->addBuffer('<ul>');
             foreach ($res as $row) {
@@ -196,7 +210,7 @@ class genform_tablerel extends genform_base
                     $s = ' checked ';
                 }
                 $this->addBuffer('<li><label><input type="checkbox" ' . $s . ' value="' . $row[getPrimaryKey($config[0])] . '" /> ' . GetTitleFromRow($config[0], $row) . '</label>');
-                $this->getSubsWhere($config, $config[2] . ' = ' . $row[$pk] . '');
+                $this->getSubsWhere($config, $config[2] . ' = ' . $row[$pk] . '', $whereAll);
                 $this->addBuffer('</li>');
                 $this->addBuffer("\n");
             }
@@ -663,4 +677,3 @@ class genform_tablerel extends genform_base
 
 }
 
-?>

@@ -26,10 +26,7 @@
  *  CLEF EXTERNE
  *  La clef se trouve dans cette table
  */
-
-
-
-
+global $_Gconfig;
 if (!$this->editMode) {
     /*
      *
@@ -41,49 +38,83 @@ if (!$this->editMode) {
 
 
     $doReload = in_array($this->table . "." . $name, $_Gconfig['reloadOnChange']);
-
+    $asCheckbox = in_array($this->table . "." . $name, $_Gconfig['setAsCheckbox']);
     if ($doReload) {
         $attributs .= ' onchange="saveAndReloadForm();" ';
     }
 
-    //debug($this->tab_field[$name]);
-    /* Debut du select */
-    $this->addBuffer('<select multiple ' . $attributs . ' ');
+    if ($asCheckbox) {
+        //debug($this->tab_field[$name]);
+        /* Debut du select */
+        // $this->addBuffer('<select multiple ' . $attributs . ' ');
 
-    /* Si c'est une clef avec un champ preview, on rajoute un peu de javascript */
+        /* Si c'est une clef avec un champ preview, on rajoute un peu de javascript */
 
-    /* Fin du select */
-    $this->addBuffer(' id="genform_' . $name . '" name="genform_' . $name . '[]">');
-
-
-
-    $sets = getsetValues($this->tab_field, $name);
-
-    $curSet = explode(',', $this->tab_default_field[$name]);
-
-    /* foreach($curSet as $k=>$v) {
-      $curSet[$k] = substr($v,1,-1);
-      } */
-
-    foreach ($sets as $set) {
-        /*
-         * On parcourt les resultats pour la liste de la table externe
-         * */
-
-        $thisValue = $this->trad('set_' . $set);
+        /* Fin du select */
+        //$this->addBuffer(' id="genform_' . $name . '" name="genform_' . $name . '[]">');
 
 
+        $sets = getsetValues($this->tab_field, $name);
 
-        if (in_array($set, $curSet))
-            $this->addBuffer('<option selected="selected" value="' . $set . '">' . ( $thisValue ) . '</option>');
+        $curSet = explode(',', $this->tab_default_field[$name]);
 
-        else
-            $this->addBuffer('<option  value="' . $set . '"> ' . ( $thisValue ) . '</option>');
+        /* foreach($curSet as $k=>$v) {
+          $curSet[$k] = substr($v,1,-1);
+          } */
+
+        foreach ($sets as $set) {
+            /*
+             * On parcourt les resultats pour la liste de la table externe
+             * */
+
+            $thisValue = $this->trad('set_' . $set);
+
+            $sel = '';
+            if (in_array($set, $curSet)) {
+                $sel = 'checked';
+            }
+            $this->addBuffer('<label class="checkbox"><input type="checkbox" name="genform_' . $name . '[]" value="' . $set . '" ' . $sel . '> ' . ($thisValue) . '</label>');
+
+
+        }
+    } else {
+        //debug($this->tab_field[$name]);
+        /* Debut du select */
+        $this->addBuffer('<select multiple ' . $attributs . ' ');
+
+        /* Si c'est une clef avec un champ preview, on rajoute un peu de javascript */
+
+        /* Fin du select */
+        $this->addBuffer(' id="genform_' . $name . '" name="genform_' . $name . '[]">');
+
+
+        $sets = getsetValues($this->tab_field, $name);
+
+        $curSet = explode(',', $this->tab_default_field[$name]);
+
+        /* foreach($curSet as $k=>$v) {
+          $curSet[$k] = substr($v,1,-1);
+          } */
+
+        foreach ($sets as $set) {
+            /*
+             * On parcourt les resultats pour la liste de la table externe
+             * */
+
+            $thisValue = $this->trad('set_' . $set);
+
+
+            if (in_array($set, $curSet))
+                $this->addBuffer('<option selected="selected" value="' . $set . '">' . ($thisValue) . '</option>');
+
+            else
+                $this->addBuffer('<option  value="' . $set . '"> ' . ($thisValue) . '</option>');
+        }
+
+        /* FIN DU SELECT */
+        $this->addBuffer('</select>');
+
     }
-
-    /* FIN DU SELECT */
-    $this->addBuffer('</select>');
-
 
 
     /* On peut modifier cet element */
@@ -99,4 +130,4 @@ if (!$this->editMode) {
         $this->addBuffer($this->trad('set_' . $this->tab_default_field[$tab_name]));
     }
 }
-?>
+
