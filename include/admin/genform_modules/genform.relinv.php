@@ -29,8 +29,11 @@
  *
  * */
 $fname = $name;
-$fk_table = $relinv[$this->table_name][$name][0];
-$name = $relinv[$this->table_name][$name][1];
+
+$fk_table = $relinv[$this->table_name][$fname][0];
+$name = $relinv[$this->table_name][$fname][1];
+$limit = ($relinv[$this->table_name][$fname][2]) ? $relinv[$this->table_name][$fname][2] : false;
+
 $ofield = '';
 if ($_REQUEST['curId'] != 'new') {
     /**
@@ -59,6 +62,8 @@ if ($_REQUEST['curId'] != 'new') {
 
 // debug("--->".$fk_table );
     }
+
+    $sql .= ($limit) ? ' LIMIT '.$limit : '';
     $res = GetAll($sql);
 } else {
 
@@ -69,8 +74,7 @@ if ($_REQUEST['curId'] != 'new') {
 $clef = getPrimaryKey($fk_table);
 
 if (!$this->editMode) {
-
-
+    $hideAddButton = ($limit && count($res) >= $limit) ? true : false;
 
     if (count($res) <= 4000) {
 
@@ -105,7 +109,7 @@ if (!$this->editMode) {
          * ---------------------------
          * On ajoute le bouton d'ajout à la relinv s'il possède les droits
          */
-        if ($this->gs->can('add', $fk_table)) {
+        if ($this->gs->can('add', $fk_table) && !$hideAddButton) {
             $this->addBuffer('<th width="20" colspan="' . $cs . '">');
 
             $this->addBuffer('<button class="btn" title="' . $this->trad('ajouter') . $this->trad($fk_table) . '" name="genform_addfk__' . $fk_table . '__' . $name . '"><img src="' . t('src_new') . '" alt=""  />' . t('Nouveau') . '</button>');
