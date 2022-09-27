@@ -37,8 +37,8 @@ if (!$this->editMode) {
     $this->genHelpImage('help_set', $name);
 
 
-    $doReload = in_array($this->table . "." . $name, $_Gconfig['reloadOnChange']);
-    $asCheckbox = in_array($this->table . "." . $name, $_Gconfig['setAsCheckbox']);
+    $doReload = (is_array($this->table . "." . $name)) ? in_array($this->table . "." . $name, $_Gconfig['reloadOnChange']) : false;
+    $asCheckbox = (is_array($this->table . "." . $name)) ? in_array($this->table . "." . $name, $_Gconfig['setAsCheckbox']) : false;
     if ($doReload) {
         $attributs .= ' onchange="saveAndReloadForm();" ';
     }
