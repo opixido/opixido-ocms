@@ -168,7 +168,7 @@ class indexSearch {
                     } else
                     if (in_array($field, $tabForms[$this->obj]['titre'])) {
                         $coef = 10;
-                    } else if (@in_array($field, $tabForms[$this->obj]['desc'])) {
+                    } else if (!empty($tabForms[$this->obj]['desc'])  && in_array($field, $tabForms[$this->obj]['desc'])) {
                         $coef = 4;
                     }
 
