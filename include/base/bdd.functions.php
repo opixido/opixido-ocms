@@ -580,7 +580,7 @@ function getTabField($table)
 
         foreach ($t as $k => $v) {
             $v->table = $table;
-            $t2[strtolower($k)] = $v;
+            $t2[$v->name] = $v;
         }
 
         $GLOBALS['GlobalObjCache'][UNIQUE_SITE]['tabField_' . $table] = $t2;
