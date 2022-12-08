@@ -317,6 +317,9 @@ function du($dir)
     $res = `/usr/bin/du -sk $dir`;             // Unix command
     if(!$res) { return '?';}
     preg_match('/\d+/', $res, $KB); // Parse result
+    if (empty($KB)) {
+        return 0;
+    }
     $MB = round($KB[0] / 1024, 1);  // From kilobytes to megabytes
     return $MB;
 }
