@@ -54,6 +54,14 @@ $_Gconfig['ADMIN_LANGUAGES'] = array('fr');
 
 $_Gconfig['onlyOneLgForever'] = false;
 
+
+/**
+ * Par défaut la construction d'URLs ajoute le nom de domaine si jamais la page n'est pas demandée sur le bon domaine
+ * Permet d'ignorer ça
+ */
+$_Gconfig['neverAddHostInUrl'] = false;
+
+
 define('ADMIN_LG_DEF', 'fr');
 
 /**
