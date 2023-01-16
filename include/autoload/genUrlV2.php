@@ -796,7 +796,7 @@ class genUrlV2
              * On doit avoir un webroot de trouvé
              * Et il doit etre différent du HTTP_HOST actuel
              */
-            if (!empty($GLOBALS['GlobalObjCache']['tabUrl'][$rub]['webroot']) &&
+            if (empty($_Gconfig['neverAddHostInUrl']) && !empty($GLOBALS['GlobalObjCache']['tabUrl'][$rub]['webroot']) &&
                 (IN_ADMIN || (
                         $GLOBALS['GlobalObjCache']['tabUrl'][$rub]['webroot'] != $_SERVER['HTTP_HOST']))
             ) {
