@@ -740,12 +740,16 @@ class objDuplication
          */
         if (!empty($tablerel_reverse[$this->table])) {
             foreach ($tablerel_reverse[$this->table] as $k => $v) {
-                if (!@in_array($v['tablerel'], $_Gconfig['tablerelNotToDuplicate'][$this->table])
-                    &&
+               
+                $tablerelNotToDuplicateTable = $_Gconfig['tablerelNotToDuplicate'][$this->table] ?? array();
+                $tablerelNotToDuplicateRelOne = $_Gconfig['tablerelNotToDuplicate'][$this->table . '.' . $currentReloneTable] ?? array();
+
+                if (!@in_array($v['tablerel'], $tablerelNotToDuplicateTable)
+
                     /**
                      * Prise en compte des tablerel dupliquées depuis une relone mais pas une autre
                      */
-                    !@in_array($v['tablerel'], $_Gconfig['tablerelNotToDuplicate'][$this->table . '.' . $currentReloneTable])) {
+                    && !@in_array($v['tablerel'], $tablerelNotToDuplicateRelOne)) {
                     $this->deleteAndDupli($v['tablerel'], $v['myfk'], $this->id, $newId);
                 }
             }
