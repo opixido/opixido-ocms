@@ -38,6 +38,7 @@ class simpleForm
 
     public $divClass = 'container';
     public $fieldClass = '';
+    public $class, $action, $method, $id, $neededSymbol, $defaultField, $fields;
 
     function __construct($action = '', $method = 'get', $id = '', $class = false)
     {

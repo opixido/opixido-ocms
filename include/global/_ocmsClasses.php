@@ -32,6 +32,8 @@ class ocmsPlugin
      */
     public $site;
 
+    public $plugins;
+
     /**
      * Constructeur
      *

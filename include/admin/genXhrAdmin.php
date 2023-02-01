@@ -17,6 +17,7 @@ class genXhrAdmin
     public $real_rub_id = false;
     public $real_fk_rub = false;
     public $insideRealRubId = false;
+    public $table, $id, $gs, $field;
 
     function __construct($table, $id)
     {
@@ -375,7 +376,7 @@ class genXhrAdmin
                 if (!$_REQUEST['id'] || $_REQUEST['id'] == 'new') {
                     $_SESSION['sqlWaitingForInsert'][] = 'UPDATE ' . $vals[0] . ' SET ' . $vals[1] . ' = [INSERTID] WHERE ' . getPrimaryKey($vals[0]) . ' = ' . sql($id);
                 }
-                
+
                 if ($orderFields[$vals[0]]) {
                     $clefEx = $vals[1];
                     $champOrdre = $orderFields[$vals[0]][0];

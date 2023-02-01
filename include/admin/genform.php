@@ -47,6 +47,9 @@ class GenForm
     var $smallThumbHeight = 200;
     public $restricted = false;
     public $fieldsDone = 0;
+    public $useImageEditor, $useThumbs = false, $thumbWidth, $thumbHeight,
+        $pathAdminToSite, $larg, $showHelp, $showInserter, $imgExt, $editMode, $onlyData, $cachePK, $pk, $pages, $lgs,
+        $curPageLooping, $bufferPrint = '', $fieldsetOpen, $fieldsetId, $fieldsDoneAtFieldSet;
 
     /**
      * genSecurity

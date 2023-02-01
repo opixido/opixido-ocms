@@ -40,13 +40,22 @@ class genRecord
     public $id;
     public $table;
     public $row;
+    public $fromGenAdmin;
+    public $gs;
+    public $pk;
+    public $JustInserted;
+    public $tab_default_field;
+    public $tables;
+    public $wheres;
+    public $curValues;
+    public $tab_field;
 
     function __construct($table, $id, $fromGenAdmin = 0)
     {
         $this->JustInserted = false;
         $this->table = $table;
         $this->id = $id;
-        $this->$fromGenAdmin = $fromGenAdmin;
+        $this->fromGenAdmin = $fromGenAdmin;
         global $gs_obj;
 
         $this->gs = &$gs_obj;
@@ -941,7 +950,7 @@ class genRecord
                             $allowTags = $_Gconfig['rteAllowableTags'][getBaseLgField($name)];
                         }
                         $value = strip_tags($value, $allowTags);
-                        
+
                     }
 
 

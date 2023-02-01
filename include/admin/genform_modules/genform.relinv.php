@@ -32,7 +32,7 @@ $fname = $name;
 
 $fk_table = $relinv[$this->table_name][$fname][0];
 $name = $relinv[$this->table_name][$fname][1];
-$limit = ($relinv[$this->table_name][$fname][2]) ? $relinv[$this->table_name][$fname][2] : false;
+$limit = !empty($relinv[$this->table_name][$fname][2]) ? $relinv[$this->table_name][$fname][2] : false;
 
 $ofield = '';
 if ($_REQUEST['curId'] != 'new') {
@@ -49,7 +49,7 @@ if ($_REQUEST['curId'] != 'new') {
 
         //Config permettant d'ajouter un ordre et son type sur un chmap spécifique.
         if (isset($_Gconfig['orderedTableType'][$fk_table])) {
-            $sql .= $_Gconfig['orderedTableType'][$fk_table][0] . ' '.$_Gconfig['orderedTableType'][$fk_table][1].' , ';
+            $sql .= $_Gconfig['orderedTableType'][$fk_table][0] . ' ' . $_Gconfig['orderedTableType'][$fk_table][1] . ' , ';
         }
 
         if (!empty($orderFields[$fk_table])) {
@@ -63,7 +63,7 @@ if ($_REQUEST['curId'] != 'new') {
 // debug("--->".$fk_table );
     }
 
-    $sql .= ($limit) ? ' LIMIT '.$limit : '';
+    $sql .= ($limit) ? ' LIMIT ' . $limit : '';
     $res = GetAll($sql);
 } else {
 
@@ -134,8 +134,8 @@ if (!$this->editMode) {
                  */
                 foreach ($res as $row) {
                     $ga = new GenAction($actionName, $fk_table, $row[$clef], $row);
-                    $can = (int) $this->gs->can($actionName, $fk_table, $row, $row[$clef]);
-                    $checkCondition = (int) $ga->checkCondition();
+                    $can = (int)$this->gs->can($actionName, $fk_table, $row, $row[$clef]);
+                    $checkCondition = (int)$ga->checkCondition();
                     if ($ga && $checkCondition)
                         continue;
                 }
@@ -267,7 +267,6 @@ if (!$this->editMode) {
             }
 
 
-
             /*             * ***********
               On ajoute les boutons pour la gestion de l'ordre ?
              * ************ */
@@ -315,7 +314,6 @@ if (!$this->editMode) {
             }
 
 
-
             $t = new GenForm($fk_table, "", $row[$clef], $row);
             $t->editMode = true;
             $t->onlyData = true;
@@ -352,7 +350,7 @@ if (!$this->editMode) {
          * */
 
         $this->addBuffer('<div id="genform_floatext">');
-        if (( $fk_table != 't_page' ) || (!count($res) && $fk_table == 't_page' ))
+        if (($fk_table != 't_page') || (!count($res) && $fk_table == 't_page'))
             $this->addBuffer('<input type="submit"  class="input_btn"  value="' . $this->trad("ajouter") . '" name="genform_addfk__' . $fk_table . '__' . $name . '" > ');
 
         if (count($res)) {

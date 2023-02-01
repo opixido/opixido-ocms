@@ -64,6 +64,12 @@ class genUrlV2
      */
     public $parsedUrl = false;
     public $rootHomeId = 0;
+    public $homeId = 0;
+
+    public $curWebRoot = '';
+    public $TEMPLATE = '';
+    public $rootRow = [];
+    public $curLinkRoot;
     /**
      * cache du chemin de fer construit
      *
@@ -107,7 +113,7 @@ class genUrlV2
      * @var int
      */
     public $actionId;
-    
+
     /**
      * @var int racine du site
      * */
@@ -276,7 +282,7 @@ class genUrlV2
 
         if (!$this->rubId) {
             global $_Gconfig;
-            if(!empty($_Gconfig['doDie404'])) {
+            if (!empty($_Gconfig['doDie404'])) {
                 $this->die404();
             }
         }
@@ -1185,9 +1191,9 @@ class genUrlV2
 
     /**
      * alias de
+     * @param unknown_type $lg
      * @uses myLocale
      *
-     * @param unknown_type $lg
      */
     function setLocale($lg)
     {
@@ -1196,9 +1202,9 @@ class genUrlV2
 
     /**
      * Retourne l'URL courante dans l'autre langue
+     * @return unknown
      * @deprecated
      *
-     * @return unknown
      */
     function getUrlForOtherLg()
     {
@@ -1211,9 +1217,9 @@ class genUrlV2
 
     /**
      * Retourne la seconde langue acceptable
+     * @return unknown
      * @deprecated
      *
-     * @return unknown
      */
     function otherLg()
     {
@@ -1250,9 +1256,9 @@ class genUrlV2
 
     /**
      * Redefinit certains paramètre pour l'autre langue
+     * @param unknown_type $params
      * @deprecated
      *
-     * @param unknown_type $params
      */
     function setOtherLgParams($params)
     {

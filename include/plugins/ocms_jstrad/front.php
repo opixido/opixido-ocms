@@ -1,15 +1,20 @@
 <?php
 
-class ocms_jstradFront extends ocmsPlugin {
+class ocms_jstradFront extends ocmsPlugin
+{
 
-    public function afterInit() {
+
+    public $trads = [];
+
+    public function afterInit()
+    {
 
         global $_Gconfig, $co;
         $sql = 'SELECT '
-                . 'trad_id,' . sqlLgValue('trad') . ' '
-                . 'FROM s_trad '
-                . 'WHERE '
-                . 'trad_id IN ("' . implode('","', $_Gconfig['jstrad']['ids']) . '")';
+            . 'trad_id,' . sqlLgValue('trad') . ' '
+            . 'FROM s_trad '
+            . 'WHERE '
+            . 'trad_id IN ("' . implode('","', $_Gconfig['jstrad']['ids']) . '")';
 
         $this->trads = $co->getAssoc($sql);
 

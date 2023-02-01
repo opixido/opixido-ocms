@@ -24,11 +24,12 @@
 
 /**
  * Class to handle errors and messages to PRINT TO THE USER
- * Don't use this to show your debugs or stuffs, 
+ * Don't use this to show your debugs or stuffs,
  * use debug() instead ...
  *
  */
-class o_messagesFront extends ocmsPlugin {
+class o_messagesFront extends ocmsPlugin
+{
 
     /**
      * Messages arrays
@@ -51,7 +52,10 @@ class o_messagesFront extends ocmsPlugin {
      */
     private $generated = false;
 
-    function afterInit() {
+    public $plugins = [];
+
+    function afterInit()
+    {
 
         $this->site->g_headers->addCssText('
 			.o_messages {text-align:center;font-size:1.2em;font-weight:bold;padding:3px;margin:3px;-moz-border-radius:10px}
@@ -62,11 +66,12 @@ class o_messagesFront extends ocmsPlugin {
     /**
      * Adds a message to the ERRORS stack
      * MUST BE CALLED BEFORE GEN !
-     * COZ ALL THIS WILL BE PRINTED THEN 
-     * 
+     * COZ ALL THIS WILL BE PRINTED THEN
+     *
      * @param string $str
      */
-    function addError($str) {
+    function addError($str)
+    {
 
         /**
          * Duplicate message ?
@@ -89,11 +94,12 @@ class o_messagesFront extends ocmsPlugin {
     /**
      * Adds a message to the INFO stack
      * MUST BE CALLED BEFORE GEN !
-     * COZ ALL THIS WILL BE PRINTED THEN 
-     * 
+     * COZ ALL THIS WILL BE PRINTED THEN
+     *
      * @param string $str
      */
-    function addInfo($str) {
+    function addInfo($str)
+    {
 
         /**
          * Duplicate message ?
@@ -118,7 +124,8 @@ class o_messagesFront extends ocmsPlugin {
      *
      * @return string HTML
      */
-    function gen() {
+    function gen()
+    {
 
         $this->generated = true;
         $html = '<div id="o_messages">';
@@ -130,7 +137,8 @@ class o_messagesFront extends ocmsPlugin {
         return $html;
     }
 
-    function genA() {
+    function genA()
+    {
         if (!$this->generated) {
             return $this->genBeforePara();
         }
@@ -140,7 +148,8 @@ class o_messagesFront extends ocmsPlugin {
      * Show error for devs when a message is added AFTER the GEN method !
      *
      */
-    function errorGen($str, $css = '') {
+    function errorGen($str, $css = '')
+    {
 
         /**
          * Already printed ?
@@ -160,7 +169,8 @@ class o_messagesFront extends ocmsPlugin {
      * @param string $css className for the div
      * @return string HTML
      */
-    function genMessages($msgs, $css = '') {
+    function genMessages($msgs, $css = '')
+    {
 
         /**
          * If $msgs is just a single message ...
@@ -198,7 +208,8 @@ class o_messagesFront extends ocmsPlugin {
  *
  * @param mixed $str string or array
  */
-function addMessageInfo($str) {
+function addMessageInfo($str)
+{
     $GLOBALS['site']->plugins['o_messages']->addInfo($str);
 }
 
@@ -207,7 +218,8 @@ function addMessageInfo($str) {
  *
  * @param mixed $str string or array
  */
-function addMessageError($str) {
+function addMessageError($str)
+{
 
     $GLOBALS['site']->plugins['o_messages']->addError($str);
 }

@@ -36,6 +36,8 @@ class genform_tablerel extends genform_base
     public $fk_champ = '';
     public $valuesSelect = '';
 
+    public $tab_name, $editMode, $fk2, $fk_table, $pk1, $ordered, $pk2, $optionsSelected, $nomSql, $sqlLeftInit, $sqlLeft, $attributs;
+
     function init()
     {
 

@@ -34,6 +34,9 @@ class GenOrder
     public $id;
     public $fk_id;
     public $fk_champ;
+    public $DoIt;
+    public $pk;
+    public $curOrderValue;
 
     public function __construct($table, $id = 0, $fk_id = 0, $fk_champ = '')
     {

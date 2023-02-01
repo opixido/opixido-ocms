@@ -243,7 +243,7 @@ class genActionDel
 
         updateNextCacheUpdate();
         saveTemoinChange();
-        
+
         //dinfo(t('element_supprime'));
         if (!$_REQUEST['fromList']) {
             global $_Gconfig;
@@ -332,7 +332,7 @@ class genActionMoveRubrique
 
             updateNextCacheUpdate();
             saveTemoinChange();
-        
+
             dinfo(ta('rubrique_deplacee'));
         } else {
             $this->getPostForm();
@@ -508,7 +508,7 @@ class genActionHideObject
         } else {
             derror(t('erreur_hideversion'));
         }
-        
+
         updateNextCacheUpdate();
         saveTemoinChange();
     }
@@ -584,9 +584,9 @@ class genActionShowObject
         } else {
             derror(t('erreur_showversion'));
         }
-        
+
         updateNextCacheUpdate();
-        saveTemoinChange();        
+        saveTemoinChange();
 
 
     }
@@ -668,7 +668,7 @@ class objDuplication
                  * Si c'est un champ d'upload
                  * on le met de côté
                  */
-                if (isUploadField($k) && array_key_exists($k, $tabField) && ($v && !strpos($v, '/')) ) {
+                if (isUploadField($k) && array_key_exists($k, $tabField) && ($v && !strpos($v, '/'))) {
                     $oldfile = new genFile($this->table, $k, $this->id, $v);
                     $oldfiles[] = array('path' => $oldfile->getSystemPath(),
                         'valeur' => $v,
@@ -740,7 +740,7 @@ class objDuplication
          */
         if (!empty($tablerel_reverse[$this->table])) {
             foreach ($tablerel_reverse[$this->table] as $k => $v) {
-               
+
                 $tablerelNotToDuplicateTable = $_Gconfig['tablerelNotToDuplicate'][$this->table] ?? array();
                 $tablerelNotToDuplicateRelOne = $_Gconfig['tablerelNotToDuplicate'][$this->table . '.' . $currentReloneTable] ?? array();
 
@@ -1118,7 +1118,7 @@ class genActionValidate
 
 
         dinfo(t('modifications_en_ligne'));
-        
+
         updateNextCacheUpdate();
         saveTemoinChange();
     }
@@ -1593,14 +1593,14 @@ class genActionUninstallPlugin
 
         // on appelle le fichier "uninstall.php"
         $filename = gen_include_path . '/plugins/' . $this->row['plugin_nom'] . '/uninstall.php';
-        if (file_exists($filename) AND file_get_contents($filename) != '')
+        if (file_exists($filename) and file_get_contents($filename) != '')
             include($filename);
         else
             dinfo('Fichier "uninstall.php" inexistant ou vide.');
 
         // install BDD
         $filename = gen_include_path . '/plugins/' . $this->row['plugin_nom'] . '/uninstall.sql';
-        if (file_exists($filename) AND file_get_contents($filename) != '') {
+        if (file_exists($filename) and file_get_contents($filename) != '') {
 
             $quers = importSqlFile($filename);
             foreach ($quers as $sql) {
@@ -1821,7 +1821,7 @@ class genActionEditOtherMV extends baseAction
      *
      * @var rubrique
      */
-    public $rubrique;
+    public $rubrique, $rowObj;
 
     public function __construct($action, $table, $id, $row = array())
     {

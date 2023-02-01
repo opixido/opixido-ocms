@@ -22,9 +22,13 @@
 # @package ocms
 #
 
-class genControlPanel {
+class genControlPanel
+{
 
-    function __construct($admin = false) {
+    public $tpl_cp, $UserBlocks, $UserLines;
+
+    function __construct($admin = false)
+    {
 
 
         $strAction = $this->GlobalAction();
@@ -41,7 +45,8 @@ class genControlPanel {
         }
     }
 
-    public function gen() {
+    public function gen()
+    {
 
         if (!isset($_REQUEST['globalAction']) && !isset($_REQUEST['userAction'])) {
 
@@ -59,7 +64,8 @@ class genControlPanel {
         }
     }
 
-    public function getLastActions() {
+    public function getLastActions()
+    {
         global $_Gconfig;
         $sql = 'SELECT * FROM s_log_action WHERE fk_admin_id = ' . sql($GLOBALS['gs_obj']->adminid) . '
                     AND log_action_action = "update" 
@@ -67,9 +73,9 @@ class genControlPanel {
                     ORDER BY log_action_time DESC LIMIT 0, 10';
 
         $res = DoSql($sql);
-        $tables = array_merge($_Gconfig['bigMenus'], $_Gconfig['adminMenus']);        
+        $tables = array_merge($_Gconfig['bigMenus'], $_Gconfig['adminMenus']);
         $tables = call_user_func_array('array_merge', array_values($tables));
-        
+
         $h = '<ul class="nav nav-list"><li class="nav-header">' . ta('lastActions') . '</li>';
         if ($res->NumRows() == 0) {
             $h .= '<li><span class="badge">' . ta('lastActions_none') . '</span></li>';
@@ -86,7 +92,8 @@ class genControlPanel {
         return $h;
     }
 
-    function globalAction() {
+    function globalAction()
+    {
 
         global $_Gconfig, $gs_obj;
         $action = akev($_REQUEST, 'globalAction');
@@ -105,7 +112,8 @@ class genControlPanel {
         return true;
     }
 
-    function userAction() {
+    function userAction()
+    {
         global $_Gconfig, $gs_obj;
         $action = akev($_REQUEST, 'userAction');
         //ob_start();
@@ -121,7 +129,8 @@ class genControlPanel {
         return true;
     }
 
-    function getGlobalActions() {
+    function getGlobalActions()
+    {
         global $_Gconfig, $gs_obj;
 
         $html = "<div id='list_action' class='list_right' >";
@@ -141,14 +150,16 @@ class genControlPanel {
         return $html;
     }
 
-    private function genPictoGrid() {
+    private function genPictoGrid()
+    {
         $grid = new genTemplate();
         $grid->loadTemplate('cp.picto.grid');
 
         return $grid->gen();
     }
 
-    private function getInfoTime() {
+    private function getInfoTime()
+    {
 
         myLocale(LG());
         $date = ucfirst(ocms_strftime('%A %d %B %Y'));
@@ -157,10 +168,10 @@ class genControlPanel {
         return $date;
     }
 
-    private function selectUserInfo() {
+    private function selectUserInfo()
+    {
         global $_Gconfig;
         $this->addUserBlock('user', t('cp_user_info'));
-
 
 
         $sql = 'select * from s_admin where admin_id=' . $GLOBALS['gs_obj']->adminid;
@@ -182,7 +193,8 @@ class genControlPanel {
         //$this->UserLines['user'][] = array(t('fonction')=> $admin['admin_type']);
     }
 
-    private function genUserInfo() {
+    private function genUserInfo()
+    {
 
         $tpl = new genTemplate();
         $tpl->loadTemplate('cp.userinfo');
@@ -209,17 +221,20 @@ class genControlPanel {
         return $tpl->gen();
     }
 
-    public function addUserBlock($type, $titre) {
+    public function addUserBlock($type, $titre)
+    {
 
         $this->UserBlocks[$type] = $titre;
     }
 
-    public function addUserLine($type, $nom, $valeur) {
+    public function addUserLine($type, $nom, $valeur)
+    {
 
         $this->UserLines[$type][$nom] = $valeur;
     }
 
-    private function getUpdatedRubs() {
+    private function getUpdatedRubs()
+    {
         global $_Gconfig;
         $sql = 'select *
 			   from s_rubrique
@@ -252,7 +267,8 @@ class genControlPanel {
         return $tpl->gen();
     }
 
-    private function getValidatedRubs() {
+    private function getValidatedRubs()
+    {
         global $_Gconfig;
         $sql = 'select r1.*, r2.rubrique_date_publi as date_publi
 			   from s_rubrique r1, s_rubrique r2
@@ -287,8 +303,9 @@ class genControlPanel {
         return $tpl->gen();
     }
 
-   
-    private function getLastPublishedRub() {
+
+    private function getLastPublishedRub()
+    {
         $sql = 'select * from s_rubrique order by rubrique_date_publi desc';
         $res = GetSingle($sql);
     }

@@ -25,10 +25,10 @@
 class genLocks
 {
 
+    public $gs, $table, $id, $row;
+
     public function __construct()
     {
-
-
         global $gs_obj;
         $this->gs = &$gs_obj;
     }

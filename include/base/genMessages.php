@@ -25,13 +25,8 @@
 class genMessages
 {
 
-    public function __construct()
-    {
-
-        global $specialUpload, $uploadRep;
-
-        $this->messages = array();
-    }
+    public $messages = [];
+    
 
     public function add($txt, $level = 'error')
     {

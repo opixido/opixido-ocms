@@ -22,7 +22,8 @@
 # @package ocms
 #
 
-class genHeaders {
+class genHeaders
+{
 
     private $title;
     private $meta_keywords;
@@ -32,6 +33,11 @@ class genHeaders {
     public $firstBody = '';
     public $getAllCss = false;
     public $metas = array();
+
+    /**
+     * @var genSite
+     */
+    public $site;
 
     /**
      * Contenu des CSS en ligne
@@ -64,8 +70,8 @@ class genHeaders {
     public $fCacheFolder = 'c';
 
     /**
-     * Dossier à ajouter devant les JS et CSS 
-     * @var string 
+     * Dossier à ajouter devant les JS et CSS
+     * @var string
      */
     public $addFolder = '';
 
@@ -75,11 +81,13 @@ class genHeaders {
      * @param unknown_type $site
      * @return genHeaders
      */
-    public function __construct($site) {
+    public function __construct($site)
+    {
         $this->site = $site;
     }
 
-    public function genJs($type = false) {
+    public function genJs($type = false)
+    {
         /**
          * Compression et Cache des JS
          */
@@ -88,7 +96,7 @@ class genHeaders {
             if ($type) {
                 if (!empty($this->jsFiles[$type])) {
                     $jsF = $this->getJsPath($this->jsFiles[$type]);
-                    $x .= ( '<script src="' . $jsF . '"></script>' . "\n");
+                    $x .= ('<script src="' . $jsF . '"></script>' . "\n");
                 }
             } else {
                 foreach ($this->jsFiles as $k => $v) {
@@ -96,7 +104,7 @@ class genHeaders {
                     /**
                      * Un seul js mis en cache
                      */
-                    $x .= ( '<script src="' . $jsF . '"></script>' . "\n");
+                    $x .= ('<script src="' . $jsF . '"></script>' . "\n");
                 }
             }
 
@@ -104,7 +112,8 @@ class genHeaders {
         }
     }
 
-    public function genCss() {
+    public function genCss()
+    {
         $x = '';
 
         global $_Gconfig;
@@ -118,17 +127,17 @@ class genHeaders {
                 }
             }
 
-            
-        } else 
 
-        /**
-         * Compression et Cache des CSS
-         */
-        if (count($this->cssFiles)) {
-            foreach ($this->cssFiles as $group => $medias) {
-                $x .= $this->genCssByGroup($group);
+        } else
+
+            /**
+             * Compression et Cache des CSS
+             */
+            if (count($this->cssFiles)) {
+                foreach ($this->cssFiles as $group => $medias) {
+                    $x .= $this->genCssByGroup($group);
+                }
             }
-        }
         /**
          * Compression des CSS en ligne
          */
@@ -138,7 +147,8 @@ class genHeaders {
         return $x;
     }
 
-    public function genCssByGroup($group) {
+    public function genCssByGroup($group)
+    {
         $x = '';
         $medias = $this->cssFiles[$group];
         if (!$medias) {
@@ -154,7 +164,8 @@ class genHeaders {
         return $x;
     }
 
-    public function genHtmlHeaders($more = '') {
+    public function genHtmlHeaders($more = '')
+    {
 
         $tpl = new genTemplate();
         $tpl->loadTemplate('headers.html');
@@ -178,7 +189,8 @@ class genHeaders {
      *
      * @return unknown
      */
-    public function gen() {
+    public function gen()
+    {
 
         $x = '';
         $x .= $this->genCss();
@@ -187,7 +199,8 @@ class genHeaders {
         return $this->genHtmlHeaders($x);
     }
 
-    public function getJsPath($fichiers) {
+    public function getJsPath($fichiers)
+    {
 
         global $_Gconfig;
 
@@ -237,7 +250,8 @@ class genHeaders {
         return $_Gconfig['CDN'] . BU . '/' . $this->fCacheFolder . '/' . $jsCacheName;
     }
 
-    public function getCssPath($fichiers) {
+    public function getCssPath($fichiers)
+    {
 
         global $_Gconfig;
 
@@ -257,7 +271,7 @@ class genHeaders {
             $cssCacheName = nicename($fichiers[0]) . '.css';
         } else {
             /**
-             * Sinon md5 
+             * Sinon md5
              */
             $cssCacheName = '' . md5(implode('_', $fichiers)) . '.css';
         }
@@ -285,7 +299,6 @@ class genHeaders {
             }
 
 
-
             /**
              * Et on sauvegarde
              */
@@ -297,7 +310,8 @@ class genHeaders {
         return $_Gconfig['CDN'] . BU . '/' . $this->fCacheFolder . '/' . $cssCacheName;
     }
 
-    public function fixCssPath($content, $cssPath) {
+    public function fixCssPath($content, $cssPath)
+    {
         $cssPath = str_replace("\\", "/", dirname($cssPath));
         $cssPath = str_replace(str_replace("\\", "/", $_SERVER['DOCUMENT_ROOT']), '', $cssPath) . '/';
 
@@ -315,7 +329,8 @@ class genHeaders {
      * @param bool $addBase if FALSE you have to set the FULL path to the file in $name
      * @param string $tag additional parameters to add in the script tag
      */
-    public function addScript($name, $addBase = true, $group = 'page', $atTop = false) {
+    public function addScript($name, $addBase = true, $group = 'page', $atTop = false)
+    {
 
         if ($addBase) {
             $name = 'js/' . $name;
@@ -332,7 +347,8 @@ class genHeaders {
      *
      * @param string $str
      */
-    public function addFirstBody($str) {
+    public function addFirstBody($str)
+    {
         $this->firstBody .= $str;
     }
 
@@ -341,7 +357,8 @@ class genHeaders {
      *
      * @param string $name
      */
-    public function addCss($name, $group = 'page', $media = 'screen') {
+    public function addCss($name, $group = 'page', $media = 'screen')
+    {
 
         if (strpos($name, '/') === false) {
             $name = 'css/' . $name;
@@ -356,7 +373,8 @@ class genHeaders {
      *
      * @param string $value
      */
-    public function addCssText($value) {
+    public function addCssText($value)
+    {
         $this->cssTexts .= $value . "\n\n";
     }
 
@@ -365,7 +383,8 @@ class genHeaders {
      *
      * @param string $str
      */
-    public function setTitle($str) {
+    public function setTitle($str)
+    {
 
         if ($str) {
             $str = ucfirst($str);
@@ -380,7 +399,8 @@ class genHeaders {
      *
      * @param string $str
      */
-    public function addTitle($str) {
+    public function addTitle($str)
+    {
         if ($str && trim($str)) {
             $this->title = $str . $this->titleSep . $this->title;
         }
@@ -391,38 +411,46 @@ class genHeaders {
      *
      * @return unknown
      */
-    public function getTitle() {
+    public function getTitle()
+    {
 
         return $this->title;
     }
 
-    public function setMeta($name, $value) {
+    public function setMeta($name, $value)
+    {
         $this->metas[$name] = $value;
     }
 
-    public function setMetaKeywords($str) {
+    public function setMetaKeywords($str)
+    {
         $this->meta_keywords = $str;
     }
 
-    public function getMetaKeywords() {
+    public function getMetaKeywords()
+    {
         return $this->meta_keywords;
     }
 
-    public function setMetaDescription($str) {
+    public function setMetaDescription($str)
+    {
         $this->meta_description = $str;
     }
 
-    public function getMetaDescription() {
+    public function getMetaDescription()
+    {
         return $this->meta_description;
     }
 
-    public function addHtmlHeaders($str) {
+    public function addHtmlHeaders($str)
+    {
         $this->html_headers .= "\n" . $str . "\n";
     }
 
-    public function getHtmlHeaders() {
+    public function getHtmlHeaders()
+    {
         foreach ($this->metas as $k => $v) {
-            $this->html_headers .= '<meta name="' . $k . '" content=' .alt($v) . ' />';
+            $this->html_headers .= '<meta name="' . $k . '" content=' . alt($v) . ' />';
         }
         return $this->html_headers;
     }

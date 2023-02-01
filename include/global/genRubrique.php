@@ -51,6 +51,7 @@ class genRubrique
     public $fk_rubrique_version_id = 0;
     public $params = array();
     public $bddClasse = '';
+    public $road, $date_publi, $paragraphes;
 
     /**
      *
@@ -118,7 +119,7 @@ class genRubrique
         $this->rubrique = GetRowFromId('s_rubrique', $this->rubrique_id, empty($_REQUEST['_version']));
         $this->row = new rubrique($this->rubrique);
 
-        $this->fk_rubrique_version_id = $this->rubrique[ MULTIVERSION_FIELD ];
+        $this->fk_rubrique_version_id = $this->rubrique[MULTIVERSION_FIELD];
 
         $_REQUEST['para'] = ake($_REQUEST, 'para') ? $_REQUEST['para'] : '';
 
@@ -161,7 +162,7 @@ class genRubrique
             $this->site->g_headers->setMeta('og:image', getServerUrl() . $img);
         }
 
-        $this->date_publi = strtotime($this->rubrique[ $_Gconfig['field_date_maj'] ]);
+        $this->date_publi = strtotime($this->rubrique[$_Gconfig['field_date_maj']]);
 
 
         $this->getParagraphes();
@@ -337,7 +338,6 @@ class genRubrique
 
     /**
      * Selectionne les sous rubriques
-
      */
     function getSubRubs()
     {

@@ -30,28 +30,32 @@ class genAdmin
      *
      * @var GenSecurity
      */
-    var $gs;
+    public $gs;
 
     /**
      * gencontrolpanel
      *
      * @var genControlPanel
      */
-    var $control_panel;
+    public $control_panel;
 
     /**
      * Plugins
      *
      * @var array
      */
-    var $plugins = array();
+    public $plugins = array();
     public $real_rub_id = false;
     public $real_fk_rub = false;
-    var $row = array();
+    public $row = array();
     public $sa;
     public $g_url;
     public $insideRealRubId;
     public $reverserubs = array();
+    public $table = '';
+    public $action;
+
+    public $id, $firstId, $genRecord, $FormToInclude;
 
     public function __construct($table = "", $id = 0)
     {
@@ -672,7 +676,7 @@ class genAdmin
 
         $visibleRubs = akev($_SESSION, 'visibleRubs');
 
-        if(!is_array($visibleRubs)) {
+        if (!is_array($visibleRubs)) {
             $visibleRubs = [];
         }
 
@@ -850,13 +854,13 @@ class genAdmin
 
 
         if (empty($_REQUEST['curId'])) {
-          if(empty($_REQUEST['relOne'])){
-            p('<h1 style="display:inline;font-size:130%;font-weight:normal;padding:0;margin:0;">' . ta($_REQUEST['curTable']) . '</h1>');
-          }else{
-            p('<h1 style="display:inline;font-size:130%;font-weight:normal;padding:0;margin:0;">' . ta($_REQUEST['curTable'].'/'.$_REQUEST['relOne']) . '</h1>');
-          }
+            if (empty($_REQUEST['relOne'])) {
+                p('<h1 style="display:inline;font-size:130%;font-weight:normal;padding:0;margin:0;">' . ta($_REQUEST['curTable']) . '</h1>');
+            } else {
+                p('<h1 style="display:inline;font-size:130%;font-weight:normal;padding:0;margin:0;">' . ta($_REQUEST['curTable'] . '/' . $_REQUEST['relOne']) . '</h1>');
+            }
         }
-        
+
         if ($root_id && $root_id != 'new') {
             p('<a class="btn btn-mini" title=' . alt(t('road_fiche_resume') . ' : ' . limitWords(strip_tags($this->GetRecordTitle($table, $root_id)), 10)) . ' href="?curTable=' . $table . '&amp;curId=' . $root_id . '&resume=1" ><img class="inputimage"  src="' . t('src_view') . '" alt="" /></a>');
         }

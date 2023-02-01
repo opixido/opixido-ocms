@@ -22,11 +22,14 @@
 # @package ocms
 #
 
+
+#[AllowDynamicProperties]
 class o_blocsFront extends ocmsPlugin
 {
 
     public $blocs = array();
     public $afterInits = array();
+
 
     function __construct($site)
     {
@@ -37,15 +40,15 @@ class o_blocsFront extends ocmsPlugin
 
         foreach ($res as $row) {
             if ($row['bloc_classe'] && class_exists($row['bloc_classe'])) {
-                $this->blocs[ $row['bloc_nom'] ] = new $row['bloc_classe']($site);
+                $this->blocs[$row['bloc_nom']] = new $row['bloc_classe']($site);
             } else {
-                $this->blocs[ $row['bloc_nom'] ] = new bloc($site);
+                $this->blocs[$row['bloc_nom']] = new bloc($site);
             }
-            $this->{$row['bloc_nom']} = $this->blocs[ $row['bloc_nom'] ];
-            $this->blocs[ $row['bloc_nom'] ]->nom = $row['bloc_nom'];
-            $this->blocs[ $row['bloc_nom'] ]->visible = $row['bloc_visible'];
+            $this->{$row['bloc_nom']} = $this->blocs[$row['bloc_nom']];
+            $this->blocs[$row['bloc_nom']]->nom = $row['bloc_nom'];
+            $this->blocs[$row['bloc_nom']]->visible = $row['bloc_visible'];
             if ($row['bloc_afterinit']) {
-                $this->afterInits[ $row['bloc_nom'] ] = $row['bloc_afterinit'];
+                $this->afterInits[$row['bloc_nom']] = $row['bloc_afterinit'];
             }
         }
     }
@@ -73,8 +76,8 @@ class o_blocsFront extends ocmsPlugin
     function genBloc($nom)
     {
 
-        if ($this->blocs[ $nom ]) {
-            return $this->blocs[ $nom ]->genBloc();
+        if ($this->blocs[$nom]) {
+            return $this->blocs[$nom]->genBloc();
         }
         return false;
     }

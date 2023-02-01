@@ -2705,6 +2705,7 @@ class pagination
     public $tplName = 'pagination';
     public $tplFolder = 'template';
     public $useGenUrl = true;
+    public $params;
 
     public function __construct($nbPages)
     {

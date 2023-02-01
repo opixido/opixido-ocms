@@ -31,17 +31,23 @@ if (!class_exists('genSecurity')) {
     class genSecurity
     {
 
-        var $authentified = false;
-        var $adminpassword = "";
-        var $adminuser = "";
-        var $adminnom = "";
-        var $adminid = "";
-        var $checkedAuth = false;
-        var $admintype = "";
-        var $admindroits = "";
-        var $superAdmin = false;
-        var $myroles = false;
-        var $tables = array();
+        public $authentified = false;
+        public $adminpassword = "";
+        public $adminuser = "";
+        public $adminnom = "";
+        public $adminid = "";
+        public $checkedAuth = false;
+        public $admintype = "";
+        public $admindroits = "";
+        public $superAdmin = false;
+        public $myroles = false;
+        public $tables = array();
+        public $uniqueId = null;
+        public $roles = [];
+        public $cacheRow = [];
+        public $crypto = null;
+        public $adminemail = '';
+        public $doneActions;
 
         public function __construct()
         {

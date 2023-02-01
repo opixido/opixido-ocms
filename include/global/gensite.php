@@ -55,6 +55,10 @@ class genSite
      * @var genRubrique
      */
     public $g_rubrique;
+    public $rubrique;
+
+
+    public $menus = [];
 
     /**
      * La page en cours a t'elle été trouvée ?

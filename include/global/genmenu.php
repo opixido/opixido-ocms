@@ -33,6 +33,7 @@ class genMenu
     public $separator = '';
     public $visible = true;
     private $level = 1;
+    public $conf, $row, $id_menu, $nom_menu;
 
     /**
      * Menu creation

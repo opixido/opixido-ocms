@@ -16,9 +16,9 @@
     "tinymce/tinymce": "^5",
     "dg/mysql-dump": "^1.5",
     "ext-json": "*",
-    "ext-curl": "*"
+    "ext-curl": "*",
+    "twbs/bootstrap": "5.3.0-alpha1"
   },
-
   "require-dev": {
     "kint-php/kint": "^4.1"
   }

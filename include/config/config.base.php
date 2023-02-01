@@ -578,6 +578,9 @@ $_Gconfig['doDie404'] = true;
  */
 $_Gconfig['cmdActions'] = array();
 
+$_Gconfig['setAsCheckbox'] = [];
+
+$_Gconfig['debugIps'] = [];
 
 /**
  * Liste des tags autorisés dans les champs wysiwyg

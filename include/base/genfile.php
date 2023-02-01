@@ -43,6 +43,25 @@ class genFile
     public $uploadFromUrl = false;
     public $row = [];
     public $id = null;
+    public $valeurFound = null;
+    public $rules = null;
+    public $realName = '';
+    public $fileExtension = '';
+    public $fileBase = '';
+    public $fileName = '';
+    public $systemPath = '';
+    public $webPath = '';
+    public $actuel = false;
+    public $table = '';
+    public $champ = '';
+    public $imageExists = false;
+    public $valeur = false;
+    public $valeurInit = false;
+    public $classe = null;
+    public $thumbWidth;
+    public $thumbHeight;
+    public $useThumbs;
+
     /**
      * @var string Phpthumb variable to rotate image based on exif data
      */

@@ -29,6 +29,14 @@ class row
     public $id = 0;
     public $tabField = array();
     public $relOne = false;
+    /**
+     * @var genSite
+     */
+    public $site;
+    public $row = [];
+
+    public $values = [];
+
 
     function __construct($table, $roworid)
     {
@@ -202,12 +210,12 @@ class row
             if ($type == 'date' || $type == 'datetime') {
 
                 $this->$field = new DateTime($this->row[$field]);
-                return $this->$field;
+                return $this->values[$field];
             }
 
             if (substr($type, 0, 4) == 'set(') {
                 $this->$field = explode(',', $this->row[$field]);
-                return $this->$field;
+                return $this->values[$field];
             }
 
             if (array_key_exists($field, $this->row)) {
@@ -217,14 +225,18 @@ class row
             return false;
         }
 
-        return $this->$field;
+        return $this->values[$field];
     }
 
-    function __get($name)
+    public function __get($name)
     {
         return $this->get($name);
     }
 
+    public function __set($name, $value)
+    {
+        $this->values[$name] = $value;
+    }
 
     /**
      *

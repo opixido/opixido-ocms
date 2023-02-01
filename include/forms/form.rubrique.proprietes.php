@@ -49,7 +49,7 @@ if ($_REQUEST['curId'] != "new") {
             /**
              * Si il a une methode pour connaitre ses paramètres
              */
-            if (method_exists($gabNom, 'ocms_getParams')) {
+            if ($gabNom && method_exists($gabNom, 'ocms_getParams')) {
                 $r = call_user_func(array($gabNom, 'ocms_getParams'), $this->tab_default_field);
                 $r = array_merge($r, $rPlugin);
             } else {

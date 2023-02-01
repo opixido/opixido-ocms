@@ -13,6 +13,7 @@ class genSearchV2
     public $searchField;
     public $tabField;
     public $fullRealFields;
+    public $gs, $table, $showFullSearchForm, $count, $res;
 
     public function __construct($table)
     {
@@ -120,7 +121,7 @@ class genSearchV2
 
         //Config permettant d'ajouter un ordre et son type sur un chmap spécifique.
         if (isset($_Gconfig['orderedTableType'][$this->table])) {
-            $sql .= ' T.' . $_Gconfig['orderedTableType'][$this->table][0] . ' '.$_Gconfig['orderedTableType'][$this->table][1].' , ';
+            $sql .= ' T.' . $_Gconfig['orderedTableType'][$this->table][0] . ' ' . $_Gconfig['orderedTableType'][$this->table][1] . ' , ';
         }
 
         if (isset($_Gconfig['orderedTable'][$this->table])) {
@@ -1032,7 +1033,7 @@ class genSearchV2
 
         //Config permettant d'ajouter un ordre et son type sur un chmap spécifique.
         if (isset($_Gconfig['orderedTableType'][$this->table])) {
-            $addToORDER .= ' T.' . $_Gconfig['orderedTableType'][$this->table][0] . ' '.$_Gconfig['orderedTableType'][$this->table][1].' , ';
+            $addToORDER .= ' T.' . $_Gconfig['orderedTableType'][$this->table][0] . ' ' . $_Gconfig['orderedTableType'][$this->table][1] . ' , ';
         }
 
         if (!empty($_Gconfig['orderedTable'][$this->table])) {
@@ -1348,7 +1349,7 @@ class genSearchV2
 
         //Config permettant d'ajouter un ordre et son type sur un chmap spécifique.
         if (isset($_Gconfig['orderedTableType'][$this->table])) {
-            $addToORDER .= ' T.' . $_Gconfig['orderedTableType'][$this->table][0] . ' '.$_Gconfig['orderedTableType'][$this->table][1].' , ';
+            $addToORDER .= ' T.' . $_Gconfig['orderedTableType'][$this->table][0] . ' ' . $_Gconfig['orderedTableType'][$this->table][1] . ' , ';
         }
 
         if (!empty($_Gconfig['orderedTable'][$this->table])) {

@@ -24,7 +24,7 @@
 class genRteInline
 {
 
-    var $toolbar;
+    var $toolbar, $tabContent, $champ, $valeur;
 
     function __construct($champ, $valeur = "", $toolbar = 'Default', $tabContent = '')
     {
