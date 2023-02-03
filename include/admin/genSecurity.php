@@ -300,9 +300,14 @@ if (!class_exists('genSecurity')) {
                     'initrows' => array()
                 );
 
-                if (is_array($this->myroles[$row['role_table_table']])) {
+                if (isset($this->myroles[$row['role_table_table']]) && is_array($this->myroles[$row['role_table_table']])) {
+
+                    $this->myroles[$row['role_table_table']]['rows'] = $this->myroles[$row['role_table_table']]['rows'] ?? array();
                     $this->myroles[$row['role_table_table']]['rows'] = array_merge($this->myroles[$row['role_table_table']]['rows'], $tro['rows']);
+
+                    $this->myroles[$row['role_table_table']]['initrows'] = $this->myroles[$row['role_table_table']]['initrows'] ?? array();
                     $this->myroles[$row['role_table_table']]['initrows'] = array_merge($this->myroles[$row['role_table_table']]['initrows'], $tro['initrows']);
+                                
                 } else {
                     $this->myroles[$row['role_table_table']] = $tro;
                 }
