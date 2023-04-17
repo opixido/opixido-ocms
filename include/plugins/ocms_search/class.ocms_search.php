@@ -9,7 +9,6 @@
 global $_Gconfig;
 
 
-
 $commonWords = array('les', 'des', 'dans', 'mais', 'car', 'elle', 'elles', 'aussi', 'leurs', 'leur', 'nous', 'entre', 'non', 'par', 'ils', 'ainsi', 'ces', 'ses', 'une', 'que', 'aux', 'par', 'est', 'qui', 'sur', 'pour', 'sont', 'plus', 'avec', 'cette', 'pas', 'comme', 'ont', 'peut', 'dont');
 
 $delims = array('�', '&amp;#8217;', '&#8217;', '?', '.', ',', ';', ':', '/', '!', ']', '}', '\'', '{', '[', '(', ')', '-', '>', '<', '|', '#', '?', "\n", "\r", "\t", '?', '"', '?', "?", '?', '?', '*', '?', '�');
@@ -17,9 +16,8 @@ $delims = array('�', '&amp;#8217;', '&#8217;', '?', '.', ',', ';', ':', '/', '
 //$vipWords = array('pi', 'p�', 'no','or','nu','vu','os','fr','cm','km','ph','ko','g8','ip','3d');
 
 
-
-
-class indexSearch {
+class indexSearch
+{
 
     var $vipWords = array('pi', 'pô', 'no', 'or', 'nu', 'vu', 'os', 'fr', 'cm', 'km', 'ph', 'ko', 'g8', 'ip', '3d', 'if');
     var $minlength = 2;
@@ -29,7 +27,9 @@ class indexSearch {
     public $cacheWord = array();
     public $useWildCards = false;
 
-    function __construct($obj='') {
+    public $limit = false;
+    function __construct($obj = '')
+    {
 
         global $_Gconfig, $relations, $relinv;
         /**
@@ -69,17 +69,22 @@ class indexSearch {
         $this->stemSpecialWords = array('yeux' => 'oeil', 'travaux' => 'travail', 'affreux' => 'affreux');
 
 
-
-
         if ($obj) {
             $this->obj = $obj;
             $this->tab = akev($_Gconfig['iSearches'], $obj);
 
             $this->fields = getTabField($obj);
 
+            if (isset($_Gconfig['relOne'][$obj])) {
+                foreach ($_Gconfig['relOne'][$obj] as $table => $clef) {
+                    $this->fields = array_merge_recursive($this->fields, getTabField($table));
+                }
+            }
+
             if (empty($this->tab['champs'])) {
                 $this->tab['champs'] = array_keys($this->fields);
             }
+
             if (empty($this->tab['relations'])) {
 
                 $this->tab['relations'] = array();
@@ -97,6 +102,8 @@ class indexSearch {
 
             if ($obj == 's_rubrique') {
 
+                unset($this->tab['relations']['sousrubriques']);
+
                 global $_Gconfig;
                 $tb = GetTablesToIndex();
                 foreach ($_Gconfig['duplicateWithRubrique'] as $v) {
@@ -112,7 +119,8 @@ class indexSearch {
         }
     }
 
-    public function useWildCards() {
+    public function useWildCards()
+    {
         $this->useWildCards = true;
     }
 
@@ -122,7 +130,8 @@ class indexSearch {
      * @param Identifiant $id
      * @return string Texte complet nettoyé
      */
-    function getTextToIndex($id, $res=null) {
+    function getTextToIndex($id, $res = null)
+    {
 
         global $tablerel, $relinv, $relations, $tabForms, $uploadFields, $_Gconfig;
 
@@ -139,9 +148,12 @@ class indexSearch {
         }
 
         if (!$res) {
-            $sql = 'SELECT * FROM ' . $this->obj . ' WHERE ' . $this->pk . ' = "' . $id . '"';
-            $res = GetSingle($sql);
+            // $sql = 'SELECT * FROM ' . $this->obj . ' WHERE ' . $this->pk . ' = "' . $id . '"';
+            //$res = GetSingle($sql);
+            $res = getRowFromId($this->obj, $id);
         }
+
+        $res = getRowFromId($this->obj, $id);
 
         $txtToIndex = '';
 
@@ -152,6 +164,7 @@ class indexSearch {
             }
         }
 
+        // foreach ($this->tab['champs'] as $field) {
         foreach ($this->tab['champs'] as $field) {
 
             if (ake($this->fields, $field)) {
@@ -166,9 +179,9 @@ class indexSearch {
                     if (!empty($_Gconfig['searchRatio'][$this->obj][$field])) {
                         $coef = $_Gconfig['searchRatio'][$this->obj][$field];
                     } else
-                    if (in_array($field, $tabForms[$this->obj]['titre'])) {
+                        if (!empty($tabForms[$this->obj]['titre']) && in_array($field, $tabForms[$this->obj]['titre'])) {
                         $coef = 10;
-                    } else if (!empty($tabForms[$this->obj]['desc'])  && in_array($field, $tabForms[$this->obj]['desc'])) {
+                    } else if (!empty($tabForms[$this->obj]['desc']) && in_array($field, $tabForms[$this->obj]['desc'])) {
                         $coef = 4;
                     }
 
@@ -195,13 +208,11 @@ class indexSearch {
                 foreach ($v as $ch) {
 
                     if (arrayInWord($uploadFields, $ch) || arrayInWord($_Gconfig['urlFields'], $ch)) {
-                        
                     } else {
                         $txtToIndex .= ' ' . implode(' ', getLgsValues($ch, $r, $this->obj)) . ' ';
                     }
                 }
             } else if (ake($relinv[$this->obj], $k)) {
-
 
                 $sql = 'SELECT * FROM ' . $relinv[$this->obj][$k][0] . ' WHERE ' . $relinv[$this->obj][$k][1] . ' = ' . $res[$this->pk];
                 $r = GetAll($sql);
@@ -209,7 +220,6 @@ class indexSearch {
                 foreach ($r as $rv) {
                     foreach ($v as $ch) {
                         if (arrayInWord($uploadFields, $ch) || arrayInWord($_Gconfig['urlFields'], $ch)) {
-                            
                         } else {
                             $txtToIndex .= ' ' . implode(' ', getLgsValues($ch, $rv, $relinv[$this->obj][$k][0])) . ' ';
                         }
@@ -227,7 +237,8 @@ class indexSearch {
      * @param string $str
      * @return string
      */
-    function cleanText($str) {
+    function cleanText($str)
+    {
 
         $str = strip_tags($str);
         $str = mb_strtolower($str, 'utf-8');
@@ -252,7 +263,8 @@ class indexSearch {
         return trim($str);
     }
 
-    function removeaccents($str) {
+    function removeaccents($str)
+    {
 
         // LAME WAY TO DO IT ! But PHP is too ....
         $str = utf8_decode($str);
@@ -276,7 +288,8 @@ class indexSearch {
         return $str;
     }
 
-    function mb_str_split($str, $length = 1) {
+    function mb_str_split($str, $length = 1)
+    {
         if ($length < 1)
             return FALSE;
 
@@ -295,7 +308,8 @@ class indexSearch {
      * @param string $str
      * @param mixed $id_obj
      */
-    function indexText($str, $id_obj) {
+    function indexText($str, $id_obj)
+    {
         global $co, $_Gconfig;
 
 
@@ -315,7 +329,7 @@ class indexSearch {
 
         $sql = ' INSERT INTO os_rel VALUES  ';
         foreach ($tabMots as $k => $v) {
-            $sql .= ( '("' . $id . '","' . $k . '","' . $v . '") , ');
+            $sql .= ('("' . $id . '","' . $k . '","' . $v . '") , ');
         }
         $sql = substr($sql, 0, -2);
         DoSql($sql);
@@ -328,7 +342,8 @@ class indexSearch {
      * @param unknown_type $getids
      * @return unknown
      */
-    function getTabWords($str, $getids = false) {
+    function getTabWords($str, $getids = false)
+    {
 
         $mots = explode(' ', $str);
 
@@ -362,7 +377,8 @@ class indexSearch {
         return $tabWords;
     }
 
-    function insertDict($word) {
+    function insertDict($word)
+    {
         TrySql('INSERT INTO is_dict (mot) VALUES(' . sql($word) . ')');
         DoSql('UPDATE is_dict SET nb = nb + 1 WHERE mot = ' . sql($word));
     }
@@ -374,7 +390,8 @@ class indexSearch {
      * @return mixed Primary key
      *
      */
-    function getWordId($word) {
+    function getWordId($word)
+    {
 
         if (empty($this->cacheWord[$word])) {
             $sql = 'SELECT id FROM os_word WHERE word = "' . $word . '" ';
@@ -397,7 +414,8 @@ class indexSearch {
      * @param string $word
      * @return string
      */
-    function cleanWord($word) {
+    function cleanWord($word)
+    {
 
         /*
           $w =  prepareword($word);
@@ -441,7 +459,8 @@ class indexSearch {
      * @param string $id_obj
      * @return string
      */
-    function getIsId($id_obj) {
+    function getIsId($id_obj)
+    {
 
         $sql = 'SELECT id FROM os_obj WHERE fkid = "' . $id_obj . '" AND obj = "' . $this->obj . '"';
         $row = GetSingle($sql);
@@ -466,7 +485,8 @@ class indexSearch {
      * @param string $order
      * @return array Tableau de requete SQL
      */
-    function search($q, $select="", $from="", $where="", $order=false, $group = 'IO.id') {
+    function search($q, $select = "", $from = "", $where = "", $order = false, $group = 'IO.id')
+    {
 
         $q = $this->cleanText($q);
         //print($q.'<br/>');
@@ -537,7 +557,7 @@ class indexSearch {
 					';
         }
 
-        
+
         return DoSql($sql);
     }
 
@@ -547,7 +567,8 @@ class indexSearch {
      *
      * @param array $words
      */
-    function searchGlobal($words) {
+    function searchGlobal($words)
+    {
 
         $res = array();
         if (count($words) > 0 && $words[0] != "") {
@@ -604,10 +625,9 @@ class indexSearch {
                     $sqls .= $sql;
 
 
-
                 //$res[$word] = GetAll($sql);
             }
-            $sql = ' SELECT obj, fkid, RANK1, RANK2, SUM(RANK2) AS RANK3 , SUM(RANK1) AS LIMITEUR FROM ( ';
+            $sql = ' SELECT SQL_CALC_FOUND_ROWS obj, fkid, RANK1, RANK2, SUM(RANK2) AS RANK3 , SUM(RANK1) AS LIMITEUR FROM ( ';
             $sql .= $sqls;
             $sql .= ' ) ';
             if (count($words) > 1) {
@@ -615,6 +635,10 @@ class indexSearch {
             }
             $sql .= ' ) AS TEST GROUP BY MACLEF HAVING LIMITEUR >= ' . count($words) . ' ORDER BY RANK3 DESC';
 
+
+            if ($this->limit) {
+                $sql .= ' LIMIT ' . $this->limit;
+            }
 
             $res = DoSql($sql);
 
@@ -626,45 +650,45 @@ class indexSearch {
              *  VERSION NORMALE SANS PONDERATION DES MOTS
              *
              *
-
-              $sql = 'SELECT
-              IO.obj , IO.fkid , IW.word ,
-
-              COUNT(IO.id) AS CIO,
-              COUNT(IW.id) AS RANK1,
-
-              SUM(IR.nb) AS RANK2
-
-
-              FROM os_obj as IO , os_rel AS IR, os_word AS IW
-
-              WHERE  IO.id = IR.fkobj
-              AND IR.fkword = IW.id
-              ';
-
-
-              //debug($words);
-
-              //array_walk($words,'$this->cleanWord');
-
-
-              $sql .= ' AND ( 0 ';
-
-              foreach($words as $word)
-              {
-              $sql .= ' OR IW.word LIKE "'.$word.'" ';
-              }
-
-              $sql .= ' ) ';
-
-
-              //$sql .= '   COUNT(IW.id) = '.count($words).' ';
-
-              $sql .= ' GROUP BY IO.id HAVING RANK1 = '.count($words).' ';
-
-              $sql .= ' ORDER BY RANK1 DESC , RANK2 DESC';
-
-              // */
+             *
+             * $sql = 'SELECT
+             * IO.obj , IO.fkid , IW.word ,
+             *
+             * COUNT(IO.id) AS CIO,
+             * COUNT(IW.id) AS RANK1,
+             *
+             * SUM(IR.nb) AS RANK2
+             *
+             *
+             * FROM os_obj as IO , os_rel AS IR, os_word AS IW
+             *
+             * WHERE  IO.id = IR.fkobj
+             * AND IR.fkword = IW.id
+             * ';
+             *
+             *
+             * //debug($words);
+             *
+             * //array_walk($words,'$this->cleanWord');
+             *
+             *
+             * $sql .= ' AND ( 0 ';
+             *
+             * foreach($words as $word)
+             * {
+             * $sql .= ' OR IW.word LIKE "'.$word.'" ';
+             * }
+             *
+             * $sql .= ' ) ';
+             *
+             *
+             * //$sql .= '   COUNT(IW.id) = '.count($words).' ';
+             *
+             * $sql .= ' GROUP BY IO.id HAVING RANK1 = '.count($words).' ';
+             *
+             * $sql .= ' ORDER BY RANK1 DESC , RANK2 DESC';
+             *
+             * // */
         } else {
 
             //$sql = ' SELECT * FROM os_obj';
@@ -676,7 +700,4 @@ class indexSearch {
         //debug(getmicrotime() - $t);
         return $res;
     }
-
 }
-
-?>

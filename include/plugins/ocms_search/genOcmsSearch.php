@@ -22,7 +22,8 @@
 # @package ocms
 #
 
-class genOcmsSearch extends ocmsGen {
+class genOcmsSearch extends ocmsGen
+{
 
     /**
      * GenSite
@@ -32,7 +33,8 @@ class genOcmsSearch extends ocmsGen {
     var $site;
     var $nbPerType = array();
 
-    function __construct($site, $params) {
+    function __construct($site, $params)
+    {
 
         parent::__construct($site, $params);
 
@@ -63,7 +65,7 @@ class genOcmsSearch extends ocmsGen {
          */
         $this->tpl = new genTemplate();
         $this->tpl->loadTemplate('recherche', 'plugins/ocms_search/tpl')
-                ->defineBlocks('ITEM');
+            ->defineBlocks('ITEM');
 
         /**
          * Terme recherché
@@ -86,9 +88,12 @@ class genOcmsSearch extends ocmsGen {
         /**
          * Log des recherches
          */
-        TrySql('INSERT INTO os_recherches VALUES("",' . sql($_REQUEST['q']) . ',' . count($res) . ')');
+        TrySql('INSERT INTO os_recherches VALUES("",' . sql($_REQUEST['q']) . ',' . count((array)$res) . ')');
 
-        if (count($res)) {
+
+        if (count((array)$res)) {
+            // if (is_countable($res) && count($res)) {
+
             /**
              * Nombre réel de résultats
              */
@@ -132,7 +137,6 @@ class genOcmsSearch extends ocmsGen {
              * Si aucun ...
              */
             if ($nbResReal == 0) {
-                
             }
 
             /**
@@ -149,16 +153,18 @@ class genOcmsSearch extends ocmsGen {
         $this->html = $this->tpl->gen();
     }
 
-    function afterInit() {
-        $this->site->g_headers->addCssText('.itemliste:hover {background:' . COULEUR_2 . '}');
+    function afterInit()
+    {
+        $this->site->g_headers->addCssText('.itemliste:hover {background:#cccccc;}');
     }
 
-    function gen() {
+    function gen()
+    {
         return $this->html;
     }
 
-    public static function ocms_getPicto() {
+    public static function ocms_getPicto()
+    {
         return ADMIN_PICTOS_FOLDER . ADMIN_PICTOS_ARBO_SIZE . '/actions/system-search.png';
     }
-
 }
