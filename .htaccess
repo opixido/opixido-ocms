@@ -2,6 +2,9 @@ Options -Indexes
 
 RewriteEngine  on
 
+# 403 sur les dossiers .git si jamais ...
+RewriteRule "^(.*/)?\.git/" - [F,L]
+
 # Reecriture d'URL
 RewriteCond %{REQUEST_URI} !^/admin.*
 RewriteCond %{REQUEST_FILENAME} !-f
