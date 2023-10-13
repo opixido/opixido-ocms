@@ -495,7 +495,7 @@ class genSearchV2
 
                             foreach ($values as $rowe) {
 
-                                $sel = @in_array($rowe, $this->fullRealFields[$k]) ? 'selected="selected"' : '';
+                                $sel = ($this->fullRealFields[$k] && @in_array($rowe, $this->fullRealFields[$k])) ? 'selected="selected"' : '';
                                 p('<option ' . $sel . ' value="' . $rowe . '">' . t('enum_' . $rowe) . '</option>');
                             }
                             p('</select></div>');
