@@ -532,7 +532,7 @@ class genFile
         }
 
         if ($this->imageExists)
-            return $webRoot . $this->webPath . $this->fileName;
+            return path_concat($webRoot, $this->webPath, $this->fileName);
         else
             return '';
     }
@@ -760,8 +760,8 @@ class genFile
         } else if ($fromString) {
             $cop = file_put_contents($fullpath, $tmpname);
         } else {
-            $cop = copy($tmpname, $fullpath);
 
+            $cop = copy($tmpname, $fullpath);
             if (!$cop) {
                 $cop = move_uploaded_file($tmpname, $fullpath);
             }
@@ -868,8 +868,7 @@ class genFile
      */
     function fileExists()
     {
-
-        return file_exists($this->getSystemPath());
+        return file_exists($this->getSystemPath()) && is_file($this->getSystemPath());
     }
 
     /**
@@ -1117,16 +1116,15 @@ class genFile
 
         if (!$this->realSystemPath) {
             if ($this->imageExists) {
-                $this->realSystemPath = ($this->systemPath . $this->fileName);
+                $this->realSystemPath = path_concat($this->systemPath, $this->fileName);
             } else {
-                $this->realSystemPath = ($this->systemPath . $this->fileName);
+                $this->realSystemPath = path_concat($this->systemPath, $this->fileName);
                 //return '';
             }
         }
 
         if ($short) {
             return $this->getWebUrl();
-            return path_concat('/' . str_replace(array(realpath($_SERVER['DOCUMENT_ROOT']), ' '), array('', '%20'), $this->realSystemPath));
         } else {
             return $this->realSystemPath;
         }

@@ -17,7 +17,7 @@ class genXhrAdmin
     public $real_rub_id = false;
     public $real_fk_rub = false;
     public $insideRealRubId = false;
-    public $table, $id, $gs, $field;
+    public $table, $id, $gs, $field, $arborubs;
 
     function __construct($table, $id)
     {

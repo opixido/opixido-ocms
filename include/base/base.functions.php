@@ -1433,31 +1433,34 @@ function isRteField($name)
     return in_array($name, $rteFields) || in_array(getBaseLgField($name), $rteFields);
 }
 
-function path_concat($sep = SEP)
-{
-    /*
-      Concatene deux bouts de chemins en un seul
-     */
-    $u1 = '';
-    $arg_list = func_get_args();
-    $numargs = count($arg_list);
 
-    for ($i = 0; $i < $numargs; $i++) {
-        $u2 = $arg_list[$i];
-        if (is_array($u2)) {
-            break;
+function path_concat()
+{
+
+    $arg_list = func_get_args();
+
+    $paths = [];
+
+    $sep = '/';
+    $isHttp = false;
+    foreach ($arg_list as $k => $arg) {
+        if (mb_strpos($arg, ':/')) {
+            $isHttp = true;
+        } else if (mb_strpos($arg, ':\\')) {
+            $isHttp = true;
         }
-        if (mb_substr($u1, -1) == '/' && mb_substr($u2, 0, 1) == '/')
-            $u1 = substr($u1, 0, -1) . $u2;
-        else if (mb_substr($u1, -1) == '/' || mb_substr($u2, 0, 1) == '/')
-            $u1 = $u1 . $u2;
-        else if ($u1 != '')
-            $u1 = $u1 . '/' . $u2;
-        else
-            $u1 = $u1 . $u2;
+        $paths[] = trim($arg, $sep);
     }
 
-    return $u1;
+    $paths = array_filter($paths);
+
+    if ($isHttp) {
+        return join($sep, $paths);
+    } else {
+        return $sep . join($sep, $paths);
+
+    }
+
 }
 
 //print('XXX'.path_concat('test','test2','/test3'));

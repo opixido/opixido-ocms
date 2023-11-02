@@ -283,8 +283,9 @@ class genHeaders
              * Si le cache est expiré ou inexistant
              * On récupère le contenu de toutes les CSS
              */
+
             foreach ($fichiers as $v) {
-                $path = path_concat($_SERVER['DOCUMENT_ROOT'], BU, $v);
+                $path = path_concat(realpath($_SERVER['DOCUMENT_ROOT']), BU, $v);
                 if ($csT = file_get_contents($path)) {
                     $css .= $this->fixCssPath($csT, $path) . "\n";
                 } else {
