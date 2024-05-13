@@ -97,7 +97,7 @@ if (!$this->editMode) {
                 }
 
                 if (!empty($_Gconfig['specialListingWhere'][$this->table_name . '.' . $name])) {
-                    $sql .= $_Gconfig['specialListingWhere'][$this->table_name . '.' . $name];
+                    $sql .= $_Gconfig['specialListingWhere'][$this->table_name . '.' . $name]($this);
                 }
 
 
