@@ -714,17 +714,19 @@ class genRecord
 
                         $order = 1;
 
-                        foreach ($value as $k => $v) {
-                            if ($v) {
-                                $orderField = '';
-                                $orderValue = '';
-                                if (array_key_exists($tab[1], $orderFields)) {
-                                    $orderField = ',' . $orderFields[$tab[1]][0];
-                                    $orderValue = ',' . $order;
+                        if (!empty($value) && is_array($value)) {
+                            foreach ($value as $k => $v) {
+                                if ($v) {
+                                    $orderField = '';
+                                    $orderValue = '';
+                                    if (array_key_exists($tab[1], $orderFields)) {
+                                        $orderField = ',' . $orderFields[$tab[1]][0];
+                                        $orderValue = ',' . $order;
+                                    }
+                                    $sql = 'INSERT INTO ' . $tab[1] . ' ( ' . $fk1 . ' , ' . $fk2 . '' . $orderField . ')  VALUES (' . $this->id . ',' . $v . '' . $orderValue . ') ';
+                                    DoSql($sql);
+                                    $order++;
                                 }
-                                $sql = 'INSERT INTO ' . $tab[1] . ' ( ' . $fk1 . ' , ' . $fk2 . '' . $orderField . ')  VALUES (' . $this->id . ',' . $v . '' . $orderValue . ') ';
-                                DoSql($sql);
-                                $order++;
                             }
                         }
                     }
