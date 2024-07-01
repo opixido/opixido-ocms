@@ -1488,7 +1488,7 @@ class phpthumb {
 				if (($cachedwhichconvertstring = @file_get_contents($IMwhichConvertCacheFilename)) !== false) {
 					$WhichConvert = $cachedwhichconvertstring;
 				} else {
-					$WhichConvert = trim(phpthumb_functions::SafeExec('which convert'));
+					$WhichConvert = trim(phpthumb_functions::SafeExec('which convert') ?? '');
 					@file_put_contents($IMwhichConvertCacheFilename, $WhichConvert);
 					@chmod($IMwhichConvertCacheFilename, $this->getParameter('config_file_create_mask'));
 				}

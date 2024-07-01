@@ -36,12 +36,12 @@ setlocale(LC_ALL, 'fr_FR');
  * Pour l'encodage des mots de passe dans l'administration
  *
  */
-define('crypto_key', 'b8528f0056280e424c4f7f7f1f92dde59017243');
+define('crypto_key', '404a6629f206ef8ab31517e93993dd5a7877951');
 
 /**
  * Clef unique pour ce site
  */
-define('UNIQUE_SITE', '632b3084db5a4');
+define('UNIQUE_SITE', '6438075cbc8a9');
 
 
 /**
@@ -98,13 +98,13 @@ if ($_SERVER['SCRIPT_FILENAME'] != ($_SERVER['DOCUMENT_ROOT'] . $_SERVER['SCRIPT
  * Adresse de l'administration
  * @example define('ADMIN_URL','http://www.site.com/admin/');
  */
-define('ADMIN_URL', BU . '/admin/'); // 
+define('ADMIN_URL', BU . '/admin/'); // **ADMIN_URL**
 
 /**
  * Adresse principale du site
  * @example http://www.site.com/
  */
-define('WEB_URL', BU); // 
+define('WEB_URL', BU); // **WEB_URL**
 
 
 /**
@@ -113,7 +113,7 @@ define('WEB_URL', BU); //
  *
  * @deprecated 
  * 
- * $_Gconfig['session_cookie_server'] = "";	
+ * $_Gconfig['session_cookie_server'] = "**session_cookie_server**";	
  */
 /**
  * Pas utilisé
@@ -175,14 +175,14 @@ $_Gconfig['CDN'] = '';
  * On pourait définir des variables ci-dessus dans les blocs ci-dessous
  * pour une configuration propre à chaque serveur.
  */
-if ($_SERVER['SERVER_ADDR'] == "127.0.0.1") {
+if ($_SERVER['SERVER_ADDR'] == "::1") {
 
     /**
      * Connexion à la base de donnée
      */
     $_bdd_user = 'root';
     $_bdd_pwd = '';
-    $_bdd_bdd = 'ocms81';
+    $_bdd_bdd = 'ocms';
     $_bdd_host = 'localhost';
     $_bdd_type = 'mysqli';
 

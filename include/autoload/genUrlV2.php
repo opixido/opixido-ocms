@@ -119,6 +119,10 @@ class genUrlV2
      * */
     public $root_id;
 
+
+    public $iniGet;
+    public $iniPost;
+
     /**
      * Constructeur de la classe genUrl
      * @param string $lg Langue courante si deja connue
