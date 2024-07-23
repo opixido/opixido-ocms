@@ -16,7 +16,7 @@
         $in = '';
         foreach ($menus as $menu) {
 
-            if ($GLOBALS['gs_obj']->can('edit', $menu)) {
+            if ($GLOBALS['gs_obj']->can('edit', $menu) || in_array($menu, $_Gconfig['forceBigMenus'] ?? [])) {
                 $url = getAdminLink($menu);
 
                 $in .= ('<li >
@@ -53,7 +53,7 @@
             ?>
 
             <?php
-            if ($GLOBALS['gs_obj']->can('edit', $menu)) {
+            if ($GLOBALS['gs_obj']->can('edit', $menu) || in_array($menu, $_Gconfig['forceAdminMenus'] ?? [])) {
 
                 $dones++;
 
