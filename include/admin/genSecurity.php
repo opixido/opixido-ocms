@@ -257,7 +257,7 @@ if (!class_exists('genSecurity')) {
     				';
             $res = GetAll($sql);
 
-            if ($res[0]['role_table_table'] == 'all') {
+            if (isset($res[0]['role_table_table']) && $res[0]['role_table_table'] == 'all') {
                 $this->superAdmin = True;
 
                 return;
@@ -412,7 +412,11 @@ if (!class_exists('genSecurity')) {
                     }
                 }
             }
-            if (count($this->myroles['s_rubrique']['initrows'])) {
+        
+            if (isset($this->myroles['s_rubrique']['initrows']) 
+                && is_array($this->myroles['s_rubrique']['initrows']) 
+                && count($this->myroles['s_rubrique']['initrows'])) {
+
                 $ar = $this->myroles['s_rubrique']['initrows'];
                 foreach ($ar as $rid) {
                     $this->recurseRubrique($rid);
@@ -888,7 +892,7 @@ if (!class_exists('genSecurity')) {
         {
 
 
-            $myChamps = $this->myroles[$table]['champs'];
+            $myChamps = $this->myroles[$table]['champs'] ?? [];
 
             if ($this->canRow($action, $table, $row, $id)) {
 
