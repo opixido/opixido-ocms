@@ -86,7 +86,7 @@ class genContact extends ocmsGen
         /**
          * New Form
          */
-        $this->form = new simpleForm('./', 'post', 'contact_form');
+        $this->form = new simpleForm(getUrlWithParams(), 'post', 'contact_form');
         $this->form->class = 'container';
         $this->form->divClass = 'form-group';
         $this->form->checkboxBeforeLabel = true;

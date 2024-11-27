@@ -29,6 +29,7 @@
 <header>
   <?php
   echo $this->plugins['o_blocs']->header->gen();
+  echo $this->menus['test']->getTab();
   ?>
 </header>
 <article id="largeur" class="wrapper">

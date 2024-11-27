@@ -31,6 +31,7 @@ class genMenu
     public $tabPrincipal; //Celui contenant les url's du menu principal
     private $tabFooter;  //Celui contenant les url's du menu du footer
     public $separator = '';
+    public $cache2;
     public $visible = true;
     private $level = 1;
     public $conf, $row, $id_menu, $nom_menu;

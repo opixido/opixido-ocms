@@ -566,7 +566,10 @@ class gabarit extends row
 
     public function includeClasse()
     {
-        if ($this->row['gabarit_plugin']) {
+        if(empty($this->row['gabarit_classe'])) {
+            return;
+        }
+        if (!empty($this->row['gabarit_plugin'])) {
             $f = path_concat(PLUGINS_FOLDER, $this->row['gabarit_plugin']);
         } else {
             $f = 'bdd';
@@ -576,7 +579,7 @@ class gabarit extends row
 
     public function showSubRubs($rubrique_id = false)
     {
-        if (property_exists($this->row['gabarit_classe'], 'ocms_hiddenSubRubs')) {
+        if (!empty($this->row['gabarit_classe']) && property_exists($this->row['gabarit_classe'], 'ocms_hiddenSubRubs')) {
             $class = $this->row['gabarit_classe'];
             $type = $class::$ocms_hiddenSubRubs;
             if (is_array($type)) {

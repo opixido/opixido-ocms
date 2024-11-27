@@ -207,6 +207,8 @@ class baseObj
 class baseGen extends baseObj
 {
 
+    public $plugins;
+
     function __construct($site, $params = "")
     {
 
