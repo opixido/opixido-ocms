@@ -3,7 +3,7 @@
         'name' => 'opixido/ocms',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => '0967d84115a8c05f47fd75255f7901e34907ffaf',
+        'reference' => '015cb4c5202f5e1bec7a037365c4330854b7bbc1',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -40,7 +40,7 @@
         'opixido/ocms' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => '0967d84115a8c05f47fd75255f7901e34907ffaf',
+            'reference' => '015cb4c5202f5e1bec7a037365c4330854b7bbc1',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
