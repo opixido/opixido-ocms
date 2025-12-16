@@ -2293,6 +2293,8 @@ function includeMail($debug = false)
      */
     $m = new PHPMailer\PHPMailer\PHPMailer($debug);
 
+    $m->From = t('mail_from');
+    $m->FromName = t('mail_from_name');
     /**
      * Si on est en SMTP
      */
@@ -2304,7 +2306,12 @@ function includeMail($debug = false)
             $m->SMTPAuth = getParam('mail_smtp_login') ? true : false;
 
 
+            $m->SMTPSecure = getParam('mail_smtp_secure');
             $m->Username = getParam('mail_smtp_login');
+            if(isEmail(getParam('mail_smtp_login'))) {
+                $m->setFrom(getParam('mail_smtp_login'), t('mail_from_name'));
+                $m->addReplyTo(t('mail_from'));
+            }
             $m->Password = getParam('mail_smtp_pass');
 
             $m->Port = getParam('mail_smtp_port');
@@ -2316,8 +2323,7 @@ function includeMail($debug = false)
     /**
      * Valeurs par défaut
      */
-    $m->From = t('mail_from');
-    $m->FromName = t('mail_from_name');
+
     $m->CharSet = 'UTF-8';
     //print_r($m);
     return $m;
