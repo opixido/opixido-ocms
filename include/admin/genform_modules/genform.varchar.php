@@ -128,7 +128,8 @@ if (!$this->editMode) {
 							id="genform_' . $name . '"  ' . $jsColor . ' ' . $attributs . ' 
 							type="email"
 							name="genform_' . $name . '"
-                                                            pattern="[^ @]*@[^ @]*"
+                            multiple
+                            pattern="^[^@\s]+@[^@\s]+\.[^@\s]+(\s*,\s*[^@\s]+@[^@\s]+\.[^@\s]+)*$"
 							size="60"  
 							value=' . alt($this->tab_default_field[$name]) . '
 							/>  ');
