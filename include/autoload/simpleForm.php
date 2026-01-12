@@ -306,31 +306,12 @@ class simpleForm
     {
 
         $s = '<input ' . akev($field, 'tag') . '
-                    class="date' . $this->classError($field) . $this->fieldClass . '"
-                    type="text"
+                    class="text ' . $this->classError($field) . $this->fieldClass . '"
+                    type="date"
                     name="' . $field['name'] . '"
-                    id="' . $field['id'] . '" />' . "\n";
-
-        $s .= '
-		<script type="text/javascript">
-		$(document).ready(
-		function(){
-			$("#' . $field['id'] . '").datepicker({
-				showOn: "button",
-				buttonImage: "' . BU . '/admin/img/calendar.gif",
-				buttonImageOnly: true,
-				changeMonth: true,
-				changeYear: true,
-				showButtonPanel: true,
-				dateFormat:"dd/mm/yy",
-				showAnim:"slideDown",
-				buttonText:' . alt(t('calendar')) . '
-			})
-		}
-		);
-
-		</script>
-		';
+                    id="' . $field['id'] . '" 
+                    value="'.$field['value'].'"
+					/>' . "\n";
 
         return $s;
     }
@@ -520,9 +501,9 @@ class simpleForm
         $unique = time() . rand(0, 1000);
         $_SESSION['captchaQuestion'][$unique] = $chiffre1 + $chiffre2;
 
-        $html = '<span class="captcha_q">' . t('simpleform_captchaq') . '
+        $html = '<span class="captcha_q '.$this->classError($field).'">' . t('simpleform_captchaq') . '
 					<strong>' . $chiffre1 . ' + ' . $chiffre2 . ' = </strong>
-					<input  ' . akev($field, 'tag') . ' id="' . $field['id'] . '" type="text" name="captchaq" class="text captchaq" value="" size="2" />
+					<input  ' . akev($field, 'tag') . ' id="' . $field['id'] . '" type="text" name="captchaq" class="text captchaq  '.$this->classError($field).' " value="" size="2" />
 					<input type="hidden" name="captchaq_uniq" class="hidden" value="' . $unique . '"/>
 					</span>
 
