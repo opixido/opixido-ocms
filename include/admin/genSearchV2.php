@@ -458,7 +458,7 @@ class genSearchV2
                         //p('<div class="control-group"><input type="text" class="selectMSearch span2" id="' . $k . '_search" onkeydown="searchInSelect(this)" /></div>');
                     } else {
 
-                        if (($type == "int" && $size < 2) || $type == "tinyint") {
+                        if ($type == "tinyint") {
                             $vv = akev($this->fullRealFields, $k);
                             p('<label class="hide-text"> ' . t($k) . '</label>');
                             $sel = $vv == "" ? 'selected="selected"' : '';
@@ -915,7 +915,7 @@ class genSearchV2
                         }
                     } else {
 
-                        $r .= '<a class="btn btn-mini ' . ($action == 'edit' ? 'btn-primary' : '') . '" href="?genform_action%5B' . $action . '%5D=1&amp;curTable=' . $table . '&amp;curId=' . $id . '&amp;action=' . $action . '&amp;fromList=1' . ((empty($_REQUEST['page']) || !$ga->obj->canReturnToList) ? '' : ('&page=' . $_REQUEST['page'])) . '&amp;relOne=' . $this->relOne . '" title="' . t($action) . '">
+                        $r .= '<a class="btn btn-mini ' . ($action == 'edit' ? 'btn-primary' : '') . '" href="?genform_action%5B' . $action . '%5D=1&amp;curTable=' . $table . '&amp;curId=' . $id . '&amp;action=' . $action . '&amp;fromList=1' . ((empty($_REQUEST['page']) || !$ga->canReturnToList()) ? '' : ('&page=' . $_REQUEST['page'])) . '&amp;relOne=' . $this->relOne . '" title="' . t($action) . '">
 								<img src="' . $srcBtn . '" alt="' . t($action) . '" title="' . t($action) . '" />
 							   </a>';
                     }

@@ -111,6 +111,8 @@ class genAction
             if (property_exists($this->obj, 'canReturnToList')) {
                 return $this->obj->canReturnToList;
             }
+            return false;
+
         } else {
             return false;
         }
