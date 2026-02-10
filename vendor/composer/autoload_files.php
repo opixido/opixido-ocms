@@ -8,4 +8,5 @@ $baseDir = dirname($vendorDir);
 return array(
     'bf9f5270ae66ac6fa0290b4bf47867b7' => $vendorDir . '/adodb/adodb-php/adodb.inc.php',
     '3917c79c5052b270641b5a200963dbc2' => $vendorDir . '/kint-php/kint/init.php',
+    'd507e002f7fce7f0c6dbf1f22edcb902' => $vendorDir . '/tracy/tracy/src/Tracy/functions.php',
 );

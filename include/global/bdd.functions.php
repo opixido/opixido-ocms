@@ -549,6 +549,7 @@ function getGabaritSubRubs($rub, $gabid)
     $folder = $rgab['gabarit_plugin'] ? path_concat(PLUGINS_FOLDER, $rgab['gabarit_plugin']) : 'bdd';
     $GLOBALS['gb_obj']->includeFile($rgab['gabarit_classe'] . '.php', $folder);
     $gabNom = $rgab['gabarit_classe'];
+    $r = [];
     if (method_exists($gabNom, 'ocms_getSubRubs')) {
         $r = call_user_func(array($gabNom, 'ocms_getSubRubs'), $rub);
     }

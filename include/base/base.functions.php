@@ -222,7 +222,7 @@ function limitWords($str, $nbwords = 30, $tpp = ' ...')
  */
 function limit($str, $chars = 30)
 {
-
+    if (!$str) return '';
     if (mb_strlen($str) <= $chars) {
         return $str;
     } else {
@@ -617,7 +617,7 @@ function niceTextDate($date, $jour = false)
     $s = strftimeloc($type, $d);
 
     if ($GLOBALS['isWindows']) {
-        $s = utf8_encode($s);
+        $s = mb_convert_encoding($s,'utf8');
     }
 
     return $s;
@@ -1119,7 +1119,7 @@ function mkPasswd()
     $vowels = 'aeiouy';
 
     for ($x = 0; $x < 6; $x++) {
-        mt_srand((double)microtime() * 1000000);
+        mt_srand((float)microtime() * 1000000);
         $const[$x] = substr($consts, mt_rand(0, strlen($consts) - 1), 1);
         $vow[$x] = substr($vowels, mt_rand(0, strlen($vowels) - 1), 1);
     }
@@ -2308,7 +2308,7 @@ function includeMail($debug = false)
 
             $m->SMTPSecure = getParam('mail_smtp_secure');
             $m->Username = getParam('mail_smtp_login');
-            if(isEmail(getParam('mail_smtp_login'))) {
+            if (isEmail(getParam('mail_smtp_login'))) {
                 $m->setFrom(getParam('mail_smtp_login'), t('mail_from_name'));
                 $m->addReplyTo(t('mail_from'));
             }

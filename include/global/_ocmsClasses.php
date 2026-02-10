@@ -390,8 +390,35 @@ class rubrique extends row
 
 
     /**
-     * Return all images
+     *
+     * @return ADOdb_RECORDSET
+     * @global type $_Gconfig
      */
+    public function getDrafts()
+    {
+        global $_Gconfig;
+        $sql = 'SELECT * FROM s_rubrique WHERE '
+            . '     ' . MULTIVERSION_FIELD . ' = ' . sql($this->row[MULTIVERSION_FIELD]) . ' AND '
+            . ' ' . MULTIVERSION_STATE . ' = ' . sql(MV_STATE_DRAFT) . ' ORDER BY ' . $_Gconfig['field_date_maj'] . ' DESC';
+
+        return doSql($sql);
+    }
+
+    /**
+     * Return params
+     */
+    public function getGabaritParams()
+    {
+        $rgp = explode(';', $this->rubrique_gabarit_param);
+        $params = array();
+        foreach ($rgp as $r) {
+            if (!empty($r)) {
+                $p = explode('=', $r);
+                $params[$p[0]] = $p[1];
+            }
+        }
+        return $params;
+    }
 }
 
 

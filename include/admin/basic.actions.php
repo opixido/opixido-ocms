@@ -314,7 +314,7 @@ function mostUsedWords()
 
 function du($dir)
 {
-    $res = `/usr/bin/du -sk $dir`;             // Unix command
+    $res = shell_exec('/usr/bin/du -sk '.$dir);             // Unix command
     if(!$res) { return '?';}
     preg_match('/\d+/', $res, $KB); // Parse result
     if (empty($KB)) {

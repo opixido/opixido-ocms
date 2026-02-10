@@ -44,13 +44,20 @@ class o_blocsFront extends ocmsPlugin
             } else {
                 $this->blocs[$row['bloc_nom']] = new bloc($site);
             }
-            $this->{$row['bloc_nom']} = $this->blocs[$row['bloc_nom']];
             $this->blocs[$row['bloc_nom']]->nom = $row['bloc_nom'];
             $this->blocs[$row['bloc_nom']]->visible = $row['bloc_visible'];
             if ($row['bloc_afterinit']) {
                 $this->afterInits[$row['bloc_nom']] = $row['bloc_afterinit'];
             }
         }
+    }
+
+    function __get($k)
+    {
+        if (array_key_exists($k, $this->blocs)) {
+            return $this->blocs[$k];
+        }
+        return null;
     }
 
     function afterInit()

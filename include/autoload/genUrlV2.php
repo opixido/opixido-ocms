@@ -1291,7 +1291,7 @@ class genUrlV2
 
         if ($curId != $this->rootHomeId) {
             $i = 1;
-            while (array_key_exists($key, $GLOBALS['GlobalObjCache']['tabUrl']) && $key && $i <= 100) {
+            while ($key && array_key_exists($key, $GLOBALS['GlobalObjCache']['tabUrl']) &&  $i <= 100) {
 
                 $i++;
 

@@ -9,7 +9,7 @@ if ($_REQUEST['curId'] != "new") {
         global $restrictedMode;
         $restrictedMode = true;
         if ($form->tab_default_field['rubrique_type'] != RTYPE_MENUROOT) {
-            $form->gen("fk_gabarit_id"); 
+            $form->gen("fk_gabarit_id");
         }
         $restrictedMode = false;
 
@@ -58,7 +58,7 @@ if ($_REQUEST['curId'] != "new") {
 
 
             if (!$this->editMode) {
-                if (method_exists($gabNom, 'ocms_getSubRubs')) {
+                if ($gabNom && method_exists($gabNom, 'ocms_getSubRubs')) {
                     p('
 				<script type="text/javascript">
 				$(document).ready(function() {
@@ -91,12 +91,12 @@ if ($_REQUEST['curId'] != "new") {
                     if ($type == 'selectm') {
                         echo $sf->getSelect(array('id' => $nom, 'value' => $vals, 'selected' => $defV[$nom]), true);
                     } else
-                    if ($type == 'select') {
+                        if ($type == 'select') {
 
-                        echo $sf->getSelect(array('id' => $nom, 'value' => $vals, 'selected' => akev($defV, $nom)));
-                    } else {
-                        echo $sf->getInputText(array('id' => $nom, "value" => akev($defV, $nom)));
-                    }
+                            echo $sf->getSelect(array('id' => $nom, 'value' => $vals, 'selected' => akev($defV, $nom)));
+                        } else {
+                            echo $sf->getInputText(array('id' => $nom, "value" => akev($defV, $nom)));
+                        }
 
                     echo '<br/>';
                 }
@@ -118,8 +118,8 @@ if ($_REQUEST['curId'] != "new") {
                             if (ob.multiple) {
                                 val = "";
                                 for (var i = 0; i < ob.options.length; i++) {
-                                    if (ob.options[ i ].selected && ob.options[ i ].value != "") {
-                                        val += (ob.options[ i ].value) + ",";
+                                    if (ob.options[i].selected && ob.options[i].value != "") {
+                                        val += (ob.options[i].value) + ",";
                                     }
 
                                 }
@@ -145,8 +145,6 @@ if ($_REQUEST['curId'] != "new") {
 
                 <?php
             }
-
-
 
 
             $form->gen("rubrique_gabarit_param");
