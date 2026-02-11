@@ -489,7 +489,7 @@ class imageLib {
         // *** Crop this bad boy
         $crop = imagecreatetruecolor($newWidth, $newHeight);
         $this->keepTransparancy($optimalWidth, $optimalHeight, $crop);
-        imagecopyresampled($crop, $this->imageResized, 0, 0, $cropStartX, $cropStartY, $newWidth, $newHeight, $newWidth, $newHeight);
+        imagecopyresampled($crop, $this->imageResized, 0, 0, (int)$cropStartX, (int)$cropStartY, (int)$newWidth, (int)$newHeight, (int)$newWidth, (int)$newHeight);
 
         $this->imageResized = $crop;
 
@@ -1257,7 +1257,7 @@ class imageLib {
         imagecopy($comp, $filter, 0, 0, 0, 0, $width, $height);
         imagecopymerge($im, $comp, 0, 0, 0, 0, $width, $height, $amount);
 
-        imagedestroy($comp);
+
 
         return $im;
     }
@@ -1385,8 +1385,6 @@ class imageLib {
 
         $this->imageResized = $final;
 
-        imagedestroy($li);
-        imagedestroy($im);
     }
 
 
@@ -1719,9 +1717,6 @@ class imageLib {
 
         $this->imageResized = $rgb;
 
-        imagedestroy($image);
-        imagedestroy($newImage);
-        imagedestroy($shadow);
     }
 
 
@@ -3739,7 +3734,7 @@ class imageLib {
     {
         if (is_resource($this->imageResized) || $this->imageResized instanceof \GdImage)
         {
-            imagedestroy($this->imageResized);
+           // imagedestroy($this->imageResized);
         }
     }
 
