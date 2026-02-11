@@ -3,7 +3,7 @@
         'name' => 'opixido/ocms',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => '7e6b27586708d2299b99763f550d92dc09d06804',
+        'reference' => 'dd16326290a71dfac60e080673ac0700cfad94f6',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -40,7 +40,7 @@
         'opixido/ocms' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => '7e6b27586708d2299b99763f550d92dc09d06804',
+            'reference' => 'dd16326290a71dfac60e080673ac0700cfad94f6',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -56,9 +56,9 @@
             'dev_requirement' => false,
         ),
         'tinymce/tinymce' => array(
-            'pretty_version' => '5.10.9',
-            'version' => '5.10.9.0',
-            'reference' => 'e5650a256f8941a0593ec0b9d3c435f20f1d4245',
+            'pretty_version' => '7.9.2',
+            'version' => '7.9.2.0',
+            'reference' => 'f05e38fecf76287442dd3301786955a83bbe954f',
             'type' => 'component',
             'install_path' => __DIR__ . '/../tinymce/tinymce',
             'aliases' => array(),
@@ -72,21 +72,6 @@
             'install_path' => __DIR__ . '/../tracy/tracy',
             'aliases' => array(),
             'dev_requirement' => false,
-        ),
-        'twbs/bootstrap' => array(
-            'pretty_version' => 'v5.3.0-alpha1',
-            'version' => '5.3.0.0-alpha1',
-            'reference' => 'cf9454caa00872899215603e5e036d9a824b1b11',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../twbs/bootstrap',
-            'aliases' => array(),
-            'dev_requirement' => false,
-        ),
-        'twitter/bootstrap' => array(
-            'dev_requirement' => false,
-            'replaced' => array(
-                0 => 'v5.3.0-alpha1',
-            ),
         ),
     ),
 );
