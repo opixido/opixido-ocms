@@ -23,7 +23,7 @@
 #
 
 class ajaxDateTime {
-
+    public $af, $champ, $row, $table, $id, $champ_id, $taille;
     function __construct($af, $champ) {
 
         $this->af = $af;

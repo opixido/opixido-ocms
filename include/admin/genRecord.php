@@ -605,8 +605,10 @@ class genRecord
                 /* Nom du champ */
                 $name = str_replace("genform_", "", $key_name);
 
-                if (isset($tab_field[$name]) && !$tab_field[$name]->not_null && !strlen($value)) {
-                    $value = 'NULL';
+                if (isset($tab_field[$name]) && !$tab_field[$name]->not_null) {
+                    if (!is_array($value) && !strlen($value)) {
+                        $value = 'NULL';
+                    }
                 }
 
                 if (array_key_exists($name, $functionField)) {
@@ -936,7 +938,7 @@ class genRecord
                     /**
                      * CHAMPS RTE
                      */
-                    if (@in_array($name, $rteFields)) {
+                    if (@in_array($name, $rteFields) || @in_array(getBaseLgField($name), $rteFields)) {
                         if (strlen(trim(strip_tags($value))) > 1 && strpos($value, '<p>') === false) {
                             $value = '<p>' . $value . '</p>';
                         }

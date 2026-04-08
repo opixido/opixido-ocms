@@ -24,6 +24,8 @@
 
 class ajaxUpload {
 
+    public $af, $champ, $row, $table, $id, $champ_id;
+
     function __construct($af, $champ) {
 
         $this->af = $af;

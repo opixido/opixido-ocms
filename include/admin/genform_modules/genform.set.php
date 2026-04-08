@@ -35,8 +35,11 @@ if (!$this->editMode) {
      * */
 
     $this->genHelpImage('help_set', $name);
+    if(empty($this->tab_default_field[$name])) {
+        $this->tab_default_field[$name] = [];
+    }
 
-
+    $attributs = '';
     $doReload = (is_array($this->table . "." . $name)) ? in_array($this->table . "." . $name, $_Gconfig['reloadOnChange']) : false;
     $asCheckbox = (is_array($this->table . "." . $name)) ? in_array($this->table . "." . $name, $_Gconfig['setAsCheckbox']) : false;
     if ($doReload) {
@@ -63,10 +66,9 @@ if (!$this->editMode) {
           } */
 
         foreach ($sets as $set) {
-            /*
+            /**
              * On parcourt les resultats pour la liste de la table externe
-             * */
-
+             **/
             $thisValue = $this->trad('set_' . $set);
 
             $sel = '';
@@ -74,8 +76,6 @@ if (!$this->editMode) {
                 $sel = 'checked';
             }
             $this->addBuffer('<label class="checkbox"><input type="checkbox" name="genform_' . $name . '[]" value="' . $set . '" ' . $sel . '> ' . ($thisValue) . '</label>');
-
-
         }
     } else {
         //debug($this->tab_field[$name]);

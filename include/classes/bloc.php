@@ -196,7 +196,7 @@ class bloc
 
     private static function cmp($a, $b)
     {
-        return $a["poids"] > $b["poids"];
+        return $a["poids"] - $b["poids"];
     }
 
     /**

@@ -23,7 +23,7 @@
 #
 
 class ajaxEnum {
-
+    public $af, $champ, $row, $table, $id, $champ_id, $taille;
     function __construct($af, $champ) {
 
         $this->af = $af;
@@ -36,7 +36,7 @@ class ajaxEnum {
     }
 
     function gen() {
-
+$html ='';
         $html .= ( '<select id="' . $this->champ_id . '"
 						 onchange="ajaxSaveValue(this,' . js($this->table) . ',' . js($this->champ) . ',' . js($this->id) . ')"  >' );
 

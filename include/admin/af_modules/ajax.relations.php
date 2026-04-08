@@ -24,7 +24,7 @@
 
 class ajaxRelations
 {
-
+    public $af, $champ, $row, $table, $id, $champ_id, $taille, $fk_table;
     function __construct($af, $champ, $fk_table)
     {
 

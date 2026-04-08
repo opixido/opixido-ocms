@@ -24,6 +24,8 @@
 
 class ajaxVarchar {
 
+    public $af, $champ, $row, $table, $id, $champ_id, $taille;
+
     function __construct($af, $champ, $taille = 64) {
 
         $this->af = $af;

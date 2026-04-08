@@ -44,6 +44,9 @@ if (!$this->editMode) {
 
     $this->genHelpImage('help_enum', $name);
 
+    if (empty($this->tab_default_field[$name])) {
+        $this->tab_default_field[$name] = '';
+    }
 
     $doReload = in_array($this->table . "." . $name, $_Gconfig['reloadOnChange']);
 
