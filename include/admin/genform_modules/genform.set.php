@@ -36,7 +36,7 @@ if (!$this->editMode) {
 
     $this->genHelpImage('help_set', $name);
     if(empty($this->tab_default_field[$name])) {
-        $this->tab_default_field[$name] = [];
+        $this->tab_default_field[$name] = '';
     }
 
     $attributs = '';
