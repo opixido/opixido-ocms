@@ -386,7 +386,7 @@ $_Gconfig['tinyMce']['conf'] = array(
     'language_url' => 'js/langs/fr_FR.js',
     'browser_spellcheck' => "true",
     'width' => '100%',
-    'plugins' => "autoresize autolink lists link image charmap preview anchor pagebreak searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime nonbreaking save table directionality emoticons template",
+    'plugins' => "autoresize autolink lists link image charmap preview anchor pagebreak searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime nonbreaking save table directionality emoticons",
     'entity_encoding' => "raw",
     'content_css' => BU . "/css/baseadmin.css",
     'theme_advanced_styles' => '',
@@ -400,7 +400,7 @@ $_Gconfig['tinyMce']['conf'] = array(
     'external_filemanager_path' => ADMIN_URL . '/filemanager/',
     'filemanager_title' => "Médiathèque",
     'external_plugins' => array("filemanager" => ADMIN_URL . "/filemanager/plugin.min.js"),
-    'relative_urls' => 0,
+    'relative_urls' => false,
     'insertdatetime_formats' => array("%H:%M:%S", "%Y-%m-%d", "%I:%M:%S %p", "%D", '%d/%m/%Y'),
     'content_css' => array('/css/global.css', '/css/specialadmin.css'
     ),
