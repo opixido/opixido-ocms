@@ -2804,6 +2804,8 @@ class pagination
         }
 
 
+        $step = $this->nbPages > 100 ? 100 : 10;
+
         $lastDotted = false;
         /**
          * On parcourt les pages
@@ -2817,7 +2819,7 @@ class pagination
                     // si c'est la page en cours
                     || $p == $page
                     // Si c'est une "dizaine" pour faire des paliers
-                    || ($p % 10 == 0)
+                    || ($p % $step == 0)
                     // si c'est une page autour de la page en cours
                     || abs($page - $p) < 2)
                 ) {
