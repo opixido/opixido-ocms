@@ -27,7 +27,7 @@ class ajaxForm
 
     public $table;
     public $id;
-    public $row;
+    public $row, $tab_field;
     
     public $strBuffer='';
 

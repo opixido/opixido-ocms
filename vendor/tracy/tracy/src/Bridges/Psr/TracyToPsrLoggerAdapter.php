@@ -1,11 +1,9 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * This file is part of the Tracy (https://tracy.nette.org)
  * Copyright (c) 2004 David Grudl (https://davidgrudl.com)
  */
-
-declare(strict_types=1);
 
 namespace Tracy\Bridges\Psr;
 
@@ -41,10 +39,15 @@ class TracyToPsrLoggerAdapter extends Psr\Log\AbstractLogger
 	public function log($level, $message, array $context = []): void
 	{
 		$level = self::LevelMap[$level] ?? Tracy\ILogger::ERROR;
+		$message = (string) $message;
 
 		if (isset($context['exception']) && $context['exception'] instanceof \Throwable) {
-			$this->tracyLogger->log($context['exception'], $level);
+			$exception = $context['exception'];
 			unset($context['exception']);
+			$this->tracyLogger->log($exception, $level);
+			if (!$context && ($message === '' || $message === $exception->getMessage())) {
+				return; // exception entry already carries all the information
+			}
 		}
 
 		if ($context) {

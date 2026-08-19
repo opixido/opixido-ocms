@@ -56,12 +56,16 @@ class phpthumb_filters {
 					imagealphablending($gdimg_image, false);
 					imagesavealpha($gdimg_image, true);
 					imagecopy($gdimg_image, $gdimg_mask_blendtemp, 0, 0, 0, 0, imagesx($gdimg_mask_blendtemp), imagesy($gdimg_mask_blendtemp));
-					imagedestroy($gdimg_mask_blendtemp);
+					if (PHP_VERSION_ID < 80000) { // imagedestroy does nothing after PHP8 and give deprecation warnings in PHP8.5
+						imagedestroy($gdimg_mask_blendtemp);
+					}
 
 				} else {
 					$this->DebugMessage('ImageCreateFunction() failed', __FILE__, __LINE__);
 				}
-				imagedestroy($gdimg_mask_resized);
+				if (PHP_VERSION_ID < 80000) { // imagedestroy does nothing after PHP8 and give deprecation warnings in PHP8.5
+					imagedestroy($gdimg_mask_resized);
+				}
 
 			} else {
 				$this->DebugMessage('ImageCreateFunction() failed', __FILE__, __LINE__);
@@ -114,15 +118,15 @@ class phpthumb_filters {
 			// Move copies of the image around one pixel at the time and merge them with weight
 			// according to the matrix. The same matrix is simply repeated for higher radii.
 			for ($i = 0; $i < $radius; $i++)	{
-				imagecopy     ($imgBlur, $gdimg, 0, 0, 1, 1, $w - 1, $h - 1);            // up left
-				imagecopymerge($imgBlur, $gdimg, 1, 1, 0, 0, $w,     $h,     50.00000);  // down right
-				imagecopymerge($imgBlur, $gdimg, 0, 1, 1, 0, $w - 1, $h,     33.33333);  // down left
-				imagecopymerge($imgBlur, $gdimg, 1, 0, 0, 1, $w,     $h - 1, 25.00000);  // up right
-				imagecopymerge($imgBlur, $gdimg, 0, 0, 1, 0, $w - 1, $h,     33.33333);  // left
-				imagecopymerge($imgBlur, $gdimg, 1, 0, 0, 0, $w,     $h,     25.00000);  // right
-				imagecopymerge($imgBlur, $gdimg, 0, 0, 0, 1, $w,     $h - 1, 20.00000);  // up
-				imagecopymerge($imgBlur, $gdimg, 0, 1, 0, 0, $w,     $h,     16.666667); // down
-				imagecopymerge($imgBlur, $gdimg, 0, 0, 0, 0, $w,     $h,     50.000000); // center
+				imagecopy     ($imgBlur, $gdimg, 0, 0, 1, 1, $w - 1, $h - 1);      // up left
+				imagecopymerge($imgBlur, $gdimg, 1, 1, 0, 0, $w,     $h,     50);  // down right
+				imagecopymerge($imgBlur, $gdimg, 0, 1, 1, 0, $w - 1, $h,     33);  // down left
+				imagecopymerge($imgBlur, $gdimg, 1, 0, 0, 1, $w,     $h - 1, 25);  // up right
+				imagecopymerge($imgBlur, $gdimg, 0, 0, 1, 0, $w - 1, $h,     33);  // left
+				imagecopymerge($imgBlur, $gdimg, 1, 0, 0, 0, $w,     $h,     25);  // right
+				imagecopymerge($imgBlur, $gdimg, 0, 0, 0, 1, $w,     $h - 1, 20);  // up
+				imagecopymerge($imgBlur, $gdimg, 0, 1, 0, 0, $w,     $h,     17);  // down
+				imagecopymerge($imgBlur, $gdimg, 0, 0, 0, 0, $w,     $h,     50);  // center
 				imagecopy     ($gdimg, $imgBlur, 0, 0, 0, 0, $w,     $h);
 			}
 			return true;
@@ -287,17 +291,23 @@ class phpthumb_filters {
 		if (($bottom > 0) && ($bottom < 1)) { $bottom = round($bottom * $oldH); }
 		$right  = min($oldW - $left - 1, $right);
 		$bottom = min($oldH - $top  - 1, $bottom);
-		$newW = $oldW - $left - $right;
-		$newH = $oldH - $top  - $bottom;
+		$newW = (int)($oldW - $left - $right);
+		$newH = (int)($oldH - $top  - $bottom);
+        $left = (int)$left;
+        $top  = (int)$top;
 
 		if ($imgCropped = imagecreatetruecolor($newW, $newH)) {
 			imagecopy($imgCropped, $gdimg, 0, 0, $left, $top, $newW, $newH);
 			if ($gdimg = imagecreatetruecolor($newW, $newH)) {
 				imagecopy($gdimg, $imgCropped, 0, 0, 0, 0, $newW, $newH);
-				imagedestroy($imgCropped);
+				if (PHP_VERSION_ID < 80000) { // imagedestroy does nothing after PHP8 and give deprecation warnings in PHP8.5
+					imagedestroy($imgCropped);
+				}
 				return true;
 			}
-			imagedestroy($imgCropped);
+			if (PHP_VERSION_ID < 80000) { // imagedestroy does nothing after PHP8 and give deprecation warnings in PHP8.5
+				imagedestroy($imgCropped);
+			}
 		}
 		return false;
 	}
@@ -362,8 +372,8 @@ class phpthumb_filters {
 					//for ($i = 0; $i < $width; $i++) {
 					for ($i = 0; $i < 1; $i++) {
 						if (!isset($PixelMap[$x][$y]['alpha']) || ($PixelMap[$x][$y]['alpha'] > 0)) {
-							if (isset($PixelMap[$x + $Offset['x']][$y + $Offset['y']]['alpha']) && ($PixelMap[$x + $Offset['x']][$y + $Offset['y']]['alpha'] < 127)) {
-								$thisColor = phpthumb_functions::ImageHexColorAllocate($gdimg, $hexcolor, false, $PixelMap[$x + $Offset['x']][$y + $Offset['y']]['alpha']);
+							if (isset($PixelMap[$x + (int)$Offset['x']][$y + (int)$Offset['y']]['alpha']) && ($PixelMap[$x + (int)$Offset['x']][$y + (int)$Offset['y']]['alpha'] < 127)) {
+								$thisColor = phpthumb_functions::ImageHexColorAllocate($gdimg, $hexcolor, false, $PixelMap[$x + (int)$Offset['x']][$y + (int)$Offset['y']]['alpha']);
 								imagesetpixel($gdimg_dropshadow_temp, $x, $y, $thisColor);
 							}
 						}
@@ -388,7 +398,9 @@ class phpthumb_filters {
 			imagefilledrectangle($gdimg, 0, 0, imagesx($gdimg), imagesy($gdimg), $transparent2);
 			imagecopyresampled($gdimg, $gdimg_dropshadow_temp, 0, 0, 0, 0, imagesx($gdimg), imagesy($gdimg), imagesx($gdimg_dropshadow_temp), imagesy($gdimg_dropshadow_temp));
 
-			imagedestroy($gdimg_dropshadow_temp);
+			if (PHP_VERSION_ID < 80000) { // imagedestroy does nothing after PHP8 and give deprecation warnings in PHP8.5
+				imagedestroy($gdimg_dropshadow_temp);
+			}
 		}
 		return true;
 	}
@@ -421,13 +433,17 @@ class phpthumb_filters {
 				imagecopyresampled($gdimg_ellipsemask, $gdimg_ellipsemask_double, 0, 0, 0, 0, imagesx($gdimg), imagesy($gdimg), imagesx($gdimg) * 2, imagesy($gdimg) * 2);
 
 				$this->ApplyMask($gdimg_ellipsemask, $gdimg);
-				imagedestroy($gdimg_ellipsemask);
+				if (PHP_VERSION_ID < 80000) { // imagedestroy does nothing after PHP8 and give deprecation warnings in PHP8.5
+					imagedestroy($gdimg_ellipsemask);
+				}
 				return true;
 
 			} else {
 				$this->DebugMessage('$gdimg_ellipsemask = phpthumb_functions::ImageCreateFunction() failed', __FILE__, __LINE__);
 			}
-			imagedestroy($gdimg_ellipsemask_double);
+			if (PHP_VERSION_ID < 80000) { // imagedestroy does nothing after PHP8 and give deprecation warnings in PHP8.5
+				imagedestroy($gdimg_ellipsemask_double);
+			}
 		} else {
 			$this->DebugMessage('$gdimg_ellipsemask_double = phpthumb_functions::ImageCreateFunction() failed', __FILE__, __LINE__);
 		}
@@ -466,7 +482,9 @@ class phpthumb_filters {
 					imagecopy($gdimg, $tempImage, 0, imagesy($gdimg) - 1 - $y, 0, $y, imagesx($gdimg), 1);
 				}
 			}
-			imagedestroy($tempImage);
+			if (PHP_VERSION_ID < 80000) { // imagedestroy does nothing after PHP8 and give deprecation warnings in PHP8.5
+				imagedestroy($tempImage);
+			}
 		}
 		return true;
 	}
@@ -667,13 +685,17 @@ class phpthumb_filters {
 					imageline($gdHistTemp, 0, $HistogramTempHeight - 2, $HistogramTempWidth - 1, $HistogramTempHeight - 2, $thisColor);
 				}
 				imagecopyresampled($gdHist, $gdHistTemp, 0, 0, 0, 0, imagesx($gdHist), imagesy($gdHist), imagesx($gdHistTemp), imagesy($gdHistTemp));
-				imagedestroy($gdHistTemp);
+				if (PHP_VERSION_ID < 80000) { // imagedestroy does nothing after PHP8 and give deprecation warnings in PHP8.5
+					imagedestroy($gdHistTemp);
+				}
 			} else {
 				return false;
 			}
 
 			$this->WatermarkOverlay($gdimg, $gdHist, $alignment, $opacity, $margin_x, $margin_y);
-			imagedestroy($gdHist);
+			if (PHP_VERSION_ID < 80000) { // imagedestroy does nothing after PHP8 and give deprecation warnings in PHP8.5
+				imagedestroy($gdHist);
+			}
 			return true;
 		}
 		return false;
@@ -733,7 +755,9 @@ class phpthumb_filters {
 			}
 			$this->phpThumbObject->ImageResizeFunction($gd_border_canvas, $gdimg, floor(($output_width - $new_width) / 2), round(($output_height - $new_height) / 2), 0, 0, $new_width, $new_height, $output_width, $output_height);
 
-			imagedestroy($gdimg);
+			if (PHP_VERSION_ID < 80000) { // imagedestroy does nothing after PHP8 and give deprecation warnings in PHP8.5
+				imagedestroy($gdimg);
+			}
 			$gdimg = phpthumb_functions::ImageCreateFunction($output_width, $output_height);
 			imagesavealpha($gdimg, true);
 			imagealphablending($gdimg, false);
@@ -741,7 +765,9 @@ class phpthumb_filters {
 			imagefilledrectangle($gdimg, 0, 0, $output_width, $output_height, $gdimg_color_background);
 
 			imagecopy($gdimg, $gd_border_canvas, 0, 0, 0, 0, $output_width, $output_height);
-			imagedestroy($gd_border_canvas);
+			if (PHP_VERSION_ID < 80000) { // imagedestroy does nothing after PHP8 and give deprecation warnings in PHP8.5
+				imagedestroy($gd_border_canvas);
+			}
 			return true;
 
 
@@ -790,7 +816,9 @@ class phpthumb_filters {
 					$phpThumbFilters->phpThumbObject = $phpThumbObject;
 					$phpThumbFilters->ApplyMask($gdimg_rotate_mask, $gdimg_source);
 
-					imagedestroy($gdimg_rotate_mask);
+					if (PHP_VERSION_ID < 80000) { // imagedestroy does nothing after PHP8 and give deprecation warnings in PHP8.5
+						imagedestroy($gdimg_rotate_mask);
+					}
 
 				} else {
 					//$this->DebugMessage('ImageCreateFunction() failed', __FILE__, __LINE__);
@@ -822,7 +850,9 @@ class phpthumb_filters {
 						$background_color = phpthumb_functions::ImageHexColorAllocate($gdimg_newsrc, $config_background_hexcolor);
 						imagefilledrectangle($gdimg_newsrc, 0, 0, imagesx($gdimg_source), imagesy($gdimg_source), phpthumb_functions::ImageHexColorAllocate($gdimg_newsrc, $config_background_hexcolor));
 						imagecopy($gdimg_newsrc, $gdimg_source, 0, 0, 0, 0, imagesx($gdimg_source), imagesy($gdimg_source));
-						imagedestroy($gdimg_source);
+						if (PHP_VERSION_ID < 80000) { // imagedestroy does nothing after PHP8 and give deprecation warnings in PHP8.5
+							imagedestroy($gdimg_source);
+						}
 						unset($gdimg_source);
 						$gdimg_source = $gdimg_newsrc;
 						unset($gdimg_newsrc);
@@ -902,14 +932,18 @@ class phpthumb_filters {
 				imagecopyresampled($gdimg_cornermask, $gdimg_cornermask_triple, imagesx($gdimg) - $radius_x,                           0, $radius_x * 3,     $radius_y, $radius_x, $radius_y, $radius_x * 2, $radius_y * 2);
 
 				$this->ApplyMask($gdimg_cornermask, $gdimg);
-				imagedestroy($gdimg_cornermask);
+				if (PHP_VERSION_ID < 80000) { // imagedestroy does nothing after PHP8 and give deprecation warnings in PHP8.5
+					imagedestroy($gdimg_cornermask);
+				}
 				$this->DebugMessage('RoundedImageCorners('.$radius_x.', '.$radius_y.') succeeded', __FILE__, __LINE__);
 				return true;
 
 			} else {
 				$this->DebugMessage('FAILED: $gdimg_cornermask = phpthumb_functions::ImageCreateFunction('.imagesx($gdimg).', '.imagesy($gdimg).')', __FILE__, __LINE__);
 			}
-			imagedestroy($gdimg_cornermask_triple);
+			if (PHP_VERSION_ID < 80000) { // imagedestroy does nothing after PHP8 and give deprecation warnings in PHP8.5
+				imagedestroy($gdimg_cornermask_triple);
+			}
 
 		} else {
 			$this->DebugMessage('FAILED: $gdimg_cornermask_triple = phpthumb_functions::ImageCreateFunction('.($radius_x * 6).', '.($radius_y * 6).')', __FILE__, __LINE__);
@@ -1018,7 +1052,7 @@ class phpthumb_filters {
 				for ($y = 0; $y < $height; $y++) {
 					$currentPixel = phpthumb_functions::GetPixelColor($gdimg, $x, $y);
 					$colorDiff = phpthumb_functions::PixelColorDifferencePercent($currentPixel, $targetPixel);
-					$grayLevel = min($cutoffRange, max(0, -$min_limit + $colorDiff)) * (255 / max(1, $cutoffRange));
+					$grayLevel = (int)min($cutoffRange, max(0, -$min_limit + $colorDiff)) * (255 / max(1, $cutoffRange));
 					$newColor = imagecolorallocate($gdimg_mask, $grayLevel, $grayLevel, $grayLevel);
 					imagesetpixel($gdimg_mask, $x, $y, $newColor);
 				}
@@ -1059,7 +1093,9 @@ class phpthumb_filters {
 		imagecopy($image_copy, $image, 0, 0, 0, 0, $width, $height);
 		imagetruecolortopalette($image, $dither, $ncolors);
 		imagecolormatch($image_copy, $image);
-		imagedestroy($image_copy);
+		if (PHP_VERSION_ID < 80000) { // imagedestroy does nothing after PHP8 and give deprecation warnings in PHP8.5
+			imagedestroy($image_copy);
+		}
 		return true;
 	}
 
@@ -1127,16 +1163,20 @@ class phpthumb_filters {
 		}
 		$lineheight = min(100.0, max(0.01, (float) $lineheight));
 
-		$metaTextArray = array(
-			'^Fb' =>       $this->phpThumbObject->getimagesizeinfo['filesize'],
-			'^Fk' => round($this->phpThumbObject->getimagesizeinfo['filesize'] / 1024),
-			'^Fm' => round($this->phpThumbObject->getimagesizeinfo['filesize'] / 1048576),
-			'^X'  => $this->phpThumbObject->getimagesizeinfo[0],
-			'^Y'  => $this->phpThumbObject->getimagesizeinfo[1],
-			'^x'  => imagesx($gdimg),
-			'^y'  => imagesy($gdimg),
-			'^^'  => '^',
-		);
+        $metaTextArray = array();
+        if (is_array($this->phpThumbObject->getimagesizeinfo)) {
+            if (array_key_exists('filesize',$this->phpThumbObject->getimagesizeinfo)) {
+                $metaTextArray['^Fb'] =       $this->phpThumbObject->getimagesizeinfo['filesize'];
+                $metaTextArray['^Fk'] = round($this->phpThumbObject->getimagesizeinfo['filesize'] / 1024);
+                $metaTextArray['^Fm'] = round($this->phpThumbObject->getimagesizeinfo['filesize'] / 1048576);
+            }
+			$metaTextArray['^X'] = $this->phpThumbObject->getimagesizeinfo[0];
+			$metaTextArray['^Y'] = $this->phpThumbObject->getimagesizeinfo[1];
+		}
+        $metaTextArray['^x'] = imagesx($gdimg);
+        $metaTextArray['^y'] = imagesy($gdimg);
+        $metaTextArray['^^'] = '^';
+
 		$text = strtr($text, $metaTextArray);
 
 		$text = str_replace(array(
@@ -1413,7 +1453,9 @@ class phpthumb_filters {
 				//phpthumb_filters::WatermarkOverlay($gdimg, $img_watermark, $alignment, $opacity, $margin);
 				$this->DebugMessage('WatermarkText() calling phpthumb_filters::WatermarkOverlay($gdimg, $img_watermark, '.($originOffsetX.'x'.$originOffsetY).', '.$opacity.', 0)', __FILE__, __LINE__);
 				$this->WatermarkOverlay($gdimg, $img_watermark, $originOffsetX.'x'.$originOffsetY, $opacity, 0);
-				imagedestroy($img_watermark);
+				if (PHP_VERSION_ID < 80000) { // imagedestroy does nothing after PHP8 and give deprecation warnings in PHP8.5
+					imagedestroy($img_watermark);
+				}
 				return true;
 			}
 
@@ -1430,7 +1472,8 @@ class phpthumb_filters {
 			$watermark_source_width    = imagesx($img_watermark);
 			$watermark_source_height   = imagesy($img_watermark);
 			$watermark_opacity_percent = max(0, min(100, $opacity));
-			$margin_y = (null === $margin_y ? $margin_x : $margin_y);
+            $margin_x = (null === $margin_x ? 0 : $margin_y);       // if null fill 0 (or 5?)
+            $margin_y = (null === $margin_y ? $margin_x : $margin_y);
 			$watermark_margin_x = ((($margin_x > 0) && ($margin_x < 1)) ? round((1 - $margin_x) * $img_source_width)  : $margin_x);
 			$watermark_margin_y = ((($margin_y > 0) && ($margin_y < 1)) ? round((1 - $margin_y) * $img_source_height) : $margin_y);
 			$watermark_destination_x = 0;
@@ -1478,7 +1521,9 @@ class phpthumb_filters {
 							$watermark_destination_x = 0;
 							$watermark_destination_y = 0;
 
-							imagedestroy($img_watermark);
+							if (PHP_VERSION_ID < 80000) { // imagedestroy does nothing after PHP8 and give deprecation warnings in PHP8.5
+								imagedestroy($img_watermark);
+							}
 							$img_watermark = $gdimg_tiledwatermark;
 						}
 						break;

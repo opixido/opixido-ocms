@@ -1,11 +1,9 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * This file is part of the Tracy (https://tracy.nette.org)
  * Copyright (c) 2004 David Grudl (https://davidgrudl.com)
  */
-
-declare(strict_types=1);
 
 namespace Tracy;
 
@@ -19,7 +17,7 @@ use const PHP_VERSION;
  */
 class Debugger
 {
-	public const Version = '2.11.1';
+	public const Version = '2.12.1';
 
 	/** server modes for Debugger::enable() */
 	public const
@@ -61,7 +59,7 @@ class Debugger
 	/** initial output buffer level */
 	private static int $obLevel;
 
-	/** @var ?list<array<string, mixed>>  output buffer status @internal */
+	/** @var ?array<int, array<string, mixed>>  output buffer status @internal */
 	public static ?array $obStatus = null;
 
 	/********************* errors and exceptions reporting ****************d*g**/
@@ -141,11 +139,11 @@ class Debugger
 	/** @var string[] */
 	public static array $customJsFiles = [];
 
-	/** @var array<\Closure(string, int): ?array{file: string, line: int, column?: int}> */
-	private static array $sourceMappers = [];
+	/** @var string[] path prefixes of "transparent" packages whose frames are skipped when locating user code and collapsed in stack traces */
+	public static array $transparentPaths = [];
 
-	/** @var ?array<string, int> */
-	private static ?array $cpuUsage = null;
+	/** @var array<\Closure(string, int): ?array{file: string, label: string, line?: int, column?: int, active?: bool}> */
+	private static array $sourceMappers = [];
 
 	/********************* services ****************d*g**/
 
@@ -153,7 +151,7 @@ class Debugger
 	private static Bar $bar;
 	private static ILogger $logger;
 
-	/** @var array{DevelopmentStrategy, ProductionStrategy} */
+	/** @var array<int, DevelopmentStrategy|ProductionStrategy> */
 	private static array $strategy;
 	private static SessionStorage $sessionStorage;
 
@@ -170,7 +168,7 @@ class Debugger
 	/**
 	 * Enables displaying or logging errors and exceptions.
 	 * @param  bool|string|string[]  $mode  use constant Debugger::Production, Development, Detect (autodetection) or IP address(es) whitelist.
-	 * @param  string  $logDirectory  error log directory
+	 * @param  ?string  $logDirectory  error log directory
 	 * @param  string|string[]|null  $email  administrator email; enables email sending in production mode
 	 */
 	public static function enable(
@@ -188,8 +186,6 @@ class Debugger
 		self::$reserved ??= str_repeat('t', self::$reservedMemorySize);
 		self::$time ??= $_SERVER['REQUEST_TIME_FLOAT'] ?? microtime(as_float: true);
 		self::$obLevel ??= ob_get_level();
-		self::$cpuUsage ??= !self::$productionMode && function_exists('getrusage') ? (getrusage() ?: null) : null;
-
 		// logging configuration
 		self::$email = $email ?? self::$email;
 		self::$logDirectory = $logDirectory ?? self::$logDirectory;
@@ -252,15 +248,13 @@ class Debugger
 	}
 
 
+	/**
+	 * Dispatches deferred Bar/BlueScreen assets for AJAX requests or redirect queues.
+	 * Must be called after session_start() when using NativeSession.
+	 */
 	public static function dispatch(): void
 	{
-		if (
-			!Helpers::isCli()
-			&& self::getStrategy()->sendAssets()
-		) {
-			self::$showBar = false;
-			exit;
-		}
+		self::getStrategy()->dispatch();
 	}
 
 
@@ -280,7 +274,7 @@ class Debugger
 
 
 	/**
-	 * Shutdown handler to catch fatal errors and execute of the planned activities.
+	 * Shutdown handler to catch fatal errors and render the Bar.
 	 * @internal
 	 */
 	public static function shutdownHandler(): void
@@ -300,7 +294,7 @@ class Debugger
 
 		self::$reserved = null;
 
-		if (self::$showBar && !Helpers::isCli()) {
+		if (self::$showBar) {
 			try {
 				self::getStrategy()->renderBar();
 			} catch (\Throwable $e) {
@@ -311,7 +305,7 @@ class Debugger
 
 
 	/**
-	 * Handler to catch uncaught exception.
+	 * Handles an uncaught exception by rendering or logging it.
 	 * @internal
 	 */
 	public static function exceptionHandler(\Throwable $exception): void
@@ -320,8 +314,7 @@ class Debugger
 		self::$reserved = null;
 		self::$obStatus = ob_get_status(full_status: true);
 
-		@http_response_code(isset($_SERVER['HTTP_USER_AGENT']) && str_contains($_SERVER['HTTP_USER_AGENT'], 'MSIE ') ? 503 : 500); // may not have an effect
-
+		@http_response_code(500);
 		Helpers::improveException($exception);
 		self::removeOutputBuffers(errorOccurred: true);
 
@@ -338,8 +331,7 @@ class Debugger
 
 
 	/**
-	 * Handler to catch warnings and notices.
-	 * @return false
+	 * Handles PHP warnings and notices; converts recoverable errors to exceptions.
 	 * @throws ErrorException
 	 * @internal
 	 */
@@ -412,8 +404,7 @@ class Debugger
 	{
 		if (empty(self::$bar)) {
 			self::$bar = new Bar;
-			self::$bar->addPanel($info = new DefaultBarPanel('info'), 'Tracy:info');
-			$info->cpuUsage = self::$cpuUsage;
+			self::$bar->addPanel(new DefaultBarPanel('info'), 'Tracy:info');
 			self::$bar->addPanel(new DefaultBarPanel('warnings'), 'Tracy:warnings'); // filled by errorHandler()
 		}
 
@@ -470,7 +461,7 @@ class Debugger
 			self::$sessionStorage = @is_dir($dir = (string) session_save_path())
 				|| @is_dir($dir = (string) ini_get('upload_tmp_dir'))
 				|| @is_dir($dir = sys_get_temp_dir())
-				|| ($dir = self::$logDirectory)
+				|| ($dir = (string) self::$logDirectory)
 				? new FileSession($dir)
 				: new NativeSession;
 		}
@@ -485,34 +476,31 @@ class Debugger
 	/**
 	 * Dumps information about a variable in readable format.
 	 * @tracySkipLocation
-	 * @param  mixed  $var  variable to dump
-	 * @param  bool   $return  return output instead of printing it? (bypasses $productionMode)
-	 * @return mixed  variable itself or dump
+	 * @template T
+	 * @param  T     $var     variable to dump
+	 * @param  bool  $return  return output instead of printing it? (bypasses $productionMode)
+	 * @return ($return is true ? string : T)
 	 */
 	public static function dump(mixed $var, bool $return = false): mixed
 	{
 		if ($return) {
-			$options = [
-				Dumper::DEPTH => self::$maxDepth,
-				Dumper::TRUNCATE => self::$maxLength,
-				Dumper::ITEMS => self::$maxItems,
-			];
+			$options = self::dumpOptions();
 			return Helpers::isCli()
-				? Dumper::toText($var)
+				? Dumper::toText($var, $options)
 				: Helpers::capture(fn() => Dumper::dump($var, $options));
 
 		} elseif (!self::$productionMode) {
 			$html = Helpers::isHtmlMode();
 			echo $html ? '<tracy-div>' : '';
-			Dumper::dump($var, [
-				Dumper::DEPTH => self::$maxDepth,
-				Dumper::TRUNCATE => self::$maxLength,
-				Dumper::ITEMS => self::$maxItems,
+			Dumper::dump($var, self::dumpOptions() + [
 				Dumper::LOCATION => self::$showLocation,
 				Dumper::THEME => self::$dumpTheme,
-				Dumper::KEYS_TO_HIDE => self::$keysToHide,
 			]);
 			echo $html ? '</tracy-div>' : '';
+
+			if ($html && Helpers::isAgent()) {
+				Helpers::consoleLog(Dumper::toText($var, self::agentDumpOptions()));
+			}
 		}
 
 		return $var;
@@ -537,8 +525,10 @@ class Debugger
 	/**
 	 * Dumps information about a variable in Tracy Debug Bar.
 	 * @tracySkipLocation
+	 * @template T
+	 * @param  T  $var
 	 * @param  array<string, mixed>  $options
-	 * @return mixed  variable itself
+	 * @return T
 	 */
 	public static function barDump(mixed $var, ?string $title = null, array $options = []): mixed
 	{
@@ -548,17 +538,35 @@ class Debugger
 				self::getBar()->addPanel($panel = new DefaultBarPanel('dumps'), 'Tracy:dumps');
 			}
 
-			$panel->data[] = ['title' => $title, 'dump' => Dumper::toHtml($var, $options + [
-				Dumper::DEPTH => self::$maxDepth,
-				Dumper::ITEMS => self::$maxItems,
-				Dumper::TRUNCATE => self::$maxLength,
+			$panel->data[] = ['title' => $title, 'dump' => Dumper::toHtml($var, $options + self::dumpOptions() + [
 				Dumper::LOCATION => self::$showLocation ?: Dumper::LOCATION_CLASS | Dumper::LOCATION_SOURCE,
 				Dumper::LAZY => true,
-				Dumper::KEYS_TO_HIDE => self::$keysToHide,
-			])];
+			]), 'text' => Helpers::isAgent() ? Dumper::toText($var, self::agentDumpOptions()) : null];
 		}
 
 		return $var;
+	}
+
+
+	/** @return array<string, mixed> */
+	private static function dumpOptions(): array
+	{
+		return [
+			Dumper::DEPTH => self::$maxDepth,
+			Dumper::TRUNCATE => self::$maxLength,
+			Dumper::ITEMS => self::$maxItems,
+			Dumper::KEYS_TO_HIDE => self::$keysToHide,
+		];
+	}
+
+
+	/** @return array<string, mixed> */
+	private static function agentDumpOptions(): array
+	{
+		return [
+			Dumper::DEPTH => 3,
+			Dumper::KEYS_TO_HIDE => self::$keysToHide,
+		];
 	}
 
 
@@ -583,7 +591,7 @@ class Debugger
 
 
 	/**
-	 * @param  callable(string, int): ?array{file: string, line: int, column?: int}  $mapper
+	 * @param  callable(string, int): ?array{file: string, label: string, line?: int, column?: int, active?: bool}  $mapper
 	 * @internal
 	 */
 	public static function addSourceMapper(callable $mapper): void
@@ -592,12 +600,12 @@ class Debugger
 	}
 
 
-	/** @return ?array{file: string, line: int, column?: int} */
+	/** @return ?array{file: string, label: string, line: int, column: int, active: bool} */
 	public static function mapSource(string $file, int $line): ?array
 	{
 		foreach (self::$sourceMappers as $mapper) {
 			if ($res = $mapper($file, $line)) {
-				return $res;
+				return $res + ['line' => 0, 'column' => 0, 'active' => true];
 			}
 		}
 
@@ -626,4 +634,19 @@ class Debugger
 
 		return in_array($addr, $list, strict: true) || in_array("$secret@$addr", $list, strict: true);
 	}
+
+
+	/**
+	 * @return string[]
+	 * @internal
+	 */
+	public static function detectTransparentPaths(): array
+	{
+		return preg_match('#(.+/vendor)/tracy/tracy/src/Tracy/Debugger$#', strtr(__DIR__, '\\', '/'), $m)
+			? [$m[1] . '/tracy', $m[1] . '/nette', $m[1] . '/latte']
+			: [dirname(__DIR__)];
+	}
 }
+
+
+Debugger::$transparentPaths = Debugger::detectTransparentPaths();

@@ -1,16 +1,14 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * This file is part of the Tracy (https://tracy.nette.org)
  * Copyright (c) 2004 David Grudl (https://davidgrudl.com)
  */
 
-declare(strict_types=1);
-
 namespace Tracy;
 
-use function array_filter, array_map, array_merge, array_pop, array_slice, array_unique, basename, bin2hex, class_exists, constant, count, dechex, defined, dirname, end, escapeshellarg, explode, extension_loaded, func_get_args, function_exists, get_class, get_class_methods, get_declared_classes, get_defined_functions, getenv, getmypid, headers_list, htmlspecialchars, htmlspecialchars_decode, iconv_strlen, implode, in_array, is_a, is_array, is_callable, is_file, is_object, is_string, levenshtein, ltrim, mb_strlen, mb_substr, method_exists, ob_end_clean, ob_get_clean, ob_start, ord, preg_match, preg_replace, preg_replace_callback, random_bytes, rawurlencode, rtrim, sapi_windows_vt100_support, spl_object_id, str_contains, str_pad, str_replace, strcasecmp, stream_isatty, strip_tags, strlen, strtoupper, strtr, substr, trait_exists, utf8_decode;
-use const DIRECTORY_SEPARATOR, ENT_HTML5, ENT_QUOTES, ENT_SUBSTITUTE, PHP_EOL, PHP_SAPI, STDOUT, STR_PAD_LEFT;
+use function array_filter, array_map, array_merge, array_pop, array_slice, array_unique, basename, bin2hex, class_exists, constant, count, dechex, defined, dirname, end, escapeshellarg, explode, extension_loaded, func_get_args, function_exists, get_class_methods, get_declared_classes, get_defined_functions, getenv, getmypid, headers_list, htmlspecialchars, htmlspecialchars_decode, iconv_strlen, implode, in_array, ini_set, is_a, is_array, is_callable, is_file, is_object, is_string, json_encode, levenshtein, ltrim, mb_strlen, mb_substr, method_exists, ob_end_clean, ob_get_clean, ob_start, ord, preg_match, preg_replace, preg_replace_callback, random_bytes, rawurlencode, rtrim, sapi_windows_vt100_support, spl_object_id, str_contains, str_pad, str_replace, strcasecmp, stream_isatty, strip_tags, strlen, strtoupper, strtr, substr, trait_exists, utf8_decode;
+use const DIRECTORY_SEPARATOR, ENT_HTML5, ENT_QUOTES, ENT_SUBSTITUTE, JSON_HEX_AMP, JSON_HEX_APOS, JSON_HEX_TAG, JSON_INVALID_UTF8_SUBSTITUTE, JSON_UNESCAPED_SLASHES, JSON_UNESCAPED_UNICODE, PHP_EOL, PHP_SAPI, STDOUT, STR_PAD_LEFT;
 
 
 /**
@@ -77,6 +75,9 @@ class Helpers
 	}
 
 
+	/**
+	 * Formats an HTML string by replacing each % placeholder with the next argument, HTML-escaped.
+	 */
 	public static function formatHtml(string $mask): string
 	{
 		$args = func_get_args();
@@ -92,9 +93,73 @@ class Helpers
 	}
 
 
+	public static function escapeMd(mixed $s): string
+	{
+		$s = (string) $s;
+		// inline-anywhere: \ ` * [ ] < | ~ and _ at word boundary
+		$s = preg_replace('/[\\\`*\[\]<|~]|(?<![A-Za-z0-9])_|_(?![A-Za-z0-9])/', '\\\$0', $s);
+		// line-start block markers: > always; # + need following whitespace; - = need whitespace, repeat, or EOL
+		$s = preg_replace('/(?:^|(?<=[\r\n]))(>|#(?=[\s#]|$)|\+(?=\s|$)|-(?=[\s-]|$)|=(?=[\s=]|$))/', '\\\$0', $s);
+		// line-start ordered list marker: 1-9 digits + . or ) followed by whitespace or EOL
+		return preg_replace('/(?:^|(?<=[\r\n]))(\d{1,9})([.)])(?=\s|$)/', '$1\\\$2', $s);
+	}
+
+
 	public static function htmlToText(string $s): string
 	{
 		return htmlspecialchars_decode(strip_tags($s), ENT_QUOTES | ENT_HTML5);
+	}
+
+
+	/**
+	 * Finds the file+line in user code from which a Tracy call originated.
+	 * @param  string[]|null  $paths  defaults to Debugger::$transparentPaths
+	 * @return ?array{file: string, line: int}
+	 */
+	public static function findCallerLocation(?array $paths = null): ?array
+	{
+		$trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+		$n = self::countTransparentFrames($trace, $paths);
+		return isset($trace[$n]['file'], $trace[$n]['line'])
+			? ['file' => $trace[$n]['file'], 'line' => $trace[$n]['line']]
+			: null;
+	}
+
+
+	/**
+	 * Returns the index of the first user-visible frame in $trace. A frame is transparent
+	 * when its file is missing, synthetic, in $paths, or its containing function (trace[n+1])
+	 * is annotated @tracySkipLocation.
+	 * @param  list<array{file?: string, line?: int, class?: string, type?: string, function?: string, args?: array<mixed>}>  $trace
+	 * @param  string[]|null  $paths  defaults to Debugger::$transparentPaths
+	 * @internal
+	 */
+	public static function countTransparentFrames(array $trace, ?array $paths = null): int
+	{
+		$paths ??= Debugger::$transparentPaths;
+		foreach ($trace as $key => $item) {
+			$next = $trace[$key + 1] ?? null;
+			$nextReflection = match (true) {
+				$next === null => null,
+				isset($next['class'], $next['function']) && method_exists($next['class'], $next['function']) => new \ReflectionMethod($next['class'], $next['function']),
+				isset($next['function']) && function_exists($next['function']) => new \ReflectionFunction($next['function']),
+				default => null,
+			};
+
+			if (isset($item['file'])
+				&& @is_file($item['file']) // @ - synthetic paths like eval()'d code, CLI, etc.
+				&& (!preg_match('#\s@tracySkipLocation\s#', (string) $nextReflection?->getDocComment()))
+			) {
+				$file = strtr($item['file'], '\\', '/') . '/';
+				foreach ($paths as $path) {
+					if (str_starts_with($file, strtr($path, '\\', '/') . '/')) {
+						continue 2;
+					}
+				}
+				return $key;
+			}
+		}
+		return count($trace);
 	}
 
 
@@ -153,13 +218,20 @@ class Helpers
 				. (isset($_SERVER['argv']) ? ': ' . implode(' ', array_map(self::escapeArg(...), $_SERVER['argv'])) : '');
 
 		} elseif (isset($_SERVER['REQUEST_URI'])) {
-			return (!empty($_SERVER['HTTPS']) && strcasecmp($_SERVER['HTTPS'], 'off') ? 'https://' : 'http://')
+			return (self::isHttps() ? 'https://' : 'http://')
 				. ($_SERVER['HTTP_HOST'] ?? '')
 				. $_SERVER['REQUEST_URI'];
 
 		} else {
 			return PHP_SAPI;
 		}
+	}
+
+
+	/** @internal */
+	public static function isHttps(): bool
+	{
+		return !empty($_SERVER['HTTPS']) && strcasecmp($_SERVER['HTTPS'], 'off') !== 0;
 	}
 
 
@@ -173,7 +245,7 @@ class Helpers
 		) {
 			// do nothing
 		} elseif (preg_match('~Argument #(\d+)(?: \(\$\w+\))? must be of type callable, (.+ given)~', $message, $m)) {
-			$arg = $e->getTrace()[0]['args'][$m[1] - 1] ?? null;
+			$arg = $e->getTrace()[0]['args'][(int) $m[1] - 1] ?? null;
 			if (is_string($arg) && str_contains($arg, '::')) {
 				$arg = explode('::', $arg, 2);
 			}
@@ -204,7 +276,7 @@ class Helpers
 				$replace = ["$m[2](", "$hint("];
 			}
 
-		} elseif (preg_match('#^Undefined property: ([\w\\\]+)::\$(\w+)#', $message, $m)) {
+		} elseif (preg_match('#^Undefined property: ([\w\\\]+)::\$(\w+)#', $message, $m) && class_exists($m[1])) {
 			$rc = new \ReflectionClass($m[1]);
 			$items = array_filter($rc->getProperties(\ReflectionProperty::IS_PUBLIC), fn($prop) => !$prop->isStatic());
 			if ($hint = self::getSuggestion($items, $m[2])) {
@@ -212,7 +284,10 @@ class Helpers
 				$replace = ["->$m[2]", "->$hint"];
 			}
 
-		} elseif (preg_match('#^Access to undeclared static property:? ([\w\\\]+)::\$(\w+)#', $message, $m)) {
+		} elseif (
+			preg_match('#^Access to undeclared static property:? ([\w\\\]+)::\$(\w+)#', $message, $m)
+			&& class_exists($m[1])
+		) {
 			$rc = new \ReflectionClass($m[1]);
 			$items = array_filter($rc->getProperties(\ReflectionProperty::IS_STATIC), fn($prop) => $prop->isPublic());
 			if ($hint = self::getSuggestion($items, $m[2])) {
@@ -239,7 +314,7 @@ class Helpers
 	/** @internal */
 	public static function improveError(string $message): string
 	{
-		if (preg_match('#^Undefined property: ([\w\\\]+)::\$(\w+)#', $message, $m)) {
+		if (preg_match('#^Undefined property: ([\w\\\]+)::\$(\w+)#', $message, $m) && class_exists($m[1])) {
 			$rc = new \ReflectionClass($m[1]);
 			$items = array_filter($rc->getProperties(\ReflectionProperty::IS_PUBLIC), fn($prop) => !$prop->isStatic());
 			$hint = self::getSuggestion($items, $m[2]);
@@ -308,9 +383,17 @@ class Helpers
 
 
 	/** @internal */
-	public static function isAjax(): bool
+	public static function consoleLog(string $data): void
 	{
-		return isset($_SERVER['HTTP_X_TRACY_AJAX']) && preg_match('#^\w{10,15}$#D', $_SERVER['HTTP_X_TRACY_AJAX']);
+		echo '<script' . self::getNonce(attr: true) . '>console.log(' . self::jsonEncode($data, inScript: true) . ');</script>';
+	}
+
+
+	/** @internal */
+	public static function isAgent(): bool
+	{
+		return ($_COOKIE['tracy-webdriver'] ?? null) === '1' // set by bar.js when navigator.webdriver
+			|| isset($_SERVER['HTTP_X_TRACY_AGENT']); // non-browser agents (curl, HTTP clients)
 	}
 
 
@@ -336,11 +419,11 @@ class Helpers
 
 
 	/** @internal */
-	public static function getNonceAttr(): string
+	public static function getNonce(bool $attr = false): ?string
 	{
-		return preg_match('#^Content-Security-Policy(?:-Report-Only)?:.*\sscript-src\s+(?:[^;]+\s)?\'nonce-([\w+/]+=*)\'#mi', implode("\n", headers_list()), $m)
-			? ' nonce="' . self::escapeHtml($m[1]) . '"'
-			: '';
+		return preg_match('#^Content-Security-Policy(?:-Report-Only)?:.*\sscript-src(?:-elem)?\s+(?:[^;]+\s)?\'nonce-([\w+/]+=*)\'#mi', implode("\n", headers_list()), $m)
+			? ($attr ? ' nonce="' . self::escapeHtml($m[1]) . '"' : $m[1])
+			: null;
 	}
 
 
@@ -443,7 +526,7 @@ class Helpers
 	{
 		return match (true) {
 			extension_loaded('mbstring') => mb_strlen($s, 'UTF-8'),
-			extension_loaded('iconv') => iconv_strlen($s, 'UTF-8'),
+			extension_loaded('iconv') => iconv_strlen($s, 'UTF-8') ?: strlen($s),
 			default => strlen(@utf8_decode($s)), // deprecated
 		};
 	}
@@ -595,7 +678,7 @@ class Helpers
 	}
 
 
-	/** @return \Throwable[] */
+	/** @return list<\Throwable> */
 	public static function getExceptionChain(\Throwable $ex): array
 	{
 		$res = [$ex];
@@ -609,7 +692,7 @@ class Helpers
 
 	/**
 	 * @param  callable(object): void  $callback
-	 * @param  array<int|string, true>  $skip
+	 * @param  true[]  $skip
 	 */
 	public static function traverseValue(mixed $val, callable $callback, array &$skip = [], ?string $refId = null): void
 	{
@@ -638,8 +721,11 @@ class Helpers
 
 
 	/**
+	 * Decomposes an integer flags value into matching constant names.
+	 * When $set is true, finds all flags set in the value (bitmask decomposition).
+	 * When $set is false, finds a single constant that equals the value exactly.
 	 * @param  string[]  $constants
-	 * @return string[]|null
+	 * @return list<string>|null
 	 * @internal
 	 */
 	public static function decomposeFlags(int $flags, bool $set, array $constants): ?array
@@ -663,5 +749,21 @@ class Helpers
 			$res[] = (string) $flags;
 		}
 		return $res;
+	}
+
+
+	/**
+	 * Encodes a value to JSON safe for use in any HTML context (attributes, script tags, etc.)
+	 */
+	public static function jsonEncode(mixed $value, bool $inScript = false): string
+	{
+		$old = @ini_set('serialize_precision', '-1'); // @ may be disabled
+		try {
+			return json_encode($value, ($inScript ? JSON_HEX_TAG : 0) | JSON_HEX_APOS | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE);
+		} finally {
+			if ($old !== false) {
+				ini_set('serialize_precision', $old);
+			}
+		}
 	}
 }

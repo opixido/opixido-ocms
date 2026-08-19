@@ -40,8 +40,8 @@ if (!$this->editMode) {
     }
 
     $attributs = '';
-    $doReload = (is_array($this->table . "." . $name)) ? in_array($this->table . "." . $name, $_Gconfig['reloadOnChange']) : false;
-    $asCheckbox = (is_array($this->table . "." . $name)) ? in_array($this->table . "." . $name, $_Gconfig['setAsCheckbox']) : false;
+    $doReload = (is_array($_Gconfig['reloadOnChange'])) ? in_array($this->table . "." . $name, $_Gconfig['reloadOnChange']) : false;
+    $asCheckbox = (is_array($_Gconfig['setAsCheckbox'])) ? in_array($this->table . "." . $name, $_Gconfig['setAsCheckbox']) : false;
     if ($doReload) {
         $attributs .= ' onchange="saveAndReloadForm();" ';
     }

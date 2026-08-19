@@ -381,17 +381,16 @@ foreach ($_Gconfig['LANGUAGES'] as $lg) {
  * @example $_Gconfig['tinyMce']['addConf']['theme_advanced_blockformats'] = 'p,div,h1,h2,h3,h4,h5,h6,blockquote,dt,dd,code,samp';
  */
 $_Gconfig['tinyMce']['conf'] = array(
-    'mode' => "exact",
-    'theme' => "silver",
+    'license_key'=> 'gpl',
     'language' => "fr_FR",
     'language_url' => 'js/langs/fr_FR.js',
     'browser_spellcheck' => "true",
     'width' => '100%',
-    'plugins' => "autoresize autolink lists link image charmap print preview hr anchor pagebreak searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime nonbreaking save table contextmenu directionality emoticons template paste textcolor ",
+    'plugins' => "autoresize autolink lists link image charmap preview anchor pagebreak searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime nonbreaking save table directionality emoticons template",
     'entity_encoding' => "raw",
     'content_css' => BU . "/css/baseadmin.css",
     'theme_advanced_styles' => '',
-    'toolbar1' => "pastetext insertfile undo redo | styleselect | bold italic | bullist numlist outdent indent | link image  ",
+    'toolbar1' => "pastetext insertfile undo redo | styles | bold italic | bullist numlist outdent indent | link image  ",
     'toolbar2' => "",
     'toolbar3' => "",
     'browser_spellcheck' => 'true',
@@ -414,7 +413,6 @@ $_Gconfig['tinyMce']['conf'] = array(
     'font_formats' => '',
     'fontsize_formats' => '',
     'menu' => [
-        'file' => ['title' => '', 'items' => []],
         'edit' => ['title' => 'Modifier', 'items' => 'undo redo | cut copy paste | selectall | searchreplace'],
         'view' => ['title' => 'View', 'items' => 'code | visualaid visualchars visualblocks | spellchecker | preview fullscreen'],
         'insert' => ['title' => 'Insert', 'items' => 'image link media  codesample inserttable | charmap emoticons hr | pagebreak nonbreaking anchor toc | insertdatetime'],
@@ -422,7 +420,10 @@ $_Gconfig['tinyMce']['conf'] = array(
         'tools' => ['title' => 'Tools', 'items' => 'spellchecker spellcheckerlanguage | code wordcount'],
         'table' => ['title' => 'Table', 'items' => 'inserttable tableprops deletetable row column cell'],
         'help' => ['title' => 'Help', 'items' => 'help']
-    ]
+    ],
+    'file_picker_types' => 'file image media',
+    'promotion' => 'false',
+    'branding' => 'false'
 
 );
 

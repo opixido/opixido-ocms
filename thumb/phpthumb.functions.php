@@ -173,7 +173,7 @@ class phpthumb_functions {
 
 
 	public static function ImageTypeToMIMEtype($imagetype) {
-		if (function_exists('image_type_to_mime_type') && ($imagetype >= 1) && ($imagetype <= 18)) {
+		if (function_exists('image_type_to_mime_type') && ($imagetype >= 1) && ($imagetype <= 19)) {
 			// PHP v4.3.0+
 			return image_type_to_mime_type($imagetype);
 		}
@@ -196,6 +196,7 @@ class phpthumb_functions {
 			16 => 'image/xbm',                     // IMAGETYPE_XBM
 			17 => 'image/x-icon',                  // IMAGETYPE_ICO
 			18 => 'image/webp',                    // IMAGETYPE_WEBP
+			19 => 'image/avif',                    // IMAGETYPE_AVIF
 
 			'gif'  => 'image/gif',                 // IMAGETYPE_GIF
 			'jpg'  => 'image/jpeg',                // IMAGETYPE_JPEG
@@ -204,6 +205,7 @@ class phpthumb_functions {
 			'bmp'  => 'image/bmp',                 // IMAGETYPE_BMP
 			'ico'  => 'image/x-icon',              // IMAGETYPE_ICO
 			'webp' => 'image/webp',                // IMAGETYPE_WEBP
+			'avif' => 'image/avif',                // IMAGETYPE_AVIF
 		);
 
 		return (isset($image_type_to_mime_type[$imagetype]) ? $image_type_to_mime_type[$imagetype] : false);
@@ -230,13 +232,13 @@ class phpthumb_functions {
 
 
 	public static function IsHexColor($HexColorString) {
-		return preg_match('#^[0-9A-F]{6}$#i', $HexColorString);
+		return preg_match('#^[0-9A-F]{6}$#i', (string)$HexColorString);
 	}
 
 
 	public static function ImageColorAllocateAlphaSafe(&$gdimg_hexcolorallocate, $R, $G, $B, $alpha=false) {
 		if (self::version_compare_replacement(PHP_VERSION, '4.3.2', '>=') && ($alpha !== false)) {
-			return imagecolorallocatealpha($gdimg_hexcolorallocate, $R, $G, $B, (int) $alpha);
+			return imagecolorallocatealpha($gdimg_hexcolorallocate, round($R), round($G), round($B), (int) $alpha);
 		} else {
 			return imagecolorallocate($gdimg_hexcolorallocate, $R, $G, $B);
 		}
@@ -398,9 +400,9 @@ class phpthumb_functions {
 
 				$newcolor = self::ImageColorAllocateAlphaSafe(
 					$dst_im,
-					$RealPixel['alpha'] == 127 ? $OverlayPixel['red'] : ($OverlayPixel['alpha'] == 127 ? $RealPixel['red'] : (round($RealPixel['red'] * (1 - $overlaypct)) + ($OverlayPixel['red'] * $overlaypct))),
-					$RealPixel['alpha'] == 127 ? $OverlayPixel['green'] : ($OverlayPixel['alpha'] == 127 ? $RealPixel['green'] : (round($RealPixel['green'] * (1 - $overlaypct)) + ($OverlayPixel['green'] * $overlaypct))),
-					$RealPixel['alpha'] == 127 ? $OverlayPixel['blue'] : ($OverlayPixel['alpha'] == 127 ? $RealPixel['blue'] : (round($RealPixel['blue'] * (1 - $overlaypct)) + ($OverlayPixel['blue'] * $overlaypct))),
+					$RealPixel['alpha'] == 127 ? $OverlayPixel['red']   : ($OverlayPixel['alpha'] == 127 ? $RealPixel['red']   : (round($RealPixel['red']   * (1 - $overlaypct) + ($OverlayPixel['red']   * $overlaypct)))),
+					$RealPixel['alpha'] == 127 ? $OverlayPixel['green'] : ($OverlayPixel['alpha'] == 127 ? $RealPixel['green'] : (round($RealPixel['green'] * (1 - $overlaypct) + ($OverlayPixel['green'] * $overlaypct)))),
+					$RealPixel['alpha'] == 127 ? $OverlayPixel['blue']  : ($OverlayPixel['alpha'] == 127 ? $RealPixel['blue']  : (round($RealPixel['blue']  * (1 - $overlaypct) + ($OverlayPixel['blue']  * $overlaypct)))),
 //					0);
 					min([$RealPixel['alpha'], floor($OverlayPixel['alpha'] * $opacipct)])
 				);
@@ -507,7 +509,7 @@ class phpthumb_functions {
 			if ($apacheLookupURIobject = @apache_lookup_uri($filename)) {
 				$apacheLookupURIarray = array();
 				foreach ($keys as $key) {
-					$apacheLookupURIarray[$key] = @$apacheLookupURIobject->$key;
+					$apacheLookupURIarray[$key] = ($apacheLookupURIobject->$key ?? '');
 				}
 				return $apacheLookupURIarray;
 			}
@@ -704,7 +706,7 @@ class phpthumb_functions {
 			return $url;
 		}
 		$parsed_url = self::ParseURLbetter($url);
-		$pathelements = explode('/', $parsed_url['path']);
+		$pathelements = explode('/', (string)$parsed_url['path']);
 		$CleanPathElements = array();
 		$TranslationMatrix = array(' '=>'%20');
 		foreach ($pathelements as $key => $pathelement) {
@@ -716,10 +718,10 @@ class phpthumb_functions {
 			}
 		}
 
-		$queries = explode($queryseperator, $parsed_url['query']);
+		$queries = explode($queryseperator, (string)$parsed_url['query']);
 		$CleanQueries = array();
 		foreach ($queries as $key => $query) {
-			@list($param, $value) = explode('=', $query);
+			list($param, $value) = array_pad(explode('=', $query), 2, '');
 			$CleanQueries[] = strtr($param, $TranslationMatrix).($value ? '='.strtr($value, $TranslationMatrix) : '');
 		}
 		foreach ($CleanQueries as $key => $value) {
@@ -769,8 +771,8 @@ class phpthumb_functions {
 			$tryagain = false;
 			$rawData = self::URLreadFsock($parsed_url['host'], $parsed_url['path'].'?'.$parsed_url['query'], $errstr, true, $parsed_url['port'], $timeout);
 			if ($followredirects && preg_match('#302 [a-z ]+; Location\\: (http.*)#i', $errstr, $matches)) {
-				$matches[1] = trim(@$matches[1]);
-				if (!@$alreadyLookedAtURLs[$matches[1]]) {
+				$matches[1] = trim($matches[1]);
+				if (empty($alreadyLookedAtURLs[$matches[1]])) {
 					// loop through and examine new URL
 					$error .= 'URL "'.$url.'" redirected to "'.$matches[1].'"';
 
@@ -805,7 +807,9 @@ class phpthumb_functions {
 			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, (bool) $followredirects);
 			curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
 			$rawData = curl_exec($ch);
-			curl_close($ch);
+			if (PHP_VERSION_ID < 80000) {
+				curl_close($ch);
+			}
 			if (strlen($rawData) > 0) {
 				$error .= 'CURL succeeded ('.strlen($rawData).' bytes); ';
 				return $rawData;
@@ -860,6 +864,16 @@ class phpthumb_functions {
 			$delimiter = ':';
 			$case_insensitive_pathname = false;
 		}
+		do {
+			/*
+			\\3930K\WEBROOT\trainspotted.com\phpThumb/_cache/\6\6f    // starts off with mismatched directory separators
+			\\3930K\WEBROOT\trainspotted.com\phpThumb\_cache\\6\6f    // gets multiple directory separators in a row that we want to strip out (being sure not to replace the UNC double-slash at the beginning)
+			*/
+			if ($doubleslash_offset = strpos($dirname, DIRECTORY_SEPARATOR.DIRECTORY_SEPARATOR, 1)) {
+				$dirname = substr($dirname, 0, $doubleslash_offset).substr($dirname, $doubleslash_offset + 1);
+			}
+		} while ($doubleslash_offset !== false);
+
 		$open_basedirs = explode($delimiter, $config_open_basedir);
 		foreach ($open_basedirs as $key => $open_basedir) {
 			if (preg_match('#^'.preg_quote($open_basedir).'#'.($case_insensitive_pathname ? 'i' : ''), $dirname) && (strlen($dirname) > strlen($open_basedir))) {
@@ -876,12 +890,23 @@ class phpthumb_functions {
 				continue;
 			}
 			if (!@is_dir($test_directory)) {
+				if (substr($test_directory, 0, 2) == '\\\\') {
+					// UNC path
+					if (count(explode('\\', $test_directory)) <= 4) {
+						// 1,2 = UNC starting slashes
+						// 3 = hostname; skip further checks
+						// 4 = sharename; skip further checks
+						// 5+ = real subdiretories
+						continue;
+					}
+				}
 				if (@file_exists($test_directory)) {
 					// directory name already exists as a file
 					return false;
 				}
 				@mkdir($test_directory, $mask);
 				@chmod($test_directory, $mask);
+				clearstatcache();
 				if (!@is_dir($test_directory) || !@is_writable($test_directory)) {
 					return false;
 				}
@@ -1047,8 +1072,8 @@ if (!function_exists('preg_quote')) {
 if (!function_exists('file_get_contents')) {
 	// included in PHP v4.3.0+
 	function file_get_contents($filename) {
-		if (preg_match('#^(f|ht)tp\://#i', $filename)) {
-			return SafeURLread($filename, $error);
+		if (preg_match('#^(ftp|https?)\://#i', $filename)) {
+			return phpthumb_functions::SafeURLread($filename, $error);
 		}
 		if ($fp = @fopen($filename, 'rb')) {
 			$rawData = '';

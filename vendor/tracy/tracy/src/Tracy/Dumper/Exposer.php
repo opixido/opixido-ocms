@@ -1,17 +1,17 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * This file is part of the Tracy (https://tracy.nette.org)
  * Copyright (c) 2004 David Grudl (https://davidgrudl.com)
  */
 
-declare(strict_types=1);
-
 namespace Tracy\Dumper;
 
 use Dom;
 use Ds;
-use function array_diff_key, array_key_exists, array_key_last, count, end, explode, get_mangled_object_vars, implode, iterator_to_array, preg_match_all, sort;
+use Uri;
+use function array_diff_key, array_key_exists, count, end, explode, get_debug_type, get_mangled_object_vars, implode, iterator_to_array, sort;
+use const PHP_VERSION_ID;
 
 
 /**
@@ -56,13 +56,14 @@ final class Exposer
 					$describer->describeEnumProperty($class, $name, $values[$k]),
 				);
 			} else {
+				$virtual = PHP_VERSION_ID >= 80400 && (new \ReflectionProperty($class, $name))->isVirtual();
 				$describer->addPropertyTo(
 					$value,
 					$name,
 					null,
 					$type,
 					class: $class,
-					described: new Value(Value::TypeText, 'unset'),
+					described: new Value(Value::TypeText, $virtual ? '{virtual}' : 'unset'),
 				);
 			}
 		}
@@ -116,6 +117,10 @@ final class Exposer
 
 		$value->value .= '(' . implode(', ', $params) . ')';
 
+		if ($this_ = $rc->getClosureThis()) {
+			$describer->addPropertyTo($value, 'this', null, described: new Value(Value::TypeText, get_debug_type($this_)));
+		}
+
 		$uses = [];
 		$useValue = new Value(Value::TypeObject);
 		$useValue->depth = $value->depth + 1;
@@ -155,7 +160,13 @@ final class Exposer
 
 	public static function exposeDOMNode(\DOMNode|Dom\Node $obj, Value $value, Describer $describer): void
 	{
-		$props = preg_match_all('#^\s*\[([^\]]+)\] =>#m', print_r($obj, return: true), $tmp) ? $tmp[1] : [];
+		$props = [];
+		foreach ((new \ReflectionClass($obj))->getProperties(\ReflectionProperty::IS_PUBLIC) as $prop) {
+			if (!$prop->isStatic()) {
+				$props[] = $prop->getName();
+			}
+		}
+
 		sort($props);
 		foreach ($props as $p) {
 			$describer->addPropertyTo($value, $p, @$obj->$p, Value::PropertyPublic); // @ some props may be deprecated
@@ -207,6 +218,34 @@ final class Exposer
 	}
 
 
+	/** @return array<string, mixed> */
+	public static function exposeCurl(\CurlHandle $curl): array
+	{
+		return curl_getinfo($curl);
+	}
+
+
+	public static function exposeWeakReference(\WeakReference $ref, Value $value, Describer $describer): void
+	{
+		if ($obj = $ref->get()) {
+			$describer->addPropertyTo($value, 'object', $obj);
+		} else {
+			$value->value .= ' (dead)';
+		}
+	}
+
+
+	public static function exposeUri(Uri\Rfc3986\Uri|Uri\WhatWg\Url $uri, Value $value, Describer $describer): void
+	{
+		$describer->addPropertyTo($value, 'uri', $uri instanceof Uri\WhatWg\Url ? $uri->toAsciiString() : $uri->toRawString());
+		foreach ($uri->__debugInfo() as $k => $v) {
+			if ($v !== null && $v !== '') {
+				$describer->addPropertyTo($value, $k, $v);
+			}
+		}
+	}
+
+
 	public static function exposeSplObjectStorage(\SplObjectStorage $obj, Value $value, Describer $describer): void
 	{
 		$value->value .= ' (' . count($obj) . ')';
@@ -216,6 +255,7 @@ final class Exposer
 			$describer->addPropertyTo($pair, 'key', $v);
 			$describer->addPropertyTo($pair, 'value', $obj[$v]);
 			$describer->addPropertyTo($value, '', null, described: $pair);
+			assert($value->items !== null);
 			$value->items[count($value->items) - 1][0] = '';
 		}
 	}
@@ -230,6 +270,7 @@ final class Exposer
 			$describer->addPropertyTo($pair, 'key', $k);
 			$describer->addPropertyTo($pair, 'value', $v);
 			$describer->addPropertyTo($value, '', null, described: $pair);
+			assert($value->items !== null);
 			$value->items[count($value->items) - 1][0] = '';
 		}
 	}
@@ -265,7 +306,7 @@ final class Exposer
 
 
 	public static function exposeDsCollection(
-		Ds\Collection $obj,
+		Ds\Collection|Ds\Seq|Ds\Set|Ds\Heap $obj,
 		Value $value,
 		Describer $describer,
 	): void
@@ -292,16 +333,25 @@ final class Exposer
 	private static function exposeLazyObject(object $obj, Describer $describer, Value $value): void
 	{
 		$rc = new \ReflectionClass($obj);
-		foreach ($rc->getProperties(\ReflectionProperty::IS_PUBLIC) as $prop) {
-			if (!$prop->isLazy($obj)) {
-				$describer->addPropertyTo(
-					$value,
-					$prop->getName(),
-					$prop->getValue($obj),
-					Value::PropertyPublic,
-					described: $describer->describeEnumProperty($obj::class, $prop->getName(), $prop->getValue($obj)),
-				);
+		foreach ($rc->getProperties() as $prop) {
+			if ($prop->isStatic() || $prop->isLazy($obj) || !$prop->isInitialized($obj)) {
+				continue;
 			}
+
+			$type = match (true) {
+				$prop->isPrivate() => Value::PropertyPrivate,
+				$prop->isProtected() => Value::PropertyProtected,
+				default => Value::PropertyPublic,
+			};
+			$v = $prop->getValue($obj);
+			$describer->addPropertyTo(
+				$value,
+				$prop->getName(),
+				$v,
+				$type,
+				class: $prop->getDeclaringClass()->getName(),
+				described: $describer->describeEnumProperty($prop->getDeclaringClass()->getName(), $prop->getName(), $v),
+			);
 		}
 
 		$value->value .= ' (lazy)';

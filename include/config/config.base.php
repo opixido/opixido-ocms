@@ -141,13 +141,12 @@ $relations['s_gabarit']['fk_default_rubrique_id'] = 's_rubrique';
 
 $_Gconfig['specialListing'] = array();
 $_Gconfig['specialListing']['s_para_type']['s_paragraphe' . '.' . 'fk_para_type_id'] = 'specialListingParagraphesGabarit';
-
 function specialListingParagraphesGabarit($a)
 {
     /**
      * On essai de retrouver la rubrique parente via les levels d'admin
      * */
-    $curentRubrique = ($_SESSION[gfuid()]['levels'][$_SESSION[gfuid()]['nbLevels']]);
+    $curentRubrique = akev($_SESSION[gfuid()]['levels'],$_SESSION[gfuid()]['nbLevels']);
     if (!empty($curentRubrique['curId'])) {
         $row = getRowFromId($curentRubrique['curTable'], $curentRubrique['curId']);
         if (!empty($row['fk_gabarit_id'])) {
@@ -585,4 +584,4 @@ $_Gconfig['debugIps'] = [];
 /**
  * Liste des tags autorisés dans les champs wysiwyg
  */
-$_Gconfig['rteAllowableTags']['default'] = '<p><a><abbr><accronym><sup><sub><ul><li><ol><br><br/><strong><em><span>';
+$_Gconfig['rteAllowableTags']['default'] = '<img><p><a><abbr><acronym><sup><sub><ul><li><ol><br><br/><strong><em><span><div><table><thead><tbody><tr><td><th><figure><figcaption><iframe><video><audio><h1><h2><h3><h4><h5><h6><b><i><u><s><strike><code><pre><blockquote><hr>';
