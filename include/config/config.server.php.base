@@ -98,7 +98,8 @@ if ($_SERVER['SCRIPT_FILENAME'] != ($_SERVER['DOCUMENT_ROOT'] . $_SERVER['SCRIPT
  * Adresse de l'administration
  * @example define('ADMIN_URL','http://www.site.com/admin/');
  */
-define('ADMIN_URL', BU . '/admin/'); // **ADMIN_URL**
+define('ADMIN_FOLDER_NAME', 'admin');
+define('ADMIN_URL', BU . '/' . ADMIN_FOLDER_NAME . '/'); // **ADMIN_URL**
 
 /**
  * Adresse principale du site

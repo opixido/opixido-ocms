@@ -8,35 +8,35 @@
     <?php
     $css = array(
 
-        'admin/css/arbo.css',
-        'admin/jq/css/bootstrap/jquery-ui-1.8.16.custom.css',
-        'admin/css/bootstrap-2.1.1.css',
-        'admin/jq/css/tipsy.css',
-        'admin/jq/css/fg.menu.css',
-        'admin/jq/css/jquery.tagedit.css',
-        'admin/css/style_v2.css'
+        ADMIN_FOLDER_NAME . '/css/arbo.css',
+        ADMIN_FOLDER_NAME . '/jq/css/bootstrap/jquery-ui-1.8.16.custom.css',
+        ADMIN_FOLDER_NAME . '/css/bootstrap-2.1.1.css',
+        ADMIN_FOLDER_NAME . '/jq/css/tipsy.css',
+        ADMIN_FOLDER_NAME . '/jq/css/fg.menu.css',
+        ADMIN_FOLDER_NAME . '/jq/css/jquery.tagedit.css',
+        ADMIN_FOLDER_NAME . '/css/style_v2.css'
     );
     $js = array(
-        'admin/jq/js/jquery.js',
-        'admin/js/bootstrap.min.js',
-        'admin/genform/js/tjmlib.js',
-        'admin/js/script.js',
-        'admin/js/xhr.js',
-        'admin/js/ajaxForm.js',
-        'admin/jq/js/jquery-ui.js',
-        'admin/jq/js/jquery.textarearesizer.compressed.js',
-        'admin/jq/js/jquery.tablednd_0_5.js',
-        'admin/jq/js/jquery.ui.nestedSortable.js',
-        'admin/jq/js/jquery.autoGrowInput.js',
-        'admin/jq/js/jquery.tagedit.js',
-        'admin/jq/js/jquery.tree.js',
-        'admin/plupload/js/plupload.full.min.js'
+        ADMIN_FOLDER_NAME . '/jq/js/jquery.js',
+        ADMIN_FOLDER_NAME . '/js/bootstrap.min.js',
+        ADMIN_FOLDER_NAME . '/genform/js/tjmlib.js',
+        ADMIN_FOLDER_NAME . '/js/script.js',
+        ADMIN_FOLDER_NAME . '/js/xhr.js',
+        ADMIN_FOLDER_NAME . '/js/ajaxForm.js',
+        ADMIN_FOLDER_NAME . '/jq/js/jquery-ui.js',
+        ADMIN_FOLDER_NAME . '/jq/js/jquery.textarearesizer.compressed.js',
+        ADMIN_FOLDER_NAME . '/jq/js/jquery.tablednd_0_5.js',
+        ADMIN_FOLDER_NAME . '/jq/js/jquery.ui.nestedSortable.js',
+        ADMIN_FOLDER_NAME . '/jq/js/jquery.autoGrowInput.js',
+        ADMIN_FOLDER_NAME . '/jq/js/jquery.tagedit.js',
+        ADMIN_FOLDER_NAME . '/jq/js/jquery.tree.js',
+        ADMIN_FOLDER_NAME . '/plupload/js/plupload.full.min.js'
     );
 
 
     $g = new genHeaders(false);
-    $g->fCacheFolder = 'admin/c';
-    $g->addFolder = 'admin';
+    $g->fCacheFolder = ADMIN_FOLDER_NAME . '/c';
+    $g->addFolder = ADMIN_FOLDER_NAME;
 
     $css = $g->getCssPath($css);
     $js = $g->getJsPath($js);

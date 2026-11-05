@@ -30,6 +30,9 @@ define('crypto_mode', 'cbc');
 if (!defined('SEP')) {
     define('SEP', DIRECTORY_SEPARATOR);
 }
+if (!defined('ADMIN_FOLDER_NAME')) {
+    define('ADMIN_FOLDER_NAME', 'admin');
+}
 
 $_Gconfig['relOne'] = array();
 
@@ -62,7 +65,7 @@ $_Gconfig['cachePaths']['cms'] = INCLUDE_PATH . '/cache/';
 $_Gconfig['cachePaths']['pages'] = INCLUDE_PATH . '/cache_agr/';
 $_Gconfig['cachePaths']['thumbs'] = $_Gconfig['basePath'] . '/thumb/cache/';
 $_Gconfig['cachePaths']['css'] = $_Gconfig['basePath'] . '/c/';
-$_Gconfig['cachePaths']['admincss'] = $_Gconfig['basePath'] . '/admin/c/';
+$_Gconfig['cachePaths']['admincss'] = $_Gconfig['basePath'] . '/' . ADMIN_FOLDER_NAME . 'admin/c/';
 
 
 /**
